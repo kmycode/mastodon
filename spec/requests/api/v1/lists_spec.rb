@@ -33,6 +33,18 @@ RSpec.describe 'Lists' do
       end
     end
 
+    let(:expected_response_with_antennas) do
+      lists.map do |list|
+        {
+          id: list.id.to_s,
+          title: list.title,
+          replies_policy: list.replies_policy,
+          exclusive: list.exclusive,
+          antennas: list.antennas,
+        }
+      end
+    end
+
     before do
       Fabricate(:list)
     end
@@ -48,7 +60,7 @@ RSpec.describe 'Lists' do
     it 'returns the expected lists' do
       subject
 
-      expect(body_as_json).to match_array(expected_response)
+      expect(body_as_json).to match_array(expected_response_with_antennas)
     end
   end
 
@@ -75,6 +87,7 @@ RSpec.describe 'Lists' do
         title: list.title,
         replies_policy: list.replies_policy,
         exclusive: list.exclusive,
+        antennas: list.antennas,
       })
     end
 
@@ -171,6 +184,7 @@ RSpec.describe 'Lists' do
         title: list.title,
         replies_policy: list.replies_policy,
         exclusive: list.exclusive,
+        antennas: list.antennas,
       })
     end
 
