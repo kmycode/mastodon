@@ -87,7 +87,7 @@
       "check_name": "PermitAttributes",
       "message": "Potentially dangerous key allowed for mass assignment",
       "file": "app/controllers/api/v1/notifications_controller.rb",
-      "line": 77,
+      "line": 81,
       "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
       "code": "params.permit(:account_id, :types => ([]), :exclude_types => ([]))",
       "render_path": null,
@@ -95,29 +95,6 @@
         "type": "method",
         "class": "Api::V1::NotificationsController",
         "method": "browserable_params"
-      },
-      "user_input": ":account_id",
-      "confidence": "High",
-      "cwe_id": [
-        915
-      ],
-      "note": ""
-    },
-    {
-      "warning_type": "Mass Assignment",
-      "warning_code": 105,
-      "fingerprint": "b0dd0a26d24f5ede9713fe49210e9638be5f5548af9eee0b5a16fe9dbc80ffcd",
-      "check_name": "PermitAttributes",
-      "message": "Potentially dangerous key allowed for mass assignment",
-      "file": "app/controllers/api/v2/search_controller.rb",
-      "line": 42,
-      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
-      "code": "params.permit(:type, :offset, :min_id, :max_id, :account_id, :following, :searchability)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Api::V2::SearchController",
-        "method": "search_params"
       },
       "user_input": ":account_id",
       "confidence": "High",
@@ -158,8 +135,54 @@
         79
       ],
       "note": ""
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "d0511f0287aea4ed9511f5a744f880cb15af77a8ec88f81b7365b00b642cf427",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/api/v1/reports_controller.rb",
+      "line": 26,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.permit(:account_id, :comment, :category, :forward, :forward_to_domains => ([]), :status_ids => ([]), :rule_ids => ([]))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Api::V1::ReportsController",
+        "method": "report_params"
+      },
+      "user_input": ":account_id",
+      "confidence": "High",
+      "cwe_id": [
+        915
+      ],
+      "note": ""
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "dd59382eb5fda8da4d29f5d52dc8261ed9070d3c61cecc12b8332e18448b1c11",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/api/v2/search_controller.rb",
+      "line": 42,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.permit(:type, :offset, :min_id, :max_id, :account_id, :following, :searchability)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Api::V2::SearchController",
+        "method": "search_params"
+      },
+      "user_input": ":account_id",
+      "confidence": "High",
+      "cwe_id": [
+        915
+      ],
+      "note": ""
     }
   ],
-  "updated": "2023-07-12 11:20:51 -0400",
-  "brakeman_version": "6.0.0"
+  "updated": "2023-07-30 22:53:30 +0900",
+  "brakeman_version": "6.0.1"
 }
