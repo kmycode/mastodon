@@ -60,6 +60,7 @@ class UserSettings
     setting :pending_account, default: true
     setting :trends, default: true
     setting :appeal, default: true
+    setting :warning, default: true
   end
 
   namespace :interactions do
