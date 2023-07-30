@@ -43,6 +43,7 @@ class UpdateStatusService < BaseService
     update_metadata!
     broadcast_updates!
 
+    @status.reload
     @status
   rescue NoChangesSubmittedError
     # For calls that result in no changes, swallow the error
