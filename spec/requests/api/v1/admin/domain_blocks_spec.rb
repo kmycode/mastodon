@@ -60,10 +60,38 @@ RSpec.describe 'Domain Blocks' do
         end
       end
 
+      let(:expected_responde_with_kb_custom) do
+        domain_blocks.map do |domain_block|
+          {
+            id: domain_block.id.to_s,
+            domain: domain_block.domain,
+            created_at: domain_block.created_at.strftime('%Y-%m-%dT%H:%M:%S.%LZ'),
+            severity: domain_block.severity.to_s,
+            reject_media: domain_block.reject_media,
+            reject_reports: domain_block.reject_reports,
+            private_comment: domain_block.private_comment,
+            public_comment: domain_block.public_comment,
+            obfuscate: domain_block.obfuscate,
+            reject_favourite: domain_block.reject_favourite,
+            reject_hashtag: domain_block.reject_hashtag,
+            detect_invalid_subscription: domain_block.detect_invalid_subscription,
+            reject_new_follow: domain_block.reject_new_follow,
+            reject_reply: domain_block.reject_reply,
+            reject_reply_exclude_followers: domain_block.reject_reply_exclude_followers,
+            reject_send_dissubscribable: domain_block.reject_send_dissubscribable,
+            reject_send_media: domain_block.reject_send_media,
+            reject_send_not_public_searchability: domain_block.reject_send_not_public_searchability,
+            reject_send_public_unlisted: domain_block.reject_send_public_unlisted,
+            reject_send_sensitive: domain_block.reject_send_sensitive,
+            reject_straight_follow: domain_block.reject_straight_follow,
+          }
+        end
+      end
+
       it 'returns the expected domain blocks' do
         subject
 
-        expect(body_as_json).to match_array(expected_responde)
+        expect(body_as_json).to match_array(expected_responde_with_kb_custom)
       end
 
       context 'with limit param' do
@@ -109,6 +137,18 @@ RSpec.describe 'Domain Blocks' do
           private_comment: domain_block.private_comment,
           public_comment: domain_block.public_comment,
           obfuscate: domain_block.obfuscate,
+          reject_favourite: domain_block.reject_favourite,
+          reject_hashtag: domain_block.reject_hashtag,
+          detect_invalid_subscription: domain_block.detect_invalid_subscription,
+          reject_new_follow: domain_block.reject_new_follow,
+          reject_reply: domain_block.reject_reply,
+          reject_reply_exclude_followers: domain_block.reject_reply_exclude_followers,
+          reject_send_dissubscribable: domain_block.reject_send_dissubscribable,
+          reject_send_media: domain_block.reject_send_media,
+          reject_send_not_public_searchability: domain_block.reject_send_not_public_searchability,
+          reject_send_public_unlisted: domain_block.reject_send_public_unlisted,
+          reject_send_sensitive: domain_block.reject_send_sensitive,
+          reject_straight_follow: domain_block.reject_straight_follow,
         }
       )
     end
