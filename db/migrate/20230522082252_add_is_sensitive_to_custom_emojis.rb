@@ -2,6 +2,10 @@
 
 class AddIsSensitiveToCustomEmojis < ActiveRecord::Migration[6.1]
   def change
-    add_column :custom_emojis, :is_sensitive, :boolean, null: false, default: false
+    safety_assured do
+      change_table :custom_emojis do |t|
+        t.boolean :is_sensitive, null: false, default: false
+      end
+    end
   end
 end

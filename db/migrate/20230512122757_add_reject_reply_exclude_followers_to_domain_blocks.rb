@@ -2,6 +2,10 @@
 
 class AddRejectReplyExcludeFollowersToDomainBlocks < ActiveRecord::Migration[6.1]
   def change
-    add_column :domain_blocks, :reject_reply_exclude_followers, :boolean, null: false, default: false
+    safety_assured do
+      change_table :domain_blocks do |t|
+        t.boolean :reject_reply_exclude_followers, null: false, default: false
+      end
+    end
   end
 end
