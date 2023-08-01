@@ -152,7 +152,7 @@ RSpec.describe 'Domain Blocks' do
     it 'returns the expected domain block content' do
       subject
 
-      expect(body_as_json).to eq(:expected_response)
+      expect(body_as_json).to eq(expected_response)
     end
 
     context 'when the requested domain block does not exist' do

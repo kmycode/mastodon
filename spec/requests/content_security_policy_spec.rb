@@ -21,7 +21,7 @@ describe 'Content-Security-Policy' do
       "child-src 'self' blob: https://cb6e6126.ngrok.io",
       "worker-src 'self' blob: https://cb6e6126.ngrok.io",
       "connect-src 'self' data: blob: https://cb6e6126.ngrok.io https://cb6e6126.ngrok.io ws://localhost:4000",
-      "script-src 'self' https://cb6e6126.ngrok.io 'wasm-unsafe-eval'"
+      "script-src 'self' https://cb6e6126.ngrok.io 'wasm-unsafe-eval' https://www.googletagmanager.com https://googleads.g.doubleclick.net https://www.googleadservices.com https://www.google.co.jp https://www.google.com 'sha256-CS1WvLDd3zJOdxpEk+N+VigcWMa6V345p2HS0WYiFWE='"
     )
   end
 end
