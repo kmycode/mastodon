@@ -69,7 +69,8 @@ class Api::V1::Admin::DomainBlocksController < Api::BaseController
   end
 
   def domain_block_params
-    params.permit(:severity, :reject_media, :reject_favourite, :reject_reply, :reject_reply_exclude_followers, :reject_reports, :reject_send_not_public_searchability, :reject_send_public_unlisted, :reject_send_dissubscribable, :reject_send_media, :reject_send_sensitive, :reject_hashtag, :reject_straight_follow, :reject_new_follow, :detect_invalid_subscription, :private_comment, :public_comment, :obfuscate, :hidden, :hidden_anonymous)
+    params.permit(:severity, :reject_media, :reject_favourite, :reject_reply, :reject_reply_exclude_followers, :reject_reports, :reject_send_not_public_searchability, :reject_send_public_unlisted, :reject_send_dissubscribable, :reject_send_media, :reject_send_sensitive, :reject_hashtag, :reject_straight_follow,
+                  :reject_new_follow, :detect_invalid_subscription, :private_comment, :public_comment, :obfuscate, :hidden, :hidden_anonymous)
   end
 
   def insert_pagination_headers
@@ -101,6 +102,7 @@ class Api::V1::Admin::DomainBlocksController < Api::BaseController
   end
 
   def resource_params
-    params.permit(:domain, :severity, :reject_media, :reject_favourite, :reject_reply, :reject_reply_exclude_followers, :reject_send_not_public_searchability, :reject_send_public_unlisted, :reject_send_dissubscribable, :reject_send_media, :reject_send_sensitive, :reject_hashtag, :reject_straight_follow, :reject_new_follow, :detect_invalid_subscription, :reject_reports, :private_comment, :public_comment, :obfuscate, :hidden, :hidden_anonymous)
+    params.permit(:domain, :severity, :reject_media, :reject_favourite, :reject_reply, :reject_reply_exclude_followers, :reject_send_not_public_searchability, :reject_send_public_unlisted, :reject_send_dissubscribable, :reject_send_media, :reject_send_sensitive, :reject_hashtag, :reject_straight_follow,
+                  :reject_new_follow, :detect_invalid_subscription, :reject_reports, :private_comment, :public_comment, :obfuscate, :hidden, :hidden_anonymous)
   end
 end
