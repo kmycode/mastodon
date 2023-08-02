@@ -4,7 +4,7 @@
       %tbody
         %tr
           %td
-            %img{ src: media_attachment.url, class: 'image' }
+            %img.image{ src: media_attachment.url, alt: '' }
             .detailed-status__meta
               - if media_attachment.status.application
                 = media_attachment.status.application.name

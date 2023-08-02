@@ -38,6 +38,7 @@ linters:
       - 'app/views/invites/_form.html.haml'
       - 'app/views/relationships/_account.html.haml'
       - 'app/views/shared/_og.html.haml'
+      - 'app/views/application/_sidebar.html.haml'
 
   # Offense count: 3
   IdNames:

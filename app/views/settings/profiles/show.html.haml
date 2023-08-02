@@ -78,7 +78,7 @@
   .fields-group
     = f.input :my_actor_type, collection: ['person', 'bot'],label_method: lambda { |item| safe_join([t("simple_form.labels.defaults.#{item}"), content_tag(:span, I18n.t("simple_form.hints.defaults.#{item}"), class: 'hint')]) }, as: :radio_buttons, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', wrapper: :with_floating_label
 
-  -#.fields-group
+  .fields-group
     = f.input :group_allow_private_message, as: :boolean, wrapper: :with_label, kmyblue: true, hint: t('simple_form.hints.defaults.group_allow_private_message')
 
   .actions

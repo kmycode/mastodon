@@ -45,7 +45,7 @@
         %th= t('admin.statuses.favourites')
         %td= friendly_number_to_human @status.favourites_count
 
-%div.action-buttons
+.action-buttons
   %div
     - if @account.local?
       = link_to t('admin.statuses.remove_history'), remove_history_admin_account_status_path(@account.id), data: { confirm: t('admin.statuses.are_you_sure') }, method: :post, class: 'button' if can?(:warn, @account)
