@@ -1,8 +1,12 @@
-import { PureComponent } from 'react';
-import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
+import { PureComponent } from 'react';
+
 import { injectIntl } from 'react-intl';
+
 import classNames from 'classnames';
+
+import ImmutablePropTypes from 'react-immutable-proptypes';
+
 import EmojiView from './emoji_view';
 
 class EmojiReactionButton extends PureComponent {

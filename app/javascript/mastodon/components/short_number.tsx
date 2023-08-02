@@ -33,7 +33,11 @@ export const ShortNumberRenderer: React.FC<ShortNumberProps> = ({
 
   const customRenderer = children ?? renderer ?? null;
 
-  const displayNumber = !isHide ? <ShortNumberCounter value={shortNumber} /> : <span>-</span>;
+  const displayNumber = !isHide ? (
+    <ShortNumberCounter value={shortNumber} />
+  ) : (
+    <span>-</span>
+  );
 
   return (
     customRenderer?.(displayNumber, pluralReady(value, division)) ??

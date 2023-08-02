@@ -1,5 +1,6 @@
-import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { PureComponent } from 'react';
+
 import emojify from '../features/emoji/emoji';
 
 export default class EmojiView extends PureComponent {

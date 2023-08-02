@@ -1,7 +1,8 @@
+import { Map as ImmutableMap, fromJS } from 'immutable';
+
 import {
   ANTENNAS_FETCH_SUCCESS,
 } from '../actions/antennas';
-import { Map as ImmutableMap, fromJS } from 'immutable';
 
 const initialState = ImmutableMap();
 

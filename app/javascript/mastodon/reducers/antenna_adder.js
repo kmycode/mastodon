@@ -1,4 +1,5 @@
 import { Map as ImmutableMap, List as ImmutableList } from 'immutable';
+
 import {
   ANTENNA_ADDER_RESET,
   ANTENNA_ADDER_SETUP,

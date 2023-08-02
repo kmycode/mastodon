@@ -1,12 +1,16 @@
 import PropTypes from 'prop-types';
-import ImmutablePropTypes from 'react-immutable-proptypes';
-import { connect } from 'react-redux';
-import ImmutablePureComponent from 'react-immutable-pure-component';
+
 import { injectIntl } from 'react-intl';
-import { setupAntennaAdder, resetAntennaAdder } from '../../actions/antennas';
+
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import ImmutablePureComponent from 'react-immutable-pure-component';
+import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
-import Antenna from './components/antenna';
+
+import { setupAntennaAdder, resetAntennaAdder } from '../../actions/antennas';
+
 import Account from './components/account';
+import Antenna from './components/antenna';
 // hack
 
 const getOrderedAntennas = createSelector([state => state.get('antennas')], antennas => {

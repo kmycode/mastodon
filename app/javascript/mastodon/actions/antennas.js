@@ -1,4 +1,5 @@
 import api from '../api';
+
 import { importFetchedAccounts } from './importer';
 
 export const ANTENNAS_FETCH_REQUEST = 'ANTENNAS_FETCH_REQUEST';

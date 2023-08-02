@@ -1,4 +1,5 @@
 import api, { getLinks } from '../api';
+
 import { importFetchedStatuses } from './importer';
 
 export const EMOJI_REACTED_STATUSES_FETCH_REQUEST = 'EMOJI_REACTED_STATUSES_FETCH_REQUEST';

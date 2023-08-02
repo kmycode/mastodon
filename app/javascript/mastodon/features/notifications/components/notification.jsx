@@ -446,7 +446,6 @@ class Notification extends ImmutablePureComponent {
 
   renderWarning (notification) {
     const { intl, unread } = this.props;
-    console.dir(notification);
 
     return (
       <HotKeys handlers={this.getHandlers()}>
