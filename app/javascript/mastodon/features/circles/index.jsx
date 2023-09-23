@@ -13,7 +13,6 @@ import { fetchCircles, deleteCircle } from 'mastodon/actions/circles';
 import { openModal } from 'mastodon/actions/modal';
 import Column from 'mastodon/components/column';
 import ColumnHeader from 'mastodon/components/column_header';
-import { IconButton } from 'mastodon/components/icon_button';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import ScrollableList from 'mastodon/components/scrollable_list';
 import ColumnLink from 'mastodon/features/ui/components/column_link';
@@ -106,10 +105,7 @@ class Circles extends ImmutablePureComponent {
           bindToDocument={!multiColumn}
         >
           {circles.map(circle =>
-            (<div key={circle.get('id')} className='circle-item'>
-              <ColumnLink to={`#`} data-id={circle.get('id')} onClick={this.handleEditClick} icon='user-circle' text={circle.get('title')} />
-              <IconButton icon='trash' data_id={circle.get('id')} onClick={this.handleRemoveClick} />
-            </div>)
+            <ColumnLink key={circle.get('id')} to={`/circles/${circle.get('id')}`} icon='user-circle' text={circle.get('title')} />,
           )}
         </ScrollableList>
 

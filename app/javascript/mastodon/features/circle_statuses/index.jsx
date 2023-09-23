@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 
 import { debounce } from 'lodash';
 
-import { deleteCircle, expandCircleStatuses, fetchCircle, fetchCircleStatuses , setupCircleEditor } from 'mastodon/actions/circles';
+import { deleteCircle, expandCircleStatuses, fetchCircle, fetchCircleStatuses } from 'mastodon/actions/circles';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { openModal } from 'mastodon/actions/modal';
 import ColumnHeader from 'mastodon/components/column_header';
@@ -80,7 +80,10 @@ class CircleStatuses extends ImmutablePureComponent {
   };
 
   handleEditClick = () => {
-    this.props.dispatch(setupCircleEditor(this.props.params.id));
+    this.props.dispatch(openModal({
+      modalType: 'CIRCLE_EDITOR',
+      modalProps: { circleId: this.props.params.id },
+    }));
   };
 
   handleDeleteClick = () => {

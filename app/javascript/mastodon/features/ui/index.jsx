@@ -65,6 +65,7 @@ import {
   Lists,
   Antennas,
   Circles,
+  CircleStatuses,
   AntennaSetting,
   Directory,
   Explore,
@@ -259,6 +260,7 @@ class SwitchingColumnsArea extends PureComponent {
           <WrappedRoute path='/mutes' component={Mutes} content={children} />
           <WrappedRoute path='/lists' component={Lists} content={children} />
           <WrappedRoute path='/antennasw' component={Antennas} content={children} />
+          <WrappedRoute path='/circles/:id' component={CircleStatuses} content={children} />
           <WrappedRoute path='/circles' component={Circles} content={children} />
 
           <Route component={BundleColumnError} />

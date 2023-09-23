@@ -1,4 +1,4 @@
-import { List as ImmutableList, OrderedSet as ImmutableOrderedSet, fromJS } from 'immutable';
+import { List as ImmutableList, Map as ImmutableMap, OrderedSet as ImmutableOrderedSet, fromJS } from 'immutable';
 
 import {
   CIRCLE_FETCH_SUCCESS,
@@ -17,6 +17,12 @@ import {
 
 const initialState = ImmutableList();
 
+const initialStatusesState = ImmutableMap({
+  items: ImmutableList(),
+  isLoading: false,
+  next: null,
+});
+
 const normalizeCircle = (state, circle) => {
   const old = state.get(circle.id);
   if (old === false) {
@@ -26,6 +32,8 @@ const normalizeCircle = (state, circle) => {
   let s = state.set(circle.id, fromJS(circle));
   if (old) {
     s = s.setIn([circle.id, 'statuses'], old.get('statuses'));
+  } else {
+    s = s.setIn([circle.id, 'statuses'], initialStatusesState);
   }
   return s;
 };

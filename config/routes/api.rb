@@ -226,6 +226,7 @@ namespace :api, format: false do
 
     resources :circles, only: [:index, :create, :show, :update, :destroy] do
       resource :accounts, only: [:show, :create, :destroy], controller: 'circles/accounts'
+      resource :statuses, only: [:show], controller: 'circles/statuses'
     end
 
     resources :bookmark_categories, only: [:index, :create, :show, :update, :destroy] do

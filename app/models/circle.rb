@@ -20,6 +20,8 @@ class Circle < ApplicationRecord
 
   has_many :circle_accounts, inverse_of: :circle, dependent: :destroy
   has_many :accounts, through: :circle_accounts
+  has_many :circle_statuses, inverse_of: :circle, dependent: :destroy
+  has_many :statuses, through: :circle_statuses
 
   validates :title, presence: true
 

@@ -54,6 +54,10 @@ export function Circles () {
   return import(/* webpackChunkName: "features/circles" */'../../circles');
 }
 
+export function CircleStatuses () {
+  return import(/* webpackChunkName: "features/circle_statuses" */'../../circle_statuses');
+}
+
 export function Status () {
   return import(/* webpackChunkName: "features/status" */'../../status');
 }

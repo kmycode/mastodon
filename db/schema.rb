@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_19_232836) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_23_103430) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -445,6 +445,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_232836) do
     t.index ["circle_id", "account_id"], name: "index_circle_accounts_on_circle_id_and_account_id", unique: true
     t.index ["circle_id"], name: "index_circle_accounts_on_circle_id"
     t.index ["follow_id"], name: "index_circle_accounts_on_follow_id"
+  end
+
+  create_table "circle_statuses", force: :cascade do |t|
+    t.bigint "circle_id"
+    t.bigint "status_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["circle_id", "status_id"], name: "index_circle_statuses_on_circle_id_and_status_id", unique: true
+    t.index ["circle_id"], name: "index_circle_statuses_on_circle_id"
+    t.index ["status_id"], name: "index_circle_statuses_on_status_id"
   end
 
   create_table "circles", force: :cascade do |t|
@@ -1414,6 +1424,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_232836) do
   add_foreign_key "circle_accounts", "accounts", on_delete: :cascade
   add_foreign_key "circle_accounts", "circles", on_delete: :cascade
   add_foreign_key "circle_accounts", "follows", on_delete: :cascade
+  add_foreign_key "circle_statuses", "circles", on_delete: :cascade
+  add_foreign_key "circle_statuses", "statuses", on_delete: :cascade
   add_foreign_key "circles", "accounts", on_delete: :cascade
   add_foreign_key "conversation_mutes", "accounts", name: "fk_225b4212bb", on_delete: :cascade
   add_foreign_key "conversation_mutes", "conversations", on_delete: :cascade

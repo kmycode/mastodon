@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     /lists/(*any)
     /antennasw/(*any)
     /antennast/(*any)
-    /circles
+    /circles/(*any)
     /notifications
     /favourites
     /emoji_reactions
