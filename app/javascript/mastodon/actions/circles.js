@@ -1,7 +1,7 @@
-import api from '../api';
+import api, { getLinks } from '../api';
 
 import { showAlertForError } from './alerts';
-import { importFetchedAccounts } from './importer';
+import { importFetchedAccounts, importFetchedStatuses } from './importer';
 
 export const CIRCLE_FETCH_REQUEST = 'CIRCLE_FETCH_REQUEST';
 export const CIRCLE_FETCH_SUCCESS = 'CIRCLE_FETCH_SUCCESS';
@@ -49,6 +49,14 @@ export const CIRCLE_ADDER_SETUP = 'CIRCLE_ADDER_SETUP';
 export const CIRCLE_ADDER_CIRCLES_FETCH_REQUEST = 'CIRCLE_ADDER_CIRCLES_FETCH_REQUEST';
 export const CIRCLE_ADDER_CIRCLES_FETCH_SUCCESS = 'CIRCLE_ADDER_CIRCLES_FETCH_SUCCESS';
 export const CIRCLE_ADDER_CIRCLES_FETCH_FAIL    = 'CIRCLE_ADDER_CIRCLES_FETCH_FAIL';
+
+export const CIRCLE_STATUSES_FETCH_REQUEST = 'CIRCLE_STATUSES_FETCH_REQUEST';
+export const CIRCLE_STATUSES_FETCH_SUCCESS = 'CIRCLE_STATUSES_FETCH_SUCCESS';
+export const CIRCLE_STATUSES_FETCH_FAIL    = 'CIRCLE_STATUSES_FETCH_FAIL';
+
+export const CIRCLE_STATUSES_EXPAND_REQUEST = 'CIRCLE_STATUSES_EXPAND_REQUEST';
+export const CIRCLE_STATUSES_EXPAND_SUCCESS = 'CIRCLE_STATUSES_EXPAND_SUCCESS';
+export const CIRCLE_STATUSES_EXPAND_FAIL    = 'CIRCLE_STATUSES_EXPAND_FAIL';
 
 export const fetchCircle = id => (dispatch, getState) => {
   if (getState().getIn(['circles', id])) {
@@ -369,4 +377,90 @@ export const addToCircleAdder = circleId => (dispatch, getState) => {
 export const removeFromCircleAdder = circleId => (dispatch, getState) => {
   dispatch(removeFromCircle(circleId, getState().getIn(['circleAdder', 'accountId'])));
 };
+
+export function fetchCircleStatuses(circleId) {
+  return (dispatch, getState) => {
+    if (getState().getIn(['circles', circleId, 'statuses', 'isLoading'])) {
+      return;
+    }
+
+    dispatch(fetchCircleStatusesRequest(circleId));
+
+    api(getState).get(`/api/v1/circles/${circleId}/statuses`).then(response => {
+      const next = getLinks(response).refs.find(link => link.rel === 'next');
+      dispatch(importFetchedStatuses(response.data));
+      dispatch(fetchCircleStatusesSuccess(circleId, response.data, next ? next.uri : null));
+    }).catch(error => {
+      dispatch(fetchCircleStatusesFail(circleId, error));
+    });
+  };
+}
+
+export function fetchCircleStatusesRequest(id) {
+  return {
+    type: CIRCLE_STATUSES_FETCH_REQUEST,
+    id,
+  };
+}
+
+export function fetchCircleStatusesSuccess(id, statuses, next) {
+  return {
+    type: CIRCLE_STATUSES_FETCH_SUCCESS,
+    id,
+    statuses,
+    next,
+  };
+}
+
+export function fetchCircleStatusesFail(id, error) {
+  return {
+    type: CIRCLE_STATUSES_FETCH_FAIL,
+    id,
+    error,
+  };
+}
+
+export function expandCircleStatuses(circleId) {
+  return (dispatch, getState) => {
+    const url = getState().getIn(['circles', circleId, 'statuses', 'next'], null);
+
+    if (url === null || getState().getIn(['circles', circleId, 'statuses', 'isLoading'])) {
+      return;
+    }
+
+    dispatch(expandCircleStatusesRequest(circleId));
+
+    api(getState).get(url).then(response => {
+      const next = getLinks(response).refs.find(link => link.rel === 'next');
+      dispatch(importFetchedStatuses(response.data));
+      dispatch(expandCircleStatusesSuccess(circleId, response.data, next ? next.uri : null));
+    }).catch(error => {
+      dispatch(expandCircleStatusesFail(circleId, error));
+    });
+  };
+}
+
+export function expandCircleStatusesRequest(id) {
+  return {
+    type: CIRCLE_STATUSES_EXPAND_REQUEST,
+    id,
+  };
+}
+
+export function expandCircleStatusesSuccess(id, statuses, next) {
+  return {
+    type: CIRCLE_STATUSES_EXPAND_SUCCESS,
+    id,
+    statuses,
+    next,
+  };
+}
+
+export function expandCircleStatusesFail(id, error) {
+  return {
+    type: CIRCLE_STATUSES_EXPAND_FAIL,
+    id,
+    error,
+  };
+}
 

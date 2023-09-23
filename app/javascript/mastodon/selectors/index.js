@@ -135,3 +135,7 @@ export const getStatusList = createSelector([
 export const getBookmarkCategoryStatusList = createSelector([
   (state, bookmarkCategoryId) => state.getIn(['bookmark_categories', bookmarkCategoryId, 'items']),
 ], (items) => items ? items.toList() : ImmutableList());
+
+export const getCircleStatusList = createSelector([
+  (state, circleId) => state.getIn(['circles', circleId, 'statuses', 'items']),
+], (items) => items ? items.toList() : ImmutableList());
