@@ -17,11 +17,22 @@ import {
 
 const initialState = ImmutableList();
 
-const normalizeList = (state, circle) => state.set(circle.id, fromJS(circle));
+const normalizeCircle = (state, circle) => {
+  const old = state.get(circle.id);
+  if (old === false) {
+    return state;
+  }
 
-const normalizeLists = (state, circles) => {
+  let s = state.set(circle.id, fromJS(circle));
+  if (old) {
+    s = s.setIn([circle.id, 'statuses'], old.get('statuses'));
+  }
+  return s;
+};
+
+const normalizeCircles = (state, circles) => {
   circles.forEach(circle => {
-    state = normalizeList(state, circle);
+    state = normalizeCircle(state, circle);
   });
 
   return state;
@@ -57,9 +68,9 @@ export default function circles(state = initialState, action) {
   case CIRCLE_FETCH_SUCCESS:
   case CIRCLE_CREATE_SUCCESS:
   case CIRCLE_UPDATE_SUCCESS:
-    return normalizeList(state, action.circle);
+    return normalizeCircle(state, action.circle);
   case CIRCLES_FETCH_SUCCESS:
-    return normalizeLists(state, action.circles);
+    return normalizeCircles(state, action.circles);
   case CIRCLE_DELETE_SUCCESS:
   case CIRCLE_FETCH_FAIL:
     return state.set(action.id, false);
