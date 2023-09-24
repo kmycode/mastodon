@@ -14,6 +14,9 @@ import {
   CIRCLE_STATUSES_EXPAND_SUCCESS,
   CIRCLE_STATUSES_EXPAND_FAIL,
 } from '../actions/circles';
+import {
+  COMPOSE_WITH_CIRCLE_SUCCESS,
+} from '../actions/compose';
 
 const initialState = ImmutableList();
 
@@ -71,6 +74,16 @@ const appendToCircleStatusesById = (state, circleId, statuses, next) => {
   }));
 };
 
+const prependToCircleStatusById = (state, circleId, statusId) => {
+  if (!state.get(circleId)) return state;
+
+  return state.updateIn([circleId], circle => circle.withMutations(map => {
+    if (map.getIn(['statuses', 'items'])) {
+      map.updateIn(['statuses', 'items'], list => ImmutableOrderedSet([statusId]).union(list));
+    }
+  }));
+}
+
 export default function circles(state = initialState, action) {
   switch(action.type) {
   case CIRCLE_FETCH_SUCCESS:
@@ -92,6 +105,8 @@ export default function circles(state = initialState, action) {
     return normalizeCircleStatuses(state, action.id, action.statuses, action.next);
   case CIRCLE_STATUSES_EXPAND_SUCCESS:
     return appendToCircleStatuses(state, action.id, action.statuses, action.next);
+  case COMPOSE_WITH_CIRCLE_SUCCESS:
+    return prependToCircleStatusById(state, action.circleId, action.status.id);
   default:
     return state;
   }

@@ -28,6 +28,8 @@ export const COMPOSE_DIRECT          = 'COMPOSE_DIRECT';
 export const COMPOSE_MENTION         = 'COMPOSE_MENTION';
 export const COMPOSE_RESET           = 'COMPOSE_RESET';
 
+export const COMPOSE_WITH_CIRCLE_SUCCESS = 'COMPOSE_WITH_CIRCLE_SUCCESS';
+
 export const COMPOSE_UPLOAD_REQUEST    = 'COMPOSE_UPLOAD_REQUEST';
 export const COMPOSE_UPLOAD_SUCCESS    = 'COMPOSE_UPLOAD_SUCCESS';
 export const COMPOSE_UPLOAD_FAIL       = 'COMPOSE_UPLOAD_FAIL';
@@ -174,6 +176,7 @@ export function submitCompose(routerHistory) {
     const status   = getState().getIn(['compose', 'text'], '');
     const media    = getState().getIn(['compose', 'media_attachments']);
     const statusId = getState().getIn(['compose', 'id'], null);
+    const circleId = getState().getIn(['compose', 'circle_id'], null);
 
     if ((!status || !status.length) && media.size === 0) {
       return;
@@ -253,6 +256,10 @@ export function submitCompose(routerHistory) {
         insertIfOnline(`account:${response.data.account.id}`);
       }
 
+      if (statusId === null && circleId !== null && circleId !== 0) {
+        dispatch(submitComposeWithCircleSuccess({ ...response.data }, circleId));
+      }
+
       dispatch(showAlert({
         message: statusId === null ? messages.published : messages.saved,
         action: messages.open,
@@ -276,6 +283,14 @@ export function submitComposeSuccess(status) {
     type: COMPOSE_SUBMIT_SUCCESS,
     status: status,
   };
+}
+
+export function submitComposeWithCircleSuccess(status, circleId) {
+  return {
+    type: COMPOSE_WITH_CIRCLE_SUCCESS,
+    status,
+    circleId,
+  }
 }
 
 export function submitComposeFail(error) {

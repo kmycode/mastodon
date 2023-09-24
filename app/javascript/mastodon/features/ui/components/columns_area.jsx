@@ -24,6 +24,7 @@ import {
   BookmarkCategoryStatuses,
   AntennaSetting,
   AntennaTimeline,
+  CircleStatuses,
 } from '../util/async-components';
 
 import BundleColumnError from './bundle_column_error';
@@ -45,6 +46,7 @@ const componentMap = {
   'EMOJI_REACTIONS': EmojiReactedStatuses,
   'BOOKMARKS': BookmarkedStatuses,
   'BOOKMARKS_EX': BookmarkCategoryStatuses,
+  'CIRCLE_STATUSES': CircleStatuses,
   'ANTENNA': AntennaSetting,
   'ANTENNA_TIMELINE': AntennaTimeline,
   'LIST': ListTimeline,
