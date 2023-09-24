@@ -71,6 +71,14 @@ export const UNBOOKMARK_REQUEST = 'UNBOOKMARKED_REQUEST';
 export const UNBOOKMARK_SUCCESS = 'UNBOOKMARKED_SUCCESS';
 export const UNBOOKMARK_FAIL    = 'UNBOOKMARKED_FAIL';
 
+export const MENTIONED_USERS_FETCH_REQUEST = 'MENTIONED_USERS_FETCH_REQUEST';
+export const MENTIONED_USERS_FETCH_SUCCESS = 'MENTIONED_USERS_FETCH_SUCCESS';
+export const MENTIONED_USERS_FETCH_FAIL    = 'MENTIONED_USERS_FETCH_FAIL';
+
+export const MENTIONED_USERS_EXPAND_REQUEST = 'MENTIONED_USERS_EXPAND_REQUEST';
+export const MENTIONED_USERS_EXPAND_SUCCESS = 'MENTIONED_USERS_EXPAND_SUCCESS';
+export const MENTIONED_USERS_EXPAND_FAIL    = 'MENTIONED_USERS_EXPAND_FAIL';
+
 export function reblog(status, visibility) {
   return function (dispatch, getState) {
     dispatch(reblogRequest(status));
@@ -733,5 +741,87 @@ export function unpinFail(status, error) {
     status,
     error,
     skipLoading: true,
+  };
+}
+
+export function fetchMentionedUsers(id) {
+  return (dispatch, getState) => {
+    dispatch(fetchMentionedUsersRequest(id));
+
+    api(getState).get(`/api/v1/statuses/${id}/mentioned_by`).then(response => {
+      const next = getLinks(response).refs.find(link => link.rel === 'next');
+      dispatch(importFetchedAccounts(response.data));
+      dispatch(fetchMentionedUsersSuccess(id, response.data, next ? next.uri : null));
+      dispatch(fetchRelationships(response.data.map(item => item.id)));
+    }).catch(error => {
+      dispatch(fetchMentionedUsersFail(id, error));
+    });
+  };
+}
+
+export function fetchMentionedUsersRequest(id) {
+  return {
+    type: MENTIONED_USERS_FETCH_REQUEST,
+    id,
+  };
+}
+
+export function fetchMentionedUsersSuccess(id, accounts, next) {
+  return {
+    type: MENTIONED_USERS_FETCH_SUCCESS,
+    id,
+    accounts,
+    next,
+  };
+}
+
+export function fetchMentionedUsersFail(id, error) {
+  return {
+    type: MENTIONED_USERS_FETCH_FAIL,
+    id,
+    error,
+  };
+}
+
+export function expandMentionedUsers(id) {
+  return (dispatch, getState) => {
+    const url = getState().getIn(['user_lists', 'mentioned_users', id, 'next']);
+    if (url === null) {
+      return;
+    }
+
+    dispatch(expandMentionedUsersRequest(id));
+
+    api(getState).get(url).then(response => {
+      const next = getLinks(response).refs.find(link => link.rel === 'next');
+
+      dispatch(importFetchedAccounts(response.data));
+      dispatch(expandMentionedUsersSuccess(id, response.data, next ? next.uri : null));
+      dispatch(fetchRelationships(response.data.map(item => item.id)));
+    }).catch(error => dispatch(expandMentionedUsersFail(id, error)));
+  };
+}
+
+export function expandMentionedUsersRequest(id) {
+  return {
+    type: MENTIONED_USERS_EXPAND_REQUEST,
+    id,
+  };
+}
+
+export function expandMentionedUsersSuccess(id, accounts, next) {
+  return {
+    type: MENTIONED_USERS_EXPAND_SUCCESS,
+    id,
+    accounts,
+    next,
+  };
+}
+
+export function expandMentionedUsersFail(id, error) {
+  return {
+    type: MENTIONED_USERS_EXPAND_FAIL,
+    id,
+    error,
   };
 }

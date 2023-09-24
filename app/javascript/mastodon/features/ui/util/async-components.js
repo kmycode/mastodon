@@ -106,6 +106,10 @@ export function StatusReferences () {
   return import(/* webpackChunkName: "features/status_references" */'../../status_references');
 }
 
+export function MentionedUsers () {
+  return import(/* webpackChunkName: "features/mentioned_users" */'../../mentioned_users');
+}
+
 export function FollowRequests () {
   return import(/* webpackChunkName: "features/follow_requests" */'../../follow_requests');
 }

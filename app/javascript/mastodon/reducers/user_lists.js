@@ -64,6 +64,12 @@ import {
   EMOJI_REACTIONS_EXPAND_SUCCESS,
   EMOJI_REACTIONS_EXPAND_FAIL,
   STATUS_REFERENCES_FETCH_SUCCESS,
+  MENTIONED_USERS_FETCH_REQUEST,
+  MENTIONED_USERS_FETCH_SUCCESS,
+  MENTIONED_USERS_FETCH_FAIL,
+  MENTIONED_USERS_EXPAND_REQUEST,
+  MENTIONED_USERS_EXPAND_SUCCESS,
+  MENTIONED_USERS_EXPAND_FAIL,
 } from '../actions/interactions';
 import {
   MUTES_FETCH_REQUEST,
@@ -92,6 +98,7 @@ const initialState = ImmutableMap({
   favourited_by: initialListState,
   emoji_reactioned_by: initialListState,
   referred_by: initialListState,
+  mentioned_users: initialListState,
   follow_requests: initialListState,
   blocks: initialListState,
   mutes: initialListState,
@@ -205,6 +212,16 @@ export default function userLists(state = initialState, action) {
     return appendToEmojiReactionList(state, ['emoji_reactioned_by', action.id], action.accounts, action.next);
   case STATUS_REFERENCES_FETCH_SUCCESS:
     return state.setIn(['referred_by', action.id], ImmutableList(action.statuses.map(item => item.id)));
+  case MENTIONED_USERS_FETCH_SUCCESS:
+    return normalizeList(state, ['mentioned_users', action.id], action.accounts, action.next);
+  case MENTIONED_USERS_EXPAND_SUCCESS:
+    return appendToList(state, ['mentioned_users', action.id], action.accounts, action.next);
+  case MENTIONED_USERS_FETCH_REQUEST:
+  case MENTIONED_USERS_EXPAND_REQUEST:
+    return state.setIn(['mentioned_users', action.id, 'isLoading'], true);
+  case MENTIONED_USERS_FETCH_FAIL:
+  case MENTIONED_USERS_EXPAND_FAIL:
+    return state.setIn(['mentioned_users', action.id, 'isLoading'], false);
   case NOTIFICATIONS_UPDATE:
     return action.notification.type === 'follow_request' ? normalizeFollowRequest(state, action.notification) : state;
   case FOLLOW_REQUESTS_FETCH_SUCCESS:

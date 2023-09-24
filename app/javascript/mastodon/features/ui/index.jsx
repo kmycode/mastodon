@@ -46,6 +46,7 @@ import {
   Favourites,
   EmojiReactions,
   StatusReferences,
+  MentionedUsers,
   DirectTimeline,
   HashtagTimeline,
   AntennaTimeline,
@@ -243,6 +244,7 @@ class SwitchingColumnsArea extends PureComponent {
           <WrappedRoute path='/@:acct/:statusId/favourites' component={Favourites} content={children} />
           <WrappedRoute path='/@:acct/:statusId/emoji_reactions' component={EmojiReactions} content={children} />
           <WrappedRoute path='/@:acct/:statusId/references' component={StatusReferences} content={children} />
+          <WrappedRoute path='/@:acct/:statusId/mentioned_users' component={MentionedUsers} content={children} />
 
           {/* Legacy routes, cannot be easily factored with other routes because they share a param name */}
           <WrappedRoute path='/timelines/tag/:id' component={HashtagTimeline} content={children} />
