@@ -23,6 +23,7 @@ const initialState = ImmutableList();
 const initialStatusesState = ImmutableMap({
   items: ImmutableList(),
   isLoading: false,
+  loaded: true,
   next: null,
 });
 

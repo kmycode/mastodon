@@ -24,13 +24,13 @@ class Api::V1::Statuses::MentionedAccountsController < Api::BaseController
   def default_accounts
     Account
       .without_suspended
-      .includes(:account_stat)
-      .references(:favourites)
-      .where(favourites: { status_id: @status.id })
+      .includes(:mentions, :account_stat)
+      .references(:mentions)
+      .where(mentions: { status_id: @status.id })
   end
 
-  def paginated_favourites
-    Favourite.paginate_by_max_id(
+  def paginated_mentioned_users
+    Mention.paginate_by_max_id(
       limit_param(DEFAULT_ACCOUNTS_LIMIT),
       params[:max_id],
       params[:since_id]
@@ -42,19 +42,19 @@ class Api::V1::Statuses::MentionedAccountsController < Api::BaseController
   end
 
   def next_path
-    api_v1_status_favourited_by_index_url pagination_params(max_id: pagination_max_id) if records_continue?
+    api_v1_status_mentioned_by_index_url pagination_params(max_id: pagination_max_id) if records_continue?
   end
 
   def prev_path
-    api_v1_status_favourited_by_index_url pagination_params(since_id: pagination_since_id) unless @accounts.empty?
+    api_v1_status_mentioned_by_index_url pagination_params(since_id: pagination_since_id) unless @accounts.empty?
   end
 
   def pagination_max_id
-    @accounts.last.favourites.last.id
+    @accounts.last.mentions.last.id
   end
 
   def pagination_since_id
-    @accounts.first.favourites.first.id
+    @accounts.first.mentions.first.id
   end
 
   def records_continue?

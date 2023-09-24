@@ -22,6 +22,7 @@ const messages = defineMessages({
   edit: { id: 'status.edit', defaultMessage: 'Edit' },
   direct: { id: 'status.direct', defaultMessage: 'Privately mention @{name}' },
   mention: { id: 'status.mention', defaultMessage: 'Mention @{name}' },
+  mentions: { id: 'status.mentions', defaultMessage: 'Mentioned users' },
   reply: { id: 'status.reply', defaultMessage: 'Reply' },
   reblog: { id: 'status.reblog', defaultMessage: 'Boost' },
   cancel_reblog: { id: 'status.cancel_reblog_private', defaultMessage: 'Unboost' },
@@ -93,6 +94,10 @@ class ActionBar extends PureComponent {
     onPin: PropTypes.func,
     onEmbed: PropTypes.func,
     intl: PropTypes.object.isRequired,
+  };
+
+  handleOpenMentions = () => {
+    this.context.router.history.push(`/@${this.props.status.getIn(['account', 'acct'])}/${this.props.status.get('id')}/mentioned_users`);
   };
 
   handleReplyClick = () => {
@@ -264,6 +269,7 @@ class ActionBar extends PureComponent {
           menu.push(null);
         }
 
+        menu.push({ text: intl.formatMessage(messages.mentions), action: this.handleOpenMentions });
         menu.push({ text: intl.formatMessage(mutingConversation ? messages.unmuteConversation : messages.muteConversation), action: this.handleConversationMuteClick });
         menu.push(null);
         menu.push({ text: intl.formatMessage(messages.edit), action: this.handleEditClick });
