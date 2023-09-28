@@ -160,7 +160,7 @@ class StatusReachFinder
     return [] if status.public_searchability?
     return [] unless (status.public_unlisted_visibility? && status.account.user&.setting_reject_public_unlisted_subscription) || (status.unlisted_visibility? && status.account.user&.setting_reject_unlisted_subscription)
 
-    from_info = InstanceInfo.where(software: %w(misskey calckey)).pluck(:domain)
+    from_info = InstanceInfo.where(software: %w(misskey calckey cherrypick)).pluck(:domain)
     from_domain_block = DomainBlock.where(detect_invalid_subscription: true).pluck(:domain)
     (from_info + from_domain_block).uniq
   end
