@@ -43,7 +43,7 @@ const WarningWrapper = ({ needsLockWarning, hashtagWarning, directMessageWarning
   }
 
   if (mentionWarning) {
-    return <Warning message={<FormattedMessage id='compose_form.mention_warning' defaultMessage='When you add a Mention to a limited post, the person you are mentioning can also see this post.' />} />;
+    return <Warning message={<FormattedMessage id='compose_form.mention_warning' defaultMessage='When you add a mention to a limited post, the person you are mentioning can also see this post.' />} />;
   }
 
   if (limitedPostWarning) {
