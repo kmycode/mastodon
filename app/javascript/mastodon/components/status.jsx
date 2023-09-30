@@ -13,6 +13,7 @@ import AttachmentList from 'mastodon/components/attachment_list';
 import { Icon }  from 'mastodon/components/icon';
 import PictureInPicturePlaceholder from 'mastodon/components/picture_in_picture_placeholder';
 
+import CompactedStatusContainer from '../containers/compacted_status_container'
 import Card from '../features/status/components/card';
 // We use the component (and not the container) since we do not want
 // to use the progress bar to show download progress
@@ -22,7 +23,6 @@ import { displayMedia, enableEmojiReaction, showEmojiReactionOnTimeline } from '
 
 import { Avatar } from './avatar';
 import { AvatarOverlay } from './avatar_overlay';
-import CompactedStatus from './compacted_status';
 import { DisplayName } from './display_name';
 import { getHashtagBarForStatus } from './hashtag_bar';
 import { RelativeTimestamp } from './relative_timestamp';
@@ -630,7 +630,7 @@ class Status extends ImmutablePureComponent {
               {...statusContentProps}
             />
 
-            <CompactedStatus status={status} onToggleCollapsed={this.props.onToggleCollapsed} />
+            <CompactedStatusContainer id={status.get('id')} />
 
             {(!isCardMediaWithSensitive || !status.get('hidden')) && media}
 

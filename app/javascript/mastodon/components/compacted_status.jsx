@@ -86,21 +86,8 @@ class CompactedStatus extends ImmutablePureComponent {
     nextInReplyToId: PropTypes.string,
     rootId: PropTypes.string,
     onClick: PropTypes.func,
-    onReply: PropTypes.func,
-    onFavourite: PropTypes.func,
-    onEmojiReact: PropTypes.func,
-    onUnEmojiReact: PropTypes.func,
-    onReblog: PropTypes.func,
-    onReblogForceModal: PropTypes.func,
-    onDelete: PropTypes.func,
-    onDirect: PropTypes.func,
-    onMention: PropTypes.func,
-    onPin: PropTypes.func,
     onOpenMedia: PropTypes.func,
     onOpenVideo: PropTypes.func,
-    onBlock: PropTypes.func,
-    onAddFilter: PropTypes.func,
-    onEmbed: PropTypes.func,
     onHeightChange: PropTypes.func,
     onToggleHidden: PropTypes.func,
     onToggleCollapsed: PropTypes.func,
@@ -116,7 +103,6 @@ class CompactedStatus extends ImmutablePureComponent {
     updateScrollBottom: PropTypes.func,
     cacheMediaWidth: PropTypes.func,
     cachedMediaWidth: PropTypes.number,
-    withoutEmojiReactions: PropTypes.bool,
   };
 
   // Avoid checking props that are functions (and whose equality will always
@@ -248,24 +234,6 @@ class CompactedStatus extends ImmutablePureComponent {
     }
   };
 
-  handleHotkeyReply = e => {
-    e.preventDefault();
-    this.props.onReply(this._properStatus(), this.context.router.history);
-  };
-
-  handleHotkeyFavourite = () => {
-    this.props.onFavourite(this._properStatus());
-  };
-
-  handleHotkeyBoost = e => {
-    this.props.onReblog(this._properStatus(), e);
-  };
-
-  handleHotkeyMention = e => {
-    e.preventDefault();
-    this.props.onMention(this._properStatus().get('account'), this.context.router.history);
-  };
-
   handleHotkeyOpen = () => {
     if (this.props.onClick) {
       this.props.onClick();
@@ -342,10 +310,6 @@ class CompactedStatus extends ImmutablePureComponent {
     }
 
     const handlers = this.props.muted ? {} : {
-      reply: this.handleHotkeyReply,
-      favourite: this.handleHotkeyFavourite,
-      boost: this.handleHotkeyBoost,
-      mention: this.handleHotkeyMention,
       open: this.handleHotkeyOpen,
       openProfile: this.handleHotkeyOpenProfile,
       moveUp: this.handleHotkeyMoveUp,
@@ -355,7 +319,7 @@ class CompactedStatus extends ImmutablePureComponent {
       openMedia: this.handleHotkeyOpenMedia,
     };
 
-    let media, isCardMediaWithSensitive, statusAvatar, prepend, rebloggedByText;
+    let media, isCardMediaWithSensitive, prepend, rebloggedByText;
 
     if (hidden) {
       return (
@@ -392,21 +356,7 @@ class CompactedStatus extends ImmutablePureComponent {
       );
     }
 
-    if (featured) {
-      prepend = (
-        <div className='status__prepend'>
-          <div className='status__prepend-icon-wrapper'><Icon id='thumb-tack' className='status__prepend-icon' fixedWidth /></div>
-          <FormattedMessage id='status.pinned' defaultMessage='Pinned post' />
-        </div>
-      );
-    } else if (status.get('visibility') === 'direct') {
-      prepend = (
-        <div className='status__prepend'>
-          <div className='status__prepend-icon-wrapper'><Icon id='at' className='status__prepend-icon' fixedWidth /></div>
-          <FormattedMessage id='status.direct_indicator' defaultMessage='Private mention' />
-        </div>
-      );
-    } else if (showThread && status.get('in_reply_to_id') && status.get('in_reply_to_account_id') === status.getIn(['account', 'id'])) {
+    if (showThread && status.get('in_reply_to_id') && status.get('in_reply_to_account_id') === status.getIn(['account', 'id'])) {
       const display_name_html = { __html: status.getIn(['account', 'display_name_html']) };
 
       prepend = (
@@ -510,8 +460,6 @@ class CompactedStatus extends ImmutablePureComponent {
       isCardMediaWithSensitive = status.get('spoiler_text').length > 0;
     }
 
-    statusAvatar = <Avatar account={status.get('account')} size={24} inline />;
-
     const {statusContentProps, hashtagBar} = getHashtagBarForStatus(status);
     const expanded = !status.get('hidden') || status.get('spoiler_text').length === 0;
 
@@ -531,7 +479,7 @@ class CompactedStatus extends ImmutablePureComponent {
 
               <a onClick={this.handleAccountClick} href={`/@${status.getIn(['account', 'acct'])}`} title={status.getIn(['account', 'acct'])} className='status__display-name' target='_blank' rel='noopener noreferrer'>
                 <div className='status__avatar status__avatar__compact'>
-                  {statusAvatar}
+                  <Avatar account={status.get('account')} size={24} inline />
                 </div>
 
                 <DisplayName account={status.get('account')} />
