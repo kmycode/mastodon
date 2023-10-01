@@ -409,6 +409,7 @@ class CompactedStatus extends ImmutablePureComponent {
           <Bundle fetchComponent={MediaGallery} loading={this.renderLoadingMediaGallery}>
             {Component => (
               <Component
+                compact
                 media={status.get('media_attachments')}
                 lang={language}
                 sensitive={status.get('sensitive')}
