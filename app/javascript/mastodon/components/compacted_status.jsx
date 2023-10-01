@@ -350,6 +350,7 @@ class CompactedStatus extends ImmutablePureComponent {
 
       return (
         <HotKeys handlers={minHandlers}>
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
           <div className='status__wrapper status__wrapper__compact status__wrapper--filtered focusable' tabIndex={0} ref={this.handleRef} onClick={this.handleClick}>
             <FormattedMessage id='status.quote_filtered' defaultMessage='This quote is filtered because of muting, blocking or domain blocking' />
           </div>
