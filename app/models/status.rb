@@ -243,6 +243,10 @@ class Status < ApplicationRecord
     !reblog_of_id.nil?
   end
 
+  def quote?
+    !quote_of_id.nil?
+  end
+
   delegate :id, to: :quote, prefix: true
 
   def within_realtime_window?

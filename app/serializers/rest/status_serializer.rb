@@ -177,7 +177,7 @@ class REST::StatusSerializer < ActiveModel::Serializer
   end
 
   def quote_id
-    object.quote&.id
+    object.quote_of_id
   end
 
   def reblogged
