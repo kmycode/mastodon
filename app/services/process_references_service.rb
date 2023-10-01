@@ -31,7 +31,7 @@ class ProcessReferencesService < BaseService
 
           @status.save!
         end
-        quote_ur
+
         create_notifications!
       end
 
@@ -45,14 +45,14 @@ class ProcessReferencesService < BaseService
     reference_parameters.any? || (urls || []).any? || FormattingHelper.extract_status_plain_text(status).scan(REFURL_EXP).pluck(3).uniq.any?
   end
 
-  def self.perform_worker_async(status, reference_parameters, urls, quote_urls)
+  def self.perform_worker_async(status, reference_parameters, urls, quote_urls = [])
     return unless need_process?(status, reference_parameters, urls)
 
     Rails.cache.write("status_reference:#{status.id}", true, expires_in: 10.minutes)
     ProcessReferencesWorker.perform_async(status.id, reference_parameters, urls, [], quote_urls || [])
   end
 
-  def self.call_service(status, reference_parameters, urls, quote_urls)
+  def self.call_service(status, reference_parameters, urls, quote_urls = [])
     return unless need_process?(status, reference_parameters, urls)
 
     ProcessReferencesService.new.call(status, reference_parameters || [], urls: urls || [], fetch_remote: false, quote_urls: quote_urls)

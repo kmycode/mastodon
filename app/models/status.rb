@@ -231,6 +231,10 @@ class Status < ApplicationRecord
     @quote ||= reference_objects.where(quote: true).first&.target_status
   end
 
+  def quote_id
+    reference_objects.where(quote: true).first&.target_status_id
+  end
+
   def within_realtime_window?
     created_at >= REAL_TIME_WINDOW.ago
   end

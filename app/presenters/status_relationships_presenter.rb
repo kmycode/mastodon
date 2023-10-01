@@ -14,6 +14,7 @@ class StatusRelationshipsPresenter
       @favourites_map      = {}
       @bookmarks_map       = {}
       @mutes_map           = {}
+      @blocks_map          = {}
       @pins_map            = {}
       @filters_map         = {}
       @emoji_reaction_allows_map = nil
@@ -28,7 +29,7 @@ class StatusRelationshipsPresenter
       @favourites_map  = Status.favourites_map(status_ids, current_account_id).merge(options[:favourites_map] || {})
       @bookmarks_map   = Status.bookmarks_map(status_ids, current_account_id).merge(options[:bookmarks_map] || {})
       @mutes_map       = Status.mutes_map(conversation_ids, current_account_id).merge(options[:mutes_map] || {})
-      @blocks_map      = Status.blocks_map(conversation_ids, current_account_id).merge(options[:blocks_map] || {})
+      @blocks_map      = Status.blocks_map(statuses.map(&:account_id), current_account_id).merge(options[:blocks_map] || {})
       @pins_map        = Status.pins_map(pinnable_status_ids, current_account_id).merge(options[:pins_map] || {})
       @emoji_reaction_allows_map = Status.emoji_reaction_allows_map(status_ids, current_account_id).merge(options[:emoji_reaction_allows_map] || {})
       @attributes_map  = options[:attributes_map] || {}

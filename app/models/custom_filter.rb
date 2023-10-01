@@ -104,10 +104,11 @@ class CustomFilter < ApplicationRecord
       if rules[:keywords].present?
         match = rules[:keywords].match(status.proper.searchable_text)
         match = rules[:keywords].match(status.proper.references.pluck(:text).join("\n\n")) if match.nil? && status.proper.references.exists?
+        match = rules[:keywords].match(status.proper.references.pluck(:spoiler_text).join("\n\n")) if match.nil? && status.proper.references.exists?
       end
       keyword_matches = [match.to_s] unless match.nil?
 
-      status_matches = [status.id, status.reblog_of_id].compact & rules[:status_ids] if rules[:status_ids].present?
+      status_matches = [status.id, status.reblog_of_id, status.quote_id].compact & rules[:status_ids] if rules[:status_ids].present?
 
       next if keyword_matches.blank? && status_matches.blank?
 
