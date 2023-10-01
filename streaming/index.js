@@ -802,7 +802,9 @@ const startServer = async () => {
       // reference_texts property is not working if ProcessReferencesWorker is
       // used on PostStatusService and so on. (Asynchronous processing)
       const reference_texts = payload.reference_texts || [];
-      delete payload.reference_texts;
+      if (payload.reference_texts) {
+        delete payload.reference_texts;
+      }
 
       // Streaming only needs to apply filtering to some channels and only to
       // some events. This is because majority of the filtering happens on the
