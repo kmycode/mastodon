@@ -413,11 +413,51 @@ class Status extends ImmutablePureComponent {
 
     let visibilityIcon = visibilityIconInfo[status.get('limited_scope') || status.get('visibility_ex')] || visibilityIconInfo[status.get('visibility')];
 
+    if (account === undefined || account === null) {
+      statusAvatar = <Avatar account={status.get('account')} size={46} />;
+    } else {
+      statusAvatar = <AvatarOverlay account={status.get('account')} friend={account} />;
+    }
+
     if (this.state.forceFilter === undefined ? matchedFilters : this.state.forceFilter) {
       const minHandlers = muted ? {} : {
         moveUp: this.handleHotkeyMoveUp,
         moveDown: this.handleHotkeyMoveDown,
       };
+
+      if (status.get('filter_action') === 'half_warn') {
+        return (
+          <HotKeys handlers={minHandlers}>
+            <div className='status__wrapper status__wrapper--filtered focusable' tabIndex={0} ref={this.handleRef}>
+              <div onClick={this.handleClick} className='status__info'>
+                <a href={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`} className='status__relative-time' target='_blank' rel='noopener noreferrer'>
+                  {withReference}
+                  {withExpiration}
+                  {withLimited}
+                  <span className='status__visibility-icon'><Icon id={visibilityIcon.icon} title={visibilityIcon.text} /></span>
+                  <RelativeTimestamp timestamp={status.get('created_at')} />{status.get('edited_at') && <abbr title={intl.formatMessage(messages.edited, { date: intl.formatDate(status.get('edited_at'), { hour12: false, year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }) })}> *</abbr>}
+                </a>
+
+                <a onClick={this.handleAccountClick} href={`/@${status.getIn(['account', 'acct'])}`} title={status.getIn(['account', 'acct'])} className='status__display-name' target='_blank' rel='noopener noreferrer'>
+                  <div className='status__avatar'>
+                    {statusAvatar}
+                  </div>
+
+                  <DisplayName account={status.get('account')} />
+                </a>
+              </div>
+
+              <div >
+                  <FormattedMessage id='status.filtered' defaultMessage='Filtered' />: {matchedFilters.join(', ')}.
+                  {' '}
+                  <button className='status__wrapper--filtered__button' onClick={this.handleUnfilterClick}>
+                    <FormattedMessage id='status.show_filter_reason' defaultMessage='Show anyway' />
+                  </button>
+                </div>
+            </div>
+          </HotKeys>
+        );
+      }
 
       return (
         <HotKeys handlers={minHandlers}>
@@ -567,12 +607,6 @@ class Status extends ImmutablePureComponent {
         />
       );
       isCardMediaWithSensitive = status.get('spoiler_text').length > 0;
-    }
-
-    if (account === undefined || account === null) {
-      statusAvatar = <Avatar account={status.get('account')} size={46} />;
-    } else {
-      statusAvatar = <AvatarOverlay account={status.get('account')} friend={account} />;
     }
 
     visibilityIcon = visibilityIconInfo[status.get('limited_scope') || status.get('visibility_ex')] || visibilityIconInfo[status.get('visibility')];

@@ -178,7 +178,7 @@ class REST::StatusSerializer < ActiveModel::Serializer
   end
 
   def quote_id
-    object.quote_of_id
+    object.quote_of_id.to_s
   end
 
   delegate :quote?, to: :object

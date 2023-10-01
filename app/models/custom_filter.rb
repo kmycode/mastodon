@@ -14,6 +14,7 @@
 #  action             :integer          default("warn"), not null
 #  exclude_follows    :boolean          default(FALSE), not null
 #  exclude_localusers :boolean          default(FALSE), not null
+#  with_quote         :boolean          default(TRUE), not null
 #
 
 class CustomFilter < ApplicationRecord
@@ -33,7 +34,7 @@ class CustomFilter < ApplicationRecord
   include Expireable
   include Redisable
 
-  enum action: { warn: 0, hide: 1 }, _suffix: :action
+  enum action: { warn: 0, hide: 1, half_warn: 2 }, _suffix: :action
 
   belongs_to :account
   has_many :keywords, class_name: 'CustomFilterKeyword', inverse_of: :custom_filter, dependent: :destroy
@@ -103,12 +104,15 @@ class CustomFilter < ApplicationRecord
 
       if rules[:keywords].present?
         match = rules[:keywords].match(status.proper.searchable_text)
-        match = rules[:keywords].match(status.proper.references.pluck(:text).join("\n\n")) if match.nil? && status.proper.references.exists?
-        match = rules[:keywords].match(status.proper.references.pluck(:spoiler_text).join("\n\n")) if match.nil? && status.proper.references.exists?
+        if match.nil? && filter.with_quote && status.proper.references.exists?
+          match = rules[:keywords].match(status.proper.references.pluck(:text).join("\n\n"))
+          match = rules[:keywords].match(status.proper.references.pluck(:spoiler_text).join("\n\n")) if match.nil?
+        end
       end
       keyword_matches = [match.to_s] unless match.nil?
 
-      status_matches = [status.id, status.reblog_of_id, status.quote_id].compact & rules[:status_ids] if rules[:status_ids].present?
+      reference_ids = filter.with_quote ? status.proper.references.pluck(:id) : []
+      status_matches = ([status.id, status.reblog_of_id] + reference_ids).compact & rules[:status_ids] if rules[:status_ids].present?
 
       next if keyword_matches.blank? && status_matches.blank?
 

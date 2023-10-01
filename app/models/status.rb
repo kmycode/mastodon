@@ -247,8 +247,6 @@ class Status < ApplicationRecord
     !quote_of_id.nil?
   end
 
-  delegate :id, to: :quote, prefix: true
-
   def within_realtime_window?
     created_at >= REAL_TIME_WINDOW.ago
   end

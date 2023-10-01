@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_01_031337) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_01_050733) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -536,6 +536,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_01_031337) do
     t.integer "action", default: 0, null: false
     t.boolean "exclude_follows", default: false, null: false
     t.boolean "exclude_localusers", default: false, null: false
+    t.boolean "with_quote", default: true, null: false
     t.index ["account_id"], name: "index_custom_filters_on_account_id"
   end
 

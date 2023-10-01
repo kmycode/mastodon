@@ -43,6 +43,6 @@ class Api::V2::FiltersController < Api::BaseController
   end
 
   def resource_params
-    params.permit(:title, :expires_in, :filter_action, :exclude_follows, :exclude_localusers, context: [], keywords_attributes: [:id, :keyword, :whole_word, :_destroy])
+    params.permit(:title, :expires_in, :filter_action, :exclude_follows, :exclude_localusers, :with_quote, context: [], keywords_attributes: [:id, :keyword, :whole_word, :_destroy])
   end
 end
