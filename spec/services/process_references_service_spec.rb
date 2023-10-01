@@ -10,6 +10,7 @@ RSpec.describe ProcessReferencesService, type: :service do
   let(:status) { Fabricate(:status, account: account, text: text, visibility: visibility) }
   let(:target_status) { Fabricate(:status, account: Fabricate(:user).account, visibility: target_status_visibility) }
   let(:target_status_uri) { ActivityPub::TagManager.instance.uri_for(target_status) }
+  let(:quote_urls) { nil }
 
   def notify?(target_status_id = nil)
     target_status_id ||= target_status.id
@@ -18,7 +19,7 @@ RSpec.describe ProcessReferencesService, type: :service do
 
   describe 'posting new status' do
     subject do
-      described_class.new.call(status, reference_parameters, urls: urls, fetch_remote: fetch_remote)
+      described_class.new.call(status, reference_parameters, urls: urls, fetch_remote: fetch_remote, quote_urls: quote_urls)
       status.reference_objects.pluck(:target_status_id, :attribute_type)
     end
 
@@ -79,6 +80,20 @@ RSpec.describe ProcessReferencesService, type: :service do
 
     context 'with quote' do
       let(:text) { "Hello QT #{target_status_uri}" }
+
+      it 'post status' do
+        expect(subject.size).to eq 1
+        expect(subject.pluck(0)).to include target_status.id
+        expect(subject.pluck(1)).to include 'QT'
+        expect(status.quote).to_not be_nil
+        expect(status.quote.id).to eq target_status.id
+        expect(notify?).to be true
+      end
+    end
+
+    context 'with quote as parameter only' do
+      let(:text) { 'Hello' }
+      let(:quote_urls) { [ActivityPub::TagManager.instance.uri_for(target_status)] }
 
       it 'post status' do
         expect(subject.size).to eq 1

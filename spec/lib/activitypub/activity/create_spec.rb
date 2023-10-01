@@ -1089,6 +1089,97 @@ RSpec.describe ActivityPub::Activity::Create do
         end
       end
 
+      context 'with references' do
+        let(:recipient) { Fabricate(:account) }
+        let!(:target_status) { Fabricate(:status, account: Fabricate(:account, domain: nil)) }
+
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            references: {
+              id: 'target_status',
+              type: 'Collection',
+              first: {
+                type: 'CollectionPage',
+                next: nil,
+                partOf: 'target_status',
+                items: [
+                  ActivityPub::TagManager.instance.uri_for(target_status),
+                ],
+              },
+            },
+          }
+        end
+
+        it 'creates status' do
+          status = sender.statuses.first
+
+          expect(status).to_not be_nil
+          expect(status.quote).to be_nil
+          expect(status.references.pluck(:id)).to eq [target_status.id]
+        end
+      end
+
+      context 'with quote' do
+        let(:recipient) { Fabricate(:account) }
+        let!(:target_status) { Fabricate(:status, account: Fabricate(:account, domain: nil)) }
+
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            quote: ActivityPub::TagManager.instance.uri_for(target_status),
+          }
+        end
+
+        it 'creates status' do
+          status = sender.statuses.first
+
+          expect(status).to_not be_nil
+          expect(status.references.pluck(:id)).to eq [target_status.id]
+          expect(status.quote).to_not be_nil
+          expect(status.quote.id).to eq target_status.id
+        end
+      end
+
+      context 'with references and quote' do
+        let(:recipient) { Fabricate(:account) }
+        let!(:target_status) { Fabricate(:status, account: Fabricate(:account, domain: nil)) }
+
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            quote: ActivityPub::TagManager.instance.uri_for(target_status),
+            references: {
+              id: 'target_status',
+              type: 'Collection',
+              first: {
+                type: 'CollectionPage',
+                next: nil,
+                partOf: 'target_status',
+                items: [
+                  ActivityPub::TagManager.instance.uri_for(target_status),
+                ],
+              },
+            },
+          }
+        end
+
+        it 'creates status' do
+          status = sender.statuses.first
+
+          expect(status).to_not be_nil
+          expect(status.references.pluck(:id)).to eq [target_status.id]
+          expect(status.quote).to_not be_nil
+          expect(status.quote.id).to eq target_status.id
+        end
+      end
+
       context 'with language' do
         let(:to) { 'https://www.w3.org/ns/activitystreams#Public' }
         let(:object_json) do

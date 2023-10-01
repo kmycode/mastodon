@@ -41,19 +41,19 @@ class ProcessReferencesService < BaseService
     launch_worker if @again
   end
 
-  def self.need_process?(status, reference_parameters, urls)
-    reference_parameters.any? || (urls || []).any? || FormattingHelper.extract_status_plain_text(status).scan(REFURL_EXP).pluck(3).uniq.any?
+  def self.need_process?(status, reference_parameters, urls, quote_urls)
+    reference_parameters.any? || (urls || []).any? || (quote_urls || []).any? || FormattingHelper.extract_status_plain_text(status).scan(REFURL_EXP).pluck(3).uniq.any?
   end
 
-  def self.perform_worker_async(status, reference_parameters, urls, quote_urls = [])
-    return unless need_process?(status, reference_parameters, urls)
+  def self.perform_worker_async(status, reference_parameters, urls, quote_urls)
+    return unless need_process?(status, reference_parameters, urls, quote_urls)
 
     Rails.cache.write("status_reference:#{status.id}", true, expires_in: 10.minutes)
     ProcessReferencesWorker.perform_async(status.id, reference_parameters, urls, [], quote_urls || [])
   end
 
   def self.call_service(status, reference_parameters, urls, quote_urls = [])
-    return unless need_process?(status, reference_parameters, urls)
+    return unless need_process?(status, reference_parameters, urls, quote_urls)
 
     ProcessReferencesService.new.call(status, reference_parameters || [], urls: urls || [], fetch_remote: false, quote_urls: quote_urls)
   end
@@ -92,7 +92,7 @@ class ProcessReferencesService < BaseService
 
     target_urls.map do |url|
       status = url_to_status(url)
-      @no_fetch_urls << url if !@fetch_remote && status.present? && status.local?
+      @no_fetch_urls << url if !@fetch_remote && status.present?
       status
     end
   end
@@ -118,8 +118,7 @@ class ProcessReferencesService < BaseService
     statuses.each do |status|
       attribute_type = quote_status_ids.include?(status.id) ? 'QT' : @attributes[status.id]
       attribute_type = 'BT' unless quotable?(status)
-      quote_type = attribute_type.casecmp('QT').zero?
-      @status.quote_of_id = status.id if quote_type && @status.quote_of_id.nil?
+      quote_type = attribute_type.present? ? attribute_type.casecmp('QT').zero? : false
       @added_objects << @status.reference_objects.new(target_status: status, attribute_type: attribute_type, quote: quote_type)
 
       status.increment_count!(:status_referred_by_count)

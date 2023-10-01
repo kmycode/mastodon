@@ -624,7 +624,8 @@ class Status extends ImmutablePureComponent {
     const expanded = !status.get('hidden') || status.get('spoiler_text').length === 0;
 
     const withLimited = status.get('visibility_ex') === 'limited' && status.get('limited_scope') ? <span className='status__visibility-icon'><Icon id='get-pocket' title='Limited' /></span> : null;
-    const withReference = status.get('status_references_count') > 0 ? <span className='status__visibility-icon'><Icon id='link' title='Reference' /></span> : null;
+    const withQuote = status.get('quote_id') ? <span className='status__visibility-icon'><Icon id='quote-right' title='Quote' /></span> : null;
+    const withReference = (!withQuote && status.get('status_references_count') > 0) ? <span className='status__visibility-icon'><Icon id='link' title='Reference' /></span> : null;
     const withExpiration = status.get('expires_at') ? <span className='status__visibility-icon'><Icon id='clock-o' title='Expiration' /></span> : null;
 
     const quote = !muted && status.get('quote_id') && <CompactedStatusContainer id={status.get('quote_id')} />
@@ -640,6 +641,7 @@ class Status extends ImmutablePureComponent {
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
             <div onClick={this.handleClick} className='status__info'>
               <a href={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`} className='status__relative-time' target='_blank' rel='noopener noreferrer'>
+                {withQuote}
                 {withReference}
                 {withExpiration}
                 {withLimited}
