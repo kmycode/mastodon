@@ -6524,7 +6524,7 @@ a.status-card {
   position: relative;
   width: 100%;
   min-height: 64px;
-  max-height: 70vh;
+  max-height: 60vh;
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: 50% 50%;
@@ -6544,6 +6544,10 @@ a.status-card {
 
   &--column4 {
     grid-template-columns: 25% 25% 25% 25%;
+  }
+
+  &__compact {
+    max-height: 24vh;
   }
 }
 
