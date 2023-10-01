@@ -170,12 +170,10 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
     object.account.local?
   end
 
-  def quote?
-    @quote ||= (object.reference_objects.count == 1 && object.account.user&.settings&.[]('single_ref_to_quote')) || object.reference_objects.where(attribute_type: 'QT').count == 1
-  end
+  delegate :quote?, to: :object
 
   def quote_post
-    @quote_post ||= object.quote || object.references.first
+    @quote_post ||= object.quote
   end
 
   def quote_uri

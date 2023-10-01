@@ -139,10 +139,6 @@ module HasUserSettings
     settings['link_preview']
   end
 
-  def setting_single_ref_to_quote
-    settings['single_ref_to_quote']
-  end
-
   def setting_dtl_force_with_tag
     settings['dtl_force_with_tag']&.to_sym || :none
   end
