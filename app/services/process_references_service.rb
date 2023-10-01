@@ -119,6 +119,7 @@ class ProcessReferencesService < BaseService
       attribute_type = quote_status_ids.include?(status.id) ? 'QT' : @attributes[status.id]
       attribute_type = 'BT' unless quotable?(status)
       quote_type = attribute_type.present? ? attribute_type.casecmp('QT').zero? : false
+      @status.quote_of_id = status.id if quote_type && (@status.quote_of_id.nil? || references.exclude?(@status.quote_of_id))
       @added_objects << @status.reference_objects.new(target_status: status, attribute_type: attribute_type, quote: quote_type)
 
       status.increment_count!(:status_referred_by_count)
