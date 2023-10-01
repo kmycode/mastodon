@@ -429,6 +429,7 @@ class Status extends ImmutablePureComponent {
         return (
           <HotKeys handlers={minHandlers}>
             <div className='status__wrapper status__wrapper--filtered focusable' tabIndex={0} ref={this.handleRef}>
+              {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
               <div onClick={this.handleClick} className='status__info'>
                 <a href={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`} className='status__relative-time' target='_blank' rel='noopener noreferrer'>
                   {withReference}
