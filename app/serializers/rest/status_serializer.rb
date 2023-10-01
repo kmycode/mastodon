@@ -34,17 +34,17 @@ class REST::StatusSerializer < ActiveModel::Serializer
   has_one :preloadable_poll, key: :poll, serializer: REST::PollSerializer
 
   class QuotedStatusSerializer < REST::StatusSerializer
-    attribute :blocked, if: :current_user?
+    attribute :quote_muted, if: :current_user?
 
     def quote
       nil
     end
 
-    def blocked
+    def quote_muted
       if relationships
-        relationships.blocks_map[object.account_id] || false
+        muted || relationships.blocks_map[object.account_id] || relationships.domain_blocks_map[object.account.domain] || false
       else
-        current_user.account.blocking?(object.account_id)
+        muted || current_user.account.blocking?(object.account_id) || current_user.account.domain_blocking?(object.account.domain)
       end
     end
   end

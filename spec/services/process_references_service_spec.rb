@@ -244,6 +244,17 @@ RSpec.describe ProcessReferencesService, type: :service do
       end
     end
 
+    context 'when remove quote' do
+      let(:text) { "QT #{target_status_uri}" }
+      let(:new_text) { 'Hello' }
+
+      it 'post status' do
+        expect(subject.size).to eq 0
+        expect(status.quote).to be_nil
+        expect(notify?).to be false
+      end
+    end
+
     context 'when change reference' do
       let(:text) { "BT #{target_status_uri}" }
       let(:new_text) { "BT #{target_status2_uri}" }
@@ -251,6 +262,19 @@ RSpec.describe ProcessReferencesService, type: :service do
       it 'post status' do
         expect(subject.size).to eq 1
         expect(subject).to include target_status2.id
+        expect(notify?(target_status2.id)).to be true
+      end
+    end
+
+    context 'when change quote' do
+      let(:text) { "QT #{target_status_uri}" }
+      let(:new_text) { "QT #{target_status2_uri}" }
+
+      it 'post status' do
+        expect(subject.size).to eq 1
+        expect(subject).to include target_status2.id
+        expect(status.quote).to_not be_nil
+        expect(status.quote.id).to eq target_status2.id
         expect(notify?(target_status2.id)).to be true
       end
     end

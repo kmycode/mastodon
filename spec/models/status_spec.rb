@@ -373,6 +373,22 @@ RSpec.describe Status do
     end
   end
 
+  describe '.domain_blocks_map' do
+    subject { described_class.domain_blocks_map([status.account.domain], account) }
+
+    let(:status)  { Fabricate(:status, account: Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/status')) }
+    let(:account) { Fabricate(:account) }
+
+    it 'returns a hash' do
+      expect(subject).to be_a Hash
+    end
+
+    it 'contains true value' do
+      account.block_domain!(status.account.domain)
+      expect(subject[status.account.domain]).to be true
+    end
+  end
+
   describe '.favourites_map' do
     subject { described_class.favourites_map([status], account) }
 
