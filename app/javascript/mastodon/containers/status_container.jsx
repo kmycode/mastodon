@@ -80,6 +80,8 @@ const makeMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
 
+  contextType,
+
   onReply (status, router) {
     dispatch((_, getState) => {
       let state = getState();

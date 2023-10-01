@@ -47,6 +47,10 @@
       = ff.input :'web.bookmark_category_needed', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_bookmark_category_needed'), hint: I18n.t('simple_form.hints.defaults.setting_bookmark_category_needed')
 
     .fields-group
+      = ff.input :'web.show_quote_in_home', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_quote_in_home'), hint: false
+      = ff.input :'web.show_quote_in_public', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_quote_in_public'), hint: false
+
+    .fields-group
       = ff.input :'web.simple_timeline_menu', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_simple_timeline_menu')
 
     %h4= t 'appearance.discovery'

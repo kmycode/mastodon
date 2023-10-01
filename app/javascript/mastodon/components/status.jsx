@@ -19,7 +19,7 @@ import Card from '../features/status/components/card';
 // to use the progress bar to show download progress
 import Bundle from '../features/ui/components/bundle';
 import { MediaGallery, Video, Audio } from '../features/ui/util/async-components';
-import { displayMedia, enableEmojiReaction, showEmojiReactionOnTimeline } from '../initial_state';
+import { displayMedia, enableEmojiReaction, showEmojiReactionOnTimeline, showQuoteInHome, showQuoteInPublic } from '../initial_state';
 
 import { Avatar } from './avatar';
 import { AvatarOverlay } from './avatar_overlay';
@@ -88,6 +88,7 @@ class Status extends ImmutablePureComponent {
   static propTypes = {
     status: ImmutablePropTypes.map,
     account: ImmutablePropTypes.map,
+    contextType: PropTypes.string,
     previousId: PropTypes.string,
     nextInReplyToId: PropTypes.string,
     rootId: PropTypes.string,
@@ -361,6 +362,8 @@ class Status extends ImmutablePureComponent {
     const { intl, hidden, featured, unread, muted, showThread, scrollKey, pictureInPicture, previousId, nextInReplyToId, rootId } = this.props;
 
     let { status, account, ...other } = this.props;
+    
+    const contextType = (this.props.contextType || '').split(':')[0];
 
     if (status === null) {
       return null;
@@ -628,7 +631,7 @@ class Status extends ImmutablePureComponent {
     const withReference = (!withQuote && status.get('status_references_count') > 0) ? <span className='status__visibility-icon'><Icon id='link' title='Reference' /></span> : null;
     const withExpiration = status.get('expires_at') ? <span className='status__visibility-icon'><Icon id='clock-o' title='Expiration' /></span> : null;
 
-    const quote = !muted && status.get('quote_id') && <CompactedStatusContainer id={status.get('quote_id')} />
+    const quote = !muted && status.get('quote_id') && (['public', 'community'].includes(contextType) ? showQuoteInPublic : showQuoteInHome) && <CompactedStatusContainer id={status.get('quote_id')} />
 
     return (
       <HotKeys handlers={handlers}>
@@ -669,7 +672,7 @@ class Status extends ImmutablePureComponent {
               {...statusContentProps}
             />
 
-            {quote}
+            {(!status.get('spoiler_text') || expanded) && quote}
 
             {(!isCardMediaWithSensitive || !status.get('hidden')) && media}
 

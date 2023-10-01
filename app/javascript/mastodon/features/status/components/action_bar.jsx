@@ -236,6 +236,7 @@ class ActionBar extends PureComponent {
     const account            = status.get('account');
     const writtenByMe        = status.getIn(['account', 'id']) === me;
     const isRemote           = status.getIn(['account', 'username']) !== status.getIn(['account', 'acct']);
+    const allowQuote         = status.getIn(['account', 'other_settings', 'allow_quote']);
 
     let menu = [];
 
@@ -259,7 +260,10 @@ class ActionBar extends PureComponent {
 
       if (publicStatus) {
         menu.push({ text: intl.formatMessage(messages.reference), action: this.handleReference });
-        menu.push({ text: intl.formatMessage(messages.quote), action: this.handleQuote });
+
+        if (allowQuote) {
+          menu.push({ text: intl.formatMessage(messages.quote), action: this.handleQuote });
+        }
       }
       menu.push({ text: intl.formatMessage(messages.bookmark_category), action: this.handleBookmarkCategoryAdderClick });
 

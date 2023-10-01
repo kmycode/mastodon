@@ -62,6 +62,8 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:show_trends]       = Setting.trends && object.current_account.user.setting_trends
       store[:bookmark_category_needed] = object.current_account.user.setting_bookmark_category_needed
       store[:simple_timeline_menu] = object.current_account.user.setting_simple_timeline_menu
+      store[:show_quote_in_home] = object.current_account.user.setting_show_quote_in_home
+      store[:show_quote_in_public] = object.current_account.user.setting_show_quote_in_public
     else
       store[:auto_play_gif] = Setting.auto_play_gif
       store[:display_media] = Setting.display_media
@@ -69,6 +71,8 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:use_blurhash]  = Setting.use_blurhash
       store[:enable_emoji_reaction] = Setting.enable_emoji_reaction
       store[:show_emoji_reaction_on_timeline] = Setting.enable_emoji_reaction
+      store[:show_quote_in_home] = true
+      store[:show_quote_in_public] = true
     end
 
     store[:disabled_account_id] = object.disabled_account.id.to_s if object.disabled_account

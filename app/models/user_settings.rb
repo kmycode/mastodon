@@ -42,6 +42,7 @@ class UserSettings
   setting :dtl_force_subscribable, default: false
   setting :lock_follow_from_bot, default: false
   setting :single_ref_to_quote, default: false
+  setting :allow_quote, default: true
 
   setting_inverse_alias :indexable, :noindex
 
@@ -67,6 +68,8 @@ class UserSettings
     setting :display_media_expand, default: true
     setting :auto_play, default: true
     setting :simple_timeline_menu, default: false
+    setting :show_quote_in_home, default: true
+    setting :show_quote_in_public, default: false
   end
 
   namespace :notification_emails do

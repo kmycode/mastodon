@@ -298,6 +298,7 @@ class StatusActionBar extends ImmutablePureComponent {
     const account            = status.get('account');
     const writtenByMe        = status.getIn(['account', 'id']) === me;
     const isRemote           = status.getIn(['account', 'username']) !== status.getIn(['account', 'acct']);
+    const allowQuote         = status.getIn(['account', 'other_settings', 'allow_quote']);
 
     let menu = [];
 
@@ -332,7 +333,10 @@ class StatusActionBar extends ImmutablePureComponent {
 
       if (publicStatus) {
         menu.push({ text: intl.formatMessage(messages.reference), action: this.handleReference });
-        menu.push({ text: intl.formatMessage(messages.quote), action: this.handleQuote });
+
+        if (allowQuote) {
+          menu.push({ text: intl.formatMessage(messages.quote), action: this.handleQuote });
+        }
       }
 
       menu.push({ text: intl.formatMessage(status.get('bookmarked') ? messages.removeBookmark : messages.bookmark), action: this.handleBookmarkClickOriginal });

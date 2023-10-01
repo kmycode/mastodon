@@ -111,6 +111,18 @@ module HasUserSettings
     settings['web.use_system_font']
   end
 
+  def setting_show_quote_in_home
+    settings['web.show_quote_in_home']
+  end
+
+  def setting_show_quote_in_public
+    settings['web.show_quote_in_public']
+  end
+
+  def setting_allow_quote
+    settings['allow_quote']
+  end
+
   def setting_noindex
     settings['noindex']
   end

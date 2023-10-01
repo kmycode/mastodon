@@ -330,6 +330,13 @@ class Account < ApplicationRecord
     true
   end
 
+  def allow_quote?
+    return user.setting_allow_quote if local? && user.present?
+    return settings['allow_quote'] if settings.present? && settings.key?('allow_quote')
+
+    true
+  end
+
   def public_statuses_count
     hide_statuses_count? ? 0 : statuses_count
   end
@@ -407,6 +414,7 @@ class Account < ApplicationRecord
       'hide_followers_count' => hide_followers_count?,
       'translatable_private' => translatable_private?,
       'link_preview' => link_preview?,
+      'allow_quote' => allow_quote?,
     }
     if Setting.enable_emoji_reaction
       config = config.merge({

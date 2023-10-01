@@ -692,7 +692,7 @@
   "status.open": "Expand this post",
   "status.pin": "Pin on profile",
   "status.pinned": "Pinned post",
-  "status.quote": "Ref (quote in other servers)",
+  "status.quote": "Quote",
   "status.read_more": "Read more",
   "status.reblog": "Boost",
   "status.reblog_private": "Boost with original visibility",
