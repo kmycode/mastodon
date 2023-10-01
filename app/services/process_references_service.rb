@@ -10,13 +10,16 @@ class ProcessReferencesService < BaseService
   REFURL_EXP = /(RT|QT|BT|RN|RE)((:|;)?\s+|:|;)(#{URI::DEFAULT_PARSER.make_regexp(%w(http https))})/
   MAX_REFERENCES = 5
 
-  def call(status, reference_parameters, urls: nil, fetch_remote: true, no_fetch_urls: nil)
+  def call(status, reference_parameters, urls: nil, fetch_remote: true, no_fetch_urls: nil, quote_urls: nil)
     @status = status
     @reference_parameters = reference_parameters || []
-    @urls = urls || []
+    @quote_urls = quote_urls || []
+    @urls = (urls - @quote_urls) || []
     @no_fetch_urls = no_fetch_urls || []
     @fetch_remote = fetch_remote
     @again = false
+
+    @attributes = {}
 
     with_redis_lock("process_status_refs:#{@status.id}") do
       @references_count = old_references.size
@@ -28,7 +31,7 @@ class ProcessReferencesService < BaseService
 
           @status.save!
         end
-
+        quote_ur
         create_notifications!
       end
 
@@ -42,23 +45,23 @@ class ProcessReferencesService < BaseService
     reference_parameters.any? || (urls || []).any? || FormattingHelper.extract_status_plain_text(status).scan(REFURL_EXP).pluck(3).uniq.any?
   end
 
-  def self.perform_worker_async(status, reference_parameters, urls)
+  def self.perform_worker_async(status, reference_parameters, urls, quote_urls)
     return unless need_process?(status, reference_parameters, urls)
 
     Rails.cache.write("status_reference:#{status.id}", true, expires_in: 10.minutes)
-    ProcessReferencesWorker.perform_async(status.id, reference_parameters, urls, [])
+    ProcessReferencesWorker.perform_async(status.id, reference_parameters, urls, [], quote_urls || [])
   end
 
-  def self.call_service(status, reference_parameters, urls)
+  def self.call_service(status, reference_parameters, urls, quote_urls)
     return unless need_process?(status, reference_parameters, urls)
 
-    ProcessReferencesService.new.call(status, reference_parameters || [], urls: urls || [], fetch_remote: false)
+    ProcessReferencesService.new.call(status, reference_parameters || [], urls: urls || [], fetch_remote: false, quote_urls: quote_urls)
   end
 
   private
 
   def references
-    @references ||= @reference_parameters + scan_text!
+    @references ||= @reference_parameters + scan_text! + quote_status_ids
   end
 
   def old_references
@@ -88,10 +91,22 @@ class ProcessReferencesService < BaseService
     target_urls = urls + @urls
 
     target_urls.map do |url|
-      status = ResolveURLService.new.call(url, on_behalf_of: @status.account, fetch_remote: @fetch_remote && @no_fetch_urls.exclude?(url))
+      status = url_to_status(url)
       @no_fetch_urls << url if !@fetch_remote && status.present? && status.local?
       status
     end
+  end
+
+  def url_to_status(url)
+    ResolveURLService.new.call(url, on_behalf_of: @status.account, fetch_remote: @fetch_remote && @no_fetch_urls.exclude?(url))
+  end
+
+  def quote_status_ids
+    @quote_status_ids ||= @quote_urls.filter_map { |url| url_to_status(url) }.map(&:id)
+  end
+
+  def quotable?(target_status)
+    StatusPolicy.new(@status.account, target_status).quote?
   end
 
   def add_references
@@ -101,7 +116,9 @@ class ProcessReferencesService < BaseService
 
     statuses = Status.where(id: added_references)
     statuses.each do |status|
-      @added_objects << @status.reference_objects.new(target_status: status, attribute_type: @attributes[status.id])
+      attribute_type = quote_status_ids.include?(status.id) ? 'QT' : @attributes[status.id]
+      attribute_type = 'BT' unless quotable?(status)
+      @added_objects << @status.reference_objects.new(target_status: status, attribute_type: attribute_type, quote: attribute_type.casecmp('QT').zero?)
       status.increment_count!(:status_referred_by_count)
       @references_count += 1
 
@@ -133,6 +150,6 @@ class ProcessReferencesService < BaseService
   end
 
   def launch_worker
-    ProcessReferencesWorker.perform_async(@status.id, @reference_parameters, @urls, @no_fetch_urls)
+    ProcessReferencesWorker.perform_async(@status.id, @reference_parameters, @urls, @no_fetch_urls, @quote_urls)
   end
 end

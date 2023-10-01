@@ -167,6 +167,48 @@ RSpec.describe StatusPolicy, type: :model do
     end
   end
 
+  context 'with the permission of emoji_reaction?' do
+    permissions :emoji_reaction? do
+      it 'grants access when viewer is not blocked' do
+        follow         = Fabricate(:follow)
+        status.account = follow.target_account
+
+        expect(subject).to permit(follow.account, status)
+      end
+
+      it 'denies when viewer is blocked' do
+        block          = Fabricate(:block)
+        status.account = block.target_account
+
+        expect(subject).to_not permit(block.account, status)
+      end
+    end
+  end
+
+  context 'with the permission of quote?' do
+    permissions :quote? do
+      it 'grants access when viewer is not blocked' do
+        follow         = Fabricate(:follow)
+        status.account = follow.target_account
+
+        expect(subject).to permit(follow.account, status)
+      end
+
+      it 'denies when viewer is blocked' do
+        block          = Fabricate(:block)
+        status.account = block.target_account
+
+        expect(subject).to_not permit(block.account, status)
+      end
+
+      it 'denies when private visibility' do
+        status.visibility = :private
+
+        expect(subject).to_not permit(Fabricate(:account), status)
+      end
+    end
+  end
+
   context 'with the permission of update?' do
     permissions :update? do
       it 'grants access if owner' do

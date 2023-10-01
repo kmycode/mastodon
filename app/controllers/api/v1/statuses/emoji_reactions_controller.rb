@@ -31,7 +31,7 @@ class Api::V1::Statuses::EmojiReactionsController < Api::BaseController
     end
 
     render json: @status, serializer: REST::StatusSerializer, relationships: StatusRelationshipsPresenter.new(
-      [@status], current_account.id, emoji_reactions_map: { @status.id => false }
+      [@status], current_account.id
     )
   rescue Mastodon::NotPermittedError
     not_found

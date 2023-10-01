@@ -3,8 +3,8 @@
 class StatusRelationshipsPresenter
   PINNABLE_VISIBILITIES = %w(public public_unlisted unlisted login private).freeze
 
-  attr_reader :reblogs_map, :favourites_map, :mutes_map, :pins_map,
-              :bookmarks_map, :filters_map, :emoji_reactions_map, :attributes_map, :emoji_reaction_allows_map
+  attr_reader :reblogs_map, :favourites_map, :mutes_map, :pins_map, :blocks_map,
+              :bookmarks_map, :filters_map, :attributes_map, :emoji_reaction_allows_map
 
   def initialize(statuses, current_account_id = nil, **options)
     @current_account_id = current_account_id
@@ -16,7 +16,6 @@ class StatusRelationshipsPresenter
       @mutes_map           = {}
       @pins_map            = {}
       @filters_map         = {}
-      @emoji_reactions_map = {}
       @emoji_reaction_allows_map = nil
     else
       statuses            = statuses.compact
@@ -29,8 +28,8 @@ class StatusRelationshipsPresenter
       @favourites_map  = Status.favourites_map(status_ids, current_account_id).merge(options[:favourites_map] || {})
       @bookmarks_map   = Status.bookmarks_map(status_ids, current_account_id).merge(options[:bookmarks_map] || {})
       @mutes_map       = Status.mutes_map(conversation_ids, current_account_id).merge(options[:mutes_map] || {})
+      @blocks_map      = Status.blocks_map(conversation_ids, current_account_id).merge(options[:blocks_map] || {})
       @pins_map        = Status.pins_map(pinnable_status_ids, current_account_id).merge(options[:pins_map] || {})
-      @emoji_reactions_map = Status.emoji_reactions_map(status_ids, current_account_id).merge(options[:emoji_reactions_map] || {})
       @emoji_reaction_allows_map = Status.emoji_reaction_allows_map(status_ids, current_account_id).merge(options[:emoji_reaction_allows_map] || {})
       @attributes_map  = options[:attributes_map] || {}
     end

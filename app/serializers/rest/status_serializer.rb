@@ -5,7 +5,7 @@ class REST::StatusSerializer < ActiveModel::Serializer
 
   attributes :id, :created_at, :in_reply_to_id, :in_reply_to_account_id,
              :sensitive, :spoiler_text, :visibility, :visibility_ex, :limited_scope, :language,
-             :uri, :url, :replies_count, :reblogs_count, :searchability, :markdown,
+             :uri, :url, :replies_count, :reblogs_count, :searchability, :markdown, :quote_id,
              :status_reference_ids, :status_references_count, :status_referred_by_count,
              :favourites_count, :emoji_reactions, :emoji_reactions_count, :reactions, :edited_at
 
@@ -32,6 +32,23 @@ class REST::StatusSerializer < ActiveModel::Serializer
 
   has_one :preview_card, key: :card, serializer: REST::PreviewCardSerializer
   has_one :preloadable_poll, key: :poll, serializer: REST::PollSerializer
+
+  class QuotedStatusSerializer < REST::StatusSerializer
+    attribute :blocked, if: :current_user?
+
+    def quote
+      nil
+    end
+
+    def blocked
+      if relationships
+        relationships.blocks_map[object.account_id] || false
+      else
+        current_user.account.blocking?(object.account_id)
+      end
+    end
+  end
+  belongs_to :quote, serializer: QuotedStatusSerializer
 
   def id
     object.id.to_s
@@ -157,6 +174,10 @@ class REST::StatusSerializer < ActiveModel::Serializer
         emoji_reaction.delete('domain')
       end
     end
+  end
+
+  def quote_id
+    object.quote&.id
   end
 
   def reblogged

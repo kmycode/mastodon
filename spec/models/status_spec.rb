@@ -217,6 +217,39 @@ RSpec.describe Status do
     end
   end
 
+  describe '#quote' do
+    let(:target_status) { Fabricate(:status) }
+    let(:quote) { true }
+
+    before do
+      Fabricate(:status_reference, status: subject, target_status: target_status, quote: quote)
+    end
+
+    context 'when quoting single' do
+      it 'get quote' do
+        expect(subject.quote).to_not be_nil
+        expect(subject.quote.id).to eq target_status.id
+      end
+    end
+
+    context 'when multiple quotes' do
+      it 'get quote' do
+        target2 = Fabricate(:status)
+        Fabricate(:status_reference, status: subject, quote: quote)
+        expect(subject.quote).to_not be_nil
+        expect([target_status.id, target2.id].include?(subject.quote.id)).to be true
+      end
+    end
+
+    context 'when no quote but reference' do
+      let(:quote) { false }
+
+      it 'get quote' do
+        expect(subject.quote).to be_nil
+      end
+    end
+  end
+
   describe '#content' do
     it 'returns the text of the status if it is not a reblog' do
       expect(subject.content).to eql subject.text
@@ -321,6 +354,22 @@ RSpec.describe Status do
     it 'contains true value' do
       account.mute_conversation!(status.conversation)
       expect(subject[status.conversation.id]).to be true
+    end
+  end
+
+  describe '.blocks_map' do
+    subject { described_class.blocks_map([status.account.id], account) }
+
+    let(:status)  { Fabricate(:status) }
+    let(:account) { Fabricate(:account) }
+
+    it 'returns a hash' do
+      expect(subject).to be_a Hash
+    end
+
+    it 'contains true value' do
+      account.block!(status.account)
+      expect(subject[status.account.id]).to be true
     end
   end
 

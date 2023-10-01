@@ -10,6 +10,7 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  attribute_type   :string
+#  quote            :boolean          default(FALSE), not null
 #
 
 class StatusReference < ApplicationRecord

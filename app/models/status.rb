@@ -228,7 +228,7 @@ class Status < ApplicationRecord
   end
 
   def quote
-    reference_objects.where(attribute_type: 'QT').first&.target_status
+    @quote ||= reference_objects.where(quote: true).first&.target_status
   end
 
   def within_realtime_window?
@@ -480,12 +480,12 @@ class Status < ApplicationRecord
       ConversationMute.select('conversation_id').where(conversation_id: conversation_ids).where(account_id: account_id).each_with_object({}) { |m, h| h[m.conversation_id] = true }
     end
 
-    def pins_map(status_ids, account_id)
-      StatusPin.select('status_id').where(status_id: status_ids).where(account_id: account_id).each_with_object({}) { |p, h| h[p.status_id] = true }
+    def blocks_map(account_ids, account_id)
+      Block.where(account_id: account_id, target_account_id: account_ids).each_with_object({}) { |b, h| h[b.target_account_id] = true }
     end
 
-    def emoji_reactions_map(status_ids, account_id)
-      EmojiReaction.select('status_id').where(status_id: status_ids).where(account_id: account_id).each_with_object({}) { |e, h| h[e.status_id] = true }
+    def pins_map(status_ids, account_id)
+      StatusPin.select('status_id').where(status_id: status_ids).where(account_id: account_id).each_with_object({}) { |p, h| h[p.status_id] = true }
     end
 
     def emoji_reaction_allows_map(status_ids, account_id)

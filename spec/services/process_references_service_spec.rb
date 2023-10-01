@@ -35,6 +35,10 @@ RSpec.describe ProcessReferencesService, type: :service do
         expect(subject.pluck(1)).to include 'RT'
         expect(notify?).to be true
       end
+
+      it 'not quote' do
+        expect(status.quote).to be_nil
+      end
     end
 
     context 'when multiple references' do
