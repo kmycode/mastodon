@@ -15,12 +15,10 @@ describe ActivityPub::NoteSerializer do
   let!(:reply_by_account_visibility_direct) { Fabricate(:status, account: account, thread: parent, visibility: :direct) }
   let!(:referred) { nil }
   let!(:referred2) { nil }
-  let(:convert_to_quote) { false }
 
   before(:each) do
     parent.references << referred if referred.present?
     parent.references << referred2 if referred2.present?
-    account.user&.settings&.[]=('single_ref_to_quote', true) if convert_to_quote
     @serialization = ActiveModelSerializers::SerializableResource.new(parent, serializer: described_class, adapter: ActivityPub::Adapter)
   end
 
@@ -62,30 +60,6 @@ describe ActivityPub::NoteSerializer do
     it 'has as reference' do
       expect(subject['quoteUri']).to be_nil
       expect(subject['references']['first']['items']).to include referred.uri
-    end
-  end
-
-  context 'when has quote and convert setting' do
-    let(:referred) { Fabricate(:status) }
-    let(:convert_to_quote) { true }
-
-    it 'has as quote' do
-      expect(subject['quoteUri']).to_not be_nil
-      expect(subject['quoteUri']).to eq referred.uri
-      expect(subject['_misskey_quote']).to eq referred.uri
-      expect(subject['references']['first']['items']).to include referred.uri
-    end
-  end
-
-  context 'when has multiple references and convert setting' do
-    let(:referred) { Fabricate(:status) }
-    let(:referred2) { Fabricate(:status) }
-    let(:convert_to_quote) { true }
-
-    it 'has as quote' do
-      expect(subject['quoteUri']).to be_nil
-      expect(subject['references']['first']['items']).to include referred.uri
-      expect(subject['references']['first']['items']).to include referred2.uri
     end
   end
 end
