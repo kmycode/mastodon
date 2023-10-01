@@ -342,6 +342,21 @@ class CompactedStatus extends ImmutablePureComponent {
       );
     }
 
+    if (status.get('quote_muted')) {
+      const minHandlers = {
+        moveUp: this.handleHotkeyMoveUp,
+        moveDown: this.handleHotkeyMoveDown,
+      };
+
+      return (
+        <HotKeys handlers={minHandlers}>
+          <div className='status__wrapper status__wrapper__compact status__wrapper--filtered focusable' tabIndex={0} ref={this.handleRef} onClick={this.handleClick}>
+            <FormattedMessage id='status.quote_filtered' defaultMessage='This quote is filtered because of muting, blocking or domain blocking' />
+          </div>
+        </HotKeys>
+      );
+    }
+
     isCardMediaWithSensitive = false;
 
     if (status.get('media_attachments').size > 0) {

@@ -20,7 +20,8 @@ class StatusRelationshipsPresenter
       @filters_map         = {}
       @emoji_reaction_allows_map = nil
     else
-      statuses            = statuses.compact
+      statuses = statuses.compact
+      statuses += statuses.filter_map(&:quote)
       status_ids          = statuses.flat_map { |s| [s.id, s.reblog_of_id] }.uniq.compact
       conversation_ids    = statuses.filter_map(&:conversation_id).uniq
       pinnable_status_ids = statuses.map(&:proper).filter_map { |s| s.id if s.account_id == current_account_id && PINNABLE_VISIBILITIES.include?(s.visibility) }

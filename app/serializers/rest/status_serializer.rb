@@ -49,7 +49,7 @@ class REST::StatusSerializer < ActiveModel::Serializer
       end
     end
   end
-  belongs_to :quote, if: :quote?, serializer: QuotedStatusSerializer
+  belongs_to :quote, if: :quote?, serializer: QuotedStatusSerializer, relationships: -> { relationships }
 
   def id
     object.id.to_s
