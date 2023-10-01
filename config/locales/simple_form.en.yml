@@ -227,6 +227,7 @@ en:
         phrase: Keyword or phrase
         setting_advanced_layout: Enable advanced web interface
         setting_aggregate_reblogs: Group boosts in timelines
+        setting_allow_quote: Allow quote your posts
         setting_always_send_emails: Always send e-mail notifications
         setting_auto_play_gif: Auto-play animated GIFs
         setting_bio_markdown: Enable profile markdown
@@ -275,6 +276,8 @@ en:
         setting_send_without_domain_blocks: Send your post to all server with administrator set as rejecting-post-server for protect you [DEPRECATED]
         setting_show_application: Disclose application used to send posts
         setting_show_emoji_reaction_on_timeline: Show all stamps on timeline
+        setting_show_quote_in_home: Show quotes in home, list or antenna timelines
+        setting_show_quote_in_public: Show quotes in public timelines
         setting_simple_timeline_menu: Reduce post menu on timeline
         setting_single_ref_to_quote: Deliver single reference to other server as quote
         setting_stay_privacy: Not change privacy after post

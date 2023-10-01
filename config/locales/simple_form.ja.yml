@@ -240,6 +240,7 @@ ja:
         phrase: キーワードまたはフレーズ
         setting_advanced_layout: 上級者向けUIを有効にする
         setting_aggregate_reblogs: ブーストをまとめる
+        setting_allow_quote: 引用を許可する
         setting_always_send_emails: 常にメール通知を送信する
         setting_auto_play_gif: アニメーションGIFを自動再生する
         setting_bio_markdown: プロフィールのMarkdownを有効にする
@@ -281,6 +282,8 @@ ja:
         setting_hide_statuses_count: 投稿数を隠す
         setting_link_preview: リンクのプレビューを生成する
         setting_lock_follow_from_bot: botからのフォローを承認制にする
+        setting_show_quote_in_home: ホーム・リスト・アンテナなどで引用を表示する
+        setting_show_quote_in_public: 公開タイムライン（ローカル・連合）で引用を表示する
         setting_stay_privacy: 投稿時に公開範囲を保存する
         setting_noai: 自分のコンテンツのAI学習利用に対して不快感を表明する
         setting_public_post_to_unlisted: サードパーティから公開範囲「公開」で投稿した場合、「ローカル公開」に変更する
