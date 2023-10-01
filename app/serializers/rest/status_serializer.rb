@@ -5,7 +5,7 @@ class REST::StatusSerializer < ActiveModel::Serializer
 
   attributes :id, :created_at, :in_reply_to_id, :in_reply_to_account_id,
              :sensitive, :spoiler_text, :visibility, :visibility_ex, :limited_scope, :language,
-             :uri, :url, :replies_count, :reblogs_count, :searchability, :markdown, :quote_id,
+             :uri, :url, :replies_count, :reblogs_count, :searchability, :markdown,
              :status_reference_ids, :status_references_count, :status_referred_by_count,
              :favourites_count, :emoji_reactions, :emoji_reactions_count, :reactions, :edited_at
 
@@ -16,6 +16,7 @@ class REST::StatusSerializer < ActiveModel::Serializer
   attribute :pinned, if: :pinnable?
   attribute :reactions, if: :reactions?
   attribute :expires_at, if: :will_expire?
+  attribute :quote_id, if: :quote?
   has_many :filtered, serializer: REST::FilterResultSerializer, if: :current_user?
 
   attribute :content, unless: :source_requested?
@@ -48,7 +49,7 @@ class REST::StatusSerializer < ActiveModel::Serializer
       end
     end
   end
-  belongs_to :quote, serializer: QuotedStatusSerializer
+  belongs_to :quote, if: :quote?, serializer: QuotedStatusSerializer
 
   def id
     object.id.to_s
@@ -179,6 +180,8 @@ class REST::StatusSerializer < ActiveModel::Serializer
   def quote_id
     object.quote_of_id
   end
+
+  delegate :quote?, to: :object
 
   def reblogged
     if relationships
