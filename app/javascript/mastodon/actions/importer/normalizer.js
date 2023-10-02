@@ -85,6 +85,11 @@ export function normalizeStatus(status, normalOldStatus) {
     normalStatus.spoiler_text = normalOldStatus.get('spoiler_text');
     normalStatus.hidden = normalOldStatus.get('hidden');
 
+    // for quoted post
+    if (!normalStatus.filtered && normalOldStatus.get('filtered')) {
+      normalStatus.filtered = normalOldStatus.get('filtered');
+    }
+
     if (normalOldStatus.get('translation')) {
       normalStatus.translation = normalOldStatus.get('translation');
     }

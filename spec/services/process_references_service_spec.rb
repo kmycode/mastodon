@@ -105,6 +105,34 @@ RSpec.describe ProcessReferencesService, type: :service do
       end
     end
 
+    context 'with quote as parameter and embed' do
+      let(:text) { "Hello QT #{target_status_uri}" }
+      let(:quote_urls) { [ActivityPub::TagManager.instance.uri_for(target_status)] }
+
+      it 'post status' do
+        expect(subject.size).to eq 1
+        expect(subject.pluck(0)).to include target_status.id
+        expect(subject.pluck(1)).to include 'QT'
+        expect(status.quote).to_not be_nil
+        expect(status.quote.id).to eq target_status.id
+        expect(notify?).to be true
+      end
+    end
+
+    context 'with quote as parameter but embed is not quote' do
+      let(:text) { "Hello RE #{target_status_uri}" }
+      let(:quote_urls) { [ActivityPub::TagManager.instance.uri_for(target_status)] }
+
+      it 'post status' do
+        expect(subject.size).to eq 1
+        expect(subject.pluck(0)).to include target_status.id
+        expect(subject.pluck(1)).to include 'QT'
+        expect(status.quote).to_not be_nil
+        expect(status.quote.id).to eq target_status.id
+        expect(notify?).to be true
+      end
+    end
+
     context 'with quote and reference' do
       let(:target_status2) { Fabricate(:status) }
       let(:target_status2_uri) { ActivityPub::TagManager.instance.uri_for(target_status2) }
@@ -291,6 +319,31 @@ RSpec.describe ProcessReferencesService, type: :service do
         expect(status.quote).to_not be_nil
         expect(status.quote.id).to eq target_status2.id
         expect(notify?(target_status2.id)).to be true
+      end
+    end
+
+    context 'when change quote to reference', pending: 'Will fix later' do
+      let(:text) { "QT #{target_status_uri}" }
+      let(:new_text) { "RT #{target_status_uri}" }
+
+      it 'post status' do
+        expect(subject.size).to eq 1
+        expect(subject).to include target_status.id
+        expect(status.quote).to be_nil
+        expect(notify?(target_status.id)).to be true
+      end
+    end
+
+    context 'when change reference to quote', pending: 'Will fix later' do
+      let(:text) { "RT #{target_status_uri}" }
+      let(:new_text) { "QT #{target_status_uri}" }
+
+      it 'post status' do
+        expect(subject.size).to eq 1
+        expect(subject).to include target_status.id
+        expect(status.quote).to_not be_nil
+        expect(status.quote.id).to eq target_status.id
+        expect(notify?(target_status.id)).to be true
       end
     end
   end

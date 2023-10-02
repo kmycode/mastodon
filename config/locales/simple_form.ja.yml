@@ -275,6 +275,7 @@ ja:
         setting_emoji_reaction_streaming_notify_impl2: Nyastodon, Catstodon, glitch-soc互換のスタンプ機能を有効にする
         setting_enable_emoji_reaction: スタンプ機能を使用する
         setting_expand_spoilers: 閲覧注意としてマークされた投稿を常に展開する
+        setting_hide_blocking_quote: ブロックしたユーザーの投稿を引用した投稿を隠す
         setting_hide_followers_count: フォロワー数を隠す
         setting_hide_following_count: フォロー数を隠す
         setting_hide_network: 繋がりを隠す

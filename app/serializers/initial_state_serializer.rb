@@ -64,6 +64,7 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:simple_timeline_menu] = object.current_account.user.setting_simple_timeline_menu
       store[:show_quote_in_home] = object.current_account.user.setting_show_quote_in_home
       store[:show_quote_in_public] = object.current_account.user.setting_show_quote_in_public
+      store[:hide_blocking_quote] = object.current_account.user.setting_hide_blocking_quote
     else
       store[:auto_play_gif] = Setting.auto_play_gif
       store[:display_media] = Setting.display_media

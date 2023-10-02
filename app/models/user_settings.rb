@@ -69,6 +69,7 @@ class UserSettings
     setting :simple_timeline_menu, default: false
     setting :show_quote_in_home, default: true
     setting :show_quote_in_public, default: false
+    setting :hide_blocking_quote, default: true
   end
 
   namespace :notification_emails do

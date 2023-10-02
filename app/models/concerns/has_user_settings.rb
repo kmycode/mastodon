@@ -119,6 +119,10 @@ module HasUserSettings
     settings['web.show_quote_in_public']
   end
 
+  def setting_hide_blocking_quote
+    settings['web.hide_blocking_quote']
+  end
+
   def setting_allow_quote
     settings['allow_quote']
   end

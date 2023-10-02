@@ -261,6 +261,7 @@ en:
           mutuals_only: Mutuals only
           outside_only: Followings or followers only
         setting_expand_spoilers: Always expand posts marked with content warnings
+        setting_hide_blocking_quote: Hide posts which have a quote written by the user you are blocking
         setting_hide_followers_count: Hide followers count
         setting_hide_following_count: Hide following count
         setting_hide_network: Hide your social graph
