@@ -444,7 +444,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
   def related_to_local_activity?
     fetch? || followed_by_local_accounts? || requested_through_relay? ||
-      responds_to_followed_account? || addresses_local_accounts?
+      responds_to_followed_account? || addresses_local_accounts? || quote_local?
   end
 
   def responds_to_followed_account?
@@ -485,9 +485,22 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
   def process_references!
     references = @object['references'].nil? ? [] : ActivityPub::FetchReferencesService.new.call(@status, @object['references'])
-    quote = @object['quote'] || @object['quoteUrl'] || @object['quoteURL'] || @object['_misskey_quote']
 
     ProcessReferencesService.perform_worker_async(@status, [], references, [quote].compact)
+  end
+
+  def quote_local?
+    url = quote
+
+    if url.present?
+      ResolveURLService.new.call(url, on_behalf_of: @account, local_only: true).present?
+    else
+      false
+    end
+  end
+
+  def quote
+    @quote ||= @object['quote'] || @object['quoteUrl'] || @object['quoteURL'] || @object['_misskey_quote']
   end
 
   def join_group!

@@ -6,16 +6,16 @@ class ResolveURLService < BaseService
 
   USERNAME_STATUS_RE = %r{/@(?<username>#{Account::USERNAME_RE})/(?<status_id>[0-9]+)\Z}
 
-  def call(url, on_behalf_of: nil, fetch_remote: true)
+  def call(url, on_behalf_of: nil, fetch_remote: true, local_only: false)
     @url          = url
     @on_behalf_of = on_behalf_of
     @fetch_remote = fetch_remote
 
     if local_url?
       process_local_url
-    elsif fetch_remote && !fetched_resource.nil?
+    elsif !local_only && fetch_remote && !fetched_resource.nil?
       process_url
-    else
+    elsif !local_only
       process_url_from_db
     end
   end

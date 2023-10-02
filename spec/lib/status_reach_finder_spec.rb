@@ -8,10 +8,11 @@ describe StatusReachFinder do
       subject { described_class.new(status) }
 
       let(:parent_status) { nil }
+      let(:quoted_status) { nil }
       let(:visibility) { :public }
       let(:searchability) { :public }
       let(:alice) { Fabricate(:account, username: 'alice') }
-      let(:status) { Fabricate(:status, account: alice, thread: parent_status, visibility: visibility, searchability: searchability) }
+      let(:status) { Fabricate(:status, account: alice, thread: parent_status, quote_of_id: quoted_status&.id, visibility: visibility, searchability: searchability) }
 
       context 'with a simple case' do
         let(:bob) { Fabricate(:account, username: 'bob', domain: 'foo.bar', protocol: :activitypub, inbox_url: 'https://foo.bar/inbox') }
@@ -163,6 +164,15 @@ describe StatusReachFinder do
           it 'does not include the inbox of the replied-to account' do
             expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
           end
+        end
+      end
+
+      context 'when it is a quote to a remote account' do
+        let(:bob) { Fabricate(:account, username: 'bob', domain: 'foo.bar', protocol: :activitypub, inbox_url: 'https://foo.bar/inbox') }
+        let(:quoted_status) { Fabricate(:status, account: bob) }
+
+        it 'includes the inbox of the quoted-to account' do
+          expect(subject.inboxes).to include 'https://foo.bar/inbox'
         end
       end
     end

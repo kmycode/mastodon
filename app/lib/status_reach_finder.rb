@@ -54,6 +54,7 @@ class StatusReachFinder
       reblogs_account_ids,
       favourites_account_ids,
       replies_account_ids,
+      quoted_account_id,
     ].tap do |arr|
       arr.flatten!
       arr.compact!
@@ -86,6 +87,10 @@ class StatusReachFinder
   # Beware: Replies can be created without the author having had access to the status
   def replies_account_ids
     @status.replies.pluck(:account_id) if distributable? || unsafe?
+  end
+
+  def quoted_account_id
+    @status.quote.account_id if @status.quote?
   end
 
   def followers_inboxes

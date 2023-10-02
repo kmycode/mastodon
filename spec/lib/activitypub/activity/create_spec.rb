@@ -1365,6 +1365,53 @@ RSpec.describe ActivityPub::Activity::Create do
       end
     end
 
+    context 'when sender quotes to local status' do
+      subject { described_class.new(json, sender, delivery: true) }
+
+      let!(:local_status) { Fabricate(:status) }
+      let(:object_json) do
+        {
+          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+          type: 'Note',
+          content: 'Lorem ipsum',
+          quote: ActivityPub::TagManager.instance.uri_for(local_status),
+        }
+      end
+
+      before do
+        subject.perform
+      end
+
+      it 'creates status' do
+        status = sender.statuses.first
+
+        expect(status).to_not be_nil
+        expect(status.text).to eq 'Lorem ipsum'
+      end
+    end
+
+    context 'when sender quotes to non-local status' do
+      subject { described_class.new(json, sender, delivery: true) }
+
+      let!(:remote_status) { Fabricate(:status, uri: 'https://foo.bar/among', account: Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/account')) }
+      let(:object_json) do
+        {
+          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+          type: 'Note',
+          content: 'Lorem ipsum',
+          quote: ActivityPub::TagManager.instance.uri_for(remote_status),
+        }
+      end
+
+      before do
+        subject.perform
+      end
+
+      it 'creates status' do
+        expect(sender.statuses.count).to eq 0
+      end
+    end
+
     context 'when sender targets a local user' do
       subject { described_class.new(json, sender, delivery: true) }
 
