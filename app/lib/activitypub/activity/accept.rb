@@ -3,6 +3,7 @@
 class ActivityPub::Activity::Accept < ActivityPub::Activity
   def perform
     return accept_follow_for_relay if relay_follow?
+    return accept_follow_for_friend if friend_follow?
     return accept_follow!(follow_request_from_object) unless follow_request_from_object.nil?
 
     case @object['type']
@@ -41,6 +42,18 @@ class ActivityPub::Activity::Accept < ActivityPub::Activity
 
   def relay_follow?
     relay.present?
+  end
+
+  def accept_follow_for_friend
+    friend.update!(active_state: :accepted)
+  end
+
+  def friend
+    @friend ||= FriendDomain.find_by(domain: @account.domain, active_follow_activity_id: object_uri) if @account.domain.present?
+  end
+
+  def friend_follow?
+    friend.present?
   end
 
   def target_uri

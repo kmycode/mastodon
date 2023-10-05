@@ -678,16 +678,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_05_074832) do
 
   create_table "friend_domains", force: :cascade do |t|
     t.string "domain", default: "", null: false
+    t.string "inbox_url", default: "", null: false
     t.integer "active_state", default: 0, null: false
     t.integer "passive_state", default: 0, null: false
     t.string "active_follow_activity_id"
     t.string "passive_follow_activity_id"
-    t.boolean "local_visibility", default: true, null: false
-    t.boolean "local_searchability", default: true, null: false
+    t.boolean "public_unlisted", default: true, null: false
     t.boolean "pseudo_relay", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["domain"], name: "index_friend_domains_on_domain", unique: true
+    t.index ["inbox_url"], name: "index_friend_domains_on_inbox_url", unique: true
   end
 
   create_table "identities", force: :cascade do |t|

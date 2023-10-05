@@ -68,4 +68,26 @@ RSpec.describe ActivityPub::Activity::Accept do
       expect(relay.reload.accepted?).to be true
     end
   end
+
+  context 'when given a friend server' do
+    subject { described_class.new(json, sender) }
+
+    let(:sender) { Fabricate(:account, domain: 'abc.com', url: 'https://abc.com/#actor') }
+    let!(:friend) { Fabricate(:friend_domain, domain: 'abc.com', active_state: :pending, active_follow_activity_id: 'https://abc-123/456') }
+
+    let(:json) do
+      {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        id: 'foo',
+        type: 'Accept',
+        actor: ActivityPub::TagManager.instance.uri_for(sender),
+        object: 'https://abc-123/456',
+      }.with_indifferent_access
+    end
+
+    it 'marks the relay as accepted' do
+      subject.perform
+      expect(friend.reload.i_am_accepted?).to be true
+    end
+  end
 end
