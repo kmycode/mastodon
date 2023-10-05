@@ -147,4 +147,26 @@ RSpec.describe ActivityPub::Activity::Reject do
       expect(relay.reload.rejected?).to be true
     end
   end
+
+  context 'when given a friend' do
+    subject { described_class.new(json, sender) }
+
+    let(:sender) { Fabricate(:account, domain: 'abc.com', url: 'https://abc.com/#actor') }
+    let!(:friend) { Fabricate(:friend_domain, domain: 'abc.com', active_state: :pending, active_follow_activity_id: 'https://abc-123/456') }
+
+    let(:json) do
+      {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        id: 'foo',
+        type: 'Reject',
+        actor: ActivityPub::TagManager.instance.uri_for(sender),
+        object: 'https://abc-123/456',
+      }.with_indifferent_access
+    end
+
+    it 'marks the friend as rejected' do
+      subject.perform
+      expect(friend.reload.i_am_rejected?).to be true
+    end
+  end
 end

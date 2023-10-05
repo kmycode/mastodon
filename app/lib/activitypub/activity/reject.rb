@@ -3,6 +3,7 @@
 class ActivityPub::Activity::Reject < ActivityPub::Activity
   def perform
     return reject_follow_for_relay if relay_follow?
+    return reject_follow_for_friend if friend_follow?
     return follow_request_from_object.reject! unless follow_request_from_object.nil?
     return UnfollowService.new.call(follow_from_object.account, @account) unless follow_from_object.nil?
 
@@ -35,6 +36,18 @@ class ActivityPub::Activity::Reject < ActivityPub::Activity
 
   def relay_follow?
     relay.present?
+  end
+
+  def reject_follow_for_friend
+    friend.update!(active_state: :rejected)
+  end
+
+  def friend
+    @friend ||= FriendDomain.find_by(domain: @account.domain, active_follow_activity_id: object_uri) if @account.domain.present?
+  end
+
+  def friend_follow?
+    friend.present?
   end
 
   def target_uri

@@ -85,7 +85,7 @@ RSpec.describe ActivityPub::Activity::Accept do
       }.with_indifferent_access
     end
 
-    it 'marks the relay as accepted' do
+    it 'marks the friend as accepted' do
       subject.perform
       expect(friend.reload.i_am_accepted?).to be true
     end
