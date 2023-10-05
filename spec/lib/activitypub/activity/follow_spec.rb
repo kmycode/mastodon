@@ -236,4 +236,27 @@ RSpec.describe ActivityPub::Activity::Follow do
       end
     end
   end
+
+  context 'when given a friend server' do
+    subject { described_class.new(json, sender) }
+
+    let(:sender) { Fabricate(:account, domain: 'abc.com', url: 'https://abc.com/#actor') }
+    let!(:friend) { Fabricate(:friend_domain, domain: 'abc.com', passive_state: :idle) }
+
+    let(:json) do
+      {
+        '@context': 'https://www.w3.org/ns/activitystreams',
+        id: 'foo',
+        type: 'Follow',
+        actor: ActivityPub::TagManager.instance.uri_for(sender),
+        object: 'https://www.w3.org/ns/activitystreams#Public',
+      }.with_indifferent_access
+    end
+
+    it 'marks the friend as pending' do
+      subject.perform
+      expect(friend.reload.they_are_pending?).to be true
+      expect(friend.passive_follow_activity_id).to eq 'foo'
+    end
+  end
 end

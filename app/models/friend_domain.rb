@@ -25,6 +25,7 @@ class FriendDomain < ApplicationRecord
   enum passive_state: { idle: 0, pending: 1, accepted: 2, rejected: 3 }, _prefix: :they_are
 
   before_destroy :ensure_disabled
+  after_commit :set_default_inbox_url
 
   def mutual?
     i_am_accepted? && they_are_accepted?
@@ -143,5 +144,9 @@ class FriendDomain < ApplicationRecord
     disable! if i_am_pending? || i_am_accepted?
     reject! if they_are_pending?
     delete! if they_are_accepted?
+  end
+
+  def set_default_inbox_url
+    self.inbox_url = default_inbox_url if inbox_url.blank?
   end
 end

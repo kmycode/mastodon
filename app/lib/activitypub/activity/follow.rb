@@ -4,6 +4,8 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
   include Payloadable
 
   def perform
+    return request_follow_for_friend if friend_follow?
+
     target_account = account_from_uri(object_uri)
 
     return if target_account.nil? || !target_account.local? || delete_arrived_first?(@json['id'])
@@ -41,6 +43,18 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
   def reject_follow_request!(target_account)
     json = Oj.dump(serialize_payload(FollowRequest.new(account: @account, target_account: target_account, uri: @json['id']), ActivityPub::RejectFollowSerializer))
     ActivityPub::DeliveryWorker.perform_async(json, target_account.id, @account.inbox_url)
+  end
+
+  def request_follow_for_friend
+    friend.update!(passive_state: :pending, passive_follow_activity_id: @json['id'])
+  end
+
+  def friend
+    @friend ||= FriendDomain.find_by(domain: @account.domain, passive_state: [:idle, :pending]) if @account.domain.present?
+  end
+
+  def friend_follow?
+    friend.present?
   end
 
   def block_straight_follow?
