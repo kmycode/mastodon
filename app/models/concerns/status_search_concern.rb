@@ -5,7 +5,7 @@ module StatusSearchConcern
 
   included do
     scope :indexable, -> { without_reblogs.where(visibility: [:public, :login], searchability: nil).joins(:account).where(account: { indexable: true }) }
-    scope :remote_dynamic_searchability, -> { remote.where(searchability: [:public, :private]) }
+    scope :remote_dynamic_searchability, -> { remote.where(searchability: [:public, :public_unlisted, :private]) }
   end
 
   def searchable_by

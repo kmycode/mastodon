@@ -363,6 +363,15 @@ RSpec.describe FanOutOnWriteService, type: :service do
       expect(redis).to_not have_received(:publish).with('timeline:public', anything)
     end
 
+    context 'with searchability public_unlisted' do
+      let(:searchability) { 'public_unlisted' }
+
+      it 'is not broadcast to the hashtag stream' do
+        expect(redis).to have_received(:publish).with('timeline:hashtag:hoge', anything)
+        expect(redis).to have_received(:publish).with('timeline:hashtag:hoge:local', anything)
+      end
+    end
+
     context 'with searchability private' do
       let(:searchability) { 'private' }
 

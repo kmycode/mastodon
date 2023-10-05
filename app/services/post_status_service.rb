@@ -81,7 +81,7 @@ class PostStatusService < BaseService
     @visibility   = :public_unlisted if @visibility&.to_sym == :public && !@options[:force_visibility] && !@options[:application]&.superapp && @account.user&.setting_public_post_to_unlisted && Setting.enable_public_unlisted_visibility
     @limited_scope = @options[:visibility]&.to_sym if @visibility == :limited
     @searchability = searchability
-    @searchability = :private if @account.silenced? && @searchability&.to_sym == :public
+    @searchability = :private if @account.silenced? && %i(public public_unlisted).include?(@searchability&.to_sym)
     @markdown     = @options[:markdown] || false
     @scheduled_at = @options[:scheduled_at]&.to_datetime
     @scheduled_at = nil if scheduled_in_the_past?
@@ -129,6 +129,8 @@ class PostStatusService < BaseService
     case @options[:searchability]&.to_sym
     when :public
       case @visibility&.to_sym when :public, :public_unlisted, :login, :unlisted then :public when :private then :private else :direct end
+    when :public_unlisted
+      case @visibility&.to_sym when :public, :public_unlisted, :login, :unlisted then :public_unlisted when :private then :private else :direct end
     when :private
       case @visibility&.to_sym when :public, :public_unlisted, :login, :unlisted, :private then :private else :direct end
     when :direct

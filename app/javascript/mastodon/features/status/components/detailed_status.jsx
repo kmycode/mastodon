@@ -38,6 +38,7 @@ const messages = defineMessages({
   personal_short: { id: 'privacy.personal.short', defaultMessage: 'Yourself only' },
   direct_short: { id: 'privacy.direct.short', defaultMessage: 'Mentioned people only' },
   searchability_public_short: { id: 'searchability.public.short', defaultMessage: 'Public' },
+  searchability_public_unlisted_short: { id: 'searchability.public_unlisted.short', defaultMessage: 'Public unlisted' },
   searchability_private_short: { id: 'searchability.unlisted.short', defaultMessage: 'Followers' },
   searchability_direct_short: { id: 'searchability.private.short', defaultMessage: 'Reactionners' },
   searchability_limited_short: { id: 'searchability.direct.short', defaultMessage: 'Self only' },
@@ -270,6 +271,7 @@ class DetailedStatus extends ImmutablePureComponent {
 
     const searchabilityIconInfo = {
       'public': { icon: 'globe', text: intl.formatMessage(messages.searchability_public_short) },
+      'public_unlisted': { icon: 'cloud', text: intl.formatMessage(messages.searchability_public_unlisted_short) },
       'private': { icon: 'unlock', text: intl.formatMessage(messages.searchability_private_short) },
       'direct': { icon: 'lock', text: intl.formatMessage(messages.searchability_direct_short) },
       'limited': { icon: 'at', text: intl.formatMessage(messages.searchability_limited_short) },

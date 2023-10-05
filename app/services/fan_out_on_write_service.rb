@@ -218,6 +218,6 @@ class FanOutOnWriteService < BaseService
   end
 
   def broadcastable_unlisted2?
-    @status.unlisted_visibility? && @status.public_searchability? && !@status.reblog? && !@account.silenced?
+    @status.unlisted_visibility? && @status.compute_searchability == 'public' && !@status.reblog? && !@account.silenced?
   end
 end

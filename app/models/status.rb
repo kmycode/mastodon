@@ -129,7 +129,7 @@ class Status < ApplicationRecord
   scope :without_replies, -> { where('statuses.reply = FALSE OR statuses.in_reply_to_account_id = statuses.account_id') }
   scope :without_reblogs, -> { where(statuses: { reblog_of_id: nil }) }
   scope :with_public_visibility, -> { where(visibility: [:public, :public_unlisted, :login]) }
-  scope :with_public_search_visibility, -> { merge(where(visibility: [:public, :public_unlisted, :login]).or(Status.where(searchability: :public))) }
+  scope :with_public_search_visibility, -> { merge(where(visibility: [:public, :public_unlisted, :login]).or(Status.where(searchability: [:public, :public_unlisted]))) }
   scope :with_global_timeline_visibility, -> { where(visibility: [:public, :login]) }
   scope :tagged_with, ->(tag_ids) { joins(:statuses_tags).where(statuses_tags: { tag_id: tag_ids }) }
   scope :excluding_silenced_accounts, -> { left_outer_joins(:account).where(accounts: { silenced_at: nil }) }
@@ -442,19 +442,26 @@ class Status < ApplicationRecord
 
   def compute_searchability
     local = account.local?
+    check_searchability = public_unlisted_searchability? ? 'public' : searchability
 
-    return 'private' if public_searchability? && account.silenced?
+    return 'private' if %w(public public_unlisted).include?(check_searchability) && account.silenced?
     return 'direct' if unsupported_searchability?
-    return searchability if local && !searchability.nil?
-    return 'direct' if local || [:public, :private, :direct, :limited].exclude?(account.searchability.to_sym)
+    return check_searchability if local && !check_searchability.nil?
+    return 'direct' if local || %i(public private direct limited).exclude?(account.searchability.to_sym)
 
     account_searchability = Status.searchabilities[account.searchability]
-    status_searchability = Status.searchabilities[searchability.nil? ? 'direct' : searchability]
+    status_searchability = Status.searchabilities[check_searchability.nil? ? 'direct' : check_searchability]
     Status.searchabilities.invert.fetch([account_searchability, status_searchability].max) || 'direct'
   end
 
   def compute_searchability_activitypub
-    return 'private' if public_unlisted_visibility? && public_searchability?
+    return 'private' if public_unlisted_searchability?
+
+    compute_searchability
+  end
+
+  def compute_searchability_local
+    return 'public_unlisted' if public_unlisted_searchability?
 
     compute_searchability
   end
@@ -477,6 +484,10 @@ class Status < ApplicationRecord
     end
 
     def selectable_searchabilities
+      searchabilities.keys - %w(unsupported)
+    end
+
+    def selectable_searchabilities_for_search
       searchabilities.keys - %w(public_unlisted unsupported)
     end
 
@@ -620,7 +631,7 @@ class Status < ApplicationRecord
                          elsif visibility == 'limited'
                            :limited
                          elsif visibility == 'private'
-                           searchability == 'public' ? :private : searchability
+                           searchability == 'public' || searchability == 'public_unlisted' ? :private : searchability
                          elsif visibility == 'direct'
                            searchability == 'limited' ? :limited : :direct
                          else

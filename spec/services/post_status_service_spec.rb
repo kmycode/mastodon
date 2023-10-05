@@ -127,6 +127,13 @@ RSpec.describe PostStatusService, type: :service do
     expect(status.searchability).to eq 'private'
   end
 
+  it 'creates a status with limited searchability for silenced users with public_unlisted searchability' do
+    status = subject.call(Fabricate(:account, silenced: true), text: 'test', searchability: :public_unlisted, visibility: :public)
+
+    expect(status).to be_persisted
+    expect(status.searchability).to eq 'private'
+  end
+
   it 'creates a status with the given searchability=public / visibility=unlisted' do
     status = create_status_with_options(searchability: :public, visibility: :unlisted)
 
@@ -134,8 +141,22 @@ RSpec.describe PostStatusService, type: :service do
     expect(status.searchability).to eq 'public'
   end
 
+  it 'creates a status with the given searchability=public_unlisted / visibility=unlisted' do
+    status = create_status_with_options(searchability: :public_unlisted, visibility: :unlisted)
+
+    expect(status).to be_persisted
+    expect(status.searchability).to eq 'public_unlisted'
+  end
+
   it 'creates a status with the given searchability=public / visibility=private' do
     status = create_status_with_options(searchability: :public, visibility: :private)
+
+    expect(status).to be_persisted
+    expect(status.searchability).to eq 'private'
+  end
+
+  it 'creates a status with the given searchability=public_unlisted / visibility=private' do
+    status = create_status_with_options(searchability: :public_unlisted, visibility: :private)
 
     expect(status).to be_persisted
     expect(status.searchability).to eq 'private'

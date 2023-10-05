@@ -1836,6 +1836,8 @@ en:
       public: Public
       public_long: Anyone can find
       public_search_long: You can search all posts permitted to search
+      public_unlisted: Local and followers
+      public_unlisted_long: Local users and followers can find
     show_more: Show more
     show_newer: Show newer
     show_older: Show older

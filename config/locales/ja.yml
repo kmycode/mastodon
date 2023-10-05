@@ -1814,6 +1814,8 @@ ja:
       public: 誰でも
       public_long: この投稿は誰でも検索できます
       public_search_long: 検索が許可された全ての投稿が検索できます
+      public_unlisted: ローカルとフォロワー
+      public_unlisted_long: ローカル・フォロワー・反応者のみが検索できます
     show_more: もっと見る
     show_newer: 新しいものを表示
     show_older: 古いものを表示

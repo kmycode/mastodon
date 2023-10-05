@@ -5,9 +5,11 @@ require 'rails_helper'
 describe ActivityPub::NoteSerializer do
   subject { JSON.parse(@serialization.to_json) }
 
+  let(:visibility) { :public }
+  let(:searchability) { :public }
   let!(:account) { Fabricate(:account) }
   let!(:other) { Fabricate(:account) }
-  let!(:parent) { Fabricate(:status, account: account, visibility: :public) }
+  let!(:parent) { Fabricate(:status, account: account, visibility: visibility, searchability: searchability) }
   let!(:reply_by_account_first) { Fabricate(:status, account: account, thread: parent, visibility: :public) }
   let!(:reply_by_account_next) { Fabricate(:status, account: account, thread: parent, visibility: :public) }
   let!(:reply_by_other_first) { Fabricate(:status, account: other, thread: parent, visibility: :public) }
@@ -44,6 +46,30 @@ describe ActivityPub::NoteSerializer do
 
   it 'does not include replies with direct visibility in its replies collection' do
     expect(subject['replies']['first']['items']).to_not include(reply_by_account_visibility_direct.uri)
+  end
+
+  it 'send as public visibility' do
+    expect(subject['to']).to include 'https://www.w3.org/ns/activitystreams#Public'
+  end
+
+  context 'when public_unlisted visibility' do
+    let(:visibility) { :public_unlisted }
+
+    it 'send as unlisted visibility' do
+      expect(subject['to']).to_not include 'https://www.w3.org/ns/activitystreams#Public'
+    end
+  end
+
+  it 'send as public searchability' do
+    expect(subject['searchableBy']).to include 'https://www.w3.org/ns/activitystreams#Public'
+  end
+
+  context 'when public_unlisted searchability' do
+    let(:searchability) { :public_unlisted }
+
+    it 'send as private searchability' do
+      expect(subject['searchableBy']).to_not include 'https://www.w3.org/ns/activitystreams#Public'
+    end
   end
 
   context 'when has quote but no_convert setting' do
