@@ -36,6 +36,23 @@ RSpec.describe ActivityPub::Activity::Follow do
         end
       end
 
+      context 'with an unlocked account from friend server' do
+        let!(:friend) { Fabricate(:friend_domain, domain: sender.domain, passive_state: :idle) }
+
+        before do
+          subject.perform
+        end
+
+        it 'creates a follow from sender to recipient' do
+          expect(sender.following?(recipient)).to be true
+          expect(sender.active_relationships.find_by(target_account: recipient).uri).to eq 'foo'
+        end
+
+        it 'does not change friend server passive status' do
+          expect(friend.they_are_idle?).to be true
+        end
+      end
+
       context 'when silenced account following an unlocked account' do
         before do
           sender.touch(:silenced_at)

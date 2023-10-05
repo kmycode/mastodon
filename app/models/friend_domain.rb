@@ -53,7 +53,7 @@ class FriendDomain < ApplicationRecord
     activity_id = passive_follow_activity_id
     payload     = Oj.dump(accept_follow_activity(activity_id))
 
-    update!(passive_state: :accepted, passive_follow_activity_id: nil)
+    update!(passive_state: :accepted)
     DeliveryFailureTracker.reset!(inbox_url)
     ActivityPub::DeliveryWorker.perform_async(payload, some_local_account.id, inbox_url)
   end
@@ -73,7 +73,7 @@ class FriendDomain < ApplicationRecord
     Account.where(domain: domain).first&.inbox_url || "https://#{domain}/inbox"
   end
 
-  def delete!
+  def delete_for_friend!
     activity_id = ActivityPub::TagManager.instance.generate_uri_for(nil)
     payload     = Oj.dump(delete_follow_activity(activity_id))
 
@@ -98,7 +98,7 @@ class FriendDomain < ApplicationRecord
       type: 'Undo',
       actor: ActivityPub::TagManager.instance.uri_for(some_local_account),
       object: {
-        id: follow_activity_id,
+        id: active_follow_activity_id,
         type: 'Follow',
         actor: ActivityPub::TagManager.instance.uri_for(some_local_account),
         object: ActivityPub::TagManager::COLLECTIONS[:public],
@@ -142,8 +142,7 @@ class FriendDomain < ApplicationRecord
 
   def ensure_disabled
     disable! if i_am_pending? || i_am_accepted?
-    reject! if they_are_pending?
-    delete! if they_are_accepted?
+    delete_for_friend!
   end
 
   def set_default_inbox_url

@@ -50,7 +50,7 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
   end
 
   def friend
-    @friend ||= FriendDomain.find_by(domain: @account.domain, passive_state: [:idle, :pending]) if @account.domain.present?
+    @friend ||= FriendDomain.find_by(domain: @account.domain, passive_state: [:idle, :pending]) if @account.domain.present? && @json['object'] == ActivityPub::TagManager::COLLECTIONS[:public]
   end
 
   def friend_follow?

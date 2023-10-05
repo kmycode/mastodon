@@ -87,6 +87,8 @@ class ActivityPub::Activity::Undo < ActivityPub::Activity
   end
 
   def undo_follow
+    return remove_follow_from_friend if friend_follow?
+
     target_account = account_from_uri(target_uri)
 
     return if target_account.nil? || !target_account.local?
@@ -98,6 +100,18 @@ class ActivityPub::Activity::Undo < ActivityPub::Activity
     else
       delete_later!(object_uri)
     end
+  end
+
+  def remove_follow_from_friend
+    friend.update!(passive_state: :idle, passive_follow_activity_id: nil)
+  end
+
+  def friend
+    @friend ||= FriendDomain.find_by(domain: @account.domain) if @account.domain.present? && @object['object'] == ActivityPub::TagManager::COLLECTIONS[:public]
+  end
+
+  def friend_follow?
+    friend.present?
   end
 
   def undo_like_original
