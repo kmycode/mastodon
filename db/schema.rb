@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_01_050733) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_05_074832) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -674,6 +674,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_01_050733) do
     t.string "languages", array: true
     t.index ["account_id", "target_account_id"], name: "index_follows_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id"], name: "index_follows_on_target_account_id"
+  end
+
+  create_table "friend_domains", force: :cascade do |t|
+    t.string "domain", default: "", null: false
+    t.integer "active_state", default: 0, null: false
+    t.integer "passive_state", default: 0, null: false
+    t.string "active_follow_activity_id"
+    t.string "passive_follow_activity_id"
+    t.boolean "local_visibility", default: true, null: false
+    t.boolean "local_searchability", default: true, null: false
+    t.boolean "pseudo_relay", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["domain"], name: "index_friend_domains_on_domain", unique: true
   end
 
   create_table "identities", force: :cascade do |t|
