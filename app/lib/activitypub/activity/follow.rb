@@ -46,15 +46,23 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
   end
 
   def request_follow_for_friend
-    friend.update!(passive_state: :pending, passive_follow_activity_id: @json['id'])
+    if friend.present?
+      friend.update!(passive_state: :pending, passive_follow_activity_id: @json['id'])
+    else
+      FriendDomain.create!(domain: @account.domain, passive_state: :pending, passive_follow_activity_id: @json['id'])
+    end
   end
 
   def friend
-    @friend ||= FriendDomain.find_by(domain: @account.domain, passive_state: [:idle, :pending]) if @account.domain.present? && @json['object'] == ActivityPub::TagManager::COLLECTIONS[:public]
+    @friend ||= FriendDomain.find_by(domain: @account.domain, passive_state: [:idle, :pending]) if @account.domain.present?
   end
 
   def friend_follow?
-    friend.present?
+    @json['object'] == ActivityPub::TagManager::COLLECTIONS[:public] && !block_friend?
+  end
+
+  def block_friend?
+    @block_friend ||= DomainBlock.reject_friend?(@account.domain) || DomainBlock.suspend?(@account.domain)
   end
 
   def block_straight_follow?

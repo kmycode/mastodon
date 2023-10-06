@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_05_074832) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_06_030102) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -584,6 +584,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_05_074832) do
     t.boolean "hidden_anonymous", default: false, null: false
     t.boolean "detect_invalid_subscription", default: false, null: false
     t.boolean "reject_reply_exclude_followers", default: false, null: false
+    t.boolean "reject_friend", default: false, null: false
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
   end
 
@@ -683,8 +684,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_05_074832) do
     t.integer "passive_state", default: 0, null: false
     t.string "active_follow_activity_id"
     t.string "passive_follow_activity_id"
+    t.boolean "available", default: true, null: false
     t.boolean "public_unlisted", default: true, null: false
     t.boolean "pseudo_relay", default: false, null: false
+    t.boolean "unlocked", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["domain"], name: "index_friend_domains_on_domain", unique: true

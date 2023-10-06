@@ -11,8 +11,10 @@
 #  passive_state              :integer          default("idle"), not null
 #  active_follow_activity_id  :string
 #  passive_follow_activity_id :string
+#  available                  :boolean          default(TRUE), not null
 #  public_unlisted            :boolean          default(TRUE), not null
 #  pseudo_relay               :boolean          default(FALSE), not null
+#  unlocked                   :boolean          default(FALSE), not null
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #

@@ -28,6 +28,7 @@
 #  hidden_anonymous                     :boolean          default(FALSE), not null
 #  detect_invalid_subscription          :boolean          default(FALSE), not null
 #  reject_reply_exclude_followers       :boolean          default(FALSE), not null
+#  reject_friend                        :boolean          default(FALSE), not null
 #
 
 class DomainBlock < ApplicationRecord
@@ -44,7 +45,16 @@ class DomainBlock < ApplicationRecord
 
   scope :matches_domain, ->(value) { where(arel_table[:domain].matches("%#{value}%")) }
   scope :with_user_facing_limitations, -> { where(hidden: false) }
-  scope :with_limitations, -> { where(severity: [:silence, :suspend]).or(where(reject_media: true)).or(where(reject_favourite: true)).or(where(reject_reply: true)).or(where(reject_reply_exclude_followers: true)).or(where(reject_new_follow: true)).or(where(reject_straight_follow: true)) }
+  scope :with_limitations, lambda {
+    where(severity: [:silence, :suspend])
+      .or(where(reject_media: true))
+      .or(where(reject_favourite: true))
+      .or(where(reject_reply: true))
+      .or(where(reject_reply_exclude_followers: true))
+      .or(where(reject_new_follow: true))
+      .or(where(reject_straight_follow: true))
+      .or(where(reject_friend: true))
+  }
   scope :by_severity, -> { order(Arel.sql('(CASE severity WHEN 0 THEN 1 WHEN 1 THEN 2 WHEN 2 THEN 0 END), domain')) }
 
   def to_log_human_identifier
@@ -68,6 +78,7 @@ class DomainBlock < ApplicationRecord
        reject_hashtag? ? :reject_hashtag : nil,
        reject_straight_follow? ? :reject_straight_follow : nil,
        reject_new_follow? ? :reject_new_follow : nil,
+       reject_friend? ? :reject_friend : nil,
        detect_invalid_subscription? ? :detect_invalid_subscription : nil,
        reject_reports? ? :reject_reports : nil].reject { |policy| policy == :noop || policy.nil? }
     end
@@ -108,6 +119,10 @@ class DomainBlock < ApplicationRecord
 
     def reject_new_follow?(domain)
       !!rule_for(domain)&.reject_new_follow?
+    end
+
+    def reject_friend?(domain)
+      !!rule_for(domain)&.reject_friend?
     end
 
     def detect_invalid_subscription?(domain)

@@ -275,5 +275,34 @@ RSpec.describe ActivityPub::Activity::Follow do
       expect(friend.reload.they_are_pending?).to be true
       expect(friend.passive_follow_activity_id).to eq 'foo'
     end
+
+    context 'when no record' do
+      before do
+        friend.update(domain: 'def.com')
+      end
+
+      it 'marks the friend as pending' do
+        subject.perform
+
+        friend = FriendDomain.find_by(domain: 'abc.com')
+        expect(friend).to_not be_nil
+        expect(friend.they_are_pending?).to be true
+        expect(friend.passive_follow_activity_id).to eq 'foo'
+      end
+    end
+
+    context 'when domain blocked' do
+      before do
+        friend.update(domain: 'def.com')
+      end
+
+      it 'marks the friend rejected' do
+        Fabricate(:domain_block, domain: 'abc.com', reject_friend: true)
+        subject.perform
+
+        friend = FriendDomain.find_by(domain: 'abc.com')
+        expect(friend).to be_nil
+      end
+    end
   end
 end

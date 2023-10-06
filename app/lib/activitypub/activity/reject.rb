@@ -43,7 +43,7 @@ class ActivityPub::Activity::Reject < ActivityPub::Activity
   end
 
   def friend
-    @friend ||= FriendDomain.find_by(domain: @account.domain, active_follow_activity_id: object_uri) if @account.domain.present?
+    @friend ||= FriendDomain.find_by(domain: @account.domain, active_follow_activity_id: object_uri, active_state: [:pending, :accepted]) if @account.domain.present?
   end
 
   def friend_follow?
