@@ -10,9 +10,11 @@ RSpec.describe BlockDomainService, type: :service do
   let!(:bad_status_with_attachment) { Fabricate(:status, account: bad_account, text: 'Hahaha') }
   let!(:bad_attachment) { Fabricate(:media_attachment, account: bad_account, status: bad_status_with_attachment, file: attachment_fixture('attachment.jpg')) }
   let!(:already_banned_account) { Fabricate(:account, username: 'badguy', domain: 'evil.org', suspended: true, silenced: true) }
+  let!(:bad_friend) { Fabricate(:friend_domain, domain: 'evil.org', inbox_url: 'https://evil.org/inbox', active_state: :accepted, passive_state: :accepted) }
 
   describe 'for a suspension' do
     before do
+      stub_request(:post, 'https://evil.org/inbox')
       subject.call(DomainBlock.create!(domain: 'evil.org', severity: :suspend))
     end
 
@@ -40,6 +42,21 @@ RSpec.describe BlockDomainService, type: :service do
       expect { bad_status_plain.reload }.to raise_exception ActiveRecord::RecordNotFound
       expect { bad_status_with_attachment.reload }.to raise_exception ActiveRecord::RecordNotFound
       expect { bad_attachment.reload }.to raise_exception ActiveRecord::RecordNotFound
+    end
+
+    it 'removes remote friend from that domain' do
+      expect(FriendDomain.find_by(domain: 'evil.org')).to be_nil
+    end
+  end
+
+  describe 'for rejecting friend only' do
+    before do
+      stub_request(:post, 'https://evil.org/inbox')
+      subject.call(DomainBlock.create!(domain: 'evil.org', severity: :noop, reject_friend: true))
+    end
+
+    it 'removes remote friend from that domain' do
+      expect(FriendDomain.find_by(domain: 'evil.org')).to be_nil
     end
   end
 

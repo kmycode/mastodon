@@ -62,7 +62,7 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
   end
 
   def block_friend?
-    @block_friend ||= DomainBlock.reject_friend?(@account.domain) || DomainBlock.suspend?(@account.domain)
+    @block_friend ||= DomainBlock.reject_friend?(@account.domain) || DomainBlock.blocked?(@account.domain)
   end
 
   def block_straight_follow?

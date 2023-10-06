@@ -26,6 +26,8 @@ class FriendDomain < ApplicationRecord
   enum active_state: { idle: 0, pending: 1, accepted: 2, rejected: 3 }, _prefix: :i_am
   enum passive_state: { idle: 0, pending: 1, accepted: 2, rejected: 3 }, _prefix: :they_are
 
+  scope :by_domain_and_subdomains, ->(domain) { where(domain: Instance.by_domain_and_subdomains(domain).select(:domain)) }
+
   before_destroy :ensure_disabled
   after_commit :set_default_inbox_url
 
