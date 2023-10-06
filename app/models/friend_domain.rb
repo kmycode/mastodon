@@ -145,7 +145,6 @@ class FriendDomain < ApplicationRecord
   end
 
   def ensure_disabled
-    disable! if i_am_pending? || i_am_accepted?
     delete_for_friend!
   end
 

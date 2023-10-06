@@ -14,7 +14,9 @@ RSpec.describe BlockDomainService, type: :service do
 
   describe 'for a suspension' do
     before do
-      stub_request(:post, 'https://evil.org/inbox')
+      stub_request(:post, 'https://evil.org/inbox').with(body: hash_including({
+        type: 'Delete',
+      }))
       subject.call(DomainBlock.create!(domain: 'evil.org', severity: :suspend))
     end
 
