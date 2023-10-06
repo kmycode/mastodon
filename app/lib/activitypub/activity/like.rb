@@ -39,7 +39,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
 
       image_url = emoji_tag['icon']['url']
       uri       = emoji_tag['id']
-      domain    = URI.split(uri)[2]
+      domain    = emoji_tag['domain'] || URI.split(uri)[2]
 
       emoji = CustomEmoji.find_or_create_by!(shortcode: shortcode, domain: domain) do |emoji_data|
         emoji_data.uri              = uri
