@@ -43,6 +43,35 @@ RSpec.describe ActivityPub::Activity::Accept do
     end
   end
 
+  context 'when sender is from friend server' do
+    subject { described_class.new(json, sender) }
+
+    let(:sender) { Fabricate(:account, domain: 'abc.com', url: 'https://abc.com/#actor') }
+    let!(:friend) { Fabricate(:friend_domain, domain: 'abc.com', active_state: :pending, active_follow_activity_id: 'https://abc-123/456') }
+
+    before do
+      allow(RemoteAccountRefreshWorker).to receive(:perform_async)
+      Fabricate(:follow_request, account: recipient, target_account: sender)
+      subject.perform
+    end
+
+    it 'creates a follow relationship' do
+      expect(recipient.following?(sender)).to be true
+    end
+
+    it 'removes the follow request' do
+      expect(recipient.requested?(sender)).to be false
+    end
+
+    it 'queues a refresh' do
+      expect(RemoteAccountRefreshWorker).to have_received(:perform_async).with(sender.id)
+    end
+
+    it 'friend server is not changed' do
+      expect(friend.reload.i_am_pending?).to be true
+    end
+  end
+
   context 'when given a relay' do
     subject { described_class.new(json, sender) }
 
