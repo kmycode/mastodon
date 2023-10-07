@@ -30,6 +30,6 @@ class ActivityPub::Parser::CustomEmojiParser
   end
 
   def license
-    @json['license']
+    @json['license'] || @json['licence']
   end
 end

@@ -74,6 +74,7 @@ RSpec.describe ActivityPub::Activity::Like do
             url: 'http://example.com/emoji.png',
           },
           name: 'tinking',
+          license: 'Everyone but Ohagi',
         }
       end
 
@@ -85,6 +86,10 @@ RSpec.describe ActivityPub::Activity::Like do
         expect(subject.first.custom_emoji.shortcode).to eq 'tinking'
         expect(subject.first.custom_emoji.domain).to eq 'example.com'
         expect(sender.favourited?(status)).to be false
+      end
+
+      it 'custom emoji license is saved' do
+        expect(subject.first.custom_emoji.license).to eq 'Everyone but Ohagi'
       end
     end
 
