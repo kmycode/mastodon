@@ -167,6 +167,44 @@ RSpec.describe ActivityPub::Activity::Like do
       end
     end
 
+    context 'with unicode emoji and reject_media enabled' do
+      let(:content) { '😀' }
+
+      before do
+        Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_media: true)
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 1
+        expect(subject.first.name).to eq '😀'
+        expect(subject.first.account).to eq sender
+        expect(sender.favourited?(status)).to be false
+      end
+    end
+
+    context 'with custom emoji and reject_media enabled' do
+      let(:content) { ':tinking:' }
+      let(:tag) do
+        {
+          id: 'https://example.com/aaa',
+          type: 'Emoji',
+          icon: {
+            url: 'http://example.com/emoji.png',
+          },
+          name: 'tinking',
+        }
+      end
+
+      before do
+        Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_media: true)
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 0
+        expect(sender.favourited?(status)).to be false
+      end
+    end
+
     context 'when emoji reaction is disabled' do
       let(:content) { '😀' }
 

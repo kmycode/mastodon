@@ -89,8 +89,6 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
   end
 
   def process_emoji(tag)
-    return if skip_download?
-
     custom_emoji_parser = ActivityPub::Parser::CustomEmojiParser.new(tag)
 
     return if custom_emoji_parser.shortcode.blank? || custom_emoji_parser.image_remote_url.blank?
@@ -101,6 +99,8 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
 
     domain = emoji_tag['domain'] || URI.split(custom_emoji_parser.uri)[2] || @account.domain
     domain = nil if domain == Rails.configuration.x.local_domain || domain == Rails.configuration.x.web_domain
+
+    return if domain.present? && skip_download?(domain)
 
     begin
       emoji ||= CustomEmoji.new(
@@ -119,10 +119,8 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
     emoji
   end
 
-  def skip_download?
-    return @skip_download if defined?(@skip_download)
-
-    @skip_download ||= DomainBlock.reject_media?(@account.domain)
+  def skip_download?(domain)
+    DomainBlock.reject_media?(domain)
   end
 
   def misskey_favourite?
