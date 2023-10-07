@@ -269,7 +269,7 @@ RSpec.describe ActivityPub::Activity::Like do
       subject.perform
     end
 
-    it 'does not create a favourite from sender to status', pending: 'considering spec' do
+    it 'does not create a favourite from sender to status' do
       expect(sender.favourited?(status)).to be false
     end
   end

@@ -7,7 +7,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
   def perform
     @original_status = status_from_uri(object_uri)
 
-    return if @original_status.nil? || delete_arrived_first?(@json['id']) || reject_favourite?
+    return if @original_status.nil? || delete_arrived_first?(@json['id']) || block_domain? || reject_favourite?
 
     if shortcode.nil? || !Setting.enable_emoji_reaction
       process_favourite
@@ -121,6 +121,10 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
 
   def skip_download?(domain)
     DomainBlock.reject_media?(domain)
+  end
+
+  def block_domain?
+    DomainBlock.blocked?(@account.domain)
   end
 
   def misskey_favourite?
