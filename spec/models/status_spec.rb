@@ -571,5 +571,34 @@ RSpec.describe Status do
       status.reload
       expect(status.uri).to start_with('https://')
     end
+
+    it 'saves as searchable by followers' do
+      status = described_class.create(account: alice, text: 'foo', searchability: :public)
+      expect(status.account.account_stat.searchable_by_follower).to be true
+    end
+  end
+
+  describe 'after destroy' do
+    it 'saves as not searchable by followers' do
+      status = described_class.create(account: alice, text: 'foo', searchability: :public)
+      status.destroy
+      expect(status.account.account_stat.searchable_by_follower).to be false
+    end
+
+    it 'on multiple posts' do
+      status1 = described_class.create(account: alice, text: 'foo', searchability: :public)
+      status2 = described_class.create(account: alice, text: 'foo', searchability: :public)
+      status3 = described_class.create(account: alice, text: 'foo', searchability: :public)
+      status4 = described_class.create(account: alice, text: 'foo', searchability: :public)
+      status5 = described_class.create(account: alice, text: 'foo', searchability: :public)
+      status1.destroy
+      status2.destroy
+      status3.destroy
+      expect(alice.account_stat.searchable_by_follower).to be true
+      status4.destroy
+      expect(alice.account_stat.searchable_by_follower).to be true
+      status5.destroy
+      expect(alice.account_stat.searchable_by_follower).to be false
+    end
   end
 end
