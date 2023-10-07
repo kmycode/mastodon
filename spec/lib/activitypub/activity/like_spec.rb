@@ -113,6 +113,50 @@ RSpec.describe ActivityPub::Activity::Like do
       end
     end
 
+    context 'with custom emoji but invalid id' do
+      let(:content) { 'ohagi' }
+      let(:tag) do
+        {
+          id: 'aaa',
+          type: 'Emoji',
+          icon: {
+            url: 'http://example.com/emoji.png',
+          },
+          name: 'tinking',
+        }
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 0
+        expect(sender.favourited?(status)).to be false
+      end
+    end
+
+    context 'with custom emoji but local domain' do
+      let(:content) { 'ohagi' }
+      let(:tag) do
+        {
+          id: 'aaa',
+          type: 'Emoji',
+          domain: Rails.configuration.x.local_domain,
+          icon: {
+            url: 'http://example.com/emoji.png',
+          },
+          name: 'tinking',
+        }
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 1
+        expect(subject.first.name).to eq 'ohagi'
+        expect(subject.first.account).to eq sender
+        expect(subject.first.custom_emoji).to_not be_nil
+        expect(subject.first.custom_emoji.shortcode).to eq 'ohagi'
+        expect(subject.first.custom_emoji.domain).to be_nil
+        expect(sender.favourited?(status)).to be false
+      end
+    end
+
     context 'when emoji reaction is disabled' do
       let(:content) { '😀' }
 
