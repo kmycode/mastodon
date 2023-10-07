@@ -65,7 +65,7 @@ RSpec.describe ActivityPub::Activity::Like do
     end
 
     context 'with custom emoji' do
-      let(:content) { 'ohagi' }
+      let(:content) { ':tinking:' }
       let(:tag) do
         {
           id: 'https://example.com/aaa',
@@ -79,17 +79,17 @@ RSpec.describe ActivityPub::Activity::Like do
 
       it 'create emoji reaction' do
         expect(subject.count).to eq 1
-        expect(subject.first.name).to eq 'ohagi'
+        expect(subject.first.name).to eq 'tinking'
         expect(subject.first.account).to eq sender
         expect(subject.first.custom_emoji).to_not be_nil
-        expect(subject.first.custom_emoji.shortcode).to eq 'ohagi'
+        expect(subject.first.custom_emoji.shortcode).to eq 'tinking'
         expect(subject.first.custom_emoji.domain).to eq 'example.com'
         expect(sender.favourited?(status)).to be false
       end
     end
 
     context 'with custom emoji and custom domain' do
-      let(:content) { 'ohagi' }
+      let(:content) { ':tinking:' }
       let(:tag) do
         {
           id: 'https://example.com/aaa',
@@ -104,17 +104,17 @@ RSpec.describe ActivityPub::Activity::Like do
 
       it 'create emoji reaction' do
         expect(subject.count).to eq 1
-        expect(subject.first.name).to eq 'ohagi'
+        expect(subject.first.name).to eq 'tinking'
         expect(subject.first.account).to eq sender
         expect(subject.first.custom_emoji).to_not be_nil
-        expect(subject.first.custom_emoji.shortcode).to eq 'ohagi'
+        expect(subject.first.custom_emoji.shortcode).to eq 'tinking'
         expect(subject.first.custom_emoji.domain).to eq 'post.kmycode.net'
         expect(sender.favourited?(status)).to be false
       end
     end
 
     context 'with custom emoji but invalid id' do
-      let(:content) { 'ohagi' }
+      let(:content) { ':tinking:' }
       let(:tag) do
         {
           id: 'aaa',
@@ -127,13 +127,18 @@ RSpec.describe ActivityPub::Activity::Like do
       end
 
       it 'create emoji reaction' do
-        expect(subject.count).to eq 0
+        expect(subject.count).to eq 1
+        expect(subject.first.name).to eq 'tinking'
+        expect(subject.first.account).to eq sender
+        expect(subject.first.custom_emoji).to_not be_nil
+        expect(subject.first.custom_emoji.shortcode).to eq 'tinking'
+        expect(subject.first.custom_emoji.domain).to eq 'example.com'
         expect(sender.favourited?(status)).to be false
       end
     end
 
     context 'with custom emoji but local domain' do
-      let(:content) { 'ohagi' }
+      let(:content) { ':tinking:' }
       let(:tag) do
         {
           id: 'aaa',
@@ -148,10 +153,10 @@ RSpec.describe ActivityPub::Activity::Like do
 
       it 'create emoji reaction' do
         expect(subject.count).to eq 1
-        expect(subject.first.name).to eq 'ohagi'
+        expect(subject.first.name).to eq 'tinking'
         expect(subject.first.account).to eq sender
         expect(subject.first.custom_emoji).to_not be_nil
-        expect(subject.first.custom_emoji.shortcode).to eq 'ohagi'
+        expect(subject.first.custom_emoji.shortcode).to eq 'tinking'
         expect(subject.first.custom_emoji.domain).to be_nil
         expect(sender.favourited?(status)).to be false
       end
