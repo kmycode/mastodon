@@ -340,6 +340,25 @@ RSpec.describe ActivityPub::Activity::Follow do
       end
     end
 
+    context 'when unlocked' do
+      before do
+        friend.update(unlocked: true)
+        stub_request(:post, 'https://example.com/inbox').with(body: hash_including({
+          id: 'foo#accepts/friends',
+          type: 'Accept',
+          object: 'foo',
+        }))
+      end
+
+      it 'marks the friend as pending' do
+        subject.perform
+
+        friend = FriendDomain.find_by(domain: 'abc.com')
+        expect(friend).to_not be_nil
+        expect(friend.they_are_accepted?).to be true
+      end
+    end
+
     context 'when domain blocked' do
       before do
         friend.update(domain: 'def.com')

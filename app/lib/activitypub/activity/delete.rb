@@ -4,6 +4,8 @@ class ActivityPub::Activity::Delete < ActivityPub::Activity
   def perform
     if @account.uri == object_uri
       delete_person
+    elsif object_uri == ActivityPub::TagManager::COLLECTIONS[:public]
+      delete_friend
     else
       delete_note
     end
@@ -40,6 +42,11 @@ class ActivityPub::Activity::Delete < ActivityPub::Activity
       forwarder.forward! if forwarder.forwardable?
       delete_now!
     end
+  end
+
+  def delete_friend
+    friend = FriendDomain.find_by(domain: @account.domain)
+    friend&.destroy
   end
 
   def forwarder

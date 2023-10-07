@@ -27,6 +27,8 @@ class FriendDomain < ApplicationRecord
   enum passive_state: { idle: 0, pending: 1, accepted: 2, rejected: 3 }, _prefix: :they_are
 
   scope :by_domain_and_subdomains, ->(domain) { where(domain: Instance.by_domain_and_subdomains(domain).select(:domain)) }
+  scope :mutuals, -> { where(active_state: :accepted, passive_state: :accepted) }
+  scope :distributable, -> { mutuals.where(available: true, pseudo_relay: true) }
 
   before_destroy :ensure_disabled
   after_commit :set_default_inbox_url
@@ -74,7 +76,7 @@ class FriendDomain < ApplicationRecord
   private
 
   def default_inbox_url
-    Account.where(domain: domain).first&.inbox_url || "https://#{domain}/inbox"
+    "https://#{domain}/inbox"
   end
 
   def delete_for_friend!
@@ -136,7 +138,7 @@ class FriendDomain < ApplicationRecord
       id: "#{activity_id}#delete/friends",
       type: 'Delete',
       actor: ActivityPub::TagManager.instance.uri_for(some_local_account),
-      object: activity_id,
+      object: ActivityPub::TagManager::COLLECTIONS[:public],
     }
   end
 
@@ -145,7 +147,7 @@ class FriendDomain < ApplicationRecord
   end
 
   def ensure_disabled
-    delete_for_friend!
+    delete_for_friend! unless i_am_idle? && they_are_idle?
   end
 
   def set_default_inbox_url

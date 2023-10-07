@@ -49,12 +49,14 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
     if friend.present?
       friend.update!(passive_state: :pending, passive_follow_activity_id: @json['id'])
     else
-      FriendDomain.create!(domain: @account.domain, passive_state: :pending, passive_follow_activity_id: @json['id'])
+      @friend = FriendDomain.create!(domain: @account.domain, passive_state: :pending, passive_follow_activity_id: @json['id'])
     end
+
+    friend.accept! if friend.unlocked
   end
 
   def friend
-    @friend ||= FriendDomain.find_by(domain: @account.domain, passive_state: [:idle, :pending]) if @account.domain.present?
+    @friend ||= FriendDomain.find_by(domain: @account.domain) if @account.domain.present?
   end
 
   def friend_follow?
