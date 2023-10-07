@@ -256,17 +256,20 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
     emoji = CustomEmoji.find_by(shortcode: custom_emoji_parser.shortcode, domain: @account.domain)
 
-    return unless emoji.nil? || custom_emoji_parser.image_remote_url != emoji.image_remote_url || (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at)
+    return unless emoji.nil? ||
+                  custom_emoji_parser.image_remote_url != emoji.image_remote_url ||
+                  (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at) ||
+                  custom_emoji_parser.license != emoji.license
 
     begin
       emoji ||= CustomEmoji.new(
         domain: @account.domain,
         shortcode: custom_emoji_parser.shortcode,
-        uri: custom_emoji_parser.uri,
-        is_sensitive: custom_emoji_parser.is_sensitive,
-        license: custom_emoji_parser.license
+        uri: custom_emoji_parser.uri
       )
       emoji.image_remote_url = custom_emoji_parser.image_remote_url
+      emoji.license = custom_emoji_parser.license
+      emoji.is_sensitive = custom_emoji_parser.is_sensitive
       emoji.save
     rescue Seahorse::Client::NetworkingError => e
       Rails.logger.warn "Error storing emoji: #{e}"

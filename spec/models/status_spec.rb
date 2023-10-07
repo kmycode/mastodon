@@ -137,6 +137,15 @@ RSpec.describe Status do
       end
     end
 
+    context 'when public-public_unlisted but silenced' do
+      let(:silenced_at) { Time.now.utc }
+      let(:status_searchability) { :public_unlisted }
+
+      it 'returns private' do
+        expect(subject.compute_searchability).to eq 'private'
+      end
+    end
+
     context 'when public-private' do
       let(:status_searchability) { :private }
 
@@ -213,6 +222,24 @@ RSpec.describe Status do
 
       it 'returns public' do
         expect(subject.compute_searchability).to eq 'public'
+      end
+    end
+
+    context 'when public-public_unlisted of local account' do
+      let(:account_searchability) { :public }
+      let(:account_domain) { nil }
+      let(:status_searchability) { :public_unlisted }
+
+      it 'returns public' do
+        expect(subject.compute_searchability).to eq 'public'
+      end
+
+      it 'returns public_unlisted for local' do
+        expect(subject.compute_searchability_local).to eq 'public_unlisted'
+      end
+
+      it 'returns private for activitypub' do
+        expect(subject.compute_searchability_activitypub).to eq 'private'
       end
     end
   end

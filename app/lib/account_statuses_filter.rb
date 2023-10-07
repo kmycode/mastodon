@@ -26,7 +26,7 @@ class AccountStatusesFilter
     scope.merge!(no_reblogs_scope) if exclude_reblogs?
     scope.merge!(hashtag_scope)    if tagged?
 
-    available_searchabilities = [:public, :unlisted, :private, :direct, :limited, nil]
+    available_searchabilities = [:public, :public_unlisted, :unlisted, :private, :direct, :limited, nil]
     available_visibilities = [:public, :public_unlisted, :login, :unlisted, :private, :direct, :limited]
 
     available_searchabilities = [:public] if domain_block&.reject_send_not_public_searchability

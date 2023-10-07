@@ -64,8 +64,10 @@ class DeliveryAntennaService
         next if antenna.exclude_accounts&.include?(@status.account_id)
         next if antenna.exclude_domains&.include?(domain)
         next if antenna.exclude_tags&.any? { |tag_id| tag_ids.include?(tag_id) }
-        next if @status.unlisted_visibility? && !@status.public_searchability? && follower_ids.exclude?(antenna.account_id)
-        next if @status.unlisted_visibility? && @status.public_searchability? && follower_ids.exclude?(antenna.account_id) && antenna.any_keywords && antenna.any_tags
+
+        searchability = @status.compute_searchability
+        next if @status.unlisted_visibility? && searchability != 'public' && follower_ids.exclude?(antenna.account_id)
+        next if @status.unlisted_visibility? && searchability == 'public' && follower_ids.exclude?(antenna.account_id) && antenna.any_keywords && antenna.any_tags
 
         collection.push(antenna)
       end
@@ -121,7 +123,7 @@ class DeliveryAntennaService
     when :public, :public_unlisted, :login, :limited
       false
     when :unlisted
-      !@status.public_searchability?
+      @status.compute_searchability != 'public'
     else
       true
     end

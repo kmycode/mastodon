@@ -63,6 +63,45 @@ describe StatusesSearchService do
       end
     end
 
+    context 'when public_unlisted searchability' do
+      let(:searchability) { :public_unlisted }
+      let(:account) { other }
+
+      context 'with other account' do
+        it 'search status' do
+          expect(subject.count).to eq 1
+          expect(subject).to include status.id
+        end
+      end
+
+      context 'with follower' do
+        let(:account) { following }
+
+        it 'search status' do
+          expect(subject.count).to eq 1
+          expect(subject).to include status.id
+        end
+      end
+
+      context 'with reacted user' do
+        let(:account) { reacted }
+
+        it 'search status' do
+          expect(subject.count).to eq 1
+          expect(subject).to include status.id
+        end
+      end
+
+      context 'with self' do
+        let(:account) { alice }
+
+        it 'search status' do
+          expect(subject.count).to eq 1
+          expect(subject).to include status.id
+        end
+      end
+    end
+
     context 'when private searchability' do
       let(:searchability) { :private }
       let(:account) { other }

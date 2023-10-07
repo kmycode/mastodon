@@ -714,6 +714,8 @@
   "searchability.private.short": "反応者のみ",
   "searchability.public.long": "この投稿は誰でも検索できます",
   "searchability.public.short": "誰でも",
+  "searchability.public_unlisted.long": "ローカルユーザーとフォロワーが検索できます",
+  "searchability.public_unlisted.short": "ローカルとフォロワー",
   "searchability.unlisted.long": "この投稿はあなたのフォロワーと反応者だけが検索できます",
   "searchability.unlisted.short": "フォロワーと反応者",
   "search_popout.domain": "ドメイン",

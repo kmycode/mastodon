@@ -91,14 +91,32 @@ describe TagFeed, type: :service do
       expect(results).to include status_tagged_with_cats
     end
 
+    it 'unlisted/public_unlisted_searchability post returns' do
+      status_tagged_with_cats.update(visibility: :unlisted, searchability: :public_unlisted)
+      results = described_class.new(tag_cats, nil).get(20)
+      expect(results).to include status_tagged_with_cats
+    end
+
     it 'unlisted/public_searchability post returns with account' do
       status_tagged_with_cats.update(visibility: :unlisted, searchability: :public)
       results = described_class.new(tag_cats, account).get(20)
       expect(results).to include status_tagged_with_cats
     end
 
+    it 'unlisted/public_unlisted_searchability post returns with account' do
+      status_tagged_with_cats.update(visibility: :unlisted, searchability: :public_unlisted)
+      results = described_class.new(tag_cats, account).get(20)
+      expect(results).to include status_tagged_with_cats
+    end
+
     it 'private post not returns' do
       status_tagged_with_cats.update(visibility: :private, searchability: :public)
+      results = described_class.new(tag_cats, nil).get(20)
+      expect(results).to_not include status_tagged_with_cats
+    end
+
+    it 'private, public_unlisted post not returns' do
+      status_tagged_with_cats.update(visibility: :private, searchability: :public_unlisted)
       results = described_class.new(tag_cats, nil).get(20)
       expect(results).to_not include status_tagged_with_cats
     end

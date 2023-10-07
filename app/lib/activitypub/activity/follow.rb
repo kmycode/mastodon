@@ -32,7 +32,7 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
 
     follow_request = FollowRequest.create!(account: @account, target_account: target_account, uri: @json['id'])
 
-    if target_account.locked? || @account.silenced? || block_straight_follow? || (@account.bot? && target_account.user&.setting_lock_follow_from_bot)
+    if target_account.locked? || @account.silenced? || block_straight_follow? || ((@account.bot? || proxy_account?) && target_account.user&.setting_lock_follow_from_bot)
       LocalNotificationWorker.perform_async(target_account.id, follow_request.id, 'FollowRequest', 'follow_request')
     else
       AuthorizeFollowService.new.call(@account, target_account)
@@ -71,5 +71,28 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
 
   def block_new_follow?
     @block_new_follow ||= DomainBlock.reject_new_follow?(@account.domain)
+  end
+
+  def proxy_account?
+    (@account.username.downcase.include?('_proxy') ||
+     @account.username.downcase.end_with?('proxy') ||
+     @account.username.downcase.include?('_bot_') ||
+     @account.username.downcase.end_with?('bot') ||
+     @account.display_name&.downcase&.include?('proxy') ||
+     @account.display_name&.include?('プロキシ') ||
+     @account.note&.include?('プロキシ')) &&
+      (@account.following_count.zero? || @account.following_count > @account.followers_count) &&
+      proxyable_software?
+  end
+
+  def proxyable_software?
+    info = instance_info
+    return false if info.nil?
+
+    %w(misskey calckey firefish meisskey cherrypick).include?(info.software)
+  end
+
+  def instance_info
+    @instance_info ||= InstanceInfo.find_by(domain: @account.domain)
   end
 end

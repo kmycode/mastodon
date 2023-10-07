@@ -629,6 +629,8 @@
   "searchability.private.short": "Reactionners",
   "searchability.public.long": "Anyone can find",
   "searchability.public.short": "Everyone",
+  "searchability.public_unlisted.long": "Local users and followers can find",
+  "searchability.public_unlisted.short": "Local and followers",
   "searchability.unlisted.long": "Your followers and reactionners can find",
   "searchability.unlisted.short": "Followers and reactionners",
   "search_popout.domain": "domain",

@@ -21,6 +21,8 @@ module ActivityPub::CaseTransform
                                        value
                                      elsif value.start_with?('_:')
                                        "_:#{value.delete_prefix('_:').underscore.camelize(:lower)}"
+                                     elsif LanguagesHelper::ISO_639_1_REGIONAL.key?(value.to_sym) # rubocop:disable Lint/DuplicateBranch
+                                       value
                                      else
                                        value.underscore.camelize(:lower)
                                      end

@@ -7,7 +7,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
   def perform
     @original_status = status_from_uri(object_uri)
 
-    return if @original_status.nil? || delete_arrived_first?(@json['id']) || reject_favourite?
+    return if @original_status.nil? || delete_arrived_first?(@json['id']) || block_domain? || reject_favourite?
 
     if shortcode.nil? || !Setting.enable_emoji_reaction
       process_favourite
@@ -34,19 +34,11 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
   def process_emoji_reaction
     return if !@original_status.account.local? && !Setting.receive_other_servers_emoji_reaction
 
+    # custom emoji
+    emoji = nil
     if emoji_tag.present?
-      return if emoji_tag['id'].blank? || emoji_tag['name'].blank? || emoji_tag['icon'].blank? || emoji_tag['icon']['url'].blank?
-
-      image_url = emoji_tag['icon']['url']
-      uri       = emoji_tag['id']
-      domain    = URI.split(uri)[2]
-
-      emoji = CustomEmoji.find_or_create_by!(shortcode: shortcode, domain: domain) do |emoji_data|
-        emoji_data.uri              = uri
-        emoji_data.image_remote_url = image_url
-      end
-
-      Trends.statuses.register(@original_status)
+      emoji = process_emoji(emoji_tag)
+      return if emoji.nil?
     end
 
     reaction = nil
@@ -58,6 +50,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
       reaction = @original_status.emoji_reactions.create!(account: @account, name: shortcode, custom_emoji: emoji, uri: @json['id'])
     end
 
+    Trends.statuses.register(@original_status)
     write_stream(reaction)
 
     if @original_status.account.local?
@@ -93,6 +86,47 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
         @json['content']&.delete(':')
       end
     end
+  end
+
+  def process_emoji(tag)
+    custom_emoji_parser = ActivityPub::Parser::CustomEmojiParser.new(tag)
+
+    return if custom_emoji_parser.shortcode.blank? || custom_emoji_parser.image_remote_url.blank?
+
+    domain = tag['domain'] || URI.split(custom_emoji_parser.uri)[2] || @account.domain
+    domain = nil if domain == Rails.configuration.x.local_domain || domain == Rails.configuration.x.web_domain
+    return if domain.present? && skip_download?(domain)
+
+    emoji = CustomEmoji.find_by(shortcode: custom_emoji_parser.shortcode, domain: domain)
+
+    return emoji unless emoji.nil? ||
+                        custom_emoji_parser.image_remote_url != emoji.image_remote_url ||
+                        (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at) ||
+                        custom_emoji_parser.license != emoji.license
+
+    begin
+      emoji ||= CustomEmoji.new(
+        domain: domain,
+        shortcode: custom_emoji_parser.shortcode,
+        uri: custom_emoji_parser.uri
+      )
+      emoji.image_remote_url = custom_emoji_parser.image_remote_url
+      emoji.license = custom_emoji_parser.license
+      emoji.is_sensitive = custom_emoji_parser.is_sensitive
+      emoji.save
+    rescue Seahorse::Client::NetworkingError => e
+      Rails.logger.warn "Error storing emoji: #{e}"
+    end
+
+    emoji
+  end
+
+  def skip_download?(domain)
+    DomainBlock.reject_media?(domain)
+  end
+
+  def block_domain?
+    DomainBlock.blocked?(@account.domain)
   end
 
   def misskey_favourite?

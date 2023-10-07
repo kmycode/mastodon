@@ -67,6 +67,22 @@ describe StatusReachFinder do
           end
         end
 
+        context 'when misskey with public_unlisted searchability' do
+          let(:sender_software) { 'misskey' }
+          let(:searchability) { :public_unlisted }
+
+          it 'send status without setting' do
+            expect(subject.inboxes).to include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_misskey).to_not include 'https://foo.bar/inbox'
+          end
+
+          it 'send status with setting' do
+            alice.user.settings.update(reject_unlisted_subscription: 'true')
+            expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_misskey).to include 'https://foo.bar/inbox'
+          end
+        end
+
         context 'when misskey with public searchability' do
           let(:sender_software) { 'misskey' }
 

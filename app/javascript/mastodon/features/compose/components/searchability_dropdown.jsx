@@ -15,6 +15,8 @@ import { IconButton } from '../../../components/icon_button';
 const messages = defineMessages({
   public_short: { id: 'searchability.public.short', defaultMessage: 'Public' },
   public_long: { id: 'searchability.public.long', defaultMessage: 'Anyone can find' },
+  public_unlisted_short: { id: 'searchability.public_unlisted.short', defaultMessage: 'Public unlisted' },
+  public_unlisted_long: { id: 'searchability.public_unlisted.long', defaultMessage: 'Local users and followers can find' },
   private_short: { id: 'searchability.unlisted.short', defaultMessage: 'Followers' },
   private_long: { id: 'searchability.unlisted.long', defaultMessage: 'Your followers can find' },
   direct_short: { id: 'searchability.private.short', defaultMessage: 'Reactionners' },
@@ -223,6 +225,7 @@ class SearchabilityDropdown extends PureComponent {
 
     this.options = [
       { icon: 'globe', value: 'public', text: formatMessage(messages.public_short), meta: formatMessage(messages.public_long) },
+      { icon: 'cloud', value: 'public_unlisted', text: formatMessage(messages.public_unlisted_short), meta: formatMessage(messages.public_unlisted_long) },
       { icon: 'unlock', value: 'private', text: formatMessage(messages.private_short), meta: formatMessage(messages.private_long) },
       { icon: 'lock', value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
       { icon: 'at', value: 'limited', text: formatMessage(messages.limited_short), meta: formatMessage(messages.limited_long) },

@@ -2,6 +2,7 @@
 
 class NodeInfo::Serializer < ActiveModel::Serializer
   include RoutingHelper
+  include KmyblueCapabilitiesHelper
 
   attributes :version, :software, :protocols, :services, :usage, :open_registrations, :metadata
 
@@ -38,7 +39,9 @@ class NodeInfo::Serializer < ActiveModel::Serializer
   end
 
   def metadata
-    {}
+    {
+      fedibird_capabilities: fedibird_capabilities,
+    }
   end
 
   private

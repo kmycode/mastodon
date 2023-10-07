@@ -23,7 +23,7 @@ class Importer::StatusesIndexImporter < Importer::BaseImporter
             to_index.map do |object|
               # This is unlikely to happen, but the post may have been
               # un-interacted with since it was queued for indexing
-              if object.searchable_by.empty? && %w(public private).exclude?(object.searchability)
+              if object.searchable_by.empty? && %w(public public_unlisted private).exclude?(object.searchability)
                 deleted += 1
                 { delete: { _id: object.id } }
               else

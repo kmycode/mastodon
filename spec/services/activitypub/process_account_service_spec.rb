@@ -21,6 +21,7 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
         searchableBy: searchable_by,
         indexable: indexable,
         summary: sender_bio,
+        actor_type: 'Person',
       }.with_indifferent_access
     end
 

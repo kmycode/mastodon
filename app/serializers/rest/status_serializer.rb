@@ -93,7 +93,7 @@ class REST::StatusSerializer < ActiveModel::Serializer
   end
 
   def searchability
-    object.compute_searchability
+    object.compute_searchability_local
   end
 
   def sensitive

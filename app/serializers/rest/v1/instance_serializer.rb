@@ -2,6 +2,7 @@
 
 class REST::V1::InstanceSerializer < ActiveModel::Serializer
   include RoutingHelper
+  include KmyblueCapabilitiesHelper
 
   attributes :uri, :title, :short_description, :description, :email,
              :version, :urls, :stats, :thumbnail,
@@ -112,31 +113,6 @@ class REST::V1::InstanceSerializer < ActiveModel::Serializer
 
   def invites_enabled
     UserRole.everyone.can?(:invite_users)
-  end
-
-  # for third party apps
-  def fedibird_capabilities
-    capabilities = [
-      :enable_wide_emoji,
-      :enable_wide_emoji_reaction,
-      :kmyblue_searchability,
-      :searchability,
-      :kmyblue_markdown,
-      :kmyblue_reaction_deck,
-      :kmyblue_visibility_login,
-      :status_reference,
-      :visibility_mutual,
-      :visibility_limited,
-      :kmyblue_limited_scope,
-      :kmyblue_antenna,
-      :kmyblue_bookmark_category,
-    ]
-
-    capabilities << :profile_search unless Chewy.enabled?
-    capabilities << :emoji_reaction if Setting.enable_emoji_reaction
-    capabilities << :kmyblue_visibility_public_unlisted if Setting.enable_public_unlisted_visibility
-
-    capabilities
   end
 
   private
