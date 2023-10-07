@@ -28,7 +28,6 @@
 #  hidden_anonymous                     :boolean          default(FALSE), not null
 #  detect_invalid_subscription          :boolean          default(FALSE), not null
 #  reject_reply_exclude_followers       :boolean          default(FALSE), not null
-#  reject_friend                        :boolean          default(FALSE), not null
 #
 
 class DomainBlock < ApplicationRecord

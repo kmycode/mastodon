@@ -157,9 +157,6 @@ class Status < ApplicationRecord
   after_create_commit :store_uri, if: :local?
   after_create_commit :update_statistics, if: :local?
 
-  after_create_commit :set_searchable_follow_on_create
-  after_destroy_commit :set_searchable_follow_on_destroy
-
   before_validation :prepare_contents, if: :local?
   before_validation :set_reblog
   before_validation :set_visibility
@@ -671,21 +668,6 @@ class Status < ApplicationRecord
     return unless distributable?
 
     ActivityTracker.increment('activity:statuses:local')
-  end
-
-  def set_searchable_follow_on_create
-    return unless public_searchability? || public_unlisted_searchability? || private_searchability?
-    return if account.account_stat.nil? || account.account_stat.searchable_by_follower
-
-    account.account_stat.update(searchable_by_follower: true)
-  end
-
-  def set_searchable_follow_on_destroy
-    return unless public_searchability? || public_unlisted_searchability? || private_searchability?
-    return if account.account_stat.nil? || !account.account_stat.searchable_by_follower
-    return if account.statuses.exists?(searchability: %i(public public_unlisted unlisted private))
-
-    account.account_stat.update(searchable_by_follower: false)
   end
 
   def increment_counter_caches

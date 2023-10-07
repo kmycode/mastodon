@@ -13,7 +13,6 @@
 #  updated_at              :datetime         not null
 #  last_status_at          :datetime
 #  group_activitypub_count :integer
-#  searchable_by_follower  :boolean          default(FALSE), not null
 #
 
 class AccountStat < ApplicationRecord

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_07_090807) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_07_090808) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -108,7 +108,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_07_090807) do
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "last_status_at", precision: nil
     t.integer "group_activitypub_count"
-    t.boolean "searchable_by_follower", default: false, null: false
     t.index ["account_id"], name: "index_account_stats_on_account_id", unique: true
     t.index ["last_status_at", "account_id"], name: "index_account_stats_on_last_status_at_and_account_id", order: { last_status_at: "DESC NULLS LAST" }
   end
@@ -585,7 +584,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_07_090807) do
     t.boolean "hidden_anonymous", default: false, null: false
     t.boolean "detect_invalid_subscription", default: false, null: false
     t.boolean "reject_reply_exclude_followers", default: false, null: false
-    t.boolean "reject_friend", default: false, null: false
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
   end
 
@@ -676,23 +674,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_07_090807) do
     t.string "languages", array: true
     t.index ["account_id", "target_account_id"], name: "index_follows_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id"], name: "index_follows_on_target_account_id"
-  end
-
-  create_table "friend_domains", force: :cascade do |t|
-    t.string "domain", default: "", null: false
-    t.string "inbox_url", default: "", null: false
-    t.integer "active_state", default: 0, null: false
-    t.integer "passive_state", default: 0, null: false
-    t.string "active_follow_activity_id"
-    t.string "passive_follow_activity_id"
-    t.boolean "available", default: true, null: false
-    t.boolean "public_unlisted", default: true, null: false
-    t.boolean "pseudo_relay", default: false, null: false
-    t.boolean "unlocked", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["domain"], name: "index_friend_domains_on_domain", unique: true
-    t.index ["inbox_url"], name: "index_friend_domains_on_inbox_url", unique: true
   end
 
   create_table "identities", force: :cascade do |t|
@@ -1222,6 +1203,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_07_090807) do
     t.integer "limited_scope"
     t.bigint "quote_of_id"
     t.index ["account_id", "id", "visibility", "updated_at"], name: "index_statuses_20190820", order: { id: :desc }, where: "(deleted_at IS NULL)"
+    t.index ["account_id", "reblog_of_id", "deleted_at", "searchability"], name: "index_statuses_for_get_following_accounts_to_search", where: "((deleted_at IS NULL) AND (reblog_of_id IS NULL) AND (searchability = ANY (ARRAY[0, 10, 1])))"
     t.index ["account_id"], name: "index_statuses_on_account_id"
     t.index ["deleted_at"], name: "index_statuses_on_deleted_at", where: "(deleted_at IS NOT NULL)"
     t.index ["id", "account_id"], name: "index_statuses_local_20190824", order: { id: :desc }, where: "((local OR (uri IS NULL)) AND (deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))"

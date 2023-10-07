@@ -199,7 +199,10 @@ class SearchQueryTransformer < Parslet::Transform
     def following_account_ids
       return @following_account_ids if defined?(@following_account_ids)
 
-      @following_account_ids = @options[:current_account].following.includes(:account_stat).where(account_stat: { searchable_by_follower: true }).select(:id).pluck(:id)
+      account_exists_sql     = Account.where('accounts.id = follows.target_account_id').where(searchability: %w(public public_unlisted private)).reorder(nil).select(1).to_sql
+      status_exists_sql      = Status.where('statuses.account_id = follows.target_account_id').where(reblog_of_id: nil).where(searchability: %w(public public_unlisted private)).reorder(nil).select(1).to_sql
+      following_accounts     = Follow.where(account_id: @options[:current_account].id).merge(Account.where("EXISTS (#{account_exists_sql})").or(Account.where("EXISTS (#{status_exists_sql})")))
+      @following_account_ids = following_accounts.pluck(:target_account_id)
     end
   end
 
