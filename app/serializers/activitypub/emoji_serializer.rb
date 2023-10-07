@@ -10,11 +10,7 @@ class ActivityPub::EmojiSerializer < ActivityPub::Serializer
   has_one :icon, serializer: ActivityPub::ImageSerializer
 
   def id
-    if object.uri.nil? || object.domain.nil?
-      ActivityPub::TagManager.instance.uri_for(object)
-    else
-      object.uri
-    end
+    ActivityPub::TagManager.instance.uri_for(object)
   end
 
   def type

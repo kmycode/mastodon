@@ -46,7 +46,9 @@ class ActivityPub::TagManager
 
       account_status_url(target.account, target)
     when :emoji
-      emoji_url(target)
+      return emoji_url(target) if object.uri.nil? || object.domain.nil?
+
+      object.uri
     when :emoji_reaction
       emoji_reaction_url(target)
     when :flag
