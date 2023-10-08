@@ -29,7 +29,7 @@ class FriendDomain < ApplicationRecord
   scope :by_domain_and_subdomains, ->(domain) { where(domain: Instance.by_domain_and_subdomains(domain).select(:domain)) }
   scope :mutuals, -> { where(active_state: :accepted, passive_state: :accepted) }
   scope :distributables, -> { mutuals.where(available: true, pseudo_relay: true) }
-  scope :deliver_locals, -> { where(active_state: :accepted, available: true) }
+  scope :deliver_locals, -> { where(active_state: :accepted, public_unlisted: true, available: true) }
 
   before_destroy :ensure_disabled
   after_commit :set_default_inbox_url
