@@ -55,7 +55,8 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
       @friend = FriendDomain.create!(domain: @account.domain, passive_state: :pending, passive_follow_activity_id: @json['id'])
     end
 
-    friend.accept! if friend.unlocked || already_accepted
+    # Send acception at after_commit of models/friend_domain.rb when unlocked is true
+    friend.accept! if already_accepted
   end
 
   def friend
