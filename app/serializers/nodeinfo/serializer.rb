@@ -40,7 +40,7 @@ class NodeInfo::Serializer < ActiveModel::Serializer
 
   def metadata
     {
-      fedibird_capabilities: fedibird_capabilities,
+      features: fedibird_capabilities,
     }
   end
 

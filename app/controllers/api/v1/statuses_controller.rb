@@ -44,7 +44,7 @@ class Api::V1::StatusesController < Api::BaseController
 
     ancestors_results   = @status.in_reply_to_id.nil? ? [] : @status.ancestors(ancestors_limit, current_account)
     descendants_results = @status.descendants(descendants_limit, current_account, descendants_depth_limit)
-    references_results  = @status.references
+    references_results  = @status.readable_references(current_account)
     loaded_ancestors    = cache_collection(ancestors_results, Status)
     loaded_descendants  = cache_collection(descendants_results, Status)
     loaded_references   = cache_collection(references_results, Status)

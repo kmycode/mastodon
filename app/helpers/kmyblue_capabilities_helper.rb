@@ -18,6 +18,7 @@ module KmyblueCapabilitiesHelper
       :kmyblue_quote,
       :kmyblue_searchability_limited,
       :kmyblue_searchability_public_unlisted,
+      :kmyblue_circle_history,
     ]
 
     capabilities << :profile_search unless Chewy.enabled?

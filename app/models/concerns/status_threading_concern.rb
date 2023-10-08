@@ -11,6 +11,15 @@ module StatusThreadingConcern
     find_statuses_from_tree_path(descendant_ids(limit, depth), account, promote: true)
   end
 
+  def readable_references(account = nil)
+    statuses = references.to_a
+    account_ids = statuses.map(&:account_id).uniq
+    domains = statuses.filter_map(&:account_domain).uniq
+    relations = account&.relations_map(account_ids, domains) || {}
+    statuses.reject! { |status| StatusFilter.new(status, account, relations).filtered? }
+    statuses
+  end
+
   def self_replies(limit)
     account.statuses.where(in_reply_to_id: id, visibility: [:public, :unlisted, :public_unlisted, :login]).reorder(id: :asc).limit(limit)
   end

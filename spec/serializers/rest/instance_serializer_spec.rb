@@ -17,4 +17,10 @@ describe REST::InstanceSerializer do
       expect(serialization['usage']).to eq({ 'users' => { 'active_month' => 0 } })
     end
   end
+
+  describe 'fedibird_capabilities' do
+    it 'returns fedibird_capabilities' do
+      expect(serialization['fedibird_capabilities']).to include 'emoji_reaction'
+    end
+  end
 end
