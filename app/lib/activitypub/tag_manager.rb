@@ -126,6 +126,12 @@ class ActivityPub::TagManager
     end
   end
 
+  def to_for_friend(status)
+    to = to(status)
+    to << 'LocalPublic' if status.public_unlisted_visibility?
+    to
+  end
+
   # Secondary audience of a status
   # Public statuses go out to followers as well
   # Unlisted statuses go to the public as well
@@ -147,7 +153,7 @@ class ActivityPub::TagManager
   end
 
   def cc_for_misskey(status)
-    if (status.account.user&.setting_reject_unlisted_subscription && status.visibility == 'unlisted') || (status.account.user&.setting_reject_public_unlisted_subscription && status.visibility == 'public_unlisted')
+    if (status.account.user&.setting_reject_unlisted_subscription && status.unlisted_visibility?) || (status.account.user&.setting_reject_public_unlisted_subscription && status.public_unlisted_visibility?)
       cc = cc_private_visibility(status)
       cc << uri_for(status.reblog.account) if status.reblog?
       return cc
@@ -249,6 +255,12 @@ class ActivityPub::TagManager
       end
 
     searchable_by.concat(mentions_uris(status)).compact
+  end
+
+  def searchable_by_for_friend(status)
+    searchable = searchable_by(status)
+    searchable << 'LocalPublic' if status.compute_searchability_local == 'public_unlisted'
+    searchable
   end
 
   def account_searchable_by(account)

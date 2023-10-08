@@ -27,6 +27,11 @@ RSpec.describe ActivityPub::TagManager do
       expect(subject.to(status)).to eq ['https://www.w3.org/ns/activitystreams#Public']
     end
 
+    it 'returns followers collection for public_unlisted status' do
+      status = Fabricate(:status, visibility: :public_unlisted)
+      expect(subject.to(status)).to eq [account_followers_url(status.account)]
+    end
+
     it 'returns followers collection for unlisted status' do
       status = Fabricate(:status, visibility: :unlisted)
       expect(subject.to(status)).to eq [account_followers_url(status.account)]
@@ -69,10 +74,32 @@ RSpec.describe ActivityPub::TagManager do
     end
   end
 
+  describe '#to_for_friend' do
+    it 'returns followers collection for public_unlisted status' do
+      status = Fabricate(:status, visibility: :public_unlisted)
+      expect(subject.to_for_friend(status)).to eq [account_followers_url(status.account), 'LocalPublic']
+    end
+
+    it 'returns followers collection for unlisted status' do
+      status = Fabricate(:status, visibility: :unlisted)
+      expect(subject.to_for_friend(status)).to eq [account_followers_url(status.account)]
+    end
+
+    it 'returns followers collection for private status' do
+      status = Fabricate(:status, visibility: :private)
+      expect(subject.to_for_friend(status)).to eq [account_followers_url(status.account)]
+    end
+  end
+
   describe '#cc' do
     it 'returns followers collection for public status' do
       status = Fabricate(:status, visibility: :public)
       expect(subject.cc(status)).to eq [account_followers_url(status.account)]
+    end
+
+    it 'returns public collection for public_unlisted status' do
+      status = Fabricate(:status, visibility: :public_unlisted)
+      expect(subject.cc(status)).to eq ['https://www.w3.org/ns/activitystreams#Public']
     end
 
     it 'returns public collection for unlisted status' do
@@ -111,6 +138,74 @@ RSpec.describe ActivityPub::TagManager do
       expect(subject.cc(status)).to include(subject.uri_for(bob))
       expect(subject.cc(status)).to include(subject.uri_for(foo))
       expect(subject.cc(status)).to_not include(subject.uri_for(alice))
+    end
+  end
+
+  describe '#cc_for_misskey' do
+    let(:user) { Fabricate(:user) }
+
+    before do
+      user.settings.update(reject_unlisted_subscription: true, reject_public_unlisted_subscription: true)
+      user.save
+    end
+
+    it 'returns public collection for public status' do
+      status = Fabricate(:status, visibility: :public)
+      expect(subject.cc_for_misskey(status)).to eq [account_followers_url(status.account)]
+    end
+
+    it 'returns empty array for public_unlisted status' do
+      status = Fabricate(:status, account: user.account, visibility: :public_unlisted)
+      expect(subject.cc_for_misskey(status)).to eq []
+    end
+
+    it 'returns empty array for unlisted status' do
+      status = Fabricate(:status, account: user.account, visibility: :unlisted)
+      expect(subject.cc_for_misskey(status)).to eq []
+    end
+  end
+
+  describe '#searchable_by' do
+    it 'returns public collection for public status' do
+      status = Fabricate(:status, searchability: :public)
+      expect(subject.searchable_by(status)).to eq ['https://www.w3.org/ns/activitystreams#Public']
+    end
+
+    it 'returns followers collection for public_unlisted status' do
+      status = Fabricate(:status, searchability: :public_unlisted)
+      expect(subject.searchable_by(status)).to eq [account_followers_url(status.account)]
+    end
+
+    it 'returns followers collection for private status' do
+      status = Fabricate(:status, searchability: :private)
+      expect(subject.searchable_by(status)).to eq [account_followers_url(status.account)]
+    end
+
+    it 'returns empty array for direct status' do
+      status    = Fabricate(:status, searchability: :direct)
+      expect(subject.searchable_by(status)).to eq []
+    end
+
+    it 'returns as:Limited array for limited status' do
+      status    = Fabricate(:status, searchability: :limited)
+      expect(subject.searchable_by(status)).to eq ['as:Limited']
+    end
+  end
+
+  describe '#searchable_by_for_friend' do
+    it 'returns public collection for public status' do
+      status = Fabricate(:status, account: Fabricate(:account, searchability: :public), searchability: :public)
+      expect(subject.searchable_by_for_friend(status)).to eq ['https://www.w3.org/ns/activitystreams#Public']
+    end
+
+    it 'returns public collection for public_unlisted status' do
+      status = Fabricate(:status, account: Fabricate(:account, searchability: :public), searchability: :public_unlisted)
+      expect(subject.searchable_by_for_friend(status)).to eq [account_followers_url(status.account), 'LocalPublic']
+    end
+
+    it 'returns followers collection for private status' do
+      status = Fabricate(:status, account: Fabricate(:account, searchability: :public), searchability: :private)
+      expect(subject.searchable_by_for_friend(status)).to eq [account_followers_url(status.account)]
     end
   end
 

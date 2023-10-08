@@ -28,7 +28,8 @@ class FriendDomain < ApplicationRecord
 
   scope :by_domain_and_subdomains, ->(domain) { where(domain: Instance.by_domain_and_subdomains(domain).select(:domain)) }
   scope :mutuals, -> { where(active_state: :accepted, passive_state: :accepted) }
-  scope :distributable, -> { mutuals.where(available: true, pseudo_relay: true) }
+  scope :distributables, -> { mutuals.where(available: true, pseudo_relay: true) }
+  scope :deliver_locals, -> { where(active_state: :accepted, available: true) }
 
   before_destroy :ensure_disabled
   after_commit :set_default_inbox_url
@@ -37,7 +38,7 @@ class FriendDomain < ApplicationRecord
     i_am_accepted? && they_are_accepted?
   end
 
-  def enable!
+  def follow!
     activity_id = ActivityPub::TagManager.instance.generate_uri_for(nil)
     payload     = Oj.dump(follow_activity(activity_id))
 
@@ -46,7 +47,7 @@ class FriendDomain < ApplicationRecord
     ActivityPub::DeliveryWorker.perform_async(payload, some_local_account.id, inbox_url)
   end
 
-  def disable!
+  def unfollow!
     activity_id = ActivityPub::TagManager.instance.generate_uri_for(nil)
     payload     = Oj.dump(unfollow_activity(activity_id))
 
@@ -128,7 +129,7 @@ class FriendDomain < ApplicationRecord
       id: "#{activity_id}#rejects/friends",
       type: 'Reject',
       actor: ActivityPub::TagManager.instance.uri_for(some_local_account),
-      object: ActivityPub::TagManager::COLLECTIONS[:public],
+      object: activity_id,
     }
   end
 

@@ -340,22 +340,55 @@ RSpec.describe ActivityPub::Activity::Follow do
       end
     end
 
-    context 'when unlocked' do
+    context 'when after rejected' do
       before do
-        friend.update(unlocked: true)
-        stub_request(:post, 'https://example.com/inbox').with(body: hash_including({
-          id: 'foo#accepts/friends',
-          type: 'Accept',
-          object: 'foo',
-        }))
+        friend.update(passive_state: :rejected)
       end
 
       it 'marks the friend as pending' do
+        subject.perform
+        expect(friend.reload.they_are_pending?).to be true
+        expect(friend.passive_follow_activity_id).to eq 'foo'
+      end
+    end
+
+    context 'when unlocked' do
+      before do
+        friend.update(unlocked: true)
+        stub_request(:post, 'https://example.com/inbox')
+      end
+
+      it 'marks the friend as accepted' do
         subject.perform
 
         friend = FriendDomain.find_by(domain: 'abc.com')
         expect(friend).to_not be_nil
         expect(friend.they_are_accepted?).to be true
+        expect(a_request(:post, 'https://example.com/inbox').with(body: hash_including({
+          id: 'foo#accepts/friends',
+          type: 'Accept',
+          object: 'foo',
+        }))).to have_been_made.once
+      end
+    end
+
+    context 'when already accepted' do
+      before do
+        friend.update(passive_state: :accepted)
+        stub_request(:post, 'https://example.com/inbox')
+      end
+
+      it 'marks the friend as accepted' do
+        subject.perform
+
+        friend = FriendDomain.find_by(domain: 'abc.com')
+        expect(friend).to_not be_nil
+        expect(friend.they_are_accepted?).to be true
+        expect(a_request(:post, 'https://example.com/inbox').with(body: hash_including({
+          id: 'foo#accepts/friends',
+          type: 'Accept',
+          object: 'foo',
+        }))).to have_been_made.once
       end
     end
 

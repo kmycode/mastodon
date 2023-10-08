@@ -24,12 +24,14 @@ describe StatusReachFinder do
 
           it 'send status' do
             expect(subject.inboxes).to include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
           end
         end
 
         context 'with non-follower' do
           it 'send status' do
             expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
           end
         end
       end
@@ -102,6 +104,80 @@ describe StatusReachFinder do
           it 'send status without friend server' do
             expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
             expect(subject.inboxes_for_misskey).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to include 'https://foo.bar/inbox'
+          end
+        end
+      end
+
+      context 'when this server has a friend' do
+        let(:bob) { Fabricate(:account, username: 'bob', domain: 'foo.bar', protocol: :activitypub, inbox_url: 'https://foo.bar/inbox') }
+
+        context 'with follower' do
+          before do
+            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted)
+            bob.follow!(alice)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to include 'https://foo.bar/inbox'
+          end
+        end
+
+        context 'with non-follower' do
+          before do
+            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
+          end
+        end
+
+        context 'with pending' do
+          before do
+            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :pending)
+            bob.follow!(alice)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
+          end
+        end
+
+        context 'when unavailable' do
+          before do
+            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted, available: false)
+            bob.follow!(alice)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
+          end
+        end
+
+        context 'when distributable' do
+          before do
+            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted, passive_state: :accepted, pseudo_relay: true)
+            bob.follow!(alice)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to include 'https://foo.bar/inbox'
+          end
+        end
+
+        context 'when distributable and not following' do
+          before do
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :accepted, passive_state: :accepted, pseudo_relay: true)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
             expect(subject.inboxes_for_friend).to include 'https://foo.bar/inbox'
           end
         end
@@ -279,7 +355,7 @@ describe StatusReachFinder do
     end
   end
 
-  describe '#inboxes_for_friend' do
+  describe '#inboxes_for_friend and distributables' do
     subject { described_class.new(status).inboxes_for_friend }
 
     let(:visibility) { :public }
@@ -319,8 +395,18 @@ describe StatusReachFinder do
         expect(subject).to_not include 'https://pqr.com/inbox'
       end
 
+      context 'when public visibility' do
+        let(:visibility) { :public }
+        let(:searchability) { :direct }
+
+        it 'returns friend servers' do
+          expect(subject).to_not eq []
+        end
+      end
+
       context 'when public_unlsited visibility' do
         let(:visibility) { :public_unlisted }
+        let(:searchability) { :direct }
 
         it 'returns friend servers' do
           expect(subject).to_not eq []
