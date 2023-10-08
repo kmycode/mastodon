@@ -69,6 +69,15 @@ namespace :admin do
     end
   end
 
+  resources :friend_servers, only: [:index, :new, :edit, :create, :update, :destroy] do
+    member do
+      post :follow
+      post :unfollow
+      post :accept
+      post :reject
+    end
+  end
+
   resources :instances, only: [:index, :show, :destroy], constraints: { id: %r{[^/]+} }, format: 'html' do
     member do
       post :clear_delivery_errors

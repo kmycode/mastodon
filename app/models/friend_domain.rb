@@ -12,9 +12,9 @@
 #  active_follow_activity_id  :string
 #  passive_follow_activity_id :string
 #  available                  :boolean          default(TRUE), not null
-#  public_unlisted            :boolean          default(TRUE), not null
 #  pseudo_relay               :boolean          default(FALSE), not null
 #  unlocked                   :boolean          default(FALSE), not null
+#  allow_all_posts            :boolean          default(TRUE), not null
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #
@@ -35,6 +35,7 @@ class FriendDomain < ApplicationRecord
 
   before_destroy :ensure_disabled
   after_commit :set_default_inbox_url
+  after_commit :auto_accept_when_unlocked
 
   def mutual?
     i_am_accepted? && they_are_accepted?
@@ -59,6 +60,8 @@ class FriendDomain < ApplicationRecord
   end
 
   def accept!
+    return if they_are_idle?
+
     activity_id = passive_follow_activity_id
     payload     = Oj.dump(accept_follow_activity(activity_id))
 
@@ -68,6 +71,8 @@ class FriendDomain < ApplicationRecord
   end
 
   def reject!
+    return if they_are_idle?
+
     activity_id = passive_follow_activity_id
     payload     = Oj.dump(reject_follow_activity(activity_id))
 
@@ -155,5 +160,9 @@ class FriendDomain < ApplicationRecord
 
   def set_default_inbox_url
     self.inbox_url = default_inbox_url if inbox_url.blank?
+  end
+
+  def auto_accept_when_unlocked
+    accept! if unlocked && they_are_pending?
   end
 end

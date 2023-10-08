@@ -1,0 +1,36 @@
+%tr
+  %td
+    %samp= friend.domain
+  %td
+    - if friend.i_am_accepted?
+      %span.positive-hint
+        = fa_icon('check')
+        = ' '
+        = t 'admin.friends.enabled'
+    - elsif friend.i_am_pending?
+      = fa_icon('hourglass')
+      = ' '
+      = t 'admin.friends.pending'
+    - else
+      %span.negative-hint
+        = fa_icon('times')
+        = ' '
+        = t 'admin.friends.disabled'
+  %td
+    - if friend.they_are_accepted?
+      %span.positive-hint
+        = fa_icon('check')
+        = ' '
+        = t 'admin.friends.enabled'
+    - elsif friend.they_are_pending?
+      = fa_icon('hourglass')
+      = ' '
+      = t 'admin.friends.pending'
+    - else
+      %span.negative-hint
+        = fa_icon('times')
+        = ' '
+        = t 'admin.friends.disabled'
+  %td
+    = table_link_to 'times', t('admin.friends.edit'),   edit_admin_friend_server_path(friend)
+    = table_link_to 'times', t('admin.friends.delete'), admin_friend_servers_path(friend), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }

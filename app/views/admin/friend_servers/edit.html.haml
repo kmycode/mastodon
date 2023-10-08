@@ -1,0 +1,16 @@
+- content_for :page_title do
+  = t('admin.friends.edit_friend')
+
+= simple_form_for @friend, url: admin_friend_servers_path do |f|
+  = render 'shared/error_messages', object: @friend
+  = render 'friend_fields', f: f, friend: @friend
+
+  .action-buttons
+    %div
+      = link_to t('admin.friends.follow'), follow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_idle?
+      = link_to t('admin.friends.unfollow'), unfollow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_pending? || @friend.i_am_accepted?
+      = link_to t('admin.friends.accept'), accept_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.they_are_pending?
+      = link_to t('admin.friends.reject'), reject_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.they_are_pending?
+
+  .actions
+    = f.button :button, t('generic.save_changes'), type: :submit

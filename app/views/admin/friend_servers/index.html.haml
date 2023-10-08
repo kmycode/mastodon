@@ -1,0 +1,21 @@
+- content_for :page_title do
+  = t('admin.friends.title')
+
+.simple_form
+  %p.hint= t('admin.friends.description_html')
+  = link_to @friends.empty? ? t('admin.friends.setup') : t('admin.friends.add_new'), new_admin_friend_server_path, class: 'block-button'
+
+- unless @friends.empty?
+  %hr.spacer
+
+  .table-wrapper
+    %table.table
+      %thead
+        %tr
+          %th= t('admin.friends.domain')
+          %th= t('admin.friends.active_status')
+          %th= t('admin.friends.passive_status')
+          %th
+      %tbody
+        - @friends.each do |friend|
+          = render 'friend_domain', friend: friend

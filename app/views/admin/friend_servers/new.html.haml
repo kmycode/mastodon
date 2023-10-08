@@ -1,0 +1,9 @@
+- content_for :page_title do
+  = t('admin.friends.add_new')
+
+= simple_form_for @friend, url: admin_friend_servers_path do |f|
+  = render 'shared/error_messages', object: @friend
+  = render 'friend_fields', f: f, friend: @friend
+
+  .actions
+    = f.button :button, t('admin.friends.save_and_enable'), type: :submit
