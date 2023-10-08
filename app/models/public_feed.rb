@@ -19,7 +19,7 @@ class PublicFeed
   # @param [Integer] min_id
   # @return [Array<Status>]
   def get(limit, max_id = nil, since_id = nil, min_id = nil)
-    scope = local_only? ? public_scope : global_timeline_only_scope
+    scope = public_scope
 
     scope.merge!(without_replies_scope) unless with_replies?
     scope.merge!(without_reblogs_scope) unless with_reblogs?
@@ -68,10 +68,6 @@ class PublicFeed
 
   def public_scope
     Status.with_public_visibility.joins(:account).merge(Account.without_suspended.without_silenced)
-  end
-
-  def global_timeline_only_scope
-    Status.with_global_timeline_visibility.joins(:account).merge(Account.without_suspended.without_silenced)
   end
 
   def public_search_scope

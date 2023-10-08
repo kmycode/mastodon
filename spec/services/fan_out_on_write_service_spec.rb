@@ -278,7 +278,7 @@ RSpec.describe FanOutOnWriteService, type: :service do
     it 'is broadcast publicly' do
       expect(redis).to have_received(:publish).with('timeline:hashtag:hoge', anything)
       expect(redis).to have_received(:publish).with('timeline:public:local', anything)
-      expect(redis).to_not have_received(:publish).with('timeline:public', anything)
+      expect(redis).to have_received(:publish).with('timeline:public', anything)
     end
 
     context 'with list' do

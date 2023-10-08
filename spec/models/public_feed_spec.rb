@@ -89,7 +89,7 @@ RSpec.describe PublicFeed do
         end
 
         it 'excludes public_unlisted statuses' do
-          expect(subject).to_not include(public_unlisted_status.id)
+          expect(subject).to include(public_unlisted_status.id)
         end
       end
 
@@ -105,7 +105,7 @@ RSpec.describe PublicFeed do
         end
 
         it 'excludes public_unlisted statuses' do
-          expect(subject).to_not include(public_unlisted_status.id)
+          expect(subject).to include(public_unlisted_status.id)
         end
       end
     end

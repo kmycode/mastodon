@@ -21,9 +21,6 @@ class FanOutOnWriteService < BaseService
     if broadcastable?
       fan_out_to_public_recipients!
       fan_out_to_public_streams!
-    elsif broadcastable_unlisted?
-      fan_out_to_public_recipients!
-      fan_out_to_public_unlisted_streams!
     elsif broadcastable_unlisted2?
       fan_out_to_unlisted_streams!
     end
@@ -73,11 +70,6 @@ class FanOutOnWriteService < BaseService
   def fan_out_to_public_streams!
     broadcast_to_hashtag_streams!
     broadcast_to_public_streams!
-  end
-
-  def fan_out_to_public_unlisted_streams!
-    broadcast_to_hashtag_streams!
-    broadcast_to_public_unlisted_streams!
   end
 
   def fan_out_to_unlisted_streams!
@@ -176,16 +168,6 @@ class FanOutOnWriteService < BaseService
     end
   end
 
-  def broadcast_to_public_unlisted_streams!
-    return if @status.reply? && @status.in_reply_to_account_id != @account.id
-
-    redis.publish(@status.local? ? 'timeline:public:local' : 'timeline:public:remote', anonymous_payload)
-
-    if @status.with_media?
-      redis.publish(@status.local? ? 'timeline:public:local:media' : 'timeline:public:remote:media', anonymous_payload)
-    end
-  end
-
   def deliver_to_conversation!
     AccountConversation.add_status(@account, @status) unless update?
   end
@@ -210,11 +192,7 @@ class FanOutOnWriteService < BaseService
   end
 
   def broadcastable?
-    (@status.public_visibility? || @status.login_visibility?) && !@status.reblog? && !@account.silenced?
-  end
-
-  def broadcastable_unlisted?
-    @status.public_unlisted_visibility? && !@status.reblog? && !@account.silenced?
+    (@status.public_visibility? || @status.public_unlisted_visibility? || @status.login_visibility?) && !@status.reblog? && !@account.silenced?
   end
 
   def broadcastable_unlisted2?
