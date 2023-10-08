@@ -146,8 +146,10 @@ class StatusReachFinder
   end
 
   def friend_inboxes
-    if @status.public_visibility? || @status.public_unlisted_visibility? || (@status.unlisted_visibility? && (@status.public_searchability? || @status.public_unlisted_searchability?))
+    if @status.public_visibility? || @status.public_searchability?
       DeliveryFailureTracker.without_unavailable(FriendDomain.distributables.pluck(:inbox_url))
+    elsif @status.public_unlisted_visibility? || (@status.unlisted_visibility? && (@status.public_searchability? || @status.public_unlisted_searchability?))
+      DeliveryFailureTracker.without_unavailable(FriendDomain.distributables_public_local.pluck(:inbox_url))
     else
       []
     end

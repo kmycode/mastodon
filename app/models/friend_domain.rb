@@ -29,6 +29,8 @@ class FriendDomain < ApplicationRecord
   scope :by_domain_and_subdomains, ->(domain) { where(domain: Instance.by_domain_and_subdomains(domain).select(:domain)) }
   scope :mutuals, -> { where(active_state: :accepted, passive_state: :accepted) }
   scope :distributables, -> { mutuals.where(available: true, pseudo_relay: true) }
+  scope :distributables_public_only, -> { distributables.where(public_unlisted: false) }
+  scope :distributables_public_local, -> { distributables.where(public_unlisted: true) }
   scope :deliver_locals, -> { where(active_state: :accepted, public_unlisted: true, available: true) }
 
   before_destroy :ensure_disabled
