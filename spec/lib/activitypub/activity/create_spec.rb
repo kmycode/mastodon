@@ -234,6 +234,25 @@ RSpec.describe ActivityPub::Activity::Create do
         end
       end
 
+      context 'when public_unlisted with LocalPublic' do
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            to: ['http://example.com/followers', 'LocalPublic'],
+            cc: 'https://www.w3.org/ns/activitystreams#Public',
+          }
+        end
+
+        it 'creates status' do
+          status = sender.statuses.first
+
+          expect(status).to_not be_nil
+          expect(status.visibility).to eq 'public_unlisted'
+        end
+      end
+
       context 'when private' do
         let(:object_json) do
           {
@@ -408,6 +427,17 @@ RSpec.describe ActivityPub::Activity::Create do
 
             expect(status).to_not be_nil
             expect(status.searchability).to eq 'public'
+          end
+        end
+
+        context 'with public_unlisted with LocalPublic' do
+          let(:searchable_by) { ['http://example.com/followers', 'LocalPublic'] }
+
+          it 'create status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.searchability).to eq 'public_unlisted'
           end
         end
 
@@ -1452,6 +1482,30 @@ RSpec.describe ActivityPub::Activity::Create do
 
       before do
         subject.perform
+      end
+
+      it 'creates status' do
+        status = sender.statuses.first
+
+        expect(status).to_not be_nil
+        expect(status.text).to eq 'Lorem ipsum'
+      end
+    end
+
+    context 'when sender is in friend server' do
+      subject { described_class.new(json, sender, delivery: true) }
+
+      before do
+        Fabricate(:friend_domain, domain: sender.domain, active_state: :accepted, passive_state: :accepted)
+        subject.perform
+      end
+
+      let(:object_json) do
+        {
+          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+          type: 'Note',
+          content: 'Lorem ipsum',
+        }
       end
 
       it 'creates status' do

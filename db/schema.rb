@@ -685,9 +685,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_07_090808) do
     t.string "active_follow_activity_id"
     t.string "passive_follow_activity_id"
     t.boolean "available", default: true, null: false
-    t.boolean "public_unlisted", default: true, null: false
     t.boolean "pseudo_relay", default: false, null: false
     t.boolean "unlocked", default: false, null: false
+    t.boolean "allow_all_posts", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["domain"], name: "index_friend_domains_on_domain", unique: true

@@ -27,11 +27,11 @@ class FriendDomain < ApplicationRecord
   enum passive_state: { idle: 0, pending: 1, accepted: 2, rejected: 3 }, _prefix: :they_are
 
   scope :by_domain_and_subdomains, ->(domain) { where(domain: Instance.by_domain_and_subdomains(domain).select(:domain)) }
-  scope :mutuals, -> { where(active_state: :accepted, passive_state: :accepted) }
-  scope :distributables, -> { mutuals.where(available: true, pseudo_relay: true) }
-  scope :distributables_public_only, -> { distributables.where(public_unlisted: false) }
-  scope :distributables_public_local, -> { distributables.where(public_unlisted: true) }
-  scope :deliver_locals, -> { where(active_state: :accepted, public_unlisted: true, available: true) }
+  scope :enabled, -> { where(available: true) }
+  scope :mutuals, -> { enabled.where(active_state: :accepted, passive_state: :accepted) }
+  scope :distributables, -> { mutuals.where(pseudo_relay: true) }
+  scope :deliver_locals, -> { enabled.where(active_state: :accepted) }
+  scope :free_receivings, -> { mutuals.where(allow_all_posts: true) }
 
   before_destroy :ensure_disabled
   after_commit :set_default_inbox_url

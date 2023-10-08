@@ -461,7 +461,7 @@ class Status < ApplicationRecord
   end
 
   def compute_searchability_local
-    return 'public_unlisted' if public_unlisted_searchability? && account.public_searchability?
+    return 'public_unlisted' if public_unlisted_searchability?
 
     compute_searchability
   end

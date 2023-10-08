@@ -76,6 +76,8 @@ class ActivityPub::Parser::StatusParser
   def visibility
     if audience_to.any? { |to| ActivityPub::TagManager.instance.public_collection?(to) }
       :public
+    elsif audience_to.include?('LocalPublic')
+      :public_unlisted
     elsif audience_cc.any? { |cc| ActivityPub::TagManager.instance.public_collection?(cc) }
       :unlisted
     elsif audience_to.include?('as:LoginOnly') || audience_to.include?('LoginUser')
@@ -198,6 +200,8 @@ class ActivityPub::Parser::StatusParser
       :public
     elsif audience_searchable_by.include?('as:Limited')
       :limited
+    elsif audience_searchable_by.include?('LocalPublic')
+      :public_unlisted
     elsif audience_searchable_by.include?(@account.followers_url)
       :private
     else

@@ -114,7 +114,7 @@ RSpec.describe Status do
     end
   end
 
-  describe '#searchability' do
+  describe '#compute_searchability' do
     subject { Fabricate(:status, account: account, searchability: status_searchability) }
 
     let(:account_searchability) { :public }
@@ -143,6 +143,18 @@ RSpec.describe Status do
 
       it 'returns private' do
         expect(subject.compute_searchability).to eq 'private'
+      end
+    end
+
+    context 'when public-public_unlisted' do
+      let(:status_searchability) { :public_unlisted }
+
+      it 'returns public' do
+        expect(subject.compute_searchability).to eq 'public'
+      end
+
+      it 'returns public_unlisted for local' do
+        expect(subject.compute_searchability_local).to eq 'public_unlisted'
       end
     end
 
