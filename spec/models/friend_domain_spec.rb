@@ -71,9 +71,9 @@ describe FriendDomain do
 
   describe '#delete!' do
     it 'call inbox' do
+      friend.update(active_state: :pending)
       friend.destroy
       expect(a_request(:post, 'https://foo.bar/inbox').with(body: hash_including({
-        id: 'ohagi#delete/friends',
         type: 'Delete',
         actor: 'https://cb6e6126.ngrok.io/actor',
         object: 'https://www.w3.org/ns/activitystreams#Public',
