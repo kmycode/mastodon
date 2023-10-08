@@ -33,4 +33,4 @@
         = t 'admin.friends.disabled'
   %td
     = table_link_to 'times', t('admin.friends.edit'),   edit_admin_friend_server_path(friend)
-    = table_link_to 'times', t('admin.friends.delete'), admin_friend_servers_path(friend), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }
+    = table_link_to 'times', t('admin.friends.delete'), admin_friend_server_path(friend), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }
