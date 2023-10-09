@@ -24,7 +24,7 @@
           = t 'admin.friend_servers.disabled'
       .action-buttons
         %div
-          = link_to t('admin.friend_servers.follow'), follow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_idle?
+          = link_to t('admin.friend_servers.follow'), follow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_idle? || @friend.i_am_rejected?
           = link_to t('admin.friend_servers.unfollow'), unfollow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_pending? || @friend.i_am_accepted?
 
     %h4= t('admin.friend_servers.passive_status')
