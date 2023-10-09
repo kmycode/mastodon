@@ -1,16 +1,52 @@
 - content_for :page_title do
-  = t('admin.friends.edit_friend')
+  = t('admin.friend_servers.edit_friend')
 
 = simple_form_for @friend, url: admin_friend_servers_path do |f|
   = render 'shared/error_messages', object: @friend
   = render 'friend_fields', f: f, friend: @friend
 
-  .action-buttons
-    %div
-      = link_to t('admin.friends.follow'), follow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_idle?
-      = link_to t('admin.friends.unfollow'), unfollow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_pending? || @friend.i_am_accepted?
-      = link_to t('admin.friends.accept'), accept_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.they_are_pending?
-      = link_to t('admin.friends.reject'), reject_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.they_are_pending?
+  .fields-group
+    %h4= t('admin.friend_servers.active_status')
+    .fields-group
+      - if @friend.i_am_accepted?
+        %span.positive-hint
+          = fa_icon('check')
+          = ' '
+          = t 'admin.friend_servers.enabled'
+      - elsif @friend.i_am_pending?
+        = fa_icon('hourglass')
+        = ' '
+        = t 'admin.friend_servers.pending'
+      - else
+        %span.negative-hint
+          = fa_icon('times')
+          = ' '
+          = t 'admin.friend_servers.disabled'
+      .action-buttons
+        %div
+          = link_to t('admin.friend_servers.follow'), follow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_idle?
+          = link_to t('admin.friend_servers.unfollow'), unfollow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_pending? || @friend.i_am_accepted?
+
+    %h4= t('admin.friend_servers.passive_status')
+    .fields-gtoup
+      - if @friend.they_are_accepted?
+        %span.positive-hint
+          = fa_icon('check')
+          = ' '
+          = t 'admin.friend_servers.enabled'
+      - elsif @friend.they_are_pending?
+        = fa_icon('hourglass')
+        = ' '
+        = t 'admin.friend_servers.pending'
+      - else
+        %span.negative-hint
+          = fa_icon('times')
+          = ' '
+          = t 'admin.friend_servers.disabled'
+      .action-buttons
+        %div
+          = link_to t('admin.friend_servers.accept'), accept_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.they_are_pending?
+          = link_to t('admin.friend_servers.reject'), reject_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.they_are_pending?
 
   .actions
     = f.button :button, t('generic.save_changes'), type: :submit

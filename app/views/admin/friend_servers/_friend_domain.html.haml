@@ -6,31 +6,31 @@
       %span.positive-hint
         = fa_icon('check')
         = ' '
-        = t 'admin.friends.enabled'
+        = t 'admin.friend_servers.enabled'
     - elsif friend.i_am_pending?
       = fa_icon('hourglass')
       = ' '
-      = t 'admin.friends.pending'
+      = t 'admin.friend_servers.pending'
     - else
       %span.negative-hint
         = fa_icon('times')
         = ' '
-        = t 'admin.friends.disabled'
+        = t 'admin.friend_servers.disabled'
   %td
     - if friend.they_are_accepted?
       %span.positive-hint
         = fa_icon('check')
         = ' '
-        = t 'admin.friends.enabled'
+        = t 'admin.friend_servers.enabled'
     - elsif friend.they_are_pending?
       = fa_icon('hourglass')
       = ' '
-      = t 'admin.friends.pending'
+      = t 'admin.friend_servers.pending'
     - else
       %span.negative-hint
         = fa_icon('times')
         = ' '
-        = t 'admin.friends.disabled'
+        = t 'admin.friend_servers.disabled'
   %td
-    = table_link_to 'times', t('admin.friends.edit'),   edit_admin_friend_server_path(friend)
-    = table_link_to 'times', t('admin.friends.delete'), admin_friend_server_path(friend), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }
+    = table_link_to 'pencil', t('admin.friend_servers.edit_friend'),   edit_admin_friend_server_path(friend)
+    = table_link_to 'times', t('admin.friend_servers.delete'), admin_friend_server_path(friend), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }

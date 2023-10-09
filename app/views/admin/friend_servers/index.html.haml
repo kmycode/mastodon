@@ -1,9 +1,9 @@
 - content_for :page_title do
-  = t('admin.friends.title')
+  = t('admin.friend_servers.title')
 
 .simple_form
-  %p.hint= t('admin.friends.description_html')
-  = link_to @friends.empty? ? t('admin.friends.setup') : t('admin.friends.add_new'), new_admin_friend_server_path, class: 'block-button'
+  %p.hint= t('admin.friend_servers.description_html')
+  = link_to @friends.empty? ? t('admin.friend_servers.setup') : t('admin.friend_servers.add_new'), new_admin_friend_server_path, class: 'block-button'
 
 - unless @friends.empty?
   %hr.spacer
@@ -12,9 +12,9 @@
     %table.table
       %thead
         %tr
-          %th= t('admin.friends.domain')
-          %th= t('admin.friends.active_status')
-          %th= t('admin.friends.passive_status')
+          %th= t('admin.friend_servers.domain')
+          %th= t('admin.friend_servers.active_status')
+          %th= t('admin.friend_servers.passive_status')
           %th
       %tbody
         - @friends.each do |friend|

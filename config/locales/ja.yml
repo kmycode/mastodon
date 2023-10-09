@@ -494,6 +494,35 @@ ja:
       suppressed: 非表示
       title: おすすめフォロー
       unsuppress: おすすめフォローを復元
+    friend_servers:
+      accept: 相手の申請を承認する
+      active_status: 自分の状態
+      add_new: フレンドサーバーを追加・申請
+      delete: 削除
+      description_html: <strong>フレンドサーバー</strong>とは、お互いのローカル公開・ローカル検索許可の投稿をそのまま交換するシステムです。
+      disabled: 無効
+      domain: ドメイン
+      edit:
+        allow_all_posts: このサーバーからの全ての投稿を受け入れる
+        available: 有効にする
+        description: フレンドサーバーは、登録と同時に相手方のサーバーへ申請されます。
+        domain: ドメイン
+        inbox_url: フレンドサーバーの inbox URL
+        inbox_url_hint: 空欄にした場合、自動で「https://ドメイン名/inbox」に設定されます。（例：https://example.com/inbox）相手のサーバーがinbox URLを特別に指定している場合、入力してください。
+        pseudo_relay: 全ての公開・ローカル公開・非収載かつ検索可能な投稿を送信する
+        unlocked: このサーバーからの申請を自動で承認する
+      edit_friend: 編集
+      enabled: 有効
+      follow: こちらから申請する
+      passive_status: 相手の状態
+      pending: 承認待ち
+      reject: 相手からの申請を却下する
+      save_and_enable: 保存して有効にする
+      setup: フレンドサーバーを追加・申請
+      signatures_not_enabled: セキュアモードまたは連合制限モードが有効の場合、フレンドサーバーの動作を確認していないため正常に動作しない可能性があります
+      status: ステータス
+      title: フレンドサーバー
+      unfollow: こちらの申請を取り消す
     instances:
       availability:
         description_html:

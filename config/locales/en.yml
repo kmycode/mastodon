@@ -499,6 +499,35 @@ en:
       suppressed: Suppressed
       title: Follow recommendations
       unsuppress: Restore follow recommendation
+    friend_servers:
+      accept: Accept
+      active_status: My status
+      add_new: Add and make a new application
+      delete: Delete
+      description_html: <strong>フレンドサーバー</strong>とは、お互いのローカル公開・ローカル検索許可の投稿をそのまま交換するシステムです。
+      disabled: Disabled
+      domain: Domain
+      edit:
+        allow_all_posts: Receive all posts
+        available: Available
+        description: フレンドサーバーは、登録と同時に相手方のサーバーへ申請されます。
+        domain: Domain
+        inbox_url: Friend server inbox URL
+        inbox_url_hint: Default value is https://domain/inbox if you input empty (For example, https://example.com/inbox)
+        pseudo_relay: Send all public or searchable posts
+        unlocked: Approve automatically receiving new request
+      edit_friend: Edit
+      enabled: Enabled
+      follow: Request
+      passive_status: Partner status
+      pending: Pending
+      reject: Reject
+      save_and_enable: Save and enable
+      setup: Add and make a new application
+      signatures_not_enabled: セキュアモードまたは連合制限モードが有効の場合、フレンドサーバーの動作を確認していないため正常に動作しない可能性があります
+      status: Status
+      title: Friend server
+      unfollow: Cancel request
     instances:
       availability:
         description_html:
