@@ -1,5 +1,10 @@
 %tr
   %td
+    - unless friend.available
+      %span.negative-hint
+        = fa_icon('times')
+        = ' '
+        = t 'admin.friend_servers.disabled'
     %samp= friend.domain
   %td
     - if friend.i_am_accepted?
