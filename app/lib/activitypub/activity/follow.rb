@@ -55,8 +55,12 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
       @friend = FriendDomain.create!(domain: @account.domain, passive_state: :pending, passive_follow_activity_id: @json['id'])
     end
 
-    # Send acception at after_commit of models/friend_domain.rb when unlocked is true
-    friend.accept! if already_accepted
+    if already_accepted || friend.unlocked || Setting.unlocked_friend
+      friend.accept!
+    else
+      # Notify for admin even if unlocked
+      notify_staff_about_pending_friend_server!
+    end
   end
 
   def friend
@@ -100,5 +104,13 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
 
   def instance_info
     @instance_info ||= InstanceInfo.find_by(domain: @account.domain)
+  end
+
+  def notify_staff_about_pending_friend_server!
+    User.those_who_can(:manage_federation).includes(:account).find_each do |u|
+      next unless u.allows_pending_friend_server_emails?
+
+      AdminMailer.with(recipient: u.account).new_pending_friend_server(friend).deliver_later
+    end
   end
 end

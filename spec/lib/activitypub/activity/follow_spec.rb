@@ -308,6 +308,8 @@ RSpec.describe ActivityPub::Activity::Follow do
 
     let(:sender) { Fabricate(:account, domain: 'abc.com', url: 'https://abc.com/#actor') }
     let!(:friend) { Fabricate(:friend_domain, domain: 'abc.com', passive_state: :idle) }
+    let!(:owner_user) { Fabricate(:user, role: UserRole.find_by(name: 'Owner')) }
+    let!(:patch_user) { Fabricate(:user, role: Fabricate(:user_role, name: 'OhagiOps', permissions: UserRole::FLAGS[:manage_federation])) }
 
     let(:json) do
       {
@@ -340,6 +342,24 @@ RSpec.describe ActivityPub::Activity::Follow do
       end
     end
 
+    context 'with sending email' do
+      around do |example|
+        queue_adapter = ActiveJob::Base.queue_adapter
+        ActiveJob::Base.queue_adapter = :test
+
+        example.run
+
+        ActiveJob::Base.queue_adapter = queue_adapter
+      end
+
+      it 'perform' do
+        expect { subject.perform }.to have_enqueued_mail(AdminMailer, :new_pending_friend_server)
+          .with(hash_including(params: { recipient: owner_user.account })).once
+          .and(have_enqueued_mail(AdminMailer, :new_pending_friend_server).with(hash_including(params: { recipient: patch_user.account })).once)
+          .and(have_enqueued_mail.at_most(2))
+      end
+    end
+
     context 'when after rejected' do
       before do
         friend.update(passive_state: :rejected)
@@ -355,6 +375,26 @@ RSpec.describe ActivityPub::Activity::Follow do
     context 'when unlocked' do
       before do
         friend.update(unlocked: true)
+        stub_request(:post, 'https://example.com/inbox')
+      end
+
+      it 'marks the friend as accepted' do
+        subject.perform
+
+        friend = FriendDomain.find_by(domain: 'abc.com')
+        expect(friend).to_not be_nil
+        expect(friend.they_are_accepted?).to be true
+        expect(a_request(:post, 'https://example.com/inbox').with(body: hash_including({
+          id: 'foo#accepts/friends',
+          type: 'Accept',
+          object: 'foo',
+        }))).to have_been_made.once
+      end
+    end
+
+    context 'when unlocked on admin settings' do
+      before do
+        Form::AdminSettings.new(unlocked_friend: '1').save
         stub_request(:post, 'https://example.com/inbox')
       end
 

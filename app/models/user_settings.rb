@@ -80,6 +80,7 @@ class UserSettings
     setting :follow_request, default: true
     setting :report, default: true
     setting :pending_account, default: true
+    setting :pending_friend_server, default: true
     setting :trends, default: true
     setting :appeal, default: true
     setting :software_updates, default: 'critical', in: %w(none critical patch all)

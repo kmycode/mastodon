@@ -263,6 +263,10 @@ module HasUserSettings
     settings['notification_emails.pending_account']
   end
 
+  def allows_pending_friend_server_emails?
+    settings['notification_emails.pending_friend_server']
+  end
+
   def allows_appeal_emails?
     settings['notification_emails.appeal']
   end

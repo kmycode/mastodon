@@ -35,7 +35,6 @@ class FriendDomain < ApplicationRecord
 
   before_destroy :ensure_disabled
   after_commit :set_default_inbox_url
-  after_commit :auto_accept_when_unlocked
 
   def mutual?
     i_am_accepted? && they_are_accepted?
@@ -160,9 +159,5 @@ class FriendDomain < ApplicationRecord
 
   def set_default_inbox_url
     self.inbox_url = default_inbox_url if inbox_url.blank?
-  end
-
-  def auto_accept_when_unlocked
-    accept! if unlocked && they_are_pending?
   end
 end

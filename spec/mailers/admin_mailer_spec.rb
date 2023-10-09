@@ -64,6 +64,26 @@ RSpec.describe AdminMailer do
     end
   end
 
+  describe '.new_pending_friend_server' do
+    let(:recipient) { Fabricate(:account, username: 'Barklums') }
+    let(:friend) { Fabricate(:friend_domain, passive_state: :pending, domain: 'abc.com') }
+    let(:mail) { described_class.with(recipient: recipient).new_pending_friend_server(friend) }
+
+    before do
+      recipient.user.update(locale: :en)
+    end
+
+    it 'renders the headers' do
+      expect(mail.subject).to eq('New friend server up for review on cb6e6126.ngrok.io (abc.com)')
+      expect(mail.to).to eq [recipient.user_email]
+      expect(mail.from).to eq ['notifications@localhost']
+    end
+
+    it 'renders the body' do
+      expect(mail.body.encoded).to match 'The new friend server abc.com is waiting for your review. You can approve or reject this application.'
+    end
+  end
+
   describe '.new_trends' do
     let(:recipient) { Fabricate(:account, username: 'Snurf') }
     let(:links) { [] }

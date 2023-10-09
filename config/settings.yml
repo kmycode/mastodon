@@ -43,6 +43,7 @@ defaults: &defaults
   enable_emoji_reaction: true
   check_lts_version_only: true
   enable_public_unlisted_visibility: true
+  unlocked_friend: false
 
 development:
   <<: *defaults

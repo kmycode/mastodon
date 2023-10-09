@@ -48,6 +48,7 @@ class Form::AdminSettings
     enable_emoji_reaction
     check_lts_version_only
     enable_public_unlisted_visibility
+    unlocked_friend
   ).freeze
 
   INTEGER_KEYS = %i(
@@ -76,6 +77,7 @@ class Form::AdminSettings
     enable_emoji_reaction
     check_lts_version_only
     enable_public_unlisted_visibility
+    unlocked_friend
   ).freeze
 
   UPLOAD_KEYS = %i(

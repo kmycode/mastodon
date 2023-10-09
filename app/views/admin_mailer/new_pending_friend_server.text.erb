@@ -1,0 +1,5 @@
+<%= raw t('application_mailer.salutation', name: display_name(@me)) %>
+
+<%= raw t('admin_mailer.new_pending_friend_server.body', domain: @friend.domain) %>
+
+<%= raw t('application_mailer.view')%> <%= admin_friend_servers_url %>

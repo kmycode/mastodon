@@ -53,17 +53,6 @@ describe FriendDomain do
         object: 'ohagi',
       }))).to have_been_made.once
     end
-
-    it 'call inbox when unlocked parameter is changed' do
-      friend.update(passive_follow_activity_id: 'ohagi', passive_state: :pending, unlocked: true)
-      expect(friend.they_are_accepted?).to be true
-      expect(a_request(:post, 'https://foo.bar/inbox').with(body: hash_including({
-        id: 'ohagi#accepts/friends',
-        type: 'Accept',
-        actor: 'https://cb6e6126.ngrok.io/actor',
-        object: 'ohagi',
-      }))).to have_been_made.once
-    end
   end
 
   describe '#reject!' do

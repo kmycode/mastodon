@@ -66,6 +66,7 @@ SimpleNavigation::Configuration.run do |navigation|
       s.item :custom_emojis, safe_join([fa_icon('smile-o fw'), t('admin.custom_emojis.title')]), admin_custom_emojis_path, highlights_on: %r{/admin/custom_emojis}, if: -> { current_user.can?(:manage_custom_emojis) }
       s.item :webhooks, safe_join([fa_icon('inbox fw'), t('admin.webhooks.title')]), admin_webhooks_path, highlights_on: %r{/admin/webhooks}, if: -> { current_user.can?(:manage_webhooks) }
       s.item :relays, safe_join([fa_icon('exchange fw'), t('admin.relays.title')]), admin_relays_path, highlights_on: %r{/admin/relays}, if: -> { !limited_federation_mode? && current_user.can?(:manage_federation) }
+      s.item :friend_servers, safe_join([fa_icon('users fw'), t('admin.friend_servers.title')]), admin_friend_servers_path, highlights_on: %r{/admin/friend_servers}, if: -> { current_user.can?(:manage_federation) }
     end
 
     n.item :sidekiq, safe_join([fa_icon('diamond fw'), 'Sidekiq']), sidekiq_path, link_html: { target: 'sidekiq' }, if: -> { current_user.can?(:view_devops) }

@@ -422,6 +422,8 @@ ja:
       public_comment_hint: ドメインブロックの公開を有効にしている場合、このコメントも公開されます。
       reject_favourite: お気に入り、スタンプを拒否
       reject_favourite_hint: 今後のお気に入り、スタンプを拒否します。停止とは無関係です
+      reject_friend: フレンドサーバー申請を拒否
+      reject_friend_hint: 今後のフレンドサーバー申請を全て拒否します。停止とは無関係です
       reject_hashtag: ハッシュタグを拒否
       reject_hashtag_hint: ハッシュタグで検索できなくなり、トレンドにも影響しなくなります。停止とは無関係です
       reject_media: メディアファイルを拒否
@@ -514,6 +516,7 @@ ja:
         policies:
           detect_invalid_subscription: 購読のプライバシーなし
           reject_favourite: お気に入りを拒否
+          reject_friend: フレンドサーバー申請を拒否
           reject_hashtag: ハッシュタグを拒否
           reject_media: メディアを拒否する
           reject_new_follow: 新規フォローを拒否
@@ -807,6 +810,7 @@ ja:
       discovery:
         emoji_reactions: スタンプ
         follow_recommendations: おすすめフォロー
+        friend_servers: フレンドサーバー
         preamble: Mastodon を知らないユーザーを取り込むには、興味深いコンテンツを浮上させることが重要です。サーバー上で様々なディスカバリー機能がどのように機能するかを制御します。
         profile_directory: ディレクトリ
         public_timelines: 公開タイムライン
@@ -1043,6 +1047,9 @@ ja:
     new_pending_account:
       body: 新しいアカウントの詳細は以下の通りです。この申請を承認または却下することができます。
       subject: '%{instance}で新しいアカウント (%{username}) が承認待ちです'
+    new_pending_friend_server:
+      body: 新しいフレンドサーバー %{domain} の申請が届いています。この申請を承認または却下することができます。
+      subject: '%{instance}で新しいフレンドサーバー (%{domain}) が承認待ちです'
     new_report:
       body: "%{reporter}さんが%{target}さんを通報しました"
       body_remote: "%{domain}の誰かが%{target}さんを通報しました"

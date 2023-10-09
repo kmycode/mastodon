@@ -426,6 +426,8 @@ en:
       public_comment_hint: Comment about this domain limitation for the general public, if advertising the list of domain limitations is enabled.
       reject_favourite: Reject favorites
       reject_favourite_hint: Reject favorites or emoji-reaction in the future
+      reject_friend: Reject friend server applications
+      reject_friend_hint: Reject friend server application in the future
       reject_hashtag: Reject hashtags
       reject_hashtag_hint: Reject hashtags in the future
       reject_media: Reject media files
@@ -520,6 +522,7 @@ en:
         limited_federation_mode_description_html: You can chose whether to allow federation with this domain.
         policies:
           reject_favourite: Reject favorite
+          reject_friend: Reject friend server application
           reject_hashtag: Reject hashtags
           reject_media: Reject media
           reject_new_follow: Reject follows
@@ -810,6 +813,7 @@ en:
       discovery:
         emoji_reactions: Stamp
         follow_recommendations: Follow recommendations
+        friend_servers: Friend servers
         preamble: Surfacing interesting content is instrumental in onboarding new users who may not know anyone Mastodon. Control how various discovery features work on your server.
         profile_directory: Profile directory
         public_timelines: Public timelines
@@ -1050,6 +1054,9 @@ en:
     new_pending_account:
       body: The details of the new account are below. You can approve or reject this application.
       subject: New account up for review on %{instance} (%{username})
+    new_pending_friend_server:
+      body: The new friend server %{domain} is waiting for your review. You can approve or reject this application.
+      subject: New friend server up for review on %{instance} (%{domain})
     new_report:
       body: "%{reporter} has reported %{target}"
       body_remote: Someone from %{domain} has reported %{target}
