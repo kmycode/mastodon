@@ -1,7 +1,7 @@
 - content_for :page_title do
   = t('admin.friend_servers.edit_friend')
 
-= simple_form_for @friend, url: admin_friend_servers_path do |f|
+= simple_form_for @friend, url: admin_friend_server_path(@friend), method: :put do |f|
   = render 'shared/error_messages', object: @friend
   = render 'friend_fields', f: f, friend: @friend
 
