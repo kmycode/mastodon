@@ -523,6 +523,7 @@ en:
       enabled: Enabled
       follow: Request
       pending: Pending
+      pending_you: Your review requested
       reject: Reject
       save_and_enable: Save and enable
       setup: Add and make a new application

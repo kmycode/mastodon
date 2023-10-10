@@ -40,7 +40,7 @@ class FriendDomain < ApplicationRecord
   end
 
   def pending?
-    !accepted && (i_am_pending? || they_are_pending?)
+    !accepted? && (i_am_pending? || they_are_pending?)
   end
 
   def idle?

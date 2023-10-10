@@ -518,6 +518,7 @@ ja:
       enabled: 有効
       follow: こちらから申請する
       pending: 承認待ち
+      pending_you: あなたの承認が必要
       reject: 相手からの申請を却下する
       save_and_enable: 保存して有効にする
       setup: フレンドサーバーを追加・申請

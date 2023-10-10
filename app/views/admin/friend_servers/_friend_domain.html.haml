@@ -12,10 +12,15 @@
         = fa_icon('check')
         = ' '
         = t 'admin.friend_servers.enabled'
-    - elsif friend.pending?
+    - elsif friend.i_am_pending?
       = fa_icon('hourglass')
       = ' '
       = t 'admin.friend_servers.pending'
+    - elsif friend.they_are_pending?
+      %span.warning-hint
+        = fa_icon('hourglass')
+        = ' '
+        = t 'admin.friend_servers.pending_you'
     - else
       %span.negative-hint
         = fa_icon('times')
