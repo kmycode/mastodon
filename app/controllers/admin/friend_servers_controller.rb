@@ -35,7 +35,7 @@ module Admin
     def update
       authorize :friend_server, :update?
 
-      if @friend.update(resource_params)
+      if @friend.update(update_resource_params)
         redirect_to admin_friend_servers_path
       else
         render action: :edit
@@ -79,7 +79,11 @@ module Admin
     end
 
     def resource_params
-      params.require(:friend_domain).permit(:domain, :inbox_url, :available, :pseudo_relay, :unlocked, :allow_all_posts)
+      params.require(:friend_domain).permit(:domain, :inbox_url, :available, :pseudo_relay, :delivery_local, :unlocked, :allow_all_posts)
+    end
+
+    def update_resource_params
+      params.require(:friend_domain).permit(:inbox_url, :available, :pseudo_relay, :delivery_local, :unlocked, :allow_all_posts)
     end
 
     def warn_signatures_not_enabled!
