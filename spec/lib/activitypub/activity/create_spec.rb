@@ -30,9 +30,11 @@ RSpec.describe ActivityPub::Activity::Create do
 
       let(:sender_software) { 'mastodon' }
       let(:custom_before) { false }
+      let(:active_friend) { false }
 
       before do
         Fabricate(:instance_info, domain: 'example.com', software: sender_software)
+        Fabricate(:friend_domain, domain: 'example.com', active_state: :accepted) if active_friend
         subject.perform unless custom_before
       end
 
@@ -249,6 +251,26 @@ RSpec.describe ActivityPub::Activity::Create do
           status = sender.statuses.first
 
           expect(status).to_not be_nil
+          expect(status.visibility).to eq 'unlisted'
+        end
+      end
+
+      context 'when public_unlisted with LocalPublic from friend-server' do
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            to: ['http://example.com/followers', 'LocalPublic'],
+            cc: 'https://www.w3.org/ns/activitystreams#Public',
+          }
+        end
+        let(:active_friend) { true }
+
+        it 'creates status' do
+          status = sender.statuses.first
+
+          expect(status).to_not be_nil
           expect(status.visibility).to eq 'public_unlisted'
         end
       end
@@ -432,6 +454,18 @@ RSpec.describe ActivityPub::Activity::Create do
 
         context 'with public_unlisted with LocalPublic' do
           let(:searchable_by) { ['http://example.com/followers', 'LocalPublic'] }
+
+          it 'create status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.searchability).to eq 'private'
+          end
+        end
+
+        context 'with public_unlisted with LocalPublic from friend-server' do
+          let(:searchable_by) { ['http://example.com/followers', 'LocalPublic'] }
+          let(:active_friend) { true }
 
           it 'create status' do
             status = sender.statuses.first
