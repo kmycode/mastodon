@@ -45,7 +45,7 @@ class ActivityPub::Activity::Accept < ActivityPub::Activity
   end
 
   def accept_follow_for_friend
-    friend.update!(active_state: :accepted)
+    friend.update!(active_state: :accepted, passive_state: :idle)
   end
 
   def friend

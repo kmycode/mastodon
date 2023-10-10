@@ -496,7 +496,6 @@ ja:
       unsuppress: おすすめフォローを復元
     friend_servers:
       accept: 相手の申請を承認する
-      active_status: 自分の状態
       add_new: フレンドサーバーを追加・申請
       delete: 削除
       description_html: <strong>フレンドサーバー</strong>とは、お互いのローカル公開・ローカル検索許可の投稿をそのまま交換するシステムです。
@@ -506,6 +505,8 @@ ja:
         allow_all_posts: このサーバーからの投稿を無条件で受け入れる
         allow_all_posts_hint: 通常は自分のサーバーの誰もフォローしていないアカウントの投稿は例外を除き受け入れがブロックされます。そのブロックを解除します。スパムが発生した場合など、いつでもブロックを再開できます。
         available: 有効にする
+        delivery_local: ローカル公開の公開範囲・検索許可を持った投稿をそのまま相手と共有する
+        delivery_local_hint: ローカル公開投稿は、通常は非収載に変換されて配送されます。その処理をせず、相手サーバーにもローカル公開と認識されるようにします。相手の連合タイムラインに掲載されます
         description: フレンドサーバーは、登録と同時に相手方のサーバーへ申請されます。
         domain: ドメイン
         inbox_url: フレンドサーバーの inbox URL
@@ -516,7 +517,6 @@ ja:
       edit_friend: 編集
       enabled: 有効
       follow: こちらから申請する
-      passive_status: 相手の状態
       pending: 承認待ち
       reject: 相手からの申請を却下する
       save_and_enable: 保存して有効にする

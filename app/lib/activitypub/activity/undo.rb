@@ -103,7 +103,7 @@ class ActivityPub::Activity::Undo < ActivityPub::Activity
   end
 
   def remove_follow_from_friend
-    friend.update!(passive_state: :idle, passive_follow_activity_id: nil)
+    friend.destroy_without_signal!
   end
 
   def friend

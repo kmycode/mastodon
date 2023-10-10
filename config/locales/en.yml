@@ -501,7 +501,6 @@ en:
       unsuppress: Restore follow recommendation
     friend_servers:
       accept: Accept
-      active_status: My status
       add_new: Add and make a new application
       delete: Delete
       description_html: <strong>フレンドサーバー</strong>とは、お互いのローカル公開・ローカル検索許可の投稿をそのまま交換するシステムです。
@@ -511,6 +510,8 @@ en:
         allow_all_posts: Receive all posts
         allow_all_posts_hint: 通常は自分のサーバーの誰もフォローしていないアカウントの投稿は例外を除き受け入れがブロックされます。そのブロックを解除します。スパムが発生した場合など、いつでもブロックを再開できます。
         available: Available
+        delivery_local: Deliver without changing public unlisted visibility and searchability
+        delivery_local_hint: Public unlisted posts will be added the friend's global timeline
         description: フレンドサーバーは、登録と同時に相手方のサーバーへ申請されます。
         domain: Domain
         inbox_url: Friend server inbox URL
@@ -521,7 +522,6 @@ en:
       edit_friend: Edit
       enabled: Enabled
       follow: Request
-      passive_status: Partner status
       pending: Pending
       reject: Reject
       save_and_enable: Save and enable

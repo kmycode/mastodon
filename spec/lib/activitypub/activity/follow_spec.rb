@@ -349,12 +349,12 @@ RSpec.describe ActivityPub::Activity::Follow do
 
       it 'marks me as idle' do
         subject.perform
-        expect(friend.they_are_pending?).to be true
+        expect(friend.reload.they_are_pending?).to be true
         expect(friend.i_am_idle?).to be true
       end
     end
 
-    context 'when my server is accepted' do
+    context 'when my server is already accepted' do
       before do
         friend.update(active_state: :accepted)
         stub_request(:post, 'https://example.com/inbox')
@@ -362,7 +362,7 @@ RSpec.describe ActivityPub::Activity::Follow do
 
       it 'marks me as idle and the friend as accepted' do
         subject.perform
-        expect(friend.they_are_accepted?).to be true
+        expect(friend.reload.they_are_accepted?).to be true
         expect(friend.i_am_idle?).to be true
         expect(a_request(:post, 'https://example.com/inbox').with(body: hash_including({
           id: 'foo#accepts/friends',

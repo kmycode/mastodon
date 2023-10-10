@@ -35,11 +35,23 @@ class FriendDomain < ApplicationRecord
   before_destroy :ensure_disabled
   after_commit :set_default_inbox_url
 
+  def accepted?
+    i_am_accepted? || they_are_accepted?
+  end
+
+  def pending?
+    !accepted && (i_am_pending? || they_are_pending?)
+  end
+
+  def idle?
+    (i_am_idle? || i_am_rejected?) && (they_are_idle? || they_are_rejected?)
+  end
+
   def follow!
     activity_id = ActivityPub::TagManager.instance.generate_uri_for(nil)
     payload     = Oj.dump(follow_activity(activity_id))
 
-    update!(active_state: :pending, active_follow_activity_id: activity_id)
+    update!(active_state: :pending, passive_state: :idle, active_follow_activity_id: activity_id)
     DeliveryFailureTracker.reset!(inbox_url)
     ActivityPub::DeliveryWorker.perform_async(payload, some_local_account.id, inbox_url)
   end
@@ -48,7 +60,7 @@ class FriendDomain < ApplicationRecord
     activity_id = ActivityPub::TagManager.instance.generate_uri_for(nil)
     payload     = Oj.dump(unfollow_activity(activity_id))
 
-    update!(active_state: :idle, active_follow_activity_id: nil)
+    update!(active_state: :idle, passive_state: :idle, active_follow_activity_id: nil)
     DeliveryFailureTracker.reset!(inbox_url)
     ActivityPub::DeliveryWorker.perform_async(payload, some_local_account.id, inbox_url)
   end
@@ -59,7 +71,7 @@ class FriendDomain < ApplicationRecord
     activity_id = passive_follow_activity_id
     payload     = Oj.dump(accept_follow_activity(activity_id))
 
-    update!(passive_state: :accepted)
+    update!(passive_state: :accepted, active_state: :idle)
     DeliveryFailureTracker.reset!(inbox_url)
     ActivityPub::DeliveryWorker.perform_async(payload, some_local_account.id, inbox_url)
   end
@@ -70,9 +82,15 @@ class FriendDomain < ApplicationRecord
     activity_id = passive_follow_activity_id
     payload     = Oj.dump(reject_follow_activity(activity_id))
 
-    update!(passive_state: :rejected, passive_follow_activity_id: nil)
+    update!(passive_state: :rejected, active_state: :idle, passive_follow_activity_id: nil)
     DeliveryFailureTracker.reset!(inbox_url)
     ActivityPub::DeliveryWorker.perform_async(payload, some_local_account.id, inbox_url)
+  end
+
+  def destroy_without_signal!
+    self.active_state = :idle
+    self.passive_state = :idle
+    destroy!
   end
 
   private

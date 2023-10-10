@@ -6,14 +6,14 @@
   = render 'friend_fields', f: f, friend: @friend
 
   .fields-group
-    %h4= t('admin.friend_servers.active_status')
+    %h4= t('admin.friend_servers.status')
     .fields-group
-      - if @friend.i_am_accepted?
+      - if @friend.accepted?
         %span.positive-hint
           = fa_icon('check')
           = ' '
           = t 'admin.friend_servers.enabled'
-      - elsif @friend.i_am_pending?
+      - elsif @friend.pending?
         = fa_icon('hourglass')
         = ' '
         = t 'admin.friend_servers.pending'
@@ -24,27 +24,7 @@
           = t 'admin.friend_servers.disabled'
       .action-buttons
         %div
-          = link_to t('admin.friend_servers.follow'), follow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_idle? || @friend.i_am_rejected?
-          = link_to t('admin.friend_servers.unfollow'), unfollow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.i_am_pending? || @friend.i_am_accepted?
-
-    %h4= t('admin.friend_servers.passive_status')
-    .fields-gtoup
-      - if @friend.they_are_accepted?
-        %span.positive-hint
-          = fa_icon('check')
-          = ' '
-          = t 'admin.friend_servers.enabled'
-      - elsif @friend.they_are_pending?
-        = fa_icon('hourglass')
-        = ' '
-        = t 'admin.friend_servers.pending'
-      - else
-        %span.negative-hint
-          = fa_icon('times')
-          = ' '
-          = t 'admin.friend_servers.disabled'
-      .action-buttons
-        %div
+          = link_to t('admin.friend_servers.follow'), follow_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.idle?
           = link_to t('admin.friend_servers.accept'), accept_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.they_are_pending?
           = link_to t('admin.friend_servers.reject'), reject_admin_friend_server_path(@friend), class: 'button', method: :post, data: { confirm: t('admin.accounts.are_you_sure') } if @friend.they_are_pending?
 

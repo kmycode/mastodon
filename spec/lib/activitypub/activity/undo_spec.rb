@@ -149,7 +149,7 @@ RSpec.describe ActivityPub::Activity::Undo do
         friend = Fabricate(:friend_domain, domain: sender.domain, passive_state: :accepted)
         subject.perform
         expect(sender.following?(recipient)).to be false
-        expect(friend.they_are_accepted?).to be true
+        expect(friend.reload.they_are_accepted?).to be true
       end
 
       context 'with only object uri' do
@@ -175,22 +175,19 @@ RSpec.describe ActivityPub::Activity::Undo do
 
         it 'deletes follow from this server to friend' do
           subject.perform
-          expect(friend.reload.they_are_idle?).to be true
-          expect(friend.passive_follow_activity_id).to be_nil
+          expect(FriendDomain.exists?(domain: 'abc.com')).to be false
         end
 
         it 'when my server is pending' do
           friend.update(active_state: :pending)
           subject.perform
-          expect(friend.reload.they_are_idle?).to be true
-          expect(friend.i_am_idle?).to be true
+          expect(FriendDomain.exists?(domain: 'abc.com')).to be false
         end
 
         it 'when my server is accepted' do
           friend.update(active_state: :accepted)
           subject.perform
-          expect(friend.reload.they_are_idle?).to be true
-          expect(friend.i_am_idle?).to be true
+          expect(FriendDomain.exists?(domain: 'abc.com')).to be false
         end
       end
     end

@@ -1495,11 +1495,7 @@ RSpec.describe ActivityPub::Activity::Create do
     context 'when sender is in friend server' do
       subject { described_class.new(json, sender, delivery: true) }
 
-      before do
-        Fabricate(:friend_domain, domain: sender.domain, active_state: :accepted, passive_state: :accepted)
-        subject.perform
-      end
-
+      let!(:friend) { Fabricate(:friend_domain, domain: sender.domain, active_state: :accepted) }
       let(:object_json) do
         {
           id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
@@ -1509,10 +1505,19 @@ RSpec.describe ActivityPub::Activity::Create do
       end
 
       it 'creates status' do
+        subject.perform
         status = sender.statuses.first
 
         expect(status).to_not be_nil
         expect(status.text).to eq 'Lorem ipsum'
+      end
+
+      it 'whey no-relay not creates status' do
+        friend.update(allow_all_posts: false)
+        subject.perform
+        status = sender.statuses.first
+
+        expect(status).to be_nil
       end
     end
 

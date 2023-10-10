@@ -39,7 +39,7 @@ class ActivityPub::Activity::Reject < ActivityPub::Activity
   end
 
   def reject_follow_for_friend
-    friend.update!(active_state: :rejected)
+    friend.update!(active_state: :rejected, passive_state: :idle)
   end
 
   def friend

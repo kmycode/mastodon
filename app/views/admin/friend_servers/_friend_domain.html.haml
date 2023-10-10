@@ -7,27 +7,12 @@
         = t 'admin.friend_servers.disabled'
     %samp= friend.domain
   %td
-    - if friend.i_am_accepted?
+    - if friend.accepted?
       %span.positive-hint
         = fa_icon('check')
         = ' '
         = t 'admin.friend_servers.enabled'
-    - elsif friend.i_am_pending?
-      = fa_icon('hourglass')
-      = ' '
-      = t 'admin.friend_servers.pending'
-    - else
-      %span.negative-hint
-        = fa_icon('times')
-        = ' '
-        = t 'admin.friend_servers.disabled'
-  %td
-    - if friend.they_are_accepted?
-      %span.positive-hint
-        = fa_icon('check')
-        = ' '
-        = t 'admin.friend_servers.enabled'
-    - elsif friend.they_are_pending?
+    - elsif friend.pending?
       = fa_icon('hourglass')
       = ' '
       = t 'admin.friend_servers.pending'
