@@ -114,7 +114,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def process_status_params
-    @status_parser = ActivityPub::Parser::StatusParser.new(@json, followers_collection: @account.followers_url, object: @object, account: @account)
+    @status_parser = ActivityPub::Parser::StatusParser.new(@json, followers_collection: @account.followers_url, object: @object, account: @account, friend_domain: friend_domain?)
 
     @params = {
       uri: @status_parser.uri,
@@ -504,6 +504,10 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
   def free_friend_domain?
     FriendDomain.free_receivings.exists?(domain: @account.domain)
+  end
+
+  def friend_domain?
+    FriendDomain.enabled.find_by(domain: @account.domain)&.accepted?
   end
 
   def quote
