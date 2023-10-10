@@ -114,7 +114,7 @@ describe StatusReachFinder do
 
         context 'with follower' do
           before do
-            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted)
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :accepted)
             bob.follow!(alice)
           end
 
@@ -126,7 +126,7 @@ describe StatusReachFinder do
 
         context 'with follower but not local-distributable' do
           before do
-            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted, delivery_local: false)
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :accepted, delivery_local: false)
             bob.follow!(alice)
           end
 
@@ -136,9 +136,9 @@ describe StatusReachFinder do
           end
         end
 
-        context 'with non-follower' do
+        context 'with non-follower and non-relay' do
           before do
-            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted)
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :accepted)
           end
 
           it 'send status' do
@@ -149,7 +149,7 @@ describe StatusReachFinder do
 
         context 'with pending' do
           before do
-            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :pending)
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :pending)
             bob.follow!(alice)
           end
 
@@ -161,7 +161,7 @@ describe StatusReachFinder do
 
         context 'with unidirection from them' do
           before do
-            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :idle, passive_state: :accepted)
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :idle, passive_state: :accepted)
             bob.follow!(alice)
           end
 
@@ -173,7 +173,7 @@ describe StatusReachFinder do
 
         context 'when unavailable' do
           before do
-            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted, available: false)
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :accepted, available: false)
             bob.follow!(alice)
           end
 
@@ -185,7 +185,18 @@ describe StatusReachFinder do
 
         context 'when distributable' do
           before do
-            Fabricate(:friend_domain, domain: 'foo.bar', passive_state: :accepted, pseudo_relay: true)
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', passive_state: :accepted, pseudo_relay: true)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to include 'https://foo.bar/inbox'
+          end
+        end
+
+        context 'when distributable and following' do
+          before do
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', passive_state: :accepted, pseudo_relay: true)
             bob.follow!(alice)
           end
 
@@ -195,10 +206,9 @@ describe StatusReachFinder do
           end
         end
 
-        context 'when distributable, following reverse' do
+        context 'when distributable reverse' do
           before do
-            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted, pseudo_relay: true)
-            bob.follow!(alice)
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :accepted, pseudo_relay: true)
           end
 
           it 'send status' do
@@ -209,6 +219,17 @@ describe StatusReachFinder do
 
         context 'when distributable but not local distributable' do
           before do
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', passive_state: :accepted, pseudo_relay: true, delivery_local: false)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
+          end
+        end
+
+        context 'when distributable and following but not local distributable' do
+          before do
             Fabricate(:friend_domain, domain: 'foo.bar', passive_state: :accepted, pseudo_relay: true, delivery_local: false)
             bob.follow!(alice)
           end
@@ -218,21 +239,12 @@ describe StatusReachFinder do
             expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
           end
         end
-
-        context 'when distributable and not following' do
-          before do
-            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :accepted, pseudo_relay: true)
-          end
-
-          it 'send status' do
-            expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
-            expect(subject.inboxes_for_friend).to include 'https://foo.bar/inbox'
-          end
-        end
       end
 
       context 'when it contains distributable friend server' do
-        before { Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', available: true, passive_state: :accepted, pseudo_relay: true) }
+        before do
+          Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', passive_state: :accepted, pseudo_relay: true)
+        end
 
         it 'includes the inbox of the mentioned account' do
           expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
