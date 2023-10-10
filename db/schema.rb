@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_07_090808) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_09_235215) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -690,6 +690,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_07_090808) do
     t.boolean "allow_all_posts", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "delivery_local", default: true, null: false
     t.index ["domain"], name: "index_friend_domains_on_domain", unique: true
     t.index ["inbox_url"], name: "index_friend_domains_on_inbox_url", unique: true
   end

@@ -178,6 +178,20 @@ RSpec.describe ActivityPub::Activity::Undo do
           expect(friend.reload.they_are_idle?).to be true
           expect(friend.passive_follow_activity_id).to be_nil
         end
+
+        it 'when my server is pending' do
+          friend.update(active_state: :pending)
+          subject.perform
+          expect(friend.reload.they_are_idle?).to be true
+          expect(friend.i_am_idle?).to be true
+        end
+
+        it 'when my server is accepted' do
+          friend.update(active_state: :accepted)
+          subject.perform
+          expect(friend.reload.they_are_idle?).to be true
+          expect(friend.i_am_idle?).to be true
+        end
       end
     end
 

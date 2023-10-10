@@ -11,9 +11,11 @@ describe FriendDomain do
 
   describe '#follow!' do
     it 'call inbox' do
+      friend.update(active_state: :accepted, passive_state: :accepted)
       friend.follow!
       expect(friend.active_follow_activity_id).to_not be_nil
       expect(friend.i_am_pending?).to be true
+      expect(friend.they_are_idle?).to be true
       expect(a_request(:post, 'https://foo.bar/inbox').with(body: hash_including({
         id: friend.active_follow_activity_id,
         type: 'Follow',
@@ -25,10 +27,11 @@ describe FriendDomain do
 
   describe '#unfollow!' do
     it 'call inbox' do
-      friend.update(active_follow_activity_id: 'ohagi')
+      friend.update(active_follow_activity_id: 'ohagi', active_state: :accepted, passive_state: :accepted)
       friend.unfollow!
       expect(friend.active_follow_activity_id).to be_nil
       expect(friend.i_am_idle?).to be true
+      expect(friend.they_are_idle?).to be true
       expect(a_request(:post, 'https://foo.bar/inbox').with(body: hash_including({
         type: 'Undo',
         object: {
@@ -43,9 +46,10 @@ describe FriendDomain do
 
   describe '#accept!' do
     it 'call inbox' do
-      friend.update(passive_follow_activity_id: 'ohagi', passive_state: :pending)
+      friend.update(passive_follow_activity_id: 'ohagi', active_state: :accepted, passive_state: :pending)
       friend.accept!
       expect(friend.they_are_accepted?).to be true
+      expect(friend.i_am_idle?).to be true
       expect(a_request(:post, 'https://foo.bar/inbox').with(body: hash_including({
         id: 'ohagi#accepts/friends',
         type: 'Accept',
@@ -57,9 +61,10 @@ describe FriendDomain do
 
   describe '#reject!' do
     it 'call inbox' do
-      friend.update(passive_follow_activity_id: 'ohagi', passive_state: :pending)
+      friend.update(passive_follow_activity_id: 'ohagi', active_state: :accepted, passive_state: :pending)
       friend.reject!
       expect(friend.they_are_rejected?).to be true
+      expect(friend.i_am_idle?).to be true
       expect(a_request(:post, 'https://foo.bar/inbox').with(body: hash_including({
         id: 'ohagi#rejects/friends',
         type: 'Reject',

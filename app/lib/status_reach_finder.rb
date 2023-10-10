@@ -10,7 +10,7 @@ class StatusReachFinder
   end
 
   def inboxes
-    (reached_account_inboxes + followers_inboxes + relay_inboxes).uniq
+    (reached_account_inboxes + followers_inboxes + relay_inboxes + nolocal_friend_inboxes).uniq
   end
 
   def inboxes_for_misskey
@@ -147,7 +147,15 @@ class StatusReachFinder
 
   def friend_inboxes
     if @status.public_visibility? || @status.public_unlisted_visibility? || (@status.unlisted_visibility? && (@status.public_searchability? || @status.public_unlisted_searchability?))
-      DeliveryFailureTracker.without_unavailable(FriendDomain.distributables.pluck(:inbox_url))
+      DeliveryFailureTracker.without_unavailable(FriendDomain.distributables.where(delivery_local: true).pluck(:inbox_url))
+    else
+      []
+    end
+  end
+
+  def nolocal_friend_inboxes
+    if @status.public_visibility?
+      DeliveryFailureTracker.without_unavailable(FriendDomain.distributables.where(delivery_local: false).pluck(:inbox_url))
     else
       []
     end

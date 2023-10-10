@@ -99,7 +99,7 @@ describe StatusReachFinder do
           let(:sender_software) { 'misskey' }
           let(:searchability) { :public }
 
-          before { Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', available: true, active_state: :accepted, passive_state: :accepted, pseudo_relay: true) }
+          before { Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', available: true, active_state: :accepted, pseudo_relay: true) }
 
           it 'send status without friend server' do
             expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
@@ -121,6 +121,18 @@ describe StatusReachFinder do
           it 'send status' do
             expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
             expect(subject.inboxes_for_friend).to include 'https://foo.bar/inbox'
+          end
+        end
+
+        context 'with follower but not local-distributable' do
+          before do
+            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted, delivery_local: false)
+            bob.follow!(alice)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
           end
         end
 
@@ -147,15 +159,15 @@ describe StatusReachFinder do
           end
         end
 
-        context 'with idle' do
+        context 'with unidirection from them' do
           before do
             Fabricate(:friend_domain, domain: 'foo.bar', active_state: :idle, passive_state: :accepted)
             bob.follow!(alice)
           end
 
           it 'send status' do
-            expect(subject.inboxes).to include 'https://foo.bar/inbox'
-            expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to include 'https://foo.bar/inbox'
           end
         end
 
@@ -173,7 +185,7 @@ describe StatusReachFinder do
 
         context 'when distributable' do
           before do
-            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted, passive_state: :accepted, pseudo_relay: true)
+            Fabricate(:friend_domain, domain: 'foo.bar', passive_state: :accepted, pseudo_relay: true)
             bob.follow!(alice)
           end
 
@@ -183,9 +195,33 @@ describe StatusReachFinder do
           end
         end
 
+        context 'when distributable, following reverse' do
+          before do
+            Fabricate(:friend_domain, domain: 'foo.bar', active_state: :accepted, pseudo_relay: true)
+            bob.follow!(alice)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to include 'https://foo.bar/inbox'
+          end
+        end
+
+        context 'when distributable but not local distributable' do
+          before do
+            Fabricate(:friend_domain, domain: 'foo.bar', passive_state: :accepted, pseudo_relay: true, delivery_local: false)
+            bob.follow!(alice)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
+          end
+        end
+
         context 'when distributable and not following' do
           before do
-            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :accepted, passive_state: :accepted, pseudo_relay: true)
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', active_state: :accepted, pseudo_relay: true)
           end
 
           it 'send status' do
@@ -196,7 +232,7 @@ describe StatusReachFinder do
       end
 
       context 'when it contains distributable friend server' do
-        before { Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', available: true, active_state: :accepted, passive_state: :accepted, pseudo_relay: true) }
+        before { Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', available: true, passive_state: :accepted, pseudo_relay: true) }
 
         it 'includes the inbox of the mentioned account' do
           expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
@@ -381,9 +417,11 @@ describe StatusReachFinder do
         Fabricate(:friend_domain, domain: 'def.com', inbox_url: 'https://def.com/inbox', active_state: :accepted, passive_state: :accepted, pseudo_relay: true, available: true)
         Fabricate(:friend_domain, domain: 'ghi.com', inbox_url: 'https://ghi.com/inbox', active_state: :accepted, passive_state: :accepted, pseudo_relay: true, available: false)
         Fabricate(:friend_domain, domain: 'jkl.com', inbox_url: 'https://jkl.com/inbox', active_state: :accepted, passive_state: :accepted, pseudo_relay: false, available: true)
-        Fabricate(:friend_domain, domain: 'mno.com', inbox_url: 'https://mno.com/inbox', active_state: :accepted, passive_state: :pending, pseudo_relay: true, available: true)
+        Fabricate(:friend_domain, domain: 'mno.com', inbox_url: 'https://mno.com/inbox', active_state: :accepted, passive_state: :idle, pseudo_relay: true, available: true)
         Fabricate(:friend_domain, domain: 'pqr.com', inbox_url: 'https://pqr.com/inbox', active_state: :accepted, passive_state: :accepted, pseudo_relay: true, available: true)
         Fabricate(:unavailable_domain, domain: 'pqr.com')
+        Fabricate(:friend_domain, domain: 'stu.com', inbox_url: 'https://stu.com/inbox', active_state: :idle, passive_state: :accepted, pseudo_relay: true, available: true)
+        Fabricate(:friend_domain, domain: 'vwx.com', inbox_url: 'https://vwx.com/inbox', active_state: :idle, passive_state: :accepted, pseudo_relay: true, available: true, delivery_local: false)
       end
 
       it 'returns friend servers' do
@@ -399,8 +437,13 @@ describe StatusReachFinder do
         expect(subject).to_not include 'https://jkl.com/inbox'
       end
 
-      it 'not contains no-mutual friends' do
-        expect(subject).to_not include 'https://mno.com/inbox'
+      it 'contains no-mutual friends' do
+        expect(subject).to include 'https://mno.com/inbox'
+        expect(subject).to include 'https://stu.com/inbox'
+      end
+
+      it 'not contains un local distable' do
+        expect(subject).to_not include 'https://vwx.com/inbox'
       end
 
       it 'not contains unavailable domain friends' do

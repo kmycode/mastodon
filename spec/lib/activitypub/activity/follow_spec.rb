@@ -342,6 +342,36 @@ RSpec.describe ActivityPub::Activity::Follow do
       end
     end
 
+    context 'when my server is pending' do
+      before do
+        friend.update(active_state: :pending)
+      end
+
+      it 'marks me as idle' do
+        subject.perform
+        expect(friend.they_are_pending?).to be true
+        expect(friend.i_am_idle?).to be true
+      end
+    end
+
+    context 'when my server is accepted' do
+      before do
+        friend.update(active_state: :accepted)
+        stub_request(:post, 'https://example.com/inbox')
+      end
+
+      it 'marks me as idle and the friend as accepted' do
+        subject.perform
+        expect(friend.they_are_accepted?).to be true
+        expect(friend.i_am_idle?).to be true
+        expect(a_request(:post, 'https://example.com/inbox').with(body: hash_including({
+          id: 'foo#accepts/friends',
+          type: 'Accept',
+          object: 'foo',
+        }))).to have_been_made.once
+      end
+    end
+
     context 'with sending email' do
       around do |example|
         queue_adapter = ActiveJob::Base.queue_adapter

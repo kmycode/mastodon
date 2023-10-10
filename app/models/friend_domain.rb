@@ -27,18 +27,13 @@ class FriendDomain < ApplicationRecord
   enum passive_state: { idle: 0, pending: 1, accepted: 2, rejected: 3 }, _prefix: :they_are
 
   scope :by_domain_and_subdomains, ->(domain) { where(domain: Instance.by_domain_and_subdomains(domain).select(:domain)) }
-  scope :enabled, -> { where(available: true) }
-  scope :mutuals, -> { enabled.where(active_state: :accepted, passive_state: :accepted) }
-  scope :distributables, -> { mutuals.where(pseudo_relay: true) }
-  scope :deliver_locals, -> { enabled.where(active_state: :accepted) }
-  scope :free_receivings, -> { mutuals.where(allow_all_posts: true) }
+  scope :enabled, -> { where(active_state: :accepted).or(FriendDomain.where(passive_state: :accepted)).where(available: true) }
+  scope :distributables, -> { enabled.where(pseudo_relay: true) }
+  scope :deliver_locals, -> { enabled.where(delivery_local: true) }
+  scope :free_receivings, -> { enabled.where(allow_all_posts: true) }
 
   before_destroy :ensure_disabled
   after_commit :set_default_inbox_url
-
-  def mutual?
-    i_am_accepted? && they_are_accepted?
-  end
 
   def follow!
     activity_id = ActivityPub::TagManager.instance.generate_uri_for(nil)

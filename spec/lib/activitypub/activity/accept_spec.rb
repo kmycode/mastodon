@@ -118,5 +118,19 @@ RSpec.describe ActivityPub::Activity::Accept do
       subject.perform
       expect(friend.reload.i_am_accepted?).to be true
     end
+
+    it 'when the friend server is pending' do
+      friend.update(passive_state: :pending)
+      subject.perform
+      expect(friend.reload.they_are_idle?).to be true
+      expect(friend.i_am_accepted?).to be true
+    end
+
+    it 'when the friend server is accepted' do
+      friend.update(passive_state: :accepted)
+      subject.perform
+      expect(friend.reload.they_are_idle?).to be true
+      expect(friend.i_am_accepted?).to be true
+    end
   end
 end
