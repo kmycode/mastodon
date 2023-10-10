@@ -93,6 +93,10 @@ class FriendDomain < ApplicationRecord
     destroy!
   end
 
+  def initialize_inbox_url!
+    self.inbox_url = default_inbox_url
+  end
+
   private
 
   def default_inbox_url

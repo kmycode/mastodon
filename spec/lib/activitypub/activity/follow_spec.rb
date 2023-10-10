@@ -339,6 +339,7 @@ RSpec.describe ActivityPub::Activity::Follow do
         expect(friend).to_not be_nil
         expect(friend.they_are_pending?).to be true
         expect(friend.passive_follow_activity_id).to eq 'foo'
+        expect(friend.inbox_url).to eq 'https://abc.com/inbox'
       end
     end
 
