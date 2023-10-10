@@ -55,10 +55,12 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
       @friend = FriendDomain.create!(domain: @account.domain, passive_state: :pending, passive_follow_activity_id: @json['id'])
     end
 
-    if already_accepted || friend.unlocked || Setting.unlocked_friend
+    if already_accepted || Setting.unlocked_friend
       friend.accept!
-    else
+
       # Notify for admin even if unlocked
+      notify_staff_about_pending_friend_server! unless already_accepted
+    else
       notify_staff_about_pending_friend_server!
     end
   end

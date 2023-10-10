@@ -13,10 +13,10 @@
 #  passive_follow_activity_id :string
 #  available                  :boolean          default(TRUE), not null
 #  pseudo_relay               :boolean          default(FALSE), not null
-#  unlocked                   :boolean          default(FALSE), not null
 #  allow_all_posts            :boolean          default(TRUE), not null
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
+#  delivery_local             :boolean          default(TRUE), not null
 #
 
 class FriendDomain < ApplicationRecord

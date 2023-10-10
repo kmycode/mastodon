@@ -402,26 +402,6 @@ RSpec.describe ActivityPub::Activity::Follow do
       end
     end
 
-    context 'when unlocked' do
-      before do
-        friend.update(unlocked: true)
-        stub_request(:post, 'https://example.com/inbox')
-      end
-
-      it 'marks the friend as accepted' do
-        subject.perform
-
-        friend = FriendDomain.find_by(domain: 'abc.com')
-        expect(friend).to_not be_nil
-        expect(friend.they_are_accepted?).to be true
-        expect(a_request(:post, 'https://example.com/inbox').with(body: hash_including({
-          id: 'foo#accepts/friends',
-          type: 'Accept',
-          object: 'foo',
-        }))).to have_been_made.once
-      end
-    end
-
     context 'when unlocked on admin settings' do
       before do
         Form::AdminSettings.new(unlocked_friend: '1').save
