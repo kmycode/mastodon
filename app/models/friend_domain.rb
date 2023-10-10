@@ -167,7 +167,7 @@ class FriendDomain < ApplicationRecord
   end
 
   def ensure_disabled
-    delete_for_friend! unless i_am_idle? && they_are_idle?
+    delete_for_friend! unless id.nil? || (i_am_idle? && they_are_idle?)
   end
 
   def set_default_inbox_url
