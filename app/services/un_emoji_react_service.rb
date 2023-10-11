@@ -67,14 +67,14 @@ class UnEmojiReactService < BaseService
   def forward_for_undo_emoji_reaction!(emoji_reaction)
     return unless @status.local?
 
-    ActivityPub::RawDistributionWorker.perform_async(Oj.dump(build_json(emoji_reaction)), @status.account.id, [@status.account.preferred_inbox_url])
+    ActivityPub::RawDistributionWorker.perform_async(build_json(emoji_reaction), @status.account.id, [@status.account.preferred_inbox_url])
   end
 
   def relay_for_undo_emoji_reaction!(emoji_reaction)
     return unless @status.local? && @status.public_visibility?
 
     ActivityPub::DeliveryWorker.push_bulk(Relay.enabled.pluck(:inbox_url)) do |inbox_url|
-      [Oj.dump(build_json(emoji_reaction)), @status.account.id, inbox_url]
+      [build_json(emoji_reaction), @status.account.id, inbox_url]
     end
   end
 
@@ -82,7 +82,7 @@ class UnEmojiReactService < BaseService
     return unless @status.local? && @status.distributable_friend?
 
     ActivityPub::DeliveryWorker.push_bulk(FriendDomain.distributables.pluck(:inbox_url)) do |inbox_url|
-      [Oj.dump(build_json(emoji_reaction)), @status.account.id, inbox_url]
+      [build_json(emoji_reaction), @status.account.id, inbox_url]
     end
   end
 end
