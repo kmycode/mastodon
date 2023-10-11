@@ -67,7 +67,7 @@ class UnEmojiReactService < BaseService
   def forward_for_undo_emoji_reaction!(emoji_reaction)
     return unless @status.local?
 
-    ActivityPub::RawDistributionWorker.perform_async(Oj.dump(build_json(emoji_reaction)), @original_status.account.id, [@account.preferred_inbox_url])
+    ActivityPub::RawDistributionWorker.perform_async(Oj.dump(build_json(emoji_reaction)), @status.account.id, [@status.account.preferred_inbox_url])
   end
 
   def relay_for_undo_emoji_reaction!(emoji_reaction)
