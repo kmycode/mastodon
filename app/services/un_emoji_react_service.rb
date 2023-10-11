@@ -15,6 +15,10 @@ class UnEmojiReactService < BaseService
       create_notification(emoji_reaction) if !@status.account.local? && @status.account.activitypub?
       notify_to_followers(emoji_reaction) if @status.account.local?
       write_stream(emoji_reaction)
+
+      forward_for_undo_emoji_reaction!(emoji_reaction)
+      relay_for_undo_emoji_reaction!(emoji_reaction)
+      relay_friend_for_undo_emoji_reaction!(emoji_reaction)
     else
       account = Account.find(account_id)
       bulk(account, @status)
@@ -52,11 +56,33 @@ class UnEmojiReactService < BaseService
   end
 
   def build_json(emoji_reaction)
-    Oj.dump(serialize_payload(emoji_reaction, ActivityPub::UndoEmojiReactionSerializer, signer: emoji_reaction.account))
+    @build_json = Oj.dump(serialize_payload(emoji_reaction, ActivityPub::UndoEmojiReactionSerializer, signer: emoji_reaction.account))
   end
 
   def render_emoji_reaction(emoji_group)
     # @rendered_emoji_reaction ||= InlineRenderer.render(emoji_group, nil, :emoji_reaction)
     Oj.dump(event: :emoji_reaction, payload: emoji_group.to_json)
+  end
+
+  def forward_for_undo_emoji_reaction!(emoji_reaction)
+    return unless @status.local?
+
+    ActivityPub::RawDistributionWorker.perform_async(Oj.dump(build_json(emoji_reaction)), @original_status.account.id, [@account.preferred_inbox_url])
+  end
+
+  def relay_for_undo_emoji_reaction!(emoji_reaction)
+    return unless @status.local? && @status.public_visibility?
+
+    ActivityPub::DeliveryWorker.push_bulk(Relay.enabled.pluck(:inbox_url)) do |inbox_url|
+      [Oj.dump(build_json(emoji_reaction)), @status.account.id, inbox_url]
+    end
+  end
+
+  def relay_friend_for_undo_emoji_reaction!(emoji_reaction)
+    return unless @status.local? && @status.distributable_friend?
+
+    ActivityPub::DeliveryWorker.push_bulk(FriendDomain.distributables.pluck(:inbox_url)) do |inbox_url|
+      [Oj.dump(build_json(emoji_reaction)), @status.account.id, inbox_url]
+    end
   end
 end
