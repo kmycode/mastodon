@@ -239,6 +239,18 @@ describe StatusReachFinder do
             expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
           end
         end
+
+        context 'when distributable but domain blocked by account' do
+          before do
+            Fabricate(:account_domain_block, account: alice, domain: 'foo.bar')
+            Fabricate(:friend_domain, domain: 'foo.bar', inbox_url: 'https://foo.bar/inbox', passive_state: :accepted, pseudo_relay: true)
+          end
+
+          it 'send status' do
+            expect(subject.inboxes).to_not include 'https://foo.bar/inbox'
+            expect(subject.inboxes_for_friend).to_not include 'https://foo.bar/inbox'
+          end
+        end
       end
 
       context 'when it contains distributable friend server' do

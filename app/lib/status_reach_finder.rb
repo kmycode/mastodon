@@ -147,7 +147,7 @@ class StatusReachFinder
 
   def friend_inboxes
     if @status.public_visibility? || @status.public_unlisted_visibility? || (@status.unlisted_visibility? && (@status.public_searchability? || @status.public_unlisted_searchability?))
-      DeliveryFailureTracker.without_unavailable(FriendDomain.distributables.where(delivery_local: true).pluck(:inbox_url))
+      DeliveryFailureTracker.without_unavailable(FriendDomain.distributables.where(delivery_local: true).where.not(domain: AccountDomainBlock.where(account: @status.account).select(:domain)).pluck(:inbox_url))
     else
       []
     end
@@ -155,7 +155,7 @@ class StatusReachFinder
 
   def nolocal_friend_inboxes
     if @status.public_visibility?
-      DeliveryFailureTracker.without_unavailable(FriendDomain.distributables.where(delivery_local: false).pluck(:inbox_url))
+      DeliveryFailureTracker.without_unavailable(FriendDomain.distributables.where(delivery_local: false).where.not(domain: AccountDomainBlock.where(account: @status.account).select(:domain)).pluck(:inbox_url))
     else
       []
     end
