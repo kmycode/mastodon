@@ -28,5 +28,10 @@ describe NodeInfo::Serializer do # rubocop:disable RSpec/FilePath
     it 'returns features' do
       expect(serialization['metadata']['features']).to include 'emoji_reaction'
     end
+
+    it 'returns nodeinfo own features' do
+      expect(serialization['metadata']['features']).to include 'quote'
+      expect(serialization['metadata']['features']).to_not include 'kmyblue_markdown'
+    end
   end
 end

@@ -22,5 +22,9 @@ describe REST::InstanceSerializer do
     it 'returns fedibird_capabilities' do
       expect(serialization['fedibird_capabilities']).to include 'emoji_reaction'
     end
+
+    it 'returns api own fedibird_capabilities' do
+      expect(serialization['fedibird_capabilities']).to include 'kmyblue_markdown'
+    end
   end
 end
