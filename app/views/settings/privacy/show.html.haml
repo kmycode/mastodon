@@ -25,9 +25,6 @@
       = ff.input :noai, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_noai'), hint: I18n.t('simple_form.hints.defaults.setting_noai')
 
   .fields-group
-    = f.input :dissubscribable, as: :boolean, wrapper: :with_label, kmyblue: true, hint: t('simple_form.hints.defaults.dissubscribable')
-
-  .fields-group
     = f.input :unlocked, as: :boolean, wrapper: :with_label
 
   %h4= t('privacy.search')
