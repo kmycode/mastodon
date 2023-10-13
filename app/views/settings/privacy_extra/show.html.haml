@@ -21,6 +21,12 @@
     .fields-group
       = ff.input :link_preview, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_link_preview'), hint: I18n.t('simple_form.hints.defaults.setting_link_preview')
 
+    .fields-group
+      = f.input :dissubscribable, as: :boolean, wrapper: :with_label, kmyblue: true, hint: t('simple_form.hints.defaults.dissubscribable')
+
+    .fields-group
+      = ff.input :allow_quote, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_allow_quote'), hint: false
+
   %h4= t 'privacy_extra.stop_deliver'
 
   %p.lead= t('privacy_extra.stop_deliver_hint_html')

@@ -18,7 +18,7 @@ class Settings::PrivacyExtraController < Settings::BaseController
   private
 
   def account_params
-    params.require(:account).permit(settings: UserSettings.keys)
+    params.require(:account).permit(:dissubscribable, settings: UserSettings.keys)
   end
 
   def set_account
