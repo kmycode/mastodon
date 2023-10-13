@@ -62,7 +62,6 @@ class EmojiReactService < BaseService
     status = emoji_reaction.status
 
     return unless status.account.local?
-    return if emoji_reaction.remote_custom_emoji?
 
     ActivityPub::RawDistributionWorker.perform_async(build_json(emoji_reaction), status.account_id)
   end
