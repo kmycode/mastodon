@@ -209,6 +209,17 @@ RSpec.describe PostStatusService, type: :service do
     expect(status.mentioned_accounts.first.id).to eq mutual_account.id
   end
 
+  it 'limited visibility and direct searchability' do
+    account = Fabricate(:account)
+    text = 'This is an English text.'
+
+    status = subject.call(account, text: text, visibility: 'mutual', searchability: 'public')
+
+    expect(status.visibility).to eq 'limited'
+    expect(status.limited_scope).to eq 'personal'
+    expect(status.searchability).to eq 'direct'
+  end
+
   it 'personal visibility with mutual' do
     account = Fabricate(:account)
     text = 'This is an English text.'

@@ -631,12 +631,10 @@ class Status < ApplicationRecord
 
     self.searchability = if %w(public public_unlisted login unlisted).include?(visibility)
                            searchability
-                         elsif visibility == 'limited'
-                           :limited
+                         elsif visibility == 'limited' || visibility == 'direct'
+                           searchability == 'limited' ? :limited : :direct
                          elsif visibility == 'private'
                            searchability == 'public' || searchability == 'public_unlisted' ? :private : searchability
-                         elsif visibility == 'direct'
-                           searchability == 'limited' ? :limited : :direct
                          else
                            :direct
                          end
