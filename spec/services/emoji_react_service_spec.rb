@@ -99,7 +99,7 @@ RSpec.describe EmojiReactService, type: :service do
 
   context 'with custom emoji of remote' do
     let(:name) { 'ohagi@foo.bar' }
-    let!(:custom_emoji) { Fabricate(:custom_emoji, shortcode: 'ohagi', domain: 'foo.bar') }
+    let!(:custom_emoji) { Fabricate(:custom_emoji, shortcode: 'ohagi', domain: 'foo.bar', uri: 'https://foo.bar/emoji/ohagi') }
 
     before { Fabricate(:emoji_reaction, status: status, name: 'ohagi', custom_emoji: custom_emoji) }
 
@@ -113,7 +113,7 @@ RSpec.describe EmojiReactService, type: :service do
   context 'with custom emoji of remote without existing one' do
     let(:name) { 'ohagi@foo.bar' }
 
-    before { Fabricate(:custom_emoji, shortcode: 'ohagi', domain: 'foo.bar') }
+    before { Fabricate(:custom_emoji, shortcode: 'ohagi', domain: 'foo.bar', uri: 'https://foo.bar/emoji/ohagi') }
 
     it 'react with emoji' do
       expect(subject.count).to eq 0
@@ -122,7 +122,7 @@ RSpec.describe EmojiReactService, type: :service do
 
   context 'with custom emoji of remote but local has same name emoji' do
     let(:name) { 'ohagi@foo.bar' }
-    let!(:custom_emoji) { Fabricate(:custom_emoji, shortcode: 'ohagi', domain: 'foo.bar') }
+    let!(:custom_emoji) { Fabricate(:custom_emoji, shortcode: 'ohagi', domain: 'foo.bar', uri: 'https://foo.bar/emoji/ohagi') }
 
     before do
       Fabricate(:custom_emoji, shortcode: 'ohagi', domain: nil)

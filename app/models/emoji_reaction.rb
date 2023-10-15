@@ -43,6 +43,14 @@ class EmojiReaction < ApplicationRecord
     custom_emoji? && !custom_emoji.local?
   end
 
+  def sign?
+    true
+  end
+
+  def object_type
+    :emoji_reaction
+  end
+
   private
 
   def refresh_cache
