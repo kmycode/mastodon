@@ -103,7 +103,12 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
     return if custom_emoji_parser.shortcode.blank? || custom_emoji_parser.image_remote_url.blank?
 
     domain = tag['domain'] || URI.split(custom_emoji_parser.uri)[2] || @account.domain
-    domain = nil if domain == Rails.configuration.x.local_domain || domain == Rails.configuration.x.web_domain
+
+    if domain == Rails.configuration.x.local_domain || domain == Rails.configuration.x.web_domain
+      # Block overwriting remote-but-local data
+      return CustomEmoji.find_by(shortcode: custom_emoji_parser.shortcode, domain: nil)
+    end
+
     return if domain.present? && skip_download?(domain)
 
     emoji = CustomEmoji.find_by(shortcode: custom_emoji_parser.shortcode, domain: domain)

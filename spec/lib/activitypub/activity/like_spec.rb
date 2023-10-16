@@ -185,6 +185,10 @@ RSpec.describe ActivityPub::Activity::Like do
         }
       end
 
+      before do
+        Fabricate(:custom_emoji, domain: nil, shortcode: 'tinking', license: 'Everyone but Ohagi')
+      end
+
       it 'create emoji reaction' do
         expect(subject.count).to eq 1
         expect(subject.first.name).to eq 'tinking'
