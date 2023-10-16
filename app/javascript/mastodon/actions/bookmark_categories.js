@@ -213,9 +213,10 @@ export const deleteBookmarkCategoryFail = (id, error) => ({
 export const fetchBookmarkCategoryStatuses = bookmarkCategoryId => (dispatch, getState) => {
   dispatch(fetchBookmarkCategoryStatusesRequest(bookmarkCategoryId));
 
-  api(getState).get(`/api/v1/bookmark_categories/${bookmarkCategoryId}/statuses`, { params: { limit: 0 } }).then(({ data }) => {
-    dispatch(importFetchedStatuses(data));
-    dispatch(fetchBookmarkCategoryStatusesSuccess(bookmarkCategoryId, data));
+  api(getState).get(`/api/v1/bookmark_categories/${bookmarkCategoryId}/statuses`).then((response) => {
+    const next = getLinks(response).refs.find(link => link.rel === 'next');
+    dispatch(importFetchedStatuses(response.data));
+    dispatch(fetchBookmarkCategoryStatusesSuccess(bookmarkCategoryId, response.data, next ? next.uri : null));
   }).catch(err => dispatch(fetchBookmarkCategoryStatusesFail(bookmarkCategoryId, err)));
 };
 
