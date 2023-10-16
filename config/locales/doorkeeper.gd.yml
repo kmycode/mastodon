@@ -1,3 +1,4 @@
+---
 gd:
   activerecord:
     attributes:
@@ -11,10 +12,10 @@ gd:
         doorkeeper/application:
           attributes:
             redirect_uri:
-              fragment_present: '– chan fhaod bloigh a bhith ’na bhroinn.'
-              invalid_uri: '– feumaidh seo a bhith ’na URI dligheach.'
-              relative_uri: '– feumaidh seo a bhith ’na URI absaloideach.'
-              secured_uri: '– feumaidh seo a bhith ’na URI HTTPS/SSL.'
+              fragment_present: "– chan fhaod bloigh a bhith ’na bhroinn."
+              invalid_uri: "– feumaidh seo a bhith ’na URI dligheach."
+              relative_uri: "– feumaidh seo a bhith ’na URI absaloideach."
+              secured_uri: "– feumaidh seo a bhith ’na URI HTTPS/SSL."
   doorkeeper:
     applications:
       buttons:
@@ -59,7 +60,7 @@ gd:
       error:
         title: Thachair mearachd
       new:
-        prompt_html: "Bu mhiann le %{client_name} cead gus an cunntas agad inntrigeadh. Seo aplacaid threas-phàrtaidh. <strong>Mur eil earbsa agad ann, na ùghdarraich e.</strong>"
+        prompt_html: Bu mhiann le %{client_name} cead gus an cunntas agad inntrigeadh. Seo aplacaid threas-phàrtaidh. <strong>Mur eil earbsa agad ann, na ùghdarraich e.</strong>
         review_permissions: Thoir sùil air na ceadan
         title: Tha feum air ùghdarrachadh
       show:

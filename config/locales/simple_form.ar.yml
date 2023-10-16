@@ -1,3 +1,4 @@
+---
 ar:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ ar:
         events: الأحداث المفعلة
         template: قالب الحمولة
         url: الرابط التشعبّي URL لنقطة النهاية
-    'no': 'لا'
+    'no': لا
     not_recommended: غير مستحسن
     overridden: مُتجاوَز
     recommended: موصى بها
@@ -330,4 +331,4 @@ ar:
     title:
       sessions:
         webauthn: استخدم أحد مفاتيح الأمان الخاصة بك لتسجيل الدخول
-    'yes': 'نعم'
+    'yes': نعم

@@ -1,3 +1,4 @@
+---
 sc:
   activerecord:
     attributes:
@@ -111,12 +112,12 @@ sc:
       application:
         title: Autorizatzione OAuth netzessària
     scopes:
-      "admin:read": lèghere totu is datos de su serbidore
-      "admin:read:accounts": lèghere informatziones sensìbiles de totu is contos
-      "admin:read:reports": lèghere informatziones sensìbiles de totu is sinnalatziones e is contos sinnalados
-      "admin:write": modificare totu is datos in su serbidore
-      "admin:write:accounts": fàghere atziones de moderatzione in is contos
-      "admin:write:reports": fàghere atziones de moderatzione in is sinnalatziones
+      admin:read: lèghere totu is datos de su serbidore
+      admin:read:accounts: lèghere informatziones sensìbiles de totu is contos
+      admin:read:reports: lèghere informatziones sensìbiles de totu is sinnalatziones e is contos sinnalados
+      admin:write: modificare totu is datos in su serbidore
+      admin:write:accounts: fàghere atziones de moderatzione in is contos
+      admin:write:reports: fàghere atziones de moderatzione in is sinnalatziones
       follow: modificare is relatziones intre is contos
       push: retzire is notìficas push tuas
       read: lèghere totu is datos de su contu tuo

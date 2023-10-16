@@ -1,3 +1,4 @@
+---
 br:
   activerecord:
     attributes:
@@ -112,12 +113,12 @@ br:
       application:
         title: OAuth aotre rekis
     scopes:
-      "admin:read": lenn holl titouroù ar servijer
-      "admin:read:accounts": lenn titouroù kizidik an holl kontoù
-      "admin:read:reports": lenn titouroù kizidik an holl danevelloù hag an holl kontoù danevellet
-      "admin:write": kemmañ holl titouroù ar servijer
-      "admin:write:accounts": ober evezherezh war ar c'hontoù
-      "admin:write:reports": ober evezherezh war an danevelloù
+      admin:read: lenn holl titouroù ar servijer
+      admin:read:accounts: lenn titouroù kizidik an holl kontoù
+      admin:read:reports: lenn titouroù kizidik an holl danevelloù hag an holl kontoù danevellet
+      admin:write: kemmañ holl titouroù ar servijer
+      admin:write:accounts: ober evezherezh war ar c'hontoù
+      admin:write:reports: ober evezherezh war an danevelloù
       follow: kemmañ darempredoù ho kont
       push: resev ho kemennoù push
       read: lenn holl titouroù ho kont

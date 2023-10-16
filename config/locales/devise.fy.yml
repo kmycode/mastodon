@@ -1,3 +1,4 @@
+---
 fy:
   devise:
     confirmations:
@@ -10,7 +11,7 @@ fy:
       invalid: "%{authentication_keys} of wachtwurd ûnjildich."
       last_attempt: Jo hawwe noch ien besykjen oer eardat jo account blokkearre wurdt.
       locked: Jo account is blokkearre.
-      not_found_in_database: '%{authentication_keys} of wachtwurd ûnjildich.'
+      not_found_in_database: "%{authentication_keys} of wachtwurd ûnjildich."
       pending: Jo account moat noch hieltyd beoardiele wurde.
       timeout: Dyn sesje is ferrûn, meld dy opnij oan.
       unauthenticated: Jo moatte oanmelde of registrearje.

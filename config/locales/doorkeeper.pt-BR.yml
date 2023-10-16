@@ -1,3 +1,4 @@
+---
 pt-BR:
   activerecord:
     attributes:
@@ -59,7 +60,7 @@ pt-BR:
       error:
         title: Ocorreu um erro
       new:
-        prompt_html: "O %{client_name} gostaria de ter permissão para acessar sua conta. É uma aplicação de terceiros. <strong>Se você não confia, então você não deve autorizá-lo.</strong>"
+        prompt_html: O %{client_name} gostaria de ter permissão para acessar sua conta. É uma aplicação de terceiros. <strong>Se você não confia, então você não deve autorizá-lo.</strong>
         review_permissions: Revisar permissões
         title: Autorização necessária
       show:
@@ -146,22 +147,22 @@ pt-BR:
       application:
         title: Autorização OAuth obrigatória
     scopes:
-      "admin:read": ler todos os dados no servidor
-      "admin:read:accounts": ler informações sensíveis de todas as contas
-      "admin:read:canonical_email_blocks": ler informações sensíveis de todos os blocos de e-mail canônicos
-      "admin:read:domain_allows": ler informações sensíveis de todos os domínios (URL) permitidos
-      "admin:read:domain_blocks": ler informações sensíveis de todos os domínios (URL) bloqueados
-      "admin:read:email_domain_blocks": ler informações sensíveis de todos os e-mails de domínios bloqueados
-      "admin:read:ip_blocks": ler informações sensíveis de todos os endereços de IP bloqueados
-      "admin:read:reports": ler informações sensíveis de todas as denúncias e contas denunciadas
-      "admin:write": alterar todos os dados no servidor
-      "admin:write:accounts": executar ações de moderação em contas
-      "admin:write:canonical_email_blocks": executar ações de moderação em blocos canônicos de e-mail
-      "admin:write:domain_allows": executar ações de moderação em domínios (URL) permitidos
-      "admin:write:domain_blocks": executar ações de moderação em domínios (URL) bloqueados
-      "admin:write:email_domain_blocks": executar ações de moderação em blocos de e-mail bloqueados
-      "admin:write:ip_blocks": executar ações de moderação em IPs bloqueados
-      "admin:write:reports": executar ações de moderação em denúncias
+      admin:read: ler todos os dados no servidor
+      admin:read:accounts: ler informações sensíveis de todas as contas
+      admin:read:canonical_email_blocks: ler informações sensíveis de todos os blocos de e-mail canônicos
+      admin:read:domain_allows: ler informações sensíveis de todos os domínios (URL) permitidos
+      admin:read:domain_blocks: ler informações sensíveis de todos os domínios (URL) bloqueados
+      admin:read:email_domain_blocks: ler informações sensíveis de todos os e-mails de domínios bloqueados
+      admin:read:ip_blocks: ler informações sensíveis de todos os endereços de IP bloqueados
+      admin:read:reports: ler informações sensíveis de todas as denúncias e contas denunciadas
+      admin:write: alterar todos os dados no servidor
+      admin:write:accounts: executar ações de moderação em contas
+      admin:write:canonical_email_blocks: executar ações de moderação em blocos canônicos de e-mail
+      admin:write:domain_allows: executar ações de moderação em domínios (URL) permitidos
+      admin:write:domain_blocks: executar ações de moderação em domínios (URL) bloqueados
+      admin:write:email_domain_blocks: executar ações de moderação em blocos de e-mail bloqueados
+      admin:write:ip_blocks: executar ações de moderação em IPs bloqueados
+      admin:write:reports: executar ações de moderação em denúncias
       crypto: usar criptografia de ponta-a-ponta
       follow: alterar o relacionamento das contas
       push: receber notificações push

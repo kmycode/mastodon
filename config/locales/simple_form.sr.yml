@@ -1,3 +1,4 @@
+---
 sr:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ sr:
         events: Омогућени догађаји
         template: Шаблон корисних података
         url: URL крајње тачке
-    'no': 'Не'
+    'no': Не
     not_recommended: Није препоручено
     overridden: Замењено
     recommended: Препоручено
@@ -330,4 +331,4 @@ sr:
     title:
       sessions:
         webauthn: Користи један од својих безбедносних кључева за пријављивање
-    'yes': 'Да'
+    'yes': Да

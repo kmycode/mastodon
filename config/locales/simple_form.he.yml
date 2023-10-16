@@ -1,3 +1,4 @@
+---
 he:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ he:
         events: אירועים מאופשרים
         template: תבנית מטען
         url: כתובת URL של נקודת הקצה
-    'no': 'לא'
+    'no': לא
     not_recommended: לא מומלצים
     overridden: נאכף
     recommended: מומלץ
@@ -330,4 +331,4 @@ he:
     title:
       sessions:
         webauthn: נא להשתמש באחד ממפתחות האבטחה שלך כדי להכנס
-    'yes': 'כן'
+    'yes': כן

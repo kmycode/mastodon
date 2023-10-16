@@ -1,3 +1,4 @@
+---
 de:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ de:
         events: Aktivierte Ereignisse
         template: Nutzdaten-Vorlage
         url: Endpunkt-URL
-    'no': 'Nein'
+    'no': Nein
     not_recommended: Nicht empfohlen
     overridden: Überschrieben
     recommended: Empfohlen
@@ -330,4 +331,4 @@ de:
     title:
       sessions:
         webauthn: Verwende einen deiner Sicherheitsschlüssel zum Anmelden
-    'yes': 'Ja'
+    'yes': Ja

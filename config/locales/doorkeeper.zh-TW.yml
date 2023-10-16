@@ -1,3 +1,4 @@
+---
 zh-TW:
   activerecord:
     attributes:
@@ -51,7 +52,7 @@ zh-TW:
         callback_urls: 回傳網址
         scopes: 範圍
         secret: 用戶端密碼 (client secret)
-        title: '應用程式︰%{name}'
+        title: 應用程式︰%{name}
     authorizations:
       buttons:
         authorize: 授權
@@ -85,7 +86,7 @@ zh-TW:
         invalid_grant: 授權申請不正確、逾期、已被註銷、與授權請求內的重新導向 URI 不符、或屬於別的用戶端程式。
         invalid_redirect_uri: 包含的重新導向 URI 是不正確的。
         invalid_request:
-          missing_param: '缺少必要的參數：%{value}.'
+          missing_param: 缺少必要的參數：%{value}.
           request_not_authorized: 請求必須是已授權的。用於授權的必要參數缺少或無效。
           unknown: 請求缺少必要的參數、有不支援的參數、或其他格式錯誤。
         invalid_resource_owner: 資源擁有者的登入資訊錯誤，或無法找到該資源擁有者
@@ -179,16 +180,16 @@ zh-TW:
       read:search: 以您的身份搜尋
       read:statuses: 檢視所有嘟文
       write: 修改您帳號的所有資料
-      "write:accounts": 修改您的個人檔案
-      "write:blocks": 封鎖帳號及站台
-      "write:bookmarks": 書籤狀態
-      "write:conversations": 靜音及刪除對話
-      "write:favourites": 加到最愛
-      "write:filters": 建立過濾條件
-      "write:follows": 跟隨其他人
-      "write:lists": 建立列表
-      "write:media": 上傳媒體檔案
-      "write:mutes": 靜音使用者及對話
-      "write:notifications": 清除您的通知
-      "write:reports": 檢舉其他人
-      "write:statuses": 發表嘟文
+      write:accounts: 修改您的個人檔案
+      write:blocks: 封鎖帳號及站台
+      write:bookmarks: 書籤狀態
+      write:conversations: 靜音及刪除對話
+      write:favourites: 加到最愛
+      write:filters: 建立過濾條件
+      write:follows: 跟隨其他人
+      write:lists: 建立列表
+      write:media: 上傳媒體檔案
+      write:mutes: 靜音使用者及對話
+      write:notifications: 清除您的通知
+      write:reports: 檢舉其他人
+      write:statuses: 發表嘟文

@@ -1,3 +1,4 @@
+---
 si:
   activerecord:
     attributes:
@@ -70,7 +71,7 @@ si:
       confirmations:
         revoke: ඔබට විශ්වාසද?
       index:
-        authorized_at: '%{date}මත අවසර දී ඇත'
+        authorized_at: "%{date}මත අවසර දී ඇත"
         description_html: මේවා API භාවිතයෙන් ඔබගේ ගිණුමට ප්‍රවේශ විය හැකි යෙදුම් වේ. ඔබ මෙහි හඳුනා නොගත් යෙදුම් තිබේ නම්, හෝ යෙදුමක් වැරදි ලෙස හැසිරෙන්නේ නම්, ඔබට එහි ප්‍රවේශය අවලංගු කළ හැක.
         last_used_at: අන්තිම භාවිතය %{date}
         never_used: භාවිතා කර නැත

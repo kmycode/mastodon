@@ -1,3 +1,4 @@
+---
 fa:
   simple_form:
     hints:
@@ -302,7 +303,7 @@ fa:
       webhook:
         events: رویدادهای به کار افتاده
         url: نشانی نقطهٔ پایانی
-    'no': 'خیر'
+    'no': خیر
     not_recommended: پیشنهاد نشده
     overridden: پایمال
     recommended: توصیه می‌شود
@@ -312,4 +313,4 @@ fa:
     title:
       sessions:
         webauthn: برای ورود از یکی از کلیدهای امنیتیتان استفاده کنید
-    'yes': 'بله'
+    'yes': بله

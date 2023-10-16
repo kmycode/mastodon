@@ -1,3 +1,4 @@
+---
 si:
   about:
     about_mastodon_html: 'අනාගත සමාජ ජාලය: දැන්වීම් නැත, සංස්ථානික අවේක්‍ෂණ නැත, යහපතට නිර්මිතයි සහ විමධ්‍යගතයි! මාස්ටඩන් සමඟ ඔබගේ දත්ත අයිතිව තබාගන්න!'
@@ -59,7 +60,7 @@ si:
       email_status: වි-තැපෑලෙහි තත්වය
       enable_sign_in_token_auth: විද්‍යුත් තැපෑල ටෝකන් සත්‍යාපනය සබල කරන්න
       enabled: සබල කර ඇත
-      enabled_msg: '%{username}ගේ ගිණුම සාර්ථකව අත්හිටුවා ඇත'
+      enabled_msg: "%{username}ගේ ගිණුම සාර්ථකව අත්හිටුවා ඇත"
       followers: අනුගාමිකයින්
       header: ශීර්ෂය
       inbox_url: එන ලිපි URL
@@ -105,8 +106,8 @@ si:
       rejected_msg: "%{username}හි ලියාපදිංචි වීමේ අයදුම්පත සාර්ථකව ප්‍රතික්ෂේප විය"
       remove_avatar: ප්‍රතිරූපය ඉවත් කරන්න
       remove_header: ශීර්ෂය ඉවත්කරන්න
-      removed_avatar_msg: '%{username}ගේ අවතාර රූපය සාර්ථකව ඉවත් කරන ලදී'
-      removed_header_msg: '%{username}හි ශීර්ෂ රූපය සාර්ථකව ඉවත් කරන ලදී'
+      removed_avatar_msg: "%{username}ගේ අවතාර රූපය සාර්ථකව ඉවත් කරන ලදී"
+      removed_header_msg: "%{username}හි ශීර්ෂ රූපය සාර්ථකව ඉවත් කරන ලදී"
       resend_confirmation:
         already_confirmed: මෙම පරිශීලකයා දැනටමත් තහවුරු කර ඇත
       reset: නැවත සකසන්න
@@ -135,12 +136,12 @@ si:
       suspension_reversible_hint_html: ගිණුම අත්හිටුවා ඇති අතර, දත්ත සම්පූර්ණයෙන්ම %{date}දින ඉවත් කරනු ලැබේ. එතෙක් කිසිදු අයහපත් ප්‍රතිඵලයකින් තොරව ගිණුම යථා තත්ත්වයට පත් කළ හැක. ඔබට ගිණුමේ සියලුම දත්ත වහාම ඉවත් කිරීමට අවශ්‍ය නම්, ඔබට එය පහතින් කළ හැක.
       title: ගිණුම්
       unblock_email: ඊමේල් ලිපිනය අවහිර කිරීම ඉවත් කරන්න
-      unblocked_email_msg: '%{username}ගේ විද්‍යුත් තැපැල් ලිපිනය අවහිර කිරීම සාර්ථකව ඉවත් කරන ලදී'
+      unblocked_email_msg: "%{username}ගේ විද්‍යුත් තැපැල් ලිපිනය අවහිර කිරීම සාර්ථකව ඉවත් කරන ලදී"
       unconfirmed_email: තහවුරු නොකළ ඊමේල්
       undo_sensitized: බල සංවේදී අහෝසි කරන්න
       undo_silenced: සීමාව අහෝසි කරන්න
       undo_suspension: අත්හිටුවීම අහෝසි කරන්න
-      unsilenced_msg: '%{username}ගිණුමේ සීමාව සාර්ථකව ඉවත් කරන ලදී'
+      unsilenced_msg: "%{username}ගිණුමේ සීමාව සාර්ථකව ඉවත් කරන ලදී"
       unsubscribe: දායක නොවන්න
       unsuspended_msg: "%{username}ගිණුම සාර්ථකව අත්හිටුවන ලදී"
       username: පරිශ්‍රීලක නාමය
@@ -212,7 +213,7 @@ si:
         create_unavailable_domain_html: "%{name} වසම %{target}වෙත බෙදා හැරීම නැවැත්වීය"
         demote_user_html: "%{name} පහත හෙලන ලද පරිශීලක %{target}"
         destroy_announcement_html: "%{name} මකා දැමූ නිවේදනය %{target}"
-        destroy_domain_allow_html: "වසම %{target}සමඟ %{name} අවසර නොදුන් සම්මේලනය"
+        destroy_domain_allow_html: වසම %{target}සමඟ %{name} අවසර නොදුන් සම්මේලනය
         destroy_domain_block_html: "%{name} අවහිර නොකළ වසම %{target}"
         destroy_email_domain_block_html: "%{name} අවහිර නොකළ විද්‍යුත් තැපැල් වසම %{target}"
         destroy_instance_html: "%{name} පිරිසිදු කරන ලද වසම %{target}"
@@ -224,7 +225,7 @@ si:
         disable_user_html: "%{name} පරිශීලක %{target}සඳහා අබල කළ පිවිසුම"
         enable_custom_emoji_html: "%{name} සක්‍රීය ඉමොජි %{target}"
         enable_sign_in_token_auth_user_html: "%{name} %{target}විද්‍යුත් තැපෑල ටෝකන් සත්‍යාපනය සක්‍රීය කර ඇත"
-        enable_user_html: "පරිශීලක %{target}සඳහා %{name} සක්‍රීය පුරනය වීම"
+        enable_user_html: පරිශීලක %{target}සඳහා %{name} සක්‍රීය පුරනය වීම
         memorialize_account_html: "%{name} %{target}ගේ ගිණුම සිහිවටන පිටුවක් බවට පත් කළේය"
         promote_user_html: "%{name} උසස් පරිශීලක %{target}"
         reject_user_html: "%{name} %{target}සිට ලියාපදිංචි වීම ප්‍රතික්ෂේප විය"
@@ -258,7 +259,7 @@ si:
         title: නව නිවේදනය
       publish: ප්‍රකාශ කරන්න
       published_msg: නිවේදනය සාර්ථකව ප්‍රකාශයට පත් කරන ලදි!
-      scheduled_for: '%{time}සඳහා සැලසුම් කර ඇත'
+      scheduled_for: "%{time}සඳහා සැලසුම් කර ඇත"
       scheduled_msg: නිවේදනය නිකුත් කිරීමට නියමිතයි!
       title: නිවේදන
       unpublish: ප්‍රකාශනය ඉවත් කරන්න
@@ -360,8 +361,8 @@ si:
     email_domain_blocks:
       add_new: අලුතින් එකතු කරන්න
       attempts_over_week:
-        one: "පසුගිය සතිය පුරා %{count} උත්සාහයක්"
-        other: "පසුගිය සතියේ ලියාපදිංචි වීමේ උත්සාහයන් %{count} ක්"
+        one: පසුගිය සතිය පුරා %{count} උත්සාහයක්
+        other: පසුගිය සතියේ ලියාපදිංචි වීමේ උත්සාහයන් %{count} ක්
       created_msg: විද්‍යුත් තැපැල් වසම සාර්ථකව අවහිර කරන ලදී
       delete: මකන්න
       dns:
@@ -374,7 +375,7 @@ si:
         title: නව විද්‍යුත් තැපැල් වසම අවහිර කරන්න
       no_email_domain_block_selected: කිසිවක් තෝරා නොගත් බැවින් විද්‍යුත් තැපැල් වසම් වාරණ කිසිවක් වෙනස් කර නැත
       resolved_dns_records_hint_html: ඩොමේන් නාමය පහත දැක්වෙන MX වසම් වලට විසඳයි, ඒවා අවසානයේ ඊමේල් පිළිගැනීම සඳහා වගකිව යුතුය. MX වසමක් අවහිර කිරීම දෘශ්‍ය වසම් නාමය වෙනස් වුවද, එකම MX වසම භාවිතා කරන ඕනෑම විද්‍යුත් තැපැල් ලිපිනයකින් ලියාපදිංචි වීම අවහිර කරයි. <strong>ප්‍රධාන විද්‍යුත් තැපැල් සපයන්නන් අවහිර නොකිරීමට ප්‍රවේශම් වන්න.</strong>
-      resolved_through_html: '%{domain}හරහා විසඳා ඇත'
+      resolved_through_html: "%{domain}හරහා විසඳා ඇත"
       title: අවහිර කළ වි-තැපැල් වසම්
     follow_recommendations:
       description_html: "<strong>නව පරිශීලකයින්ට රසවත් අන්තර්ගතයන් ඉක්මනින් සොයා ගැනීමට උපකාර වන නිර්දේශ අනුගමනය කරන්න</strong>. පෞද්ගලීකරණය කළ පසු විපරම් නිර්දේශ සැකසීමට තරම් පරිශීලකයෙකු අන් අය සමඟ අන්තර් ක්‍රියා කර නොමැති විට, ඒ වෙනුවට මෙම ගිණුම් නිර්දේශ කෙරේ. දී ඇති භාෂාවක් සඳහා ඉහළම මෑත කාලීන නියැලීම් සහ ඉහළම දේශීය අනුගාමික සංඛ්‍යාව සහිත ගිණුම් මිශ්‍රණයකින් ඒවා දෛනික පදනමින් නැවත ගණනය කෙරේ."
@@ -435,7 +436,7 @@ si:
       empty: වසම් කිසිවක් හමු නොවීය.
       known_accounts:
         one: "%{count} දන්නා ගිණුම්"
-        other: "දන්නා ගිණුම් %{count} ක්"
+        other: දන්නා ගිණුම් %{count} ක්
       moderation:
         all: සියල්ල
         limited: සීමා සහිතයි
@@ -709,7 +710,7 @@ si:
         not_listable: යෝජනා නොවනු ඇත
         not_trendable: ප්‍රවණතා යටතේ දිස් නොවනු ඇත
         not_usable: භාවිතා කළ නොහැක
-        peaked_on_and_decaying: '%{date}හි උච්චතම, දැන් දිරාපත් වෙමින් පවතී'
+        peaked_on_and_decaying: "%{date}හි උච්චතම, දැන් දිරාපත් වෙමින් පවතී"
         title: ප්‍රවණතා හැෂ් ටැග්
         trendable: ප්රවණතා යටතේ පෙනී සිටිය හැක
         trending_rank: 'නැඹුරු #%{rank}'
@@ -758,8 +759,8 @@ si:
       subject: නව ගිණුම සමාලෝචනය සඳහා %{instance} (%{username})
     new_report:
       body: "%{reporter} %{target}වාර්තා කර ඇත"
-      body_remote: '%{domain} සිට යමෙක් %{target}වාර්තා කර ඇත'
-      subject: '%{instance} සඳහා නව වාර්තාව (#%{id})'
+      body_remote: "%{domain} සිට යමෙක් %{target}වාර්තා කර ඇත"
+      subject: "%{instance} සඳහා නව වාර්තාව (#%{id})"
     new_trends:
       body: 'පහත අයිතම ප්‍රසිද්ධියේ ප්‍රදර්ශනය කිරීමට පෙර සමාලෝචනයක් අවශ්‍ය වේ:'
       new_trending_links:
@@ -770,7 +771,7 @@ si:
         no_approved_tags: දැනට අනුමත ප්‍රවණතා හැෂ් ටැග් නොමැත.
         requirements: 'මෙම ඕනෑම අපේක්ෂකයෙකුට #%{rank} අනුමත ප්‍රවණතා හැෂ් ටැගය අභිබවා යා හැකිය, එය දැනට ලකුණු %{lowest_tag_score}ක් සමඟ #%{lowest_tag_name} වේ.'
         title: ප්‍රවණතා හැෂ් ටැග්
-      subject: '%{instance}හි සමාලෝචනය සඳහා නව ප්‍රවණතා'
+      subject: "%{instance}හි සමාලෝචනය සඳහා නව ප්‍රවණතා"
   aliases:
     add_new: අන්වර්ථ නාමයක් සාදන්න
     created_msg: නව අන්වර්ථ නාමයක් සාර්ථකව නිර්මාණය කරන ලදී. ඔබට දැන් පැරණි ගිණුමෙන් මාරුවීම ආරම්භ කළ හැක.
@@ -790,9 +791,9 @@ si:
       guide_link_text: පරිවර්තකයින්ට දායක වීමට හැකිය.
     sensitive_content: සංවේදී අන්තර්ගත
   application_mailer:
-    notification_preferences: ඊමේල් මනාප වෙනස් කරන්න
+    notification_preferences: වි-තැපැල් අභිප්‍රේත වෙනස් කරන්න
     salutation: "%{name},"
-    settings: 'ඊමේල් මනාප වෙනස් කරන්න: %{link}'
+    settings: 'වි-තැපැල් අභිප්‍රේත වෙනස් කරන්න: %{link}'
     view: 'දැක්ම:'
     view_profile: පැතිකඩ බලන්න
     view_status: ලිපිය බලන්න
@@ -944,7 +945,7 @@ si:
     noscript_html: මාස්ටඩන් වියමන යෙදුම භාවිතා කිරීමට ජාවාස්ක්‍රිප්ට් සබල කරන්න. ඊට අමතරව, ඔබගේ වේදිකාව සඳහා වන <a href="%{apps_path}">නිසග යෙදුමක්</a> අත්හදා බලන්න.
   existing_username_validator:
     not_found: එම පරිශීලක නාමය සහිත දේශීය පරිශීලකයෙකු සොයා ගැනීමට නොහැකි විය
-    not_found_multiple: '%{usernames}සොයා ගැනීමට නොහැකි විය'
+    not_found_multiple: "%{usernames}සොයා ගැනීමට නොහැකි විය"
   exports:
     archive_takeout:
       date: දිනය
@@ -978,7 +979,7 @@ si:
       deprecated_api_multiple_keywords: මෙම පරාමිති පෙරහන් මූල පද එකකට වඩා අදාළ වන බැවින් මෙම යෙදුමෙන් වෙනස් කළ නොහැක. වඩාත් මෑත යෙදුමක් හෝ වෙබ් අතුරු මුහුණතක් භාවිතා කරන්න.
       invalid_context: කිසිවක් හෝ වලංගු නොවන සන්දර්භයක් සපයා නැත
     index:
-      contexts: '%{contexts}හි පෙරහන්'
+      contexts: "%{contexts}හි පෙරහන්"
       delete: මකන්න
       empty: ඔබ සතුව පෙරහන් නැත.
       expires_in: "%{distance} කින් ඉකුත් වේ"
@@ -1069,8 +1070,8 @@ si:
       webauthn: ආරක්ෂක යතුරු
     description_html: ඔබ හඳුනා නොගත් ක්‍රියාකාරකම් ඔබ දුටුවහොත්, ඔබේ මුරපදය වෙනස් කිරීම සහ ද්වි-සාධක සත්‍යාපනය සක්‍රීය කිරීම සලකා බලන්න.
     empty: සත්‍යාපන ඉතිහාසයක් නොමැත
-    failed_sign_in_html: '%{ip} (%{browser}) සිට %{method} සමඟ අසාර්ථක පුරනය වීමේ උත්සාහය'
-    successful_sign_in_html: '%{ip} (%{browser}) සිට %{method} සමඟ සාර්ථක පුරනය වීම'
+    failed_sign_in_html: "%{ip} (%{browser}) සිට %{method} සමඟ අසාර්ථක පුරනය වීමේ උත්සාහය"
+    successful_sign_in_html: "%{ip} (%{browser}) සිට %{method} සමඟ සාර්ථක පුරනය වීම"
     title: සත්‍යාපන ඉතිහාසය
   media_attachments:
     validations:
@@ -1392,11 +1393,11 @@ si:
     appeal_approved:
       action: ඔබගේ ගිණුමට යන්න
       explanation: ඔබ %{appeal_date} දින ඉදිරිපත් කළ %{strike_date} හි ඔබේ ගිණුමට එරෙහි වර්ජනයේ අභියාචනය අනුමත කර ඇත. ඔබගේ ගිණුම නැවත වරක් හොඳ තත්වයක පවතී.
-      subject: '%{date} සිට ඔබගේ අභියාචනය අනුමත කර ඇත'
+      subject: "%{date} සිට ඔබගේ අභියාචනය අනුමත කර ඇත"
       title: අභියාචනය අනුමත කර ඇත
     appeal_rejected:
-      explanation: '%{strike_date} දින ඔබේ ගිණුමට එරෙහිව ඔබ %{appeal_date} දින ඉදිරිපත් කළ වර්ජනයේ අභියාචනය ප්‍රතික්ෂේප කර ඇත.'
-      subject: '%{date} සිට ඔබගේ අභියාචනය ප්‍රතික්ෂේප කර ඇත'
+      explanation: "%{strike_date} දින ඔබේ ගිණුමට එරෙහිව ඔබ %{appeal_date} දින ඉදිරිපත් කළ වර්ජනයේ අභියාචනය ප්‍රතික්ෂේප කර ඇත."
+      subject: "%{date} සිට ඔබගේ අභියාචනය ප්‍රතික්ෂේප කර ඇත"
       title: අභියාචනය ප්‍රතික්ෂේප විය
     backup_ready:
       explanation: ඔබගේ මාස්ටඩන් ගිණුමේ පූර්ණ උපස්ථයක් ඉල්ලා ඇත. එය දැන් බාගැනීමට හැකිය!
@@ -1404,11 +1405,11 @@ si:
       title: සංරක්ෂිත රැගෙන යාම
     suspicious_sign_in:
       change_password: මුරපදය වෙනස් කරන්න
-      details: 'පුරනය වීමේ විස්තර මෙන්න:'
-      explanation: අපි නව IP ලිපිනයකින් ඔබගේ ගිණුමට පුරනය වීමක් අනාවරණය කරගෙන ඇත.
-      further_actions_html: මෙය ඔබ නොවේ නම්, අපි ඔබට වහාම %{action} ලෙස නිර්දේශ කර ඔබගේ ගිණුම සුරක්ෂිතව තබා ගැනීමට සාධක දෙකක සත්‍යාපනය සබල කරන්න.
-      subject: ඔබගේ ගිණුම නව IP ලිපිනයකින් ප්‍රවේශ වී ඇත
-      title: නව පුරනය වීමක්
+      details: 'ප්‍රවේශයට අදාළ විස්තර:'
+      explanation: ඔබගේ ගිණුමට නව අ.ජා.කෙ. (IP) ලිපිනයකින් ප්‍රවේශයක් අනාවරණය වී ඇත.
+      further_actions_html: මේ ඔබ නොවේ නම්, වහාම %{action}. ඔබගේ ගිණුම සුරක්‍ෂිතව තබා ගැනීමට ද්වි-සාධකය සබල කරන්න.
+      subject: ඔබගේ ගිණුමට නව අ.ජා.කෙ. (IP) ලිපිනයකින් ප්‍රවේශ වී ඇත
+      title: නව ප්‍රවේශයක්
     warning:
       appeal: අභියාචනයක් ඉදිරිපත් කරන්න
       appeal_description: මෙය දෝෂයක් බව ඔබ විශ්වාස කරන්නේ නම්, ඔබට %{instance}හි කාර්ය මණ්ඩලයට අභියාචනයක් ඉදිරිපත් කළ හැක.

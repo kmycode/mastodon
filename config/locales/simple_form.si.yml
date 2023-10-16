@@ -1,3 +1,4 @@
+---
 si:
   simple_form:
     hints:
@@ -228,4 +229,4 @@ si:
     title:
       sessions:
         webauthn: පුරනය වීමට ඔබගේ ආරක්ෂක යතුරු වලින් එකක් භාවිතා කරන්න
-    'yes': 'ඔව්'
+    'yes': ඔව්

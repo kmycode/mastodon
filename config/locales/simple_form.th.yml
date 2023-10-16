@@ -1,3 +1,4 @@
+---
 th:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ th:
         events: เหตุการณ์ที่เปิดใช้งาน
         template: แม่แบบส่วนข้อมูล
         url: URL ปลายทาง
-    'no': 'ไม่'
+    'no': ไม่
     not_recommended: ไม่แนะนำ
     overridden: เขียนทับแล้ว
     recommended: แนะนำ
@@ -330,4 +331,4 @@ th:
     title:
       sessions:
         webauthn: ใช้หนึ่งในกุญแจความปลอดภัยของคุณเพื่อลงชื่อเข้า
-    'yes': 'ใช่'
+    'yes': ใช่

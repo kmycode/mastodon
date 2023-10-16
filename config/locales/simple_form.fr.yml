@@ -1,3 +1,4 @@
+---
 fr:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ fr:
         events: Événements activés
         template: Modèle de payload
         url: URL du point de terminaison
-    'no': 'Non'
+    'no': Non
     not_recommended: Non recommandé
     overridden: Surchargé
     recommended: Recommandé
@@ -330,4 +331,4 @@ fr:
     title:
       sessions:
         webauthn: Utilisez l'une de vos clés de sécurité pour vous connecter
-    'yes': 'Oui'
+    'yes': Oui

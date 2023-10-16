@@ -1,3 +1,4 @@
+---
 hu:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ hu:
         events: Engedélyezett események
         template: Adatcsomag sablon
         url: Végponti URL
-    'no': 'Nem'
+    'no': Nem
     not_recommended: Nem ajánlott
     overridden: Felülbírálva
     recommended: Ajánlott
@@ -330,4 +331,4 @@ hu:
     title:
       sessions:
         webauthn: Használd valamelyik biztonsági kulcsodat a bejelentkezéshez
-    'yes': 'Igen'
+    'yes': Igen

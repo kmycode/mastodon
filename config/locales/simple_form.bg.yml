@@ -1,3 +1,4 @@
+---
 bg:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ bg:
         events: Включване на събития
         template: Шаблон за полезен товар
         url: URL адрес на крайната точка
-    'no': 'Не'
+    'no': Не
     not_recommended: Непрепоръчително
     overridden: Претоварено
     recommended: Препоръчва се
@@ -330,4 +331,4 @@ bg:
     title:
       sessions:
         webauthn: Употребете един от ключовете си за сигурност, за да влезете
-    'yes': 'Да'
+    'yes': Да

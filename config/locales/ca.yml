@@ -1,3 +1,4 @@
+---
 ca:
   about:
     about_mastodon_html: 'La xarxa social del futur: sense anuncis, sense vigilància corporativa, amb un disseny ètic i descentralització. Amb Mastodon controles les teves dades!'
@@ -55,7 +56,7 @@ ca:
       delete: Esborra les dades
       deleted: Eliminat
       demote: Degrada
-      destroyed_msg: "Les dades de %{username} son a la cua per a ser esborrades en breu"
+      destroyed_msg: Les dades de %{username} son a la cua per a ser esborrades en breu
       disable: Inhabilita
       disable_sign_in_token_auth: Desactivar l'autenticació de token per correu
       disable_two_factor_authentication: Desactiva 2FA
@@ -557,7 +558,7 @@ ca:
       no_ip_block_selected: No s’ha canviat cap regla IP perquè no s’han seleccionat
       title: Regles IP
     relationships:
-      title: "relacions del %{acct}"
+      title: relacions del %{acct}
     relays:
       add_new: Afegiu un nou relay
       delete: Elimina
@@ -1123,7 +1124,7 @@ ca:
       about_x_years: "%{count} anys"
       almost_x_years: "%{count}anys"
       half_a_minute: Ara mateix
-      less_than_x_minutes: "fa %{count} minuts"
+      less_than_x_minutes: fa %{count} minuts
       less_than_x_seconds: Ara mateix
       over_x_years: "%{count} anys"
       x_days: "%{count} dies"
@@ -1447,7 +1448,7 @@ ca:
       sign_up:
         subject: "%{name} s'ha registrat"
     favourite:
-      body: '%{name} ha marcat com a favorit el teu estat:'
+      body: "%{name} ha marcat com a favorit el teu estat:"
       subject: "%{name} ha marcat com a favorit el teu estat"
       title: Favorit nou
     follow:
@@ -1467,7 +1468,7 @@ ca:
     poll:
       subject: Ha finalitzat l'enquesta de %{name}
     reblog:
-      body: '%{name} ha impulsat el teu estat:'
+      body: "%{name} ha impulsat el teu estat:"
       subject: "%{name} ha impulsat el teu estat"
       title: Nou impuls
     status:

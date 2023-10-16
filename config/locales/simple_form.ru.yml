@@ -1,3 +1,4 @@
+---
 ru:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ ru:
         events: Включенные события
         template: Шаблон полезной нагрузки
         url: Endpoint URL
-    'no': 'Нет'
+    'no': Нет
     not_recommended: Не рекомендуется
     overridden: Переопределено
     recommended: Рекомендуется
@@ -330,4 +331,4 @@ ru:
     title:
       sessions:
         webauthn: Используйте один из ваших ключей безопасности для входа в систему
-    'yes': 'Да'
+    'yes': Да

@@ -1,9 +1,10 @@
+---
 nn:
   about:
     about_mastodon_html: 'Framtidas sosiale nettverk: Ingen annonsar, ingen verksemder som overvaker deg, etisk design og desentralisering! Eig idéane dine med Mastodon!'
     contact_missing: Ikkje sett
     contact_unavailable: I/T
-    hosted_on: '%{domain} er vert for Mastodon'
+    hosted_on: "%{domain} er vert for Mastodon"
     title: Om
   accounts:
     follow: Fylg
@@ -646,7 +647,7 @@ nn:
           mark_as_sensitive_html: Markera dei påtala mediefilene som sensitive
           silence_html: Sterkt avgrensa korleis <strong>@%{acct}</strong> kan samhandla ved å gjera brukarprofilen og innhaldet synleg berre for folk som allereie fylgjer brukarkontoen eller søkjer han opp manuelt
           suspend_html: Stengja brukarkontoen til <strong>@%{acct}</strong>, slik at brukarprofilen og innhaldet blir utilgjengeleg og umogleg å samhandla med
-        close_report: 'Marker rapport nr. %{id} som løyst'
+        close_report: Marker rapport nr. %{id} som løyst
         close_reports_html: Marker <strong>alle</strong> rapportane om <strong>@%{acct}</strong> som løyste
         delete_data_html: Slett brukarprofilen og innhaldet til<strong>@%{acct}</strong> om 30 dagar frå no med mindre brukarkontoen blir opna att
         preview_preamble_html: "<strong>@%{acct}</strong> vil få ei åtvaring med dette innhaldet:"
@@ -1018,7 +1019,7 @@ nn:
     sensitive_content: Ømtolig innhald
   application_mailer:
     notification_preferences: Endr e-post-innstillingane
-    salutation: "Hei %{name},"
+    salutation: Hei %{name},
     settings: 'Endr e-post-innstillingar: %{link}'
     unsubscribe: Meld av
     view: 'Sjå:'

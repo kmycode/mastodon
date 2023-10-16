@@ -1,3 +1,4 @@
+---
 eu:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ eu:
         events: Gertaerak gaituta
         template: Karga txantiloia
         url: Amaiera-puntuaren URLa
-    'no': 'Ez'
+    'no': Ez
     not_recommended: Ez gomendatua
     overridden: Gainidatzita
     recommended: Aholkatua
@@ -330,4 +331,4 @@ eu:
     title:
       sessions:
         webauthn: Erabili zure segurtasun gakoetako bat saioa hasteko
-    'yes': 'Bai'
+    'yes': Bai

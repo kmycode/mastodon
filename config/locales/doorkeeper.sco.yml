@@ -1,3 +1,4 @@
+---
 sco:
   activerecord:
     attributes:
@@ -143,12 +144,12 @@ sco:
       application:
         title: OAuth authorization requirit
     scopes:
-      "admin:read": read aw data on the server
-      "admin:read:accounts": read sensitive information fae aw accoonts
-      "admin:read:reports": read sensitive information fae aw clyped an clyped on accoonts
-      "admin:write": modify aw data on the server
-      "admin:write:accounts": perform moderation actions on accoonts
-      "admin:write:reports": perform moderation actions on clypes
+      admin:read: read aw data on the server
+      admin:read:accounts: read sensitive information fae aw accoonts
+      admin:read:reports: read sensitive information fae aw clyped an clyped on accoonts
+      admin:write: modify aw data on the server
+      admin:write:accounts: perform moderation actions on accoonts
+      admin:write:reports: perform moderation actions on clypes
       crypto: uise en-tae-en encryption
       follow: modify accoont relationships
       push: get yer push notifications

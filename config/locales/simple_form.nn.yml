@@ -1,3 +1,4 @@
+---
 nn:
   simple_form:
     hints:
@@ -117,7 +118,7 @@ nn:
       rule:
         text: Forklar ein regel eller eit krav for brukarar på denne tenaren. Prøv å skriva kort og lettfattleg
       sessions:
-        otp: 'Angi tofaktorkoden fra din telefon eller bruk en av dine gjenopprettingskoder.'
+        otp: Angi tofaktorkoden fra din telefon eller bruk en av dine gjenopprettingskoder.
         webauthn: Om det er ein USB-nøkkel må du setja han inn og om nødvendig trykkja på han.
       settings:
         indexable: Profilsida di kan dukka opp søkjeresultat frå Google, Bing, Duckduckgo og andre.
@@ -320,7 +321,7 @@ nn:
         events: Aktiverte hendingar
         template: Nyttelastmal
         url: Endepunkts-URL
-    'no': 'Nei'
+    'no': Nei
     not_recommended: Ikkje anbefalt
     overridden: Overstyrt
     recommended: Tilrådt
@@ -330,4 +331,4 @@ nn:
     title:
       sessions:
         webauthn: Bruk en av sikkerhetsnøklene dine til å logge på
-    'yes': 'Ja'
+    'yes': Ja

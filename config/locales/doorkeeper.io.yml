@@ -1,3 +1,4 @@
+---
 io:
   activerecord:
     attributes:
@@ -144,12 +145,12 @@ io:
       application:
         title: Yurizo di OAuth bezonesas
     scopes:
-      "admin:read": lektez omna informi di la servilo
-      "admin:read:accounts": lektez privata informo di omna konti
-      "admin:read:reports": lektez privata informo di omna raporti e raportizita konti
-      "admin:write": modifikez omna informi di la servilo
-      "admin:write:accounts": jerez konti
-      "admin:write:reports": jerez raporti
+      admin:read: lektez omna informi di la servilo
+      admin:read:accounts: lektez privata informo di omna konti
+      admin:read:reports: lektez privata informo di omna raporti e raportizita konti
+      admin:write: modifikez omna informi di la servilo
+      admin:write:accounts: jerez konti
+      admin:write:reports: jerez raporti
       crypto: uzas intersequanta chifro
       follow: follow, block, unblock and unfollow accounts
       push: ganez vua pulsavizi

@@ -1,3 +1,4 @@
+---
 ro:
   activerecord:
     attributes:
@@ -146,12 +147,12 @@ ro:
       application:
         title: Este necesară autorizarea OAuth
     scopes:
-      "admin:read": citește toate datele de pe server
-      "admin:read:accounts": citește informații sensibile ale tuturor conturilor
-      "admin:read:reports": citește informații sensibile din toate rapoartele și conturile raportate
-      "admin:write": modifică toate datele de pe server
-      "admin:write:accounts": efectuează acțiuni de moderare pe conturi
-      "admin:write:reports": efectuează acțiuni de moderare pe rapoarte
+      admin:read: citește toate datele de pe server
+      admin:read:accounts: citește informații sensibile ale tuturor conturilor
+      admin:read:reports: citește informații sensibile din toate rapoartele și conturile raportate
+      admin:write: modifică toate datele de pe server
+      admin:write:accounts: efectuează acțiuni de moderare pe conturi
+      admin:write:reports: efectuează acțiuni de moderare pe rapoarte
       crypto: utilizează criptare la ambele capete
       follow: modifică relațiile contului
       push: primește notificările tale push

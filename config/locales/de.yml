@@ -1,3 +1,4 @@
+---
 de:
   about:
     about_mastodon_html: 'Das soziale Netzwerk der Zukunft: Keine Werbung, keine Überwachung durch Unternehmen – dafür dezentral und mit Anstand! Beherrsche deine Daten mit Mastodon!'
@@ -24,7 +25,7 @@ de:
   admin:
     account_actions:
       action: Aktion ausführen
-      title: '@%{acct} moderieren'
+      title: "@%{acct} moderieren"
     account_moderation_notes:
       create: Notiz abspeichern
       created_msg: Moderationshinweis erfolgreich abgespeichert!
@@ -55,7 +56,7 @@ de:
       delete: Daten löschen
       deleted: Gelöscht
       demote: Zurückstufen
-      destroyed_msg: "Daten von %{username} wurden zum Löschen in die Warteschlange eingereiht"
+      destroyed_msg: Daten von %{username} wurden zum Löschen in die Warteschlange eingereiht
       disable: Einfrieren
       disable_sign_in_token_auth: E-Mail-Token-Authentisierung deaktivieren
       disable_two_factor_authentication: Zwei-Faktor-Authentisierung (2FA) deaktivieren
@@ -86,7 +87,7 @@ de:
       media_attachments: Medienanhänge
       memorialize: In Gedenkseite umwandeln
       memorialized: Gedenkseite
-      memorialized_msg: '%{username} wurde erfolgreich in ein Gedenkseiten-Konto umgewandelt'
+      memorialized_msg: "%{username} wurde erfolgreich in ein Gedenkseiten-Konto umgewandelt"
       moderation:
         active: Aktiv
         all: Alle
@@ -557,7 +558,7 @@ de:
       no_ip_block_selected: Keine IP-Regeln wurden geändert, weil keine ausgewählt wurde(n)
       title: IP-Regeln
     relationships:
-      title: "Beziehungen von %{acct}"
+      title: Beziehungen von %{acct}
     relays:
       add_new: Neues Relay hinzufügen
       delete: Entfernen
@@ -603,7 +604,7 @@ de:
       category_description_html: Der Grund, weshalb dieses Konto und/oder der Inhalt gemeldet worden ist, wird in der Kommunikation mit dem gemeldeten Konto erwähnt
       comment:
         none: Kein
-      comment_description_html: '%{name} ergänzte die Meldung um folgende Hinweis:'
+      comment_description_html: "%{name} ergänzte die Meldung um folgende Hinweis:"
       confirm: Bestätigen
       confirm_action: Maßnahme gegen @%{acct} bestätigen
       created_at: Gemeldet
@@ -626,7 +627,7 @@ de:
       quick_actions_description_html: 'Führe eine schnelle Aktion aus oder scrolle nach unten, um gemeldete Inhalte zu sehen:'
       remote_user_placeholder: das externe Profil von %{instance}
       reopen: Meldung wieder eröffnen
-      report: '%{id}. Meldung'
+      report: "%{id}. Meldung"
       reported_account: Gemeldetes Konto
       reported_by: Gemeldet von
       resolved: Geklärt
@@ -908,7 +909,7 @@ de:
         not_discoverable: Autor*in hat sich dafür entschieden, nicht entdeckt zu werden
         shared_by:
           one: Einmal geteilt oder favorisiert
-          other: '%{friendly_count}-mal geteilt oder favorisiert'
+          other: "%{friendly_count}-mal geteilt oder favorisiert"
         title: Angesagte Beiträge
       tags:
         current_score: 'Aktueller Score: %{score}'
@@ -927,7 +928,7 @@ de:
         peaked_on_and_decaying: In den Trends am %{date}, jetzt absteigend
         title: Angesagte Hashtags
         trendable: Darf in den Trends erscheinen
-        trending_rank: 'Platz %{rank}'
+        trending_rank: Platz %{rank}
         usable: Darf verwendet werden
         usage_comparison: Heute %{today}-mal und gestern %{yesterday}-mal verwendet
         used_by_over_week:
@@ -1163,7 +1164,7 @@ de:
       description_html: Dies sind Maßnahmen, die gegen dein Konto ergriffen worden sind, und Warnungen, die dir die Mitarbeiter*innen von %{instance} gesendet haben.
       recipient: Adressiert an
       reject_appeal: Einspruch ablehnen
-      status: '%{id}. Beitrag'
+      status: "%{id}. Beitrag"
       status_removed: Beitrag bereits vom System entfernt
       title: "%{action} vom %{date}"
       title_actions:
@@ -1462,7 +1463,7 @@ de:
     mention:
       action: Antworten
       body: 'Du wurdest von %{name} erwähnt:'
-      subject: '%{name} erwähnte dich'
+      subject: "%{name} erwähnte dich"
       title: Neue Erwähnung
     poll:
       subject: Eine Umfrage von %{name} ist beendet
@@ -1494,7 +1495,7 @@ de:
     description_html: Wenn du die <strong>Zwei-Faktor-Authentisierung</strong> (2FA) mit einer Authentifizierungs-App deines Smartphones aktivierst, benötigst du neben dem regulären Passwort zusätzlich auch den zeitbasierten Code der 2FA-App, um dich anmelden zu können.
     enable: Aktivieren
     instructions_html: "<strong>Scanne diesen QR-Code mit einer beliebigen Authentisierungs-App (TOTP)</strong>. Diese App generiert dann zeitbasierte Codes, die du beim Anmelden zusätzlich zum regulären Passwort eingeben musst."
-    manual_instructions: 'Wenn du den QR-Code nicht einscannen kannst, sondern die Zahlenfolge manuell eingeben musst, ist hier der geheime Token für deine 2FA-App.'
+    manual_instructions: Wenn du den QR-Code nicht einscannen kannst, sondern die Zahlenfolge manuell eingeben musst, ist hier der geheime Token für deine 2FA-App.
     setup: Einrichten
     wrong_code: Der eingegebene Code ist ungültig! Laufen Serverzeit und Gerätezeit synchron?
   pagination:

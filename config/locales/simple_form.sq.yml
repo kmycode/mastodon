@@ -1,3 +1,4 @@
+---
 sq:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ sq:
         events: Akte të aktivizuar
         template: Gjedhe ngarkese
         url: URL pikëmbarimi
-    'no': 'Jo'
+    'no': Jo
     not_recommended: Jo e këshilluar
     overridden: I anashkaluar
     recommended: E rekomanduar
@@ -330,4 +331,4 @@ sq:
     title:
       sessions:
         webauthn: Që të bëhet hyrja, përdorni një nga kyçet tuaj të sigurisë
-    'yes': 'Po'
+    'yes': Po

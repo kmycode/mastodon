@@ -1,3 +1,4 @@
+---
 be:
   simple_form:
     hints:
@@ -320,7 +321,7 @@ be:
         events: Актыўныя падзеі
         template: Шаблон карыснай нагрузкі
         url: URL-адрас канцавога пункту
-    'no': 'Не'
+    'no': Не
     not_recommended: Не рэкамендавана
     overridden: Перавызначана
     recommended: Рэкамендуем
@@ -330,4 +331,4 @@ be:
     title:
       sessions:
         webauthn: Выкарыстайце адзін са сваіх ключоў бяспекі для ўваходу
-    'yes': 'Так'
+    'yes': Так

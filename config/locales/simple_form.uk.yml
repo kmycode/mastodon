@@ -1,3 +1,4 @@
+---
 uk:
   simple_form:
     hints:
@@ -323,7 +324,7 @@ uk:
         events: Увімкнені події
         template: Шаблон корисного навантаження
         url: URL кінцевої точки
-    'no': 'Ні'
+    'no': Ні
     not_recommended: Не рекомендовано
     overridden: Перевизначено
     recommended: Рекомендовано
@@ -333,4 +334,4 @@ uk:
     title:
       sessions:
         webauthn: Використайте один із ваших ключів безпеки для входу
-    'yes': 'Так'
+    'yes': Так

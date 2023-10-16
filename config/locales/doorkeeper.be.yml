@@ -1,9 +1,10 @@
+---
 be:
   activerecord:
     attributes:
       doorkeeper/application:
         name: Назва праграмы
-        redirect_uri: перанакіравць URI 
+        redirect_uri: перанакіравць URI
         scopes: Дазволы
         website: Вэб-сайт праграмы
     errors:
@@ -146,22 +147,22 @@ be:
       application:
         title: Патрабуецца аўтарызацыя OAuth
     scopes:
-      "admin:read": чытаць усе дадзеныя на серверы
-      "admin:read:accounts": чытаць канфідэнцыйную інфармацыю ўсіх акаўнтаў
-      "admin:read:canonical_email_blocks": чытаць канфідэнцыйную інфармацыю ўсіх кананічных блокаў электроннай пошты
-      "admin:read:domain_allows": чытаць канфідэнцыйную інфармацыю ўсіх дазволеных даменаў
-      "admin:read:domain_blocks": чытаць канфідэнцыйную інфармацыю ўсіх блакіраваных даменаў
-      "admin:read:email_domain_blocks": чытаць канфідэнцыйную інфармацыю ўсіх блакіраваных даменаў эл. пошты
-      "admin:read:ip_blocks": чытаць канфідэнцыяльную інфармацыю ўсіх блакіраваных IP
-      "admin:read:reports": чытаць канфідэнцыйную інфармацыю ўсіх справаздач і справаздачных уліковых запісаў
-      "admin:write": змяняць усе даныя на серверы
-      "admin:write:accounts": выконваць дзеянні па мадэрацыі акаўнтаў
-      "admin:write:canonical_email_blocks": выконваць дзеянні па мадэрацыі кананічных блокаў электроннай пошты
-      "admin:write:domain_allows": дазваляе праводзіць мадэрацыю ў дамене
-      "admin:write:domain_blocks": мадэраваць блакіраваныя дамены
-      "admin:write:email_domain_blocks": мадэраваць блакіраваныя дамены эл. пошты
-      "admin:write:ip_blocks": мадэраваць блакіраваныя IP
-      "admin:write:reports": мадэраваць скаргі
+      admin:read: чытаць усе дадзеныя на серверы
+      admin:read:accounts: чытаць канфідэнцыйную інфармацыю ўсіх акаўнтаў
+      admin:read:canonical_email_blocks: чытаць канфідэнцыйную інфармацыю ўсіх кананічных блокаў электроннай пошты
+      admin:read:domain_allows: чытаць канфідэнцыйную інфармацыю ўсіх дазволеных даменаў
+      admin:read:domain_blocks: чытаць канфідэнцыйную інфармацыю ўсіх блакіраваных даменаў
+      admin:read:email_domain_blocks: чытаць канфідэнцыйную інфармацыю ўсіх блакіраваных даменаў эл. пошты
+      admin:read:ip_blocks: чытаць канфідэнцыяльную інфармацыю ўсіх блакіраваных IP
+      admin:read:reports: чытаць канфідэнцыйную інфармацыю ўсіх справаздач і справаздачных уліковых запісаў
+      admin:write: змяняць усе даныя на серверы
+      admin:write:accounts: выконваць дзеянні па мадэрацыі акаўнтаў
+      admin:write:canonical_email_blocks: выконваць дзеянні па мадэрацыі кананічных блокаў электроннай пошты
+      admin:write:domain_allows: дазваляе праводзіць мадэрацыю ў дамене
+      admin:write:domain_blocks: мадэраваць блакіраваныя дамены
+      admin:write:email_domain_blocks: мадэраваць блакіраваныя дамены эл. пошты
+      admin:write:ip_blocks: мадэраваць блакіраваныя IP
+      admin:write:reports: мадэраваць скаргі
       crypto: выкарыстоўваць скразное шыфраванне (end-to-end)
       follow: змяняць зносіны ўліковага запісу
       push: атрымліваць push-апавяшчэнні
