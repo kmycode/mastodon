@@ -113,7 +113,6 @@ class BookmarkCategoryStatuses extends ImmutablePureComponent {
   };
 
   handleLoadMore = debounce(() => {
-    console.dir(this.props.params.id);
     this.props.dispatch(expandBookmarkCategoryStatuses(this.props.params.id));
   }, 300, { leading: true });
 
