@@ -85,6 +85,12 @@ RSpec.configure do |config|
   config.include Redisable
   config.include SignedRequestHelpers, type: :request
 
+  config.around(:each, use_transactional_tests: false) do |example|
+    self.use_transactional_tests = false
+    example.run
+    self.use_transactional_tests = true
+  end
+
   config.before :each, type: :cli do
     stub_stdout
     stub_reset_connection_pools
@@ -92,14 +98,6 @@ RSpec.configure do |config|
 
   config.before :each, type: :feature do
     Capybara.current_driver = :rack_test
-  end
-
-  config.before :each, type: :controller do
-    stub_jsonld_contexts!
-  end
-
-  config.before :each, type: :service do
-    stub_jsonld_contexts!
   end
 
   config.before :suite do
@@ -191,10 +189,4 @@ def stub_reset_connection_pools
   # (Avoids reset_connection_pools! in test env)
   allow(ActiveRecord::Base).to receive(:establish_connection)
   allow(RedisConfiguration).to receive(:establish_pool)
-end
-
-def stub_jsonld_contexts!
-  stub_request(:get, 'https://www.w3.org/ns/activitystreams').to_return(request_fixture('json-ld.activitystreams.txt'))
-  stub_request(:get, 'https://w3id.org/identity/v1').to_return(request_fixture('json-ld.identity.txt'))
-  stub_request(:get, 'https://w3id.org/security/v1').to_return(request_fixture('json-ld.security.txt'))
 end
