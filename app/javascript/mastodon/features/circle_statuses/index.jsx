@@ -13,12 +13,12 @@ import { debounce } from 'lodash';
 import { deleteCircle, expandCircleStatuses, fetchCircle, fetchCircleStatuses } from 'mastodon/actions/circles';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { openModal } from 'mastodon/actions/modal';
+import Column from 'mastodon/components/column';
 import ColumnHeader from 'mastodon/components/column_header';
 import { Icon }  from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import StatusList from 'mastodon/components/status_list';
 import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';
-import Column from 'mastodon/features/ui/components/column';
 import { getCircleStatusList } from 'mastodon/selectors';
 
 

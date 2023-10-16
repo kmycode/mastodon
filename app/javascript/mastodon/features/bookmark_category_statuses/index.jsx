@@ -13,12 +13,12 @@ import { debounce } from 'lodash';
 import { deleteBookmarkCategory, expandBookmarkCategoryStatuses, fetchBookmarkCategory, fetchBookmarkCategoryStatuses , setupBookmarkCategoryEditor } from 'mastodon/actions/bookmark_categories';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { openModal } from 'mastodon/actions/modal';
+import Column from 'mastodon/components/column';
 import ColumnHeader from 'mastodon/components/column_header';
 import { Icon }  from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import StatusList from 'mastodon/components/status_list';
 import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';
-import Column from 'mastodon/features/ui/components/column';
 import { getBookmarkCategoryStatusList } from 'mastodon/selectors';
 
 import EditBookmarkCategoryForm from './components/edit_bookmark_category_form';

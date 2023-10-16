@@ -12,9 +12,9 @@ import { debounce } from 'lodash';
 
 import { fetchBookmarkedStatuses, expandBookmarkedStatuses } from 'mastodon/actions/bookmarks';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
+import Column from 'mastodon/components/column';
 import ColumnHeader from 'mastodon/components/column_header';
 import StatusList from 'mastodon/components/status_list';
-import Column from 'mastodon/features/ui/components/column';
 import { getStatusList } from 'mastodon/selectors';
 
 const messages = defineMessages({
