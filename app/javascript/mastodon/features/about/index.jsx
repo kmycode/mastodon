@@ -127,9 +127,10 @@ class About extends PureComponent {
     const { multiColumn, intl, server, extendedDescription, domainBlocks } = this.props;
     const isLoading = server.get('isLoading');
 
-    const fedibirdCapabilities = server.get('fedibird_capabilities');
+    const fedibirdCapabilities = server.get('fedibird_capabilities') || [];
     const isPublicUnlistedVisibility = fedibirdCapabilities.includes('kmyblue_visibility_public_unlisted');
     const isEmojiReaction = fedibirdCapabilities.includes('emoji_reaction');
+    const capabilitiesError = !server.get('fedibird_capabilities');
 
     return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
@@ -192,16 +193,22 @@ class About extends PureComponent {
           </Section>
 
           <Section title={intl.formatMessage(messages.capabilities)}>
-            <p><FormattedMessage id='about.kmyblue_capability' defaultMessage='This server is using kmyblue, a fork of Mastodon. On this server, kmyblues unique features are configured as follows.' /></p>
-            {!isLoading && (
-              <ol className='rules-list'>
-                <li>
-                  <span className='rules-list__text'>{intl.formatMessage(messages.emojiReaction)}: {intl.formatMessage(isEmojiReaction ? messages.enabled : messages.disabled)}</span>
-                </li>
-                <li>
-                  <span className='rules-list__text'>{intl.formatMessage(messages.publicUnlistedVisibility)}: {intl.formatMessage(isPublicUnlistedVisibility ? messages.enabled : messages.disabled)}</span>
-                </li>
-              </ol>
+            {capabilitiesError ? (
+              <p><FormattedMessage id='about.kmyblue_capability.error' defaultMessage='An error is occured! Please reload this page.' /></p>
+            ) : (
+              <>
+                <p><FormattedMessage id='about.kmyblue_capability' defaultMessage='This server is using kmyblue, a fork of Mastodon. On this server, kmyblues unique features are configured as follows.' /></p>
+                {!isLoading && (
+                  <ol className='rules-list'>
+                    <li>
+                      <span className='rules-list__text'>{intl.formatMessage(messages.emojiReaction)}: {intl.formatMessage(isEmojiReaction ? messages.enabled : messages.disabled)}</span>
+                    </li>
+                    <li>
+                      <span className='rules-list__text'>{intl.formatMessage(messages.publicUnlistedVisibility)}: {intl.formatMessage(isPublicUnlistedVisibility ? messages.enabled : messages.disabled)}</span>
+                    </li>
+                  </ol>
+                )}
+              </>
             )}
           </Section>
 
