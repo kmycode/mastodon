@@ -7,11 +7,16 @@
 
     .batch-table__row__content__text
       %samp= ":#{custom_emoji.shortcode}:"
+      = link_to safe_join([fa_icon('pencil'), t('admin.custom_emojis.edit.label')]), edit_admin_custom_emoji_path(custom_emoji, local: params[:local], remote: params[:remote], shortcode: params[:shortcode], by_domain: params[:by_domain]), method: :get, class: 'table-action-link'
 
       - if custom_emoji.local?
         %span.information-badge= custom_emoji.category&.name || t('admin.custom_emojis.uncategorized')
+      - if custom_emoji.aliases_raw.present?
         %br/
-        %span= custom_emoji.aliases_raw
+        %span.neutral-hint= custom_emoji.aliases_raw
+      - if custom_emoji.license.present?
+        %br/
+        %span= custom_emoji.license
 
     .batch-table__row__content__extra
       - if custom_emoji.local?

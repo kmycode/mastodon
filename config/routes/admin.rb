@@ -167,7 +167,7 @@ namespace :admin do
     resource :role, only: [:show, :update], controller: 'users/roles'
   end
 
-  resources :custom_emojis, only: [:index, :new, :create] do
+  resources :custom_emojis, only: [:index, :new, :create, :edit, :update] do
     collection do
       post :batch
     end

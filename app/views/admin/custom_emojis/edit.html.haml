@@ -1,0 +1,39 @@
+- content_for :page_title do
+  = t('.title')
+
+= simple_form_for @custom_emoji, url: admin_custom_emoji_path(@custom_emoji.id), method: :put do |f|
+  = render 'shared/error_messages', object: @custom_emoji
+  - CustomEmojiFilter::KEYS.each do |key|
+    = hidden_field_tag key, params[key] if params[key].present?
+
+  %h4= t('admin.custom_emojis.shortcode')
+
+  .fields-group
+    %samp= @custom_emoji.shortcode
+
+  - if !@custom_emoji.local?
+    %h4= t('admin.custom_emojis.domain')
+
+    .fields-group
+      %samp= @custom_emoji.domain
+
+  - if @custom_emoji.local?
+    %h4= t('admin.custom_emojis.edit.label')
+
+    .fields-group
+      = f.input :visible_in_picker, as: :boolean, wrapper: :with_label, label: t('admin.custom_emojis.visible_in_picker')
+
+    .fields-group
+      = f.input :aliases_raw, wrapper: :with_label, kmyblue: true, label: t('admin.custom_emojis.aliases'), hint: t('admin.custom_emojis.aliases_hint')
+
+    .fields-group
+      = f.input :license, wrapper: :with_label, kmyblue: true, label: t('admin.custom_emojis.license'), hint: t('admin.custom_emojis.license_hint')
+
+    .actions
+      = f.button :button, t('generic.save_changes'), type: :submit
+
+  - elsif @custom_emoji.license.present?
+    %h4= t('admin.custom_emojis.license')
+
+    .fields-group
+      %p= @custom_emoji.license

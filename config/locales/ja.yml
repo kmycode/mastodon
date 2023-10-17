@@ -313,6 +313,8 @@ ja:
       updated_msg: お知らせを更新しました
     critical_update_pending: 重要な更新が保留中です
     custom_emojis:
+      aliases: エイリアス名
+      aliases_hint: 絵文字ピッカー内で検索する際、ショートコードだけでなくエイリアス名でも検索できます。「,」（カンマ）で区切ることで、複数指定が可能です。
       assign_category: カテゴリーを割り当て
       by_domain: ドメイン
       copied_msg: 絵文字のコピーをローカルに作成しました
@@ -325,11 +327,17 @@ ja:
       disable: 無効化
       disabled: 無効
       disabled_msg: 絵文字を無効化しました
+      domain: ドメイン
+      edit:
+        label: 編集
+        title: カスタム絵文字の編集
       emoji: 絵文字
       enable: 有効化
       enabled: 有効
       enabled_msg: 絵文字を有効化しました
       image_hint: '%{size}までのPNGまたはGIF画像を利用できます'
+      license: ライセンス
+      license_hint: カスタム絵文字のライセンス情報を設定します。ただしライセンス情報の連合に対応していないサーバーも多く、Misskeyもローカル絵文字のライセンス情報には対応しますが他のサーバーのライセンス情報は参照しません。ライセンスは無視される場合があることを考慮してください。
       list: 表示
       listed: 表示
       new:
@@ -346,6 +354,7 @@ ja:
       update_failed_msg: 絵文字を更新できませんでした
       updated_msg: 絵文字の更新に成功しました！
       upload: アップロード
+      visible_in_picker: 絵文字ピッカーで表示
     dashboard:
       active_users: アクティブユーザー
       interactions: 交流

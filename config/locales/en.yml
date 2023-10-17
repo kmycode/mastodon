@@ -316,6 +316,8 @@ en:
       updated_msg: Announcement successfully updated!
     critical_update_pending: Critical update pending
     custom_emojis:
+      aliases: Alias names
+      aliases_hint: When searching within the pictogram picker, you can search not only by short code, but also by alias name. You can specify multiple alias names by separating them with "," (comma).
       assign_category: Assign category
       by_domain: Domain
       copied_msg: Successfully created local copy of the emoji
@@ -328,11 +330,17 @@ en:
       disable: Disable
       disabled: Disabled
       disabled_msg: Successfully disabled that emoji
+      domain: Domain
+      edit:
+        label: Edit
+        title: Edit custom emoji
       emoji: Emoji
       enable: Enable
       enabled: Enabled
       enabled_msg: Successfully enabled that emoji
       image_hint: PNG or GIF up to %{size}
+      license: License
+      license_hint: Set license information for custom pictograms. However, many servers do not support the federation of license information, and Misskey also supports license information for local pictograms, but does not reference license information from other servers. Consider that licenses may be ignored.
       list: List
       listed: Listed
       new:
@@ -349,6 +357,7 @@ en:
       update_failed_msg: Could not update that emoji
       updated_msg: Emoji successfully updated!
       upload: Upload
+      visible_in_picker: Visible in emoji picker
     dashboard:
       active_users: active users
       interactions: interactions

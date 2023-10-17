@@ -2,6 +2,8 @@
 
 module Admin
   class CustomEmojisController < BaseController
+    before_action :set_custom_emoji, only: [:edit, :update]
+
     def index
       authorize :custom_emoji, :index?
 
@@ -15,6 +17,10 @@ module Admin
       @custom_emoji = CustomEmoji.new
     end
 
+    def edit
+      authorize :custom_emoji, :create?
+    end
+
     def create
       authorize :custom_emoji, :create?
 
@@ -23,6 +29,19 @@ module Admin
       if @custom_emoji.save
         log_action :create, @custom_emoji
         redirect_to admin_custom_emojis_path, notice: I18n.t('admin.custom_emojis.created_msg')
+      else
+        render :new
+      end
+    end
+
+    def update
+      authorize :custom_emoji, :create?
+
+      @custom_emoji.assign_attributes(update_params)
+
+      if @custom_emoji.save
+        log_action :create, @custom_emoji
+        redirect_to admin_custom_emojis_path(filter_params), notice: I18n.t('admin.custom_emojis.updated_msg')
       else
         render :new
       end
@@ -43,8 +62,16 @@ module Admin
 
     private
 
+    def set_custom_emoji
+      @custom_emoji = CustomEmoji.find(params[:id])
+    end
+
     def resource_params
       params.require(:custom_emoji).permit(:shortcode, :image, :visible_in_picker)
+    end
+
+    def update_params
+      params.require(:custom_emoji).permit(:visible_in_picker, :aliases_raw, :license)
     end
 
     def filtered_custom_emojis
