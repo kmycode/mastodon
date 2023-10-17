@@ -3,7 +3,7 @@
 class ActivityPub::EmojiSerializer < ActivityPub::Serializer
   include RoutingHelper
 
-  context_extensions :emoji, :license, :aliases
+  context_extensions :emoji, :license, :keywords
 
   attributes :id, :type, :domain, :name, :keywords, :is_sensitive, :updated
 
