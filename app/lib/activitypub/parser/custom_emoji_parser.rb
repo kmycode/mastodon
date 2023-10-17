@@ -15,6 +15,10 @@ class ActivityPub::Parser::CustomEmojiParser
     @json['name']&.delete(':')
   end
 
+  def aliases
+    as_array(@json['keywords'])
+  end
+
   def image_remote_url
     @json.dig('icon', 'url')
   end
