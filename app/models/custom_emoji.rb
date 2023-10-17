@@ -70,7 +70,13 @@ class CustomEmoji < ApplicationRecord
   end
 
   def copy!
-    copy = self.class.find_or_initialize_by(domain: nil, shortcode: shortcode)
+    copy = self.class.find_or_initialize_by(
+      domain: nil,
+      shortcode: shortcode,
+      license: license,
+      aliases: aliases,
+      is_sensitive: is_sensitive
+    )
     copy.image = image
     copy.tap(&:save!)
   end
