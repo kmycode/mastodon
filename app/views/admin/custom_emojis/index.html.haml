@@ -75,12 +75,6 @@
               .label_input
                 = f.text_field :category_name, class: 'string optional', placeholder: t('admin.custom_emojis.create_new_category'), 'aria-label': t('admin.custom_emojis.create_new_category')
 
-        .fields-row
-          .fields-group.fields-row__column
-            .input.string.optional
-              .label_input
-                = f.text_field :aliases_raw, class: 'string optional', placeholder: 'Alias names', 'aria-label': 'Alias names'
-
     .batch-table__body
       - if @custom_emojis.empty?
         = nothing_here 'nothing-here--under-tabs'

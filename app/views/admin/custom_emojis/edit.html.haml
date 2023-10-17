@@ -6,6 +6,9 @@
   - CustomEmojiFilter::KEYS.each do |key|
     = hidden_field_tag key, params[key] if params[key].present?
 
+  .fields-group
+    = custom_emoji_tag(@custom_emoji)
+
   %h4= t('admin.custom_emojis.shortcode')
 
   .fields-group

@@ -6,7 +6,7 @@ class Form::CustomEmojiBatch
   include AccountableConcern
 
   attr_accessor :custom_emoji_ids, :action, :current_account,
-                :category_id, :category_name, :aliases_raw, :visible_in_picker
+                :category_id, :category_name, :visible_in_picker
 
   def save
     case action
@@ -43,8 +43,7 @@ class Form::CustomEmojiBatch
                end
 
     custom_emojis.each do |custom_emoji|
-      new_aliases_raw = (aliases_raw.presence || custom_emoji.aliases_raw)
-      custom_emoji.update(category_id: category&.id, aliases_raw: new_aliases_raw)
+      custom_emoji.update(category_id: category&.id)
       log_action :update, custom_emoji
     end
   end
