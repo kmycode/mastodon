@@ -25,6 +25,10 @@ class StatusReachFinder
     (reached_account_inboxes_for_friend + followers_inboxes_for_friend + friend_inboxes).uniq
   end
 
+  def all_inboxes
+    (inboxes + inboxes_for_misskey + inboxes_for_friend).uniq
+  end
+
   private
 
   def reached_account_inboxes

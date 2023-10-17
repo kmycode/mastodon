@@ -136,4 +136,54 @@ RSpec.describe EmojiReactService, type: :service do
       expect(subject.first.custom_emoji.domain).to eq 'foo.bar'
     end
   end
+
+  context 'when has remote followers' do
+    let!(:bob) { Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/actor', inbox_url: 'https://foo.bar/inbox', protocol: 'activitypub') }
+
+    before do
+      bob.follow!(author)
+      stub_request(:post, 'https://foo.bar/inbox')
+    end
+
+    it 'react with emoji' do
+      expect(subject.count).to eq 1
+      expect(a_request(:post, 'https://foo.bar/inbox').with(body: hash_including({
+        type: 'Like',
+        actor: ActivityPub::TagManager.instance.uri_for(sender),
+        content: '😀',
+      }))).to have_been_made.once
+    end
+  end
+
+  context 'when has relay server' do
+    before do
+      Fabricate(:relay, inbox_url: 'https://foo.bar/inbox', state: :accepted)
+      stub_request(:post, 'https://foo.bar/inbox')
+    end
+
+    it 'react with emoji' do
+      expect(subject.count).to eq 1
+      expect(a_request(:post, 'https://foo.bar/inbox').with(body: hash_including({
+        type: 'Like',
+        actor: ActivityPub::TagManager.instance.uri_for(sender),
+        content: '😀',
+      }))).to have_been_made.once
+    end
+  end
+
+  context 'when has friend server' do
+    before do
+      Fabricate(:friend_domain, inbox_url: 'https://foo.bar/inbox', active_state: :accepted, pseudo_relay: true)
+      stub_request(:post, 'https://foo.bar/inbox')
+    end
+
+    it 'react with emoji' do
+      expect(subject.count).to eq 1
+      expect(a_request(:post, 'https://foo.bar/inbox').with(body: hash_including({
+        type: 'Like',
+        actor: ActivityPub::TagManager.instance.uri_for(sender),
+        content: '😀',
+      }))).to have_been_made.once
+    end
+  end
 end
