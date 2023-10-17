@@ -17,13 +17,13 @@ class EmojiReactService < BaseService
     @status = status
 
     with_redis_lock("emoji_reaction:#{status.id}") do
-      @emoji_reaction = EmojiReaction.find_by(account: account, status: status, name: name)
-      raise Mastodon::ValidationError, I18n.t('reactions.errors.duplication') unless @emoji_reaction.nil?
-
       shortcode, domain = name.split('@')
       domain = nil if TagManager.instance.local_domain?(domain)
       custom_emoji = CustomEmoji.find_by(shortcode: shortcode, domain: domain)
       return if domain.present? && !EmojiReaction.exists?(status: status, custom_emoji: custom_emoji)
+
+      @emoji_reaction = EmojiReaction.find_by(account: account, status: status, name: shortcode, custom_emoji: custom_emoji)
+      raise Mastodon::ValidationError, I18n.t('reactions.errors.duplication') unless @emoji_reaction.nil?
 
       @emoji_reaction = EmojiReaction.create!(account: account, status: status, name: shortcode, custom_emoji: custom_emoji)
 
