@@ -179,6 +179,17 @@ RSpec.describe 'EmojiReactions' do
       end
     end
 
+    context 'with private status that was not reacted without emoji parameter' do
+      let(:status) { Fabricate(:status, visibility: :private) }
+      let(:emoji) { nil }
+
+      it 'returns http not found' do
+        subject
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
     context 'when local custom emoji' do
       before do
         Fabricate(:custom_emoji, shortcode: 'ohagi')
