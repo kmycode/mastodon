@@ -247,8 +247,16 @@ module AccountInteractions
     status.proper.favourites.where(account: self).exists?
   end
 
-  def emoji_reactioned?(status)
-    status.proper.emoji_reactions.where(account: self).exists?
+  def emoji_reacted?(status, shortcode = nil, domain = nil, domain_force = false) # rubocop:disable Style/OptionalBooleanParameter
+    if shortcode.present?
+      if domain.present? || domain_force
+        status.proper.emoji_reactions.joins(:custom_emoji).where(account: self, name: shortcode, custom_emoji: { domain: domain }).exists?
+      else
+        status.proper.emoji_reactions.where(account: self, name: shortcode).exists?
+      end
+    else
+      status.proper.emoji_reactions.where(account: self).exists?
+    end
   end
 
   def bookmarked?(status)
