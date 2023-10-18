@@ -113,7 +113,6 @@ const initialPath = document.querySelector("head meta[name=initialPath]")?.getAt
 /** @type {boolean} */
 export const hasMultiColumnPath = initialPath === '/'
   || initialPath === '/getting-started'
-  || initialPath === '/home'
   || initialPath.startsWith('/deck');
 
 /**
