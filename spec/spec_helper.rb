@@ -42,6 +42,12 @@ RSpec.configure do |config|
   # for RSpec::Retry
   config.verbose_retry = true
   config.display_try_failure_messages = true
+
+  # Use the GitHub Annotations formatter for CI
+  if ENV['GITHUB_ACTIONS'] == 'true'
+    require 'rspec/github'
+    config.add_formatter RSpec::Github::Formatter
+  end
 end
 
 def body_as_json

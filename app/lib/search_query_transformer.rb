@@ -79,6 +79,8 @@ class SearchQueryTransformer < Parslet::Transform
       case @flags['in']
       when 'library'
         [StatusesIndex]
+      when 'public'
+        [PublicStatusesIndex]
       else
         @options[:current_account].user&.setting_use_public_index ? [PublicStatusesIndex, StatusesIndex] : [StatusesIndex]
       end
