@@ -38,6 +38,7 @@ RSpec.describe EmojiReactService, type: :service do
     it 'react with emoji' do
       expect(subject.count).to eq 1
       expect(subject.pluck(:name)).to contain_exactly('😂')
+      expect(EmojiReaction.where(status: status).count).to eq 2
     end
   end
 
@@ -47,6 +48,7 @@ RSpec.describe EmojiReactService, type: :service do
     it 'react with emoji' do
       expect(subject.count).to eq 1
       expect(subject.first.name).to eq '😀'
+      expect(EmojiReaction.where(status: status).count).to eq 2
     end
   end
 
