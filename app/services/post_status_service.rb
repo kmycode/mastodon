@@ -146,6 +146,7 @@ class PostStatusService < BaseService
     @status = @account.statuses.new(status_attributes)
     process_mentions_service.call(@status, limited_type: @status.limited_visibility? ? @limited_scope : '', circle: @circle, save_records: false)
     safeguard_mentions!(@status)
+    validate_status_mentions!
 
     @status.limited_scope = :personal if @status.limited_visibility? && !process_mentions_service.mentions?
 
@@ -206,6 +207,15 @@ class PostStatusService < BaseService
   def validate_status!
     raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if Admin::NgWord.reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
     raise Mastodon::ValidationError, I18n.t('statuses.too_many_hashtags') if Admin::NgWord.hashtag_reject_with_extractor?(@options[:text])
+  end
+
+  def validate_status_mentions!
+    raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if mention_to_stranger? && Setting.stranger_mention_from_local_ng && Admin::NgWord.stranger_mention_reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
+  end
+
+  def mention_to_stranger?
+    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @account && !mentioned_account.following?(@account) } ||
+      (@in_reply_to && @in_reply_to.account.id != @account.id && !@in_reply_to.account.following?(@account))
   end
 
   def validate_media!

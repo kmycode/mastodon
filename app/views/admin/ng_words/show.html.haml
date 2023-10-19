@@ -11,6 +11,9 @@
     = f.input :ng_words_for_stranger_mention, wrapper: :with_label, as: :text, input_html: { rows: 12 }, label: t('admin.ng_words.keywords_for_stranger_mention'), hint: t('admin.ng_words.keywords_for_stranger_mention_hint')
 
   .fields-group
+    = f.input :stranger_mention_from_local_ng, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.stranger_mention_from_local_ng'), hint: t('admin.ng_words.stranger_mention_from_local_ng_hint')
+
+  .fields-group
     = f.input :ng_words, wrapper: :with_label, as: :text, input_html: { rows: 12 }, label: t('admin.ng_words.keywords'), hint: t('admin.ng_words.keywords_hint')
 
   .fields-group

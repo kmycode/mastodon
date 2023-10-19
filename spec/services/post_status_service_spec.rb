@@ -436,6 +436,82 @@ RSpec.describe PostStatusService, type: :service do
     expect(status2.id).to eq status1.id
   end
 
+  describe 'ng word is set' do
+    it 'hit ng words' do
+      account = Fabricate(:account)
+      text = 'ng word test'
+      Form::AdminSettings.new(ng_words: 'test').save
+
+      expect { subject.call(account, text: text) }.to raise_error(Mastodon::ValidationError)
+    end
+
+    it 'not hit ng words' do
+      account = Fabricate(:account)
+      text = 'ng word aiueo'
+      Form::AdminSettings.new(ng_words: 'test').save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'hit ng words for mention' do
+      account = Fabricate(:account)
+      mentioned = Fabricate(:account, username: 'ohagi', domain: nil)
+      text = 'ng word test @ohagi'
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      expect { subject.call(account, text: text) }.to raise_error(Mastodon::ValidationError)
+    end
+
+    it 'hit ng words for mention but local posts are not checked' do
+      account = Fabricate(:account)
+      mentioned = Fabricate(:account, username: 'ohagi', domain: nil)
+      text = 'ng word test @ohagi'
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '0').save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'hit ng words for mention to follower' do
+      account = Fabricate(:account)
+      mentioned = Fabricate(:account, username: 'ohagi', domain: nil)
+      mentioned.follow!(account)
+      text = 'ng word test @ohagi'
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'hit ng words for reply' do
+      account = Fabricate(:account)
+      text = 'ng word test'
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      expect { subject.call(account, text: text, thread: Fabricate(:status)) }.to raise_error(Mastodon::ValidationError)
+    end
+
+    it 'hit ng words for reply to follower' do
+      account = Fabricate(:account)
+      mentioned = Fabricate(:account, username: 'ohagi', domain: nil)
+      mentioned.follow!(account)
+      text = 'ng word test'
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+  end
+
   def create_status_with_options(**options)
     subject.call(Fabricate(:account), options.merge(text: 'test'))
   end

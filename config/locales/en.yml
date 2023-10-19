@@ -647,6 +647,8 @@ en:
       keywords_for_stranger_mention_hint: Currently this words are checked posts from other servers only.
       keywords_hint: The first character of the line is "?". to use regular expressions
       post_hash_tags_max: Hash tags max for posts
+      stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
+      stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
       test_error: Testing is returned any errors
       title: NG words and against spams
     relationships:

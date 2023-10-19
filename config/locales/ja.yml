@@ -647,6 +647,8 @@ ja:
       keywords_for_stranger_mention_hint: フォローしていないアカウントへのメンションにのみ適用されます。現状は外部サーバーから来た投稿のみに適用されます
       keywords_hint: 行を「?」で始めると、正規表現が使えます
       post_hash_tags_max: 投稿に設定可能なハッシュタグの最大数
+      stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
+      stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
       test_error: NGワードのテストに失敗しました。正規表現のミスが含まれているかもしれません
       title: NGワードとスパム
     relationships:
