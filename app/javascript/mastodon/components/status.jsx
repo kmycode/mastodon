@@ -669,11 +669,11 @@ class Status extends ImmutablePureComponent {
               {...statusContentProps}
             />
 
-            {(!status.get('spoiler_text') || expanded) && quote}
-
             {(!isCardMediaWithSensitive || !status.get('hidden')) && media}
 
             {(!status.get('spoiler_text') || expanded) && hashtagBar}
+
+            {(!status.get('spoiler_text') || expanded) && quote}
 
             {emojiReactionsBar}
 
