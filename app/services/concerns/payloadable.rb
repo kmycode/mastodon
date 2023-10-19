@@ -16,8 +16,9 @@ module Payloadable
     always_sign = options.delete(:always_sign)
     payload     = ActiveModelSerializers::SerializableResource.new(record, options.merge(serializer: serializer, adapter: ActivityPub::Adapter)).as_json
     object      = record.respond_to?(:virtual_object) ? record.virtual_object : record
+    bearcap     = object.is_a?(String) && record.respond_to?(:type) && (record.type == 'Create' || record.type == 'Update')
 
-    if ((object.respond_to?(:sign?) && object.sign?) && signer && (always_sign || signing_enabled?)) || object.is_a?(String)
+    if ((object.respond_to?(:sign?) && object.sign?) && signer && (always_sign || signing_enabled?)) || bearcap
       ActivityPub::LinkedDataSignature.new(payload).sign!(signer, sign_with: sign_with)
     else
       payload
