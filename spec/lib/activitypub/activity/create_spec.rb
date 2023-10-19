@@ -1484,6 +1484,49 @@ RSpec.describe ActivityPub::Activity::Create do
           end
         end
       end
+
+      context 'when hashtags limit is set' do
+        let(:post_hash_tags_max) { 2 }
+        let(:custom_before) { true }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            tag: [
+              {
+                type: 'Hashtag',
+                href: 'http://example.com/blah',
+                name: '#test',
+              },
+              {
+                type: 'Hashtag',
+                href: 'http://example.com/blah2',
+                name: '#test2',
+              },
+            ],
+          }
+        end
+
+        before do
+          Form::AdminSettings.new(post_hash_tags_max: post_hash_tags_max).save
+          subject.perform
+        end
+
+        context 'when limit is enough' do
+          it 'creates status' do
+            expect(sender.statuses.first).to_not be_nil
+          end
+        end
+
+        context 'when limit is over' do
+          let(:post_hash_tags_max) { 1 }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+          end
+        end
+      end
     end
 
     context 'with an encrypted message' do
