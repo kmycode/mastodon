@@ -18,6 +18,10 @@ class Admin::NgWord
       hashtag_reject?(Extractor.extract_hashtags(text)&.size || 0)
     end
 
+    def stranger_mention_reject?(text)
+      ng_words_for_stranger_mention.any? { |word| include?(text, word) }
+    end
+
     private
 
     def include?(text, word)
@@ -30,6 +34,10 @@ class Admin::NgWord
 
     def ng_words
       Setting.ng_words || []
+    end
+
+    def ng_words_for_stranger_mention
+      Setting.ng_words_for_stranger_mention || []
     end
 
     def post_hash_tags_max

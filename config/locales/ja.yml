@@ -643,6 +643,8 @@ ja:
     ng_words:
       hide_local_users_for_anonymous: ログインしていない状態でローカルユーザーの投稿をタイムラインから取得できないようにする
       keywords: 投稿できないキーワード
+      keywords_for_stranger_mention: フォローしていないアカウントへのメンションで利用できないキーワード
+      keywords_for_stranger_mention_hint: フォローしていないアカウントへのメンションにのみ適用されます。現状は外部サーバーから来た投稿のみに適用されます
       keywords_hint: 行を「?」で始めると、正規表現が使えます
       post_hash_tags_max: 投稿に設定可能なハッシュタグの最大数
       test_error: NGワードのテストに失敗しました。正規表現のミスが含まれているかもしれません

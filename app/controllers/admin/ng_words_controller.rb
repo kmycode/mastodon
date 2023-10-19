@@ -32,7 +32,7 @@ module Admin
     private
 
     def test_words
-      ng_words = settings_params['ng_words'].split(/\r\n|\r|\n/)
+      ng_words = "#{settings_params['ng_words']}\n#{settings_params['ng_words_for_stranger_mention']}".split(/\r\n|\r|\n/).filter(&:present?)
       Admin::NgWord.reject_with_custom_words?('Sample text', ng_words)
     end
 

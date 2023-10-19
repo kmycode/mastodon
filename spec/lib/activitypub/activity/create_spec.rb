@@ -1334,6 +1334,156 @@ RSpec.describe ActivityPub::Activity::Create do
           expect(status.language).to eq 'en-US'
         end
       end
+
+      context 'when ng word is set' do
+        let(:custom_before) { true }
+        let(:custom_before_sub) { false }
+        let(:content) { 'Lorem ipsum' }
+        let(:ng_words) { 'hello' }
+        let(:ng_words_for_stranger_mention) { 'ohagi' }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: content,
+            to: 'https://www.w3.org/ns/activitystreams#Public',
+          }
+        end
+
+        before do
+          Form::AdminSettings.new(ng_words: ng_words, ng_words_for_stranger_mention: ng_words_for_stranger_mention).save
+          subject.perform unless custom_before_sub
+        end
+
+        context 'when not contains ng words' do
+          let(:content) { 'ohagi, world!' }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to_not be_nil
+          end
+        end
+
+        context 'when hit ng words' do
+          let(:content) { 'hello, world!' }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+          end
+        end
+
+        context 'when mention from tags' do
+          let(:recipient) { Fabricate(:user).account }
+
+          let(:object_json) do
+            {
+              id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+              type: 'Note',
+              content: content,
+              tag: [
+                {
+                  type: 'Mention',
+                  href: ActivityPub::TagManager.instance.uri_for(recipient),
+                },
+              ],
+            }
+          end
+
+          context 'with not using ng words for stranger' do
+            let(:content) { 'among us' }
+
+            it 'creates status' do
+              expect(sender.statuses.first).to_not be_nil
+            end
+          end
+
+          context 'with using ng words for stranger' do
+            let(:content) { 'oh, ohagi!' }
+
+            it 'creates status' do
+              expect(sender.statuses.first).to be_nil
+            end
+          end
+
+          context 'with using ng words for stranger but receiver is following him' do
+            let(:content) { 'oh, ohagi!' }
+            let(:custom_before_sub) { true }
+
+            before do
+              recipient.follow!(sender)
+              subject.perform
+            end
+
+            it 'creates status' do
+              expect(sender.statuses.first).to_not be_nil
+            end
+          end
+
+          context 'with using ng words for stranger but multiple receivers are partically following him' do
+            let(:content) { 'oh, ohagi' }
+            let(:custom_before_sub) { true }
+
+            let(:object_json) do
+              {
+                id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+                type: 'Note',
+                content: content,
+                tag: [
+                  {
+                    type: 'Mention',
+                    href: ActivityPub::TagManager.instance.uri_for(recipient),
+                  },
+                  {
+                    type: 'Mention',
+                    href: ActivityPub::TagManager.instance.uri_for(Fabricate(:user).account),
+                  },
+                ],
+              }
+            end
+
+            before do
+              recipient.follow!(sender)
+              subject.perform
+            end
+
+            it 'creates status' do
+              expect(sender.statuses.first).to be_nil
+            end
+          end
+        end
+
+        context 'when a reply' do
+          let(:recipient) { Fabricate(:user).account }
+          let(:original_status) { Fabricate(:status, account: recipient) }
+
+          let(:object_json) do
+            {
+              id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+              type: 'Note',
+              content: 'ohagi peers',
+              inReplyTo: ActivityPub::TagManager.instance.uri_for(original_status),
+            }
+          end
+
+          context 'with a simple case' do
+            it 'creates status' do
+              expect(sender.statuses.first).to be_nil
+            end
+          end
+
+          context 'with following' do
+            let(:custom_before_sub) { true }
+
+            before do
+              recipient.follow!(sender)
+              subject.perform
+            end
+
+            it 'creates status' do
+              expect(sender.statuses.first).to_not be_nil
+            end
+          end
+        end
+      end
     end
 
     context 'with an encrypted message' do

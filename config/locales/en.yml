@@ -643,6 +643,8 @@ en:
     ng_words:
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
       keywords: Reject keywords
+      keywords_for_stranger_mention: Reject keywords when mention/reply from strangers
+      keywords_for_stranger_mention_hint: Currently this words are checked posts from other servers only.
       keywords_hint: The first character of the line is "?". to use regular expressions
       post_hash_tags_max: Hash tags max for posts
       test_error: Testing is returned any errors

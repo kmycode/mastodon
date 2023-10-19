@@ -84,7 +84,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
     return nil unless valid_status?
     return nil if (reply_to_local? || reply_to_local_account? || reply_to_local_from_tags?) && reject_reply_to_local?
-    return nil if (!reply_to_local_account_following? || !reply_to_local_status_following? || !reply_to_local_from_tags_following?) && reject_reply_exclude_followers?
+    return nil if mention_to_local_but_not_followed? && reject_reply_exclude_followers?
 
     ApplicationRecord.transaction do
       @status = Status.create!(@params)
@@ -139,7 +139,11 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def valid_status?
-    !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") && !Admin::NgWord.hashtag_reject?(@tags.size)
+    valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") && !Admin::NgWord.hashtag_reject?(@tags.size)
+
+    valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && mention_to_local_but_not_followed?
+
+    valid
   end
 
   def accounts_in_audience
@@ -418,11 +422,11 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def reply_to_local_from_tags?
-    (@mentions.present? && @mentions.any? { |m| m.account.local? })
+    @mentions.present? && @mentions.any? { |m| m.account.local? }
   end
 
   def reply_to_local_from_tags_following?
-    (@mentions.present? && @mentions.none? { |m| m.account.local? && !m.account.following?(@account) })
+    @mentions.nil? || @mentions.none? { |m| m.account.local? && !m.account.following?(@account) }
   end
 
   def reply_to_local?
@@ -431,6 +435,10 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
   def reply_to_local_status_following?
     !reply_to_local? || replied_to_status.account.following?(@account)
+  end
+
+  def mention_to_local_but_not_followed?
+    !reply_to_local_account_following? || !reply_to_local_status_following? || !reply_to_local_from_tags_following?
   end
 
   def reject_reply_to_local?
