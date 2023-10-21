@@ -1,4 +1,4 @@
-import { List as ImmutableList, Map as ImmutableMap, OrderedSet as ImmutableOrderedSet, fromJS } from 'immutable';
+import { Map as ImmutableMap, OrderedSet as ImmutableOrderedSet, fromJS } from 'immutable';
 
 import {
   CIRCLE_FETCH_SUCCESS,
@@ -18,14 +18,7 @@ import {
   COMPOSE_WITH_CIRCLE_SUCCESS,
 } from '../actions/compose';
 
-const initialState = ImmutableList();
-
-const initialStatusesState = ImmutableMap({
-  items: ImmutableList(),
-  isLoading: false,
-  loaded: true,
-  next: null,
-});
+const initialState = ImmutableMap();
 
 const normalizeCircle = (state, circle) => {
   const old = state.get(circle.id);
@@ -33,13 +26,11 @@ const normalizeCircle = (state, circle) => {
     return state;
   }
 
-  let s = state.set(circle.id, fromJS(circle));
+  state = state.set(circle.id, fromJS(circle));
   if (old) {
-    s = s.setIn([circle.id, 'statuses'], old.get('statuses'));
-  } else {
-    s = s.setIn([circle.id, 'statuses'], initialStatusesState);
+    state = state.setIn([circle.id, 'items'], old.get('items'));
   }
-  return s.setIn([circle.id, 'isLoading'], false).setIn([circle.id, 'isLoaded'], true);
+  return state.setIn([circle.id, 'isLoading'], false).setIn([circle.id, 'isLoaded'], true);
 };
 
 const normalizeCircles = (state, circles) => {
@@ -51,7 +42,7 @@ const normalizeCircles = (state, circles) => {
 };
 
 const normalizeCircleStatuses = (state, circleId, statuses, next) => {
-  return state.updateIn([circleId, 'statuses'], listMap => listMap.withMutations(map => {
+  return state.update(circleId, listMap => listMap.withMutations(map => {
     map.set('next', next);
     map.set('loaded', true);
     map.set('isLoading', false);
@@ -64,7 +55,7 @@ const appendToCircleStatuses = (state, circleId, statuses, next) => {
 };
 
 const appendToCircleStatusesById = (state, circleId, statuses, next) => {
-  return state.updateIn([circleId, 'statuses'], listMap => listMap.withMutations(map => {
+  return state.update(circleId, listMap => listMap.withMutations(map => {
     if (typeof next !== 'undefined') {
       map.set('next', next);
     }
@@ -79,8 +70,8 @@ const prependToCircleStatusById = (state, circleId, statusId) => {
   if (!state.get(circleId)) return state;
 
   return state.updateIn([circleId], circle => circle.withMutations(map => {
-    if (map.getIn(['statuses', 'items'])) {
-      map.updateIn(['statuses', 'items'], list => ImmutableOrderedSet([statusId]).union(list));
+    if (map.get('items')) {
+      map.update('items', list => ImmutableOrderedSet([statusId]).union(list));
     }
   }));
 };
@@ -98,10 +89,10 @@ export default function circles(state = initialState, action) {
     return state.set(action.id, false);
   case CIRCLE_STATUSES_FETCH_REQUEST:
   case CIRCLE_STATUSES_EXPAND_REQUEST:
-    return state.setIn([action.id, 'statuses', 'isLoading'], true);
+    return state.setIn([action.id, 'isLoading'], true);
   case CIRCLE_STATUSES_FETCH_FAIL:
   case CIRCLE_STATUSES_EXPAND_FAIL:
-    return state.setIn([action.id, 'statuses', 'isLoading'], false);
+    return state.setIn([action.id, 'isLoading'], false);
   case CIRCLE_STATUSES_FETCH_SUCCESS:
     return normalizeCircleStatuses(state, action.id, action.statuses, action.next);
   case CIRCLE_STATUSES_EXPAND_SUCCESS:

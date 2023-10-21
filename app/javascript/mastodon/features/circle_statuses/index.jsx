@@ -113,7 +113,7 @@ class CircleStatuses extends ImmutablePureComponent {
   };
 
   handleLoadMore = debounce(() => {
-    this.props.dispatch(expandCircleStatuses());
+    this.props.dispatch(expandCircleStatuses(this.props.params.id));
   }, 300, { leading: true });
 
   render () {

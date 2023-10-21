@@ -380,7 +380,11 @@ export const removeFromCircleAdder = circleId => (dispatch, getState) => {
 
 export function fetchCircleStatuses(circleId) {
   return (dispatch, getState) => {
-    if (getState().getIn(['circles', circleId, 'statuses', 'isLoading'])) {
+    if (getState().getIn(['circles', circleId, 'isLoading'])) {
+      return;
+    }
+    const items = getState().getIn(['circles', circleId, 'items']);
+    if (items && items.size > 0) {
       return;
     }
 
@@ -422,9 +426,9 @@ export function fetchCircleStatusesFail(id, error) {
 
 export function expandCircleStatuses(circleId) {
   return (dispatch, getState) => {
-    const url = getState().getIn(['circles', circleId, 'statuses', 'next'], null);
+    const url = getState().getIn(['circles', circleId, 'next'], null);
 
-    if (url === null || getState().getIn(['circles', circleId, 'statuses', 'isLoading'])) {
+    if (url === null || getState().getIn(['circles', circleId, 'isLoading'])) {
       return;
     }
 

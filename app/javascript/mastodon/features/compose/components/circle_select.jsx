@@ -32,7 +32,7 @@ class CircleSelect extends PureComponent {
     }
 
     const listOptions = circles.toArray().filter((circle) => circle).map((circle) => {
-      return { value: circle.get('id'), label: circle.get('title') };
+      return { value: circle[1].get('id'), label: circle[1].get('title') };
     });
     const listValue = listOptions.find((opt) => opt.value === circleId);
 
