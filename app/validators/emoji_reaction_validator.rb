@@ -8,7 +8,7 @@ class EmojiReactionValidator < ActiveModel::Validator
 
     emoji_reaction.errors.add(:name, I18n.t('reactions.errors.unrecognized_emoji')) if emoji_reaction.custom_emoji_id.blank? && !unicode_emoji?(emoji_reaction.name)
     emoji_reaction.errors.add(:name, I18n.t('reactions.errors.unrecognized_emoji')) if emoji_reaction.custom_emoji_id.present? && disabled_custom_emoji?(emoji_reaction.custom_emoji)
-    emoji_reaction.errors.add(:name, I18n.t('reactions.errors.banned')) if (emoji_reaction.account.local? || emoji_reaction.status.local?) && deny_emoji_reactions?(emoji_reaction)
+    emoji_reaction.errors.add(:name, I18n.t('reactions.errors.banned')) if deny_emoji_reactions?(emoji_reaction)
   end
 
   private

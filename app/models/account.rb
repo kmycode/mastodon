@@ -399,6 +399,7 @@ class Account < ApplicationRecord
 
   def allow_emoji_reaction?(account)
     return false if account.nil?
+    return true unless local? || account.local?
 
     show_emoji_reaction?(account)
   end
