@@ -429,17 +429,20 @@ RSpec.describe Account do
     end
 
     context 'when both are remote user' do
-      let(:reactioned) { Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/actor', settings: { emoji_reaction_policy: :following_only }) }
+      let(:reactioned) { Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/actor', settings: { emoji_reaction_policy: policy }) }
       let(:anyone) { Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/actor/anyone') }
       let(:followee) { Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/actor/followee') }
-      let(:emoji_reaction_policy) { :following_only }
 
       it 'allows anyone' do
         expect(reactioned.allow_emoji_reaction?(anyone)).to be true
       end
 
-      it 'allows followee' do
-        expect(reactioned.allow_emoji_reaction?(followee)).to be true
+      context 'with blocking' do
+        let(:policy) { :block }
+
+        it 'allows anyone' do
+          expect(reactioned.allow_emoji_reaction?(anyone)).to be true
+        end
       end
     end
   end
