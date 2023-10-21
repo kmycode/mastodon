@@ -214,7 +214,7 @@ class PostStatusService < BaseService
   end
 
   def mention_to_stranger?
-    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @account && !mentioned_account.following?(@account) } ||
+    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @account.id && !mentioned_account.following?(@account) } ||
       (@in_reply_to && @in_reply_to.account.id != @account.id && !@in_reply_to.account.following?(@account))
   end
 

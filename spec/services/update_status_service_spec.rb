@@ -218,4 +218,103 @@ RSpec.describe UpdateStatusService, type: :service do
     subject.call(status, status.account_id, text: 'Bar')
     expect(ActivityPub::DistributionWorker).to have_received(:perform_async)
   end
+
+  describe 'ng word is set' do
+    let(:account) { Fabricate(:account) }
+    let(:status) { PostStatusService.new.call(account, text: 'ohagi') }
+
+    it 'hit ng words' do
+      text = 'ng word test'
+      Form::AdminSettings.new(ng_words: 'test').save
+
+      expect { subject.call(status, status.account_id, text: text) }.to raise_error(Mastodon::ValidationError)
+    end
+
+    it 'not hit ng words' do
+      text = 'ng word aiueo'
+      Form::AdminSettings.new(ng_words: 'test').save
+
+      status2 = subject.call(status, status.account_id, text: text)
+
+      expect(status2).to be_persisted
+      expect(status2.text).to eq text
+    end
+
+    it 'hit ng words for mention' do
+      Fabricate(:account, username: 'ohagi', domain: nil)
+      text = 'ng word test @ohagi'
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      expect { subject.call(status, status.account_id, text: text) }.to raise_error(Mastodon::ValidationError)
+      expect(status.reload.text).to_not eq text
+      expect(status.mentioned_accounts.pluck(:username)).to_not include 'ohagi'
+    end
+
+    it 'hit ng words for mention but local posts are not checked' do
+      Fabricate(:account, username: 'ohagi', domain: nil)
+      text = 'ng word test @ohagi'
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '0').save
+
+      status2 = subject.call(status, status.account_id, text: text)
+
+      expect(status2).to be_persisted
+      expect(status2.text).to eq text
+    end
+
+    it 'hit ng words for mention to follower' do
+      mentioned = Fabricate(:account, username: 'ohagi', domain: nil)
+      mentioned.follow!(account)
+      text = 'ng word test @ohagi'
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      status2 = subject.call(status, status.account_id, text: text)
+
+      expect(status2).to be_persisted
+      expect(status2.text).to eq text
+    end
+
+    it 'hit ng words for reply' do
+      text = 'ng word test'
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      status = PostStatusService.new.call(account, text: 'hello', thread: Fabricate(:status))
+
+      expect { subject.call(status, status.account_id, text: text) }.to raise_error(Mastodon::ValidationError)
+      expect(status.reload.text).to_not eq text
+    end
+
+    it 'hit ng words for reply to follower' do
+      mentioned = Fabricate(:account, username: 'ohagi', domain: nil)
+      mentioned.follow!(account)
+      text = 'ng word test'
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      status = PostStatusService.new.call(account, text: 'hello', thread: Fabricate(:status, account: mentioned))
+
+      status = subject.call(status, status.account_id, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'using hashtag under limit' do
+      text = '#a #b'
+      Form::AdminSettings.new(post_hash_tags_max: 2).save
+
+      subject.call(status, status.account_id, text: text)
+
+      expect(status.reload.tags.count).to eq 2
+      expect(status.text).to eq text
+    end
+
+    it 'using hashtag over limit' do
+      text = '#a #b #c'
+      Form::AdminSettings.new(post_hash_tags_max: 2).save
+
+      expect { subject.call(status, status.account_id, text: text) }.to raise_error Mastodon::ValidationError
+
+      expect(status.reload.tags.count).to eq 0
+      expect(status.text).to_not eq text
+    end
+  end
 end

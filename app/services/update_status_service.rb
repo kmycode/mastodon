@@ -35,10 +35,13 @@ class UpdateStatusService < BaseService
       update_poll! if @options.key?(:poll)
       update_immediate_attributes!
       create_edit! unless @options[:no_history]
+
+      reset_preview_card!
+      process_mentions_service.call(@status)
+      validate_status_mentions!
     end
 
     queue_poll_notifications!
-    reset_preview_card!
     update_metadata!
     update_references!
     broadcast_updates!
@@ -79,6 +82,15 @@ class UpdateStatusService < BaseService
   def validate_status!
     raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if Admin::NgWord.reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
     raise Mastodon::ValidationError, I18n.t('statuses.too_many_hashtags') if Admin::NgWord.hashtag_reject_with_extractor?(@options[:text])
+  end
+
+  def validate_status_mentions!
+    raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if mention_to_stranger? && Setting.stranger_mention_from_local_ng && Admin::NgWord.stranger_mention_reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
+  end
+
+  def mention_to_stranger?
+    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @status.account.id && !mentioned_account.following?(@status.account) } ||
+      (@status.thread.present? && @status.thread.account.id != @status.account.id && !@status.thread.account.following?(@status.account))
   end
 
   def validate_media!
@@ -167,7 +179,6 @@ class UpdateStatusService < BaseService
 
   def update_metadata!
     ProcessHashtagsService.new.call(@status)
-    process_mentions_service.call(@status)
 
     @status.update(limited_scope: :circle) if process_mentions_service.mentions?
   end
