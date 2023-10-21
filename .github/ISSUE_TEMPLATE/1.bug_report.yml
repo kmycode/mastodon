@@ -1,5 +1,5 @@
 name: バグ報告
-description: kmyblueのバグ報告
+description: kmyblueのバグ報告（情報改竄、秘密情報の取得、システムも破損などが発生するバグは、こちらではなく「Security」タブよりセキュリティインシデントとして報告してください）
 labels: [bug]
 body:
   - type: textarea

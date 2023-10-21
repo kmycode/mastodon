@@ -1,22 +1,25 @@
-# Security Policy
+# セキュリティポリシー
 
-If you believe you've identified a security vulnerability in Mastodon (a bug that allows something to happen that shouldn't be possible), you can either:
+kmyblueのプログラムにおいてセキュリティインシデントを発見した場合、kmyblueに報告してください。
 
-- open a [Github security issue on the Mastodon project](https://github.com/mastodon/mastodon/security/advisories/new)
-- reach us at <security@joinmastodon.org>
+kmyblueにセキュリティインシデントを報告する場合、以下の手順を踏んでください。
 
-You should _not_ report such issues on public GitHub issues or in other public spaces to give us time to publish a fix for the issue without exposing Mastodon's users to increased risk.
+- [こちらのリンクから新規インシデントを起票してください](https://github.com/kmycode/mastodon/security/advisories/new)
+- メール <tt@kmycode.net>、または[@askyq@kmy.blue](https://kmy.blue/@askyq)宛に、**セキュリティインシデントを起票したことだけ**を連絡してください。セキュリティインシデントの内容は、絶対に連絡に含めないでください（リンクくらいなら含めていいかな）
 
-## Scope
+他のkmyblueフォークの利用者の安全のために少しでも時間稼ぎをしなければいけないので、この問題をIssueを含む公開された場所で記述しないでください。
 
-A "vulnerability in Mastodon" is a vulnerability in the code distributed through our main source code repository on GitHub. Vulnerabilities that are specific to a given installation (e.g. misconfiguration) should be reported to the owner of that installation and not us.
+## 範囲
 
-## Supported Versions
+こちらが対応できる範囲は、当リポジトリで公開しているソースコードのみとなります。当リポジトリの依存パッケージ内に問題がある場合は、そちらに報告してください。
 
-| Version | Supported        |
-| ------- | ---------------- |
-| 4.2.x   | Yes              |
-| 4.1.x   | Yes              |
-| 4.0.x   | Until 2023-10-31 |
-| 3.5.x   | Until 2023-12-31 |
-| < 3.5   | No               |
+もしあなたに専門知識があり、それが本家Mastodon由来の問題であると信じるに足る根拠がある場合、kmyblueではなくMastodonのほうに報告してください。kmyblueに報告されても、Mastodonより先に修正してしまうことでMastodonにセキュリティリスクを発生させる可能性がありますし、本家Mastodonの対応を待つにしてもkmyblueのほうに来てしまったセキュリティインシデントの対応に困ります（本家がなかなか対応してくれない可能性を考えると削除しづらい）。
+
+## サポートするバージョン
+
+下記以外のバージョンは、セキュリティインシデントを起票されても対応しません。
+
+- 最新メジャーバージョン、かつ、最新マイナーバージョン
+  - 最新メジャーバージョンのサポートは、次のメジャーバージョンが出た時点で終了します
+- LTS
+  - LTSのサポートは、次のLTSが出た時点で終了します（ただし移行期間があってもいいと思ってるので、１〜３ヶ月以内ならセキュリティインシデントの程度に応じて対応する可能性があります）
