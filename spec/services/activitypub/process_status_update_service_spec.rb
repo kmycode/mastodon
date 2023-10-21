@@ -9,19 +9,24 @@ end
 RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
   subject { described_class.new }
 
-  let!(:status) { Fabricate(:status, text: 'Hello world', account: Fabricate(:account, domain: 'example.com')) }
+  let(:thread) { nil }
+  let!(:status) { Fabricate(:status, text: 'Hello world', account: Fabricate(:account, domain: 'example.com'), thread: thread) }
+  let(:json_tags) do
+    [
+      { type: 'Hashtag', name: 'hoge' },
+      { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
+    ]
+  end
+  let(:content) { 'Hello universe' }
   let(:payload) do
     {
       '@context': 'https://www.w3.org/ns/activitystreams',
       id: 'foo',
       type: 'Note',
       summary: 'Show more',
-      content: 'Hello universe',
+      content: content,
       updated: '2021-09-08T22:39:25Z',
-      tag: [
-        { type: 'Hashtag', name: 'hoge' },
-        { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
-      ],
+      tag: json_tags,
     }
   end
   let(:json) { Oj.load(Oj.dump(payload)) }
@@ -461,6 +466,162 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
     it 'sets edited timestamp' do
       subject.call(status, json, json)
       expect(status.reload.edited_at.to_s).to eq '2021-09-08 22:39:25 UTC'
+    end
+
+    describe 'ng word is set' do
+      let(:json_tags) { [] }
+
+      context 'when hit ng words' do
+        let(:content) { 'ng word test' }
+
+        it 'update status' do
+          Form::AdminSettings.new(ng_words: 'test').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to_not eq content
+        end
+      end
+
+      context 'when not hit ng words' do
+        let(:content) { 'ng word aiueo' }
+
+        it 'update status' do
+          Form::AdminSettings.new(ng_words: 'test').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to eq content
+        end
+      end
+
+      context 'when hit ng words for mention' do
+        let(:json_tags) do
+          [
+            { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
+          ]
+        end
+        let(:content) { 'ng word test' }
+
+        it 'update status' do
+          Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to_not eq content
+          expect(status.mentioned_accounts.pluck(:id)).to_not include alice.id
+        end
+      end
+
+      context 'when hit ng words for mention but local posts are not checked' do
+        let(:json_tags) do
+          [
+            { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
+          ]
+        end
+        let(:content) { 'ng word test' }
+
+        it 'update status' do
+          Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '0').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to_not eq content
+          expect(status.mentioned_accounts.pluck(:id)).to_not include alice.id
+        end
+      end
+
+      context 'when hit ng words for mention to follower' do
+        let(:json_tags) do
+          [
+            { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
+          ]
+        end
+        let(:content) { 'ng word test' }
+
+        before do
+          alice.follow!(status.account)
+        end
+
+        it 'update status' do
+          Form::AdminSettings.new(ng_words_for_stranger_mention: 'test').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to eq content
+          expect(status.mentioned_accounts.pluck(:id)).to include alice.id
+        end
+      end
+
+      context 'when hit ng words for reply' do
+        let(:json_tags) do
+          [
+            { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
+          ]
+        end
+        let(:content) { 'ng word test' }
+        let(:thread) { Fabricate(:status, account: alice) }
+
+        it 'update status' do
+          Form::AdminSettings.new(ng_words_for_stranger_mention: 'test').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to_not eq content
+          expect(status.mentioned_accounts.pluck(:id)).to_not include alice.id
+        end
+      end
+
+      context 'when hit ng words for reply to follower' do
+        let(:json_tags) do
+          [
+            { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
+          ]
+        end
+        let(:content) { 'ng word test' }
+        let(:thread) { Fabricate(:status, account: alice) }
+
+        before do
+          alice.follow!(status.account)
+        end
+
+        it 'update status' do
+          Form::AdminSettings.new(ng_words_for_stranger_mention: 'test').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to eq content
+          expect(status.mentioned_accounts.pluck(:id)).to include alice.id
+        end
+      end
+
+      context 'when using hashtag under limit' do
+        let(:json_tags) do
+          [
+            { type: 'Hashtag', name: 'a' },
+            { type: 'Hashtag', name: 'b' },
+          ]
+        end
+        let(:content) { 'ohagi is good' }
+
+        it 'update status' do
+          Form::AdminSettings.new(post_hash_tags_max: 2).save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to eq content
+        end
+      end
+
+      context 'when using hashtag over limit' do
+        let(:json_tags) do
+          [
+            { type: 'Hashtag', name: 'a' },
+            { type: 'Hashtag', name: 'b' },
+            { type: 'Hashtag', name: 'c' },
+          ]
+        end
+        let(:content) { 'ohagi is good' }
+
+        it 'update status' do
+          Form::AdminSettings.new(post_hash_tags_max: 2).save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to_not eq content
+        end
+      end
     end
   end
 end

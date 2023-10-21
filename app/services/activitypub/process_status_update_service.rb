@@ -5,6 +5,8 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   include Redisable
   include Lockable
 
+  class AbortError < ::StandardError; end
+
   def call(status, activity_json, object_json, request_id: nil)
     raise ArgumentError, 'Status has unsaved changes' if status.changed?
 
@@ -31,6 +33,9 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
     end
 
     @status
+  rescue AbortError
+    @status.reload
+    @status
   end
 
   private
@@ -46,6 +51,7 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
         update_poll!
         update_immediate_attributes!
         update_metadata!
+        validate_status_mentions!
         create_edits!
       end
 
@@ -158,6 +164,15 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
 
   def valid_status?
     !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}") && !Admin::NgWord.hashtag_reject?(@raw_tags.size)
+  end
+
+  def validate_status_mentions!
+    raise AbortError if mention_to_stranger? && Admin::NgWord.stranger_mention_reject?("#{@status.spoiler_text}\n#{@status.text}")
+  end
+
+  def mention_to_stranger?
+    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @status.account.id && !mentioned_account.following?(@status.account) } ||
+      (@status.thread.present? && @status.thread.account.id != @status.account.id && !@status.thread.account.following?(@status.account))
   end
 
   def update_immediate_attributes!

@@ -510,6 +510,26 @@ RSpec.describe PostStatusService, type: :service do
       expect(status).to be_persisted
       expect(status.text).to eq text
     end
+
+    it 'using hashtag under limit' do
+      account = Fabricate(:account)
+      text = '#a #b'
+      Form::AdminSettings.new(post_hash_tags_max: 2).save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.tags.count).to eq 2
+      expect(status.text).to eq text
+    end
+
+    it 'using hashtag over limit' do
+      account = Fabricate(:account)
+      text = '#a #b #c'
+      Form::AdminSettings.new(post_hash_tags_max: 2).save
+
+      expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
+    end
   end
 
   def create_status_with_options(**options)
