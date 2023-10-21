@@ -402,12 +402,17 @@ ja:
       created_msg: ドメインブロック処理を完了しました
       destroyed_msg: ドメインブロックを外しました
       detect_invalid_subscription: 不正な購読を行うサーバーとしてマークする
-      detect_invalid_subscription_hint: Misskey、Calckeyなどは購読機能で未フォローユーザーの未収載投稿を拾います。これをマークしたサーバーは、ユーザーが任意で配送を拒否できます。停止とは無関係です
+      detect_invalid_subscription_hint: 未フォローユーザーの未収載投稿が自由に購読・検索できるサーバーとしてマークします。Misskeyサーバーはこのチェックに関係なく、自動で制限が有効とみなされます。各ユーザーはそれぞれのプライバシー追加設定でMisskeyサーバーへの配送制限を有効にすることで、これらのサーバーへローカル公開・未収載投稿を鍵付きで配信できるようになります。停止とは無関係です
       domain: ドメイン
       edit: ドメインブロックを編集
       existing_domain_block: あなたは既に%{name}さんに厳しい制限を課しています。
       existing_domain_block_html: 既に%{name}に対して、より厳しい制限を課しています。先に<a href="%{unblock_url}">その制限を解除</a>する必要があります。
       export: エクスポート
+      headers:
+        disagreement: 政治的な意見の相違からの敏感な投稿の保護
+        harassment: 嫌がらせまたはスパム
+        invalid_privacy: プライバシーが守られていない
+        mastodon_default: 本家Mastodonの設定項目
       hidden: 非公開にする
       hidden_hint: 公開することで当サーバーの安全が脅かされる場合、このドメインブロックを非公開にすることができます。
       hidden_anonymous: 未ログインユーザーに非公開にする

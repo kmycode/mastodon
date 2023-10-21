@@ -11,47 +11,12 @@
     .fields-row__column.fields-row__column-6.fields-group
       = f.input :severity, collection: DomainBlock.severities.keys, wrapper: :with_label, include_blank: false, label_method: ->(type) { t(".severity.#{type}") }, hint: t('.severity.desc_html')
 
+  = render 'domain_block_list', f: f
+
+  %h4= I18n.t('admin.domain_blocks.headers.mastodon_default')
+
   .fields-group
     = f.input :reject_media, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_media'), hint: I18n.t('admin.domain_blocks.reject_media_hint')
-
-  .fields-group
-    = f.input :reject_favourite, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_favourite'), hint: I18n.t('admin.domain_blocks.reject_favourite_hint')
-
-  .fields-group
-    = f.input :reject_reply, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_reply'), hint: I18n.t('admin.domain_blocks.reject_reply_hint')
-
-  .fields-group
-    = f.input :reject_reply_exclude_followers, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_reply_exclude_followers'), hint: I18n.t('admin.domain_blocks.reject_reply_exclude_followers_hint')
-
-  .fields-group
-    = f.input :reject_send_not_public_searchability, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_send_not_public_searchability'), hint: I18n.t('admin.domain_blocks.reject_send_not_public_searchability_hint')
-
-  .fields-group
-    = f.input :reject_send_dissubscribable, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_send_dissubscribable'), hint: I18n.t('admin.domain_blocks.reject_send_dissubscribable_hint')
-
-  .fields-group
-    = f.input :reject_send_public_unlisted, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_send_public_unlisted'), hint: I18n.t('admin.domain_blocks.reject_send_public_unlisted_hint')
-
-  .fields-group
-    = f.input :reject_send_media, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_send_media'), hint: I18n.t('admin.domain_blocks.reject_send_media_hint')
-
-  .fields-group
-    = f.input :reject_send_sensitive, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_send_sensitive'), hint: I18n.t('admin.domain_blocks.reject_send_sensitive_hint')
-
-  .fields-group
-    = f.input :reject_hashtag, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_hashtag'), hint: I18n.t('admin.domain_blocks.reject_hashtag_hint')
-
-  .fields-group
-    = f.input :reject_straight_follow, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_straight_follow'), hint: I18n.t('admin.domain_blocks.reject_straight_follow_hint')
-
-  .fields-group
-    = f.input :reject_new_follow, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_new_follow'), hint: I18n.t('admin.domain_blocks.reject_new_follow_hint')
-
-  .fields-group
-    = f.input :reject_friend, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_friend'), hint: I18n.t('admin.domain_blocks.reject_friend_hint')
-
-  .fields-group
-    = f.input :detect_invalid_subscription, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.detect_invalid_subscription'), hint: I18n.t('admin.domain_blocks.detect_invalid_subscription_hint')
 
   .fields-group
     = f.input :reject_reports, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_reports'), hint: I18n.t('admin.domain_blocks.reject_reports_hint')
@@ -69,7 +34,7 @@
     = f.input :hidden, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.hidden'), hint: I18n.t('admin.domain_blocks.hidden_hint')
 
   .fields-group
-    = f.input :hidden_anonymous, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.hidden_anonymous'), hint: I18n.t('admin.domain_blocks.hidden_anonymous_hint')
+    = f.input :hidden_anonymous, kmyblue: true, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.hidden_anonymous'), hint: I18n.t('admin.domain_blocks.hidden_anonymous_hint')
 
   .actions
     = f.button :button, t('.create'), type: :submit

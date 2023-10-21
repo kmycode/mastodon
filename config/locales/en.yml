@@ -415,6 +415,11 @@ en:
       existing_domain_block: You have already imposed stricter limits on %{name}.
       existing_domain_block_html: You have already imposed stricter limits on %{name}, you need to <a href="%{unblock_url}">unblock it</a> first.
       export: Export
+      headers:
+        disagreement: Protect sensitive posts from political disagreement
+        harassment: Harassment or spam
+        invalid_privacy: Privacy is not protected
+        mastodon_default: Original Mastodon supports
       import: Import
       new:
         create: Create block
