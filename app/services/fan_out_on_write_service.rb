@@ -89,7 +89,7 @@ class FanOutOnWriteService < BaseService
   end
 
   def notify_about_update!
-    @status.reblogged_by_accounts.merge(Account.local).select(:id).reorder(nil).find_in_batches do |accounts|
+    @status.reblogged_by_accounts.or(@status.quoted_by_accounts).merge(Account.local).select(:id).reorder(nil).find_in_batches do |accounts|
       LocalNotificationWorker.push_bulk(accounts) do |account|
         [account.id, @status.id, 'Status', 'update']
       end

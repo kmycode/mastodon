@@ -6,6 +6,7 @@ RSpec.describe FanOutOnWriteService, type: :service do
   subject { described_class.new }
 
   let(:last_active_at) { Time.now.utc }
+  let(:visibility) { 'public' }
   let(:searchability) { 'public' }
   let(:dissubscribable) { false }
   let(:status) { Fabricate(:status, account: alice, visibility: visibility, searchability: searchability, text: 'Hello @bob #hoge') }
@@ -20,6 +21,8 @@ RSpec.describe FanOutOnWriteService, type: :service do
   let!(:antenna)       { nil }
   let!(:empty_antenna) { nil }
 
+  let(:custom_before) { false }
+
   before do
     bob.follow!(alice)
     tom.follow!(alice)
@@ -30,7 +33,7 @@ RSpec.describe FanOutOnWriteService, type: :service do
 
     allow(redis).to receive(:publish)
 
-    subject.call(status)
+    subject.call(status) unless custom_before
   end
 
   def home_feed_of(account)
@@ -467,6 +470,37 @@ RSpec.describe FanOutOnWriteService, type: :service do
         expect(antenna_feed_of(antenna)).to_not include status.id
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
+    end
+  end
+
+  context 'when updated status is already boosted or quoted' do
+    let(:custom_before) { true }
+
+    before do
+      ReblogService.new.call(bob, status)
+      PostStatusService.new.call(tom, text: "Hello QT #{ActivityPub::TagManager.instance.uri_for(status)}")
+
+      subject.call(status, update: true)
+    end
+
+    it 'notified to boosted account' do
+      notification = Notification.find_by(account: bob, type: 'update')
+
+      expect(notification).to_not be_nil
+      expect(notification.activity_id).to eq status.id
+    end
+
+    it 'notified to quoted account' do
+      notification = Notification.find_by(account: tom, type: 'update')
+
+      expect(notification).to_not be_nil
+      expect(notification.activity_id).to eq status.id
+    end
+
+    it 'notified not to non-boosted account' do
+      notification = Notification.find_by(account: ohagi, type: 'update')
+
+      expect(notification).to be_nil
     end
   end
 end
