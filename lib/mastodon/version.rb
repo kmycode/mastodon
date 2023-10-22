@@ -5,11 +5,11 @@ module Mastodon
     module_function
 
     def kmyblue_major
-      7
+      8
     end
 
     def kmyblue_minor
-      2
+      0
     end
 
     def kmyblue_flag
