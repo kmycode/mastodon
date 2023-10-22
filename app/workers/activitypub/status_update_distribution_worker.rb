@@ -15,39 +15,27 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
 
   protected
 
-  def activity
+  def build_activity(for_misskey: false, for_friend: false)
     ActivityPub::ActivityPresenter.new(
       id: [ActivityPub::TagManager.instance.uri_for(@status), '#updates/', @status.edited_at.to_i].join,
       type: 'Update',
       actor: ActivityPub::TagManager.instance.uri_for(@status.account),
       published: @status.edited_at,
-      to: ActivityPub::TagManager.instance.to(@status),
-      cc: ActivityPub::TagManager.instance.cc(@status),
+      to: for_friend ? ActivityPub::TagManager.instance.to_for_friend(@status) : ActivityPub::TagManager.instance.to(@status),
+      cc: for_misskey ? ActivityPub::TagManager.instance.cc_for_misskey : ActivityPub::TagManager.instance.cc(@status),
       virtual_object: @status
     )
+  end
+
+  def activity
+    build_activity
   end
 
   def activity_for_misskey
-    ActivityPub::ActivityPresenter.new(
-      id: [ActivityPub::TagManager.instance.uri_for(@status), '#updates/', @status.edited_at.to_i].join,
-      type: 'Update',
-      actor: ActivityPub::TagManager.instance.uri_for(@status.account),
-      published: @status.edited_at,
-      to: ActivityPub::TagManager.instance.to(@status),
-      cc: ActivityPub::TagManager.instance.cc_for_misskey(@status),
-      virtual_object: @status
-    )
+    build_activity(for_misskey: true)
   end
 
   def activity_for_friend
-    ActivityPub::ActivityPresenter.new(
-      id: [ActivityPub::TagManager.instance.uri_for(@status), '#updates/', @status.edited_at.to_i].join,
-      type: 'Update',
-      actor: ActivityPub::TagManager.instance.uri_for(@status.account),
-      published: @status.edited_at,
-      to: ActivityPub::TagManager.instance.to_for_friend(@status),
-      cc: ActivityPub::TagManager.instance.cc(@status),
-      virtual_object: @status
-    )
+    build_activity(for_friend: true)
   end
 end
