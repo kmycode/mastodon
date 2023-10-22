@@ -37,6 +37,10 @@ module KmyblueCapabilitiesHelper
       status_reference
       quote
       kmyblue_quote
+      kmyblue_subscribable
+      kmyblue_translation
+      kmyblue_link_preview
+      kmyblue_emoji_reaction_policy
       searchability
       kmyblue_searchability
       visibility_mutual
@@ -45,6 +49,8 @@ module KmyblueCapabilitiesHelper
       kmyblue_bookmark_category
       kmyblue_searchability_limited
       kmyblue_circle_history
+      kmyblue_emoji_license
+      emoji_keywords
     )
 
     capabilities << :full_text_search if Chewy.enabled?
