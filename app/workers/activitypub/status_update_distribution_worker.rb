@@ -26,4 +26,28 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
       virtual_object: @status
     )
   end
+
+  def activity_for_misskey
+    ActivityPub::ActivityPresenter.new(
+      id: [ActivityPub::TagManager.instance.uri_for(@status), '#updates/', @status.edited_at.to_i].join,
+      type: 'Update',
+      actor: ActivityPub::TagManager.instance.uri_for(@status.account),
+      published: @status.edited_at,
+      to: ActivityPub::TagManager.instance.to(@status),
+      cc: ActivityPub::TagManager.instance.cc_for_misskey(@status),
+      virtual_object: @status
+    )
+  end
+
+  def activity_for_friend
+    ActivityPub::ActivityPresenter.new(
+      id: [ActivityPub::TagManager.instance.uri_for(@status), '#updates/', @status.edited_at.to_i].join,
+      type: 'Update',
+      actor: ActivityPub::TagManager.instance.uri_for(@status.account),
+      published: @status.edited_at,
+      to: ActivityPub::TagManager.instance.to_for_friend(@status),
+      cc: ActivityPub::TagManager.instance.cc(@status),
+      virtual_object: @status
+    )
+  end
 end
