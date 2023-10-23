@@ -182,6 +182,7 @@ RSpec.describe ActivityPub::Activity::Like do
             url: 'http://example.com/emoji.png',
           },
           name: 'tinking',
+          license: 'Ohagi but everyone',
         }
       end
 
@@ -197,6 +198,11 @@ RSpec.describe ActivityPub::Activity::Like do
         expect(subject.first.custom_emoji.shortcode).to eq 'tinking'
         expect(subject.first.custom_emoji.domain).to be_nil
         expect(sender.favourited?(status)).to be false
+      end
+
+      it 'not change license' do
+        expect(subject.first.custom_emoji.reload.license).to eq 'Everyone but Ohagi'
+        expect(subject.first.custom_emoji.reload.uri).to be_nil
       end
     end
 
