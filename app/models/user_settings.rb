@@ -38,7 +38,8 @@ class UserSettings
   setting :emoji_reaction_streaming_notify_impl2, default: false
   setting :emoji_reaction_policy, default: :allow, in: %w(allow outside_only followers_only following_only mutuals_only block)
   setting :unsafe_limited_distribution, default: false
-  setting :dtl_force_with_tag, default: :none, in: %w(full searchability none)
+  setting :dtl_force_visibility, default: :unchange, in: %w(unchange public public_unlisted unlisted)
+  setting :dtl_force_searchability, default: :unchange, in: %w(unchange public public_unlisted)
   setting :dtl_force_subscribable, default: false
   setting :lock_follow_from_bot, default: false
   setting :allow_quote, default: true

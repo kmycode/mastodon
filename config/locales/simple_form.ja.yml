@@ -74,7 +74,8 @@ ja:
         setting_display_media_hide_all: メディアを常に隠す
         setting_display_media_show_all: メディアを常に表示する
         setting_dtl_force_subscribable: 購読拒否設定に関係なく、ディープタイムラインに向けた投稿はアンテナに掲載されます。ディープタイムラインをアンテナ経由で閲覧している人にあなたの発言が届きます
-        setting_dtl_force_with_tag: "ハッシュタグ #%{tag} をつけて投稿するとき、公開範囲と検索許可を強制的に置き換えるかを設定します"
+        setting_dtl_force_searchability: "ハッシュタグ #%{tag} をつけて投稿するとき、検索許可を強制的に置き換えるかを設定します"
+        setting_dtl_force_visibility: "ハッシュタグ #%{tag} をつけて投稿するとき、公開範囲を強制的に置き換えるかを設定します"
         setting_emoji_reaction_policy: この設定をしても他のサーバーのユーザーはその投稿に自由にスタンプをつけ、同じサーバーの中で共有できます。単にあなた自身の画面からスタンプを除去したいだけなら、外観設定からスタンプを無効にすることができます
         setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、スタンプ機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
         setting_enable_emoji_reaction: この機能を無効にしても、他の人はあなたの投稿にスタンプをつけられます
@@ -262,7 +263,8 @@ ja:
         setting_display_media_hide_all: 非表示
         setting_display_media_show_all: 表示
         setting_dtl_force_subscribable: ディープタイムライン用のハッシュタグを購読するアンテナに限り、購読拒否設定を無視する
-        setting_dtl_force_with_tag: DTL参加時の投稿設定
+        setting_dtl_force_searchability: DTL投稿の検索許可
+        setting_dtl_force_visibility: DTL投稿の公開範囲
         setting_dtl_menu: Webクライアントのメニューにディープタイムラインを追加する
         setting_enable_login_privacy: 公開範囲「ログインユーザーのみ」をWeb UIで選択可能にする
         setting_emoji_reaction_policy: スタンプ受け入れと表示設定
@@ -315,10 +317,15 @@ ja:
         username: ユーザー名
         username_or_email: ユーザー名またはメールアドレス
         whole_word: 単語全体にマッチ
-      dtl_force_with_tag:
-        full: 公開範囲「未収載」検索許可「誰でも」にする
-        none: 公開範囲も検索許可も変更しない
-        searchability: 検索許可を「誰でも」にする
+      dtl_force_searchability:
+        public: 誰でも
+        public_unlisted: ローカルとフォロワー
+        unchange: 変更しない
+      dtl_force_visibility:
+        public: 公開
+        public_unlisted: ローカル公開
+        unchange: 変更しない
+        unlisted: 非収載
       email_domain_block:
         with_dns_records: ドメインのMXレコードとIPアドレスを含む
       emoji_reactions:

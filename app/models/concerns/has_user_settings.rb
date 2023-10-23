@@ -143,8 +143,12 @@ module HasUserSettings
     settings['link_preview']
   end
 
-  def setting_dtl_force_with_tag
-    settings['dtl_force_with_tag']&.to_sym || :none
+  def setting_dtl_force_visibility
+    settings['dtl_force_visibility']&.to_sym || :unchange
+  end
+
+  def setting_dtl_force_searchability
+    settings['dtl_force_searchability']&.to_sym || :unchange
   end
 
   def setting_dtl_force_subscribable

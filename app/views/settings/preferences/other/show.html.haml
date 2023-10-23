@@ -38,7 +38,10 @@
         = ff.input :'web.enable_dtl_menu', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_dtl_menu')
 
       .fields-group
-        = ff.input :dtl_force_with_tag, kmyblue: true, collection: ['full', 'searchability', 'none'], label_method: lambda { |item| safe_join([t("simple_form.labels.dtl_force_with_tag.#{item}")]) }, as: :radio_buttons, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', wrapper: :with_floating_label, label: I18n.t('simple_form.labels.defaults.setting_dtl_force_with_tag'), hint: I18n.t('simple_form.hints.defaults.setting_dtl_force_with_tag', tag: @dtl_tag)
+        = ff.input :dtl_force_visibility, kmyblue: true, collection: ['unchange', 'public', 'public_unlisted', 'unlisted'], label_method: lambda { |item| safe_join([t("simple_form.labels.dtl_force_visibility.#{item}")]) }, as: :radio_buttons, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', wrapper: :with_floating_label, label: I18n.t('simple_form.labels.defaults.setting_dtl_force_visibility'), hint: I18n.t('simple_form.hints.defaults.setting_dtl_force_visibility', tag: @dtl_tag)
+
+      .fields-group
+        = ff.input :dtl_force_searchability, kmyblue: true, collection: ['unchange', 'public', 'public_unlisted'], label_method: lambda { |item| safe_join([t("simple_form.labels.dtl_force_searchability.#{item}")]) }, as: :radio_buttons, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', wrapper: :with_floating_label, label: I18n.t('simple_form.labels.defaults.setting_dtl_force_searchability'), hint: I18n.t('simple_form.hints.defaults.setting_dtl_force_searchability', tag: @dtl_tag)
 
       .fields-group
         = ff.input :dtl_force_subscribable, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_dtl_force_subscribable'), hint: I18n.t('simple_form.hints.defaults.setting_dtl_force_subscribable')
