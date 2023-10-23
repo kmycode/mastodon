@@ -24,6 +24,9 @@
     %h4= t('admin.custom_emojis.edit.label')
 
     .fields-group
+      = f.select :category_id, options_from_collection_for_select(CustomEmojiCategory.all, 'id', 'name'), prompt: t('admin.custom_emojis.assign_category'), class: 'select optional', 'aria-label': t('admin.custom_emojis.assign_category')
+
+    .fields-group
       = f.input :visible_in_picker, as: :boolean, wrapper: :with_label, label: t('admin.custom_emojis.visible_in_picker')
 
     .fields-group

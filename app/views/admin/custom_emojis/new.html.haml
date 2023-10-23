@@ -11,6 +11,9 @@
     = f.input :image, wrapper: :with_label, input_html: { accept: CustomEmoji::IMAGE_MIME_TYPES.join(' ') }, hint: t('admin.custom_emojis.image_hint', size: number_to_human_size(CustomEmoji::LIMIT))
 
   .fields-group
+    = f.select :category_id, options_from_collection_for_select(CustomEmojiCategory.all, 'id', 'name'), prompt: t('admin.custom_emojis.assign_category'), class: 'select optional', 'aria-label': t('admin.custom_emojis.assign_category')
+
+  .fields-group
     = f.input :visible_in_picker, as: :boolean, wrapper: :with_label, label: t('admin.custom_emojis.visible_in_picker')
 
   .fields-group

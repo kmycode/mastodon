@@ -67,11 +67,11 @@ module Admin
     end
 
     def resource_params
-      params.require(:custom_emoji).permit(:shortcode, :image, :visible_in_picker, :aliases_raw, :license)
+      params.require(:custom_emoji).permit(:shortcode, :image, :category_id, :visible_in_picker, :aliases_raw, :license)
     end
 
     def update_params
-      params.require(:custom_emoji).permit(:visible_in_picker, :aliases_raw, :license)
+      params.require(:custom_emoji).permit(:category_id, :visible_in_picker, :aliases_raw, :license)
     end
 
     def filtered_custom_emojis
