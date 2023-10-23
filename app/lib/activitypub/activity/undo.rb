@@ -121,7 +121,12 @@ class ActivityPub::Activity::Undo < ActivityPub::Activity
     if shortcode.present?
       emoji_tag = @object['tag'].is_a?(Array) ? @object['tag']&.first : @object['tag']
 
-      emoji = CustomEmoji.find_by(shortcode: shortcode, domain: @account.domain) if emoji_tag.present? && emoji_tag['id'].present?
+      emoji = nil
+      if emoji_tag.present? && emoji_tag['id'].present?
+        domain = URI.split(emoji_tag['id'])[2]
+        domain = nil if domain == Rails.configuration.x.local_domain || domain == Rails.configuration.x.web_domain
+        emoji = CustomEmoji.find_by(shortcode: shortcode, domain: domain) if emoji_tag.present? && emoji_tag['id'].present?
+      end
 
       emoji_reaction = @original_status.emoji_reactions.where(account: @account, name: shortcode, custom_emoji: emoji).first
 
