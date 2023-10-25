@@ -5,7 +5,7 @@ class ActivityPub::EmojiSerializer < ActivityPub::Serializer
 
   context_extensions :emoji, :license, :keywords
 
-  attributes :id, :type, :domain, :name, :keywords, :is_sensitive, :updated
+  attributes :id, :type, :name, :keywords, :is_sensitive, :updated
 
   attribute :license, if: -> { object.license.present? }
 
@@ -17,10 +17,6 @@ class ActivityPub::EmojiSerializer < ActivityPub::Serializer
 
   def type
     'Emoji'
-  end
-
-  def domain
-    object.domain.presence || Rails.configuration.x.local_domain
   end
 
   def keywords
