@@ -5,6 +5,8 @@ require 'rails_helper'
 RSpec.describe DeliveryAntennaService, type: :service do
   subject { described_class.new }
 
+  let(:ltl_enabled) { true }
+
   let(:last_active_at) { Time.now.utc }
   let(:last_active_at_tom) { Time.now.utc }
   let(:visibility) { :public }
@@ -35,6 +37,8 @@ RSpec.describe DeliveryAntennaService, type: :service do
 
     bob.follow!(alice)
     alice.block!(ohagi)
+
+    Form::AdminSettings.new(enable_local_timeline: '0').save unless ltl_enabled
 
     allow(redis).to receive(:publish)
 
@@ -121,6 +125,29 @@ RSpec.describe DeliveryAntennaService, type: :service do
 
     it 'not detecting antenna' do
       expect(antenna_feed_of(empty_antenna)).to_not include status.id
+    end
+  end
+
+  context 'with local domain' do
+    let(:domain)         { nil }
+    let!(:antenna)       { antenna_with_domain(bob, 'cb6e6126.ngrok.io') }
+    let!(:empty_antenna) { antenna_with_domain(tom, 'ohagi.example.com') }
+
+    it 'detecting antenna' do
+      expect(antenna_feed_of(antenna)).to include status.id
+    end
+
+    it 'not detecting antenna' do
+      expect(antenna_feed_of(empty_antenna)).to_not include status.id
+    end
+
+    context 'when local timeline is disabled' do
+      let(:ltl_enabled) { false }
+
+      it 'not detecting antenna' do
+        expect(antenna_feed_of(antenna)).to_not include status.id
+        expect(antenna_feed_of(empty_antenna)).to_not include status.id
+      end
     end
   end
 

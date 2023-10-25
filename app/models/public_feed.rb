@@ -19,6 +19,8 @@ class PublicFeed
   # @param [Integer] min_id
   # @return [Array<Status>]
   def get(limit, max_id = nil, since_id = nil, min_id = nil)
+    return [] if local_only? && !Setting.enable_local_timeline
+
     scope = public_scope
 
     scope.merge!(without_replies_scope) unless with_replies?

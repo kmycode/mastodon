@@ -50,12 +50,12 @@ class FanOutOnWriteService < BaseService
       deliver_to_all_followers!
       deliver_to_lists!
       deliver_to_antennas! if !@account.dissubscribable || (@status.dtl? && DTL_ENABLED && @account.user&.setting_dtl_force_subscribable && @status.tags.exists?(name: DTL_TAG))
-      deliver_to_stl_antennas!
-      deliver_to_ltl_antennas!
+      deliver_to_stl_antennas! if Setting.enable_local_timeline
+      deliver_to_ltl_antennas! if Setting.enable_local_timeline
     when :limited
       deliver_to_lists_mentioned_accounts_only!
       deliver_to_antennas! unless @account.dissubscribable
-      deliver_to_stl_antennas!
+      deliver_to_stl_antennas! if Setting.enable_local_timeline
       deliver_to_mentioned_followers!
     else
       deliver_to_mentioned_followers!
@@ -152,7 +152,7 @@ class FanOutOnWriteService < BaseService
   def broadcast_to_hashtag_streams!
     @status.tags.map(&:name).each do |hashtag|
       redis.publish("timeline:hashtag:#{hashtag.mb_chars.downcase}", anonymous_payload)
-      redis.publish("timeline:hashtag:#{hashtag.mb_chars.downcase}:local", anonymous_payload) if @status.local?
+      redis.publish("timeline:hashtag:#{hashtag.mb_chars.downcase}:local", anonymous_payload) if @status.local? && Setting.enable_local_timeline
     end
   end
 
@@ -160,11 +160,13 @@ class FanOutOnWriteService < BaseService
     return if @status.reply? && @status.in_reply_to_account_id != @account.id
 
     redis.publish('timeline:public', anonymous_payload)
-    redis.publish(@status.local? ? 'timeline:public:local' : 'timeline:public:remote', anonymous_payload)
+    redis.publish('timeline:public:remote', anonymous_payload) unless @status.local?
+    redis.publish('timeline:public:local', anonymous_payload) if @status.local? && Setting.enable_local_timeline
 
     if @status.with_media?
       redis.publish('timeline:public:media', anonymous_payload)
-      redis.publish(@status.local? ? 'timeline:public:local:media' : 'timeline:public:remote:media', anonymous_payload)
+      redis.publish('timeline:public:remote:media', anonymous_payload) unless @status.local?
+      redis.publish('timeline:public:local:media', anonymous_payload) if @status.local? && Setting.enable_local_timeline
     end
   end
 

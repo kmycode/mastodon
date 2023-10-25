@@ -51,6 +51,7 @@ class Form::AdminSettings
     check_lts_version_only
     enable_public_unlisted_visibility
     unlocked_friend
+    enable_local_timeline
   ).freeze
 
   INTEGER_KEYS = %i(
@@ -81,6 +82,7 @@ class Form::AdminSettings
     enable_public_unlisted_visibility
     unlocked_friend
     stranger_mention_from_local_ng
+    enable_local_timeline
   ).freeze
 
   UPLOAD_KEYS = %i(

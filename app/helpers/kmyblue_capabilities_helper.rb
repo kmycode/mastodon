@@ -27,6 +27,7 @@ module KmyblueCapabilitiesHelper
       capabilities << :enable_wide_emoji_reaction
     end
     capabilities << :kmyblue_visibility_public_unlisted if Setting.enable_public_unlisted_visibility
+    capabilities << :timeline_no_local unless Setting.enable_local_timeline
 
     capabilities
   end
@@ -58,6 +59,7 @@ module KmyblueCapabilitiesHelper
       capabilities << :emoji_reaction
       capabilities << :enable_wide_emoji_reaction
     end
+    capabilities << :timeline_no_local unless Setting.enable_local_timeline
 
     capabilities
   end

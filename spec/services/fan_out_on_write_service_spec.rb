@@ -5,6 +5,8 @@ require 'rails_helper'
 RSpec.describe FanOutOnWriteService, type: :service do
   subject { described_class.new }
 
+  let(:ltl_enabled) { true }
+
   let(:last_active_at) { Time.now.utc }
   let(:visibility) { 'public' }
   let(:searchability) { 'public' }
@@ -27,6 +29,8 @@ RSpec.describe FanOutOnWriteService, type: :service do
     bob.follow!(alice)
     tom.follow!(alice)
     ohagi.follow!(bob)
+
+    Form::AdminSettings.new(enable_local_timeline: '0').save unless ltl_enabled
 
     ProcessMentionsService.new.call(status)
     ProcessHashtagsService.new.call(status)
@@ -86,6 +90,20 @@ RSpec.describe FanOutOnWriteService, type: :service do
       expect(redis).to have_received(:publish).with('timeline:public:local', anything)
     end
 
+    context 'when local timeline is disabled' do
+      let(:ltl_enabled) { false }
+
+      it 'is broadcast to the hashtag stream' do
+        expect(redis).to have_received(:publish).with('timeline:hashtag:hoge', anything)
+        expect(redis).to_not have_received(:publish).with('timeline:hashtag:hoge:local', anything)
+      end
+
+      it 'is broadcast to the public stream' do
+        expect(redis).to have_received(:publish).with('timeline:public', anything)
+        expect(redis).to_not have_received(:publish).with('timeline:public:local', anything)
+      end
+    end
+
     context 'with list' do
       let!(:list) { list_with_account(bob, alice) }
       let!(:empty_list) { Fabricate(:list, account: tom) }
@@ -130,6 +148,15 @@ RSpec.describe FanOutOnWriteService, type: :service do
           expect(antenna_feed_of(antenna)).to include status.id
         end
       end
+
+      context 'when local timeline is disabled' do
+        let(:ltl_enabled) { false }
+
+        it 'is not added to the antenna feed of antenna follower' do
+          expect(antenna_feed_of(antenna)).to_not include status.id
+          expect(antenna_feed_of(empty_antenna)).to_not include status.id
+        end
+      end
     end
 
     context 'with LTL antenna' do
@@ -146,6 +173,15 @@ RSpec.describe FanOutOnWriteService, type: :service do
 
         it 'is added to the antenna feed' do
           expect(antenna_feed_of(antenna)).to include status.id
+        end
+      end
+
+      context 'when local timeline is disabled' do
+        let(:ltl_enabled) { false }
+
+        it 'is not added to the antenna feed of antenna follower' do
+          expect(antenna_feed_of(antenna)).to_not include status.id
+          expect(antenna_feed_of(empty_antenna)).to_not include status.id
         end
       end
     end
@@ -255,6 +291,15 @@ RSpec.describe FanOutOnWriteService, type: :service do
         expect(antenna_feed_of(antenna)).to include status.id
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
+
+      context 'when local timeline is disabled' do
+        let(:ltl_enabled) { false }
+
+        it 'is not added to the antenna feed of antenna follower' do
+          expect(antenna_feed_of(antenna)).to_not include status.id
+          expect(antenna_feed_of(empty_antenna)).to_not include status.id
+        end
+      end
     end
 
     context 'with LTL antenna' do
@@ -262,6 +307,14 @@ RSpec.describe FanOutOnWriteService, type: :service do
 
       it 'is added to the antenna feed of antenna follower' do
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
+      end
+
+      context 'when local timeline is disabled' do
+        let(:ltl_enabled) { false }
+
+        it 'is not added to the antenna feed of antenna follower' do
+          expect(antenna_feed_of(empty_antenna)).to_not include status.id
+        end
       end
     end
   end
@@ -282,6 +335,20 @@ RSpec.describe FanOutOnWriteService, type: :service do
       expect(redis).to have_received(:publish).with('timeline:hashtag:hoge', anything)
       expect(redis).to have_received(:publish).with('timeline:public:local', anything)
       expect(redis).to have_received(:publish).with('timeline:public', anything)
+    end
+
+    context 'when local timeline is disabled' do
+      let(:ltl_enabled) { false }
+
+      it 'is broadcast to the hashtag stream' do
+        expect(redis).to have_received(:publish).with('timeline:hashtag:hoge', anything)
+        expect(redis).to_not have_received(:publish).with('timeline:hashtag:hoge:local', anything)
+      end
+
+      it 'is broadcast to the public stream' do
+        expect(redis).to have_received(:publish).with('timeline:public', anything)
+        expect(redis).to_not have_received(:publish).with('timeline:public:local', anything)
+      end
     end
 
     context 'with list' do
@@ -328,6 +395,15 @@ RSpec.describe FanOutOnWriteService, type: :service do
           expect(antenna_feed_of(antenna)).to include status.id
         end
       end
+
+      context 'when local timeline is disabled' do
+        let(:ltl_enabled) { false }
+
+        it 'is not added to the antenna feed of antenna follower' do
+          expect(antenna_feed_of(antenna)).to_not include status.id
+          expect(antenna_feed_of(empty_antenna)).to_not include status.id
+        end
+      end
     end
 
     context 'with LTL antenna' do
@@ -344,6 +420,15 @@ RSpec.describe FanOutOnWriteService, type: :service do
 
         it 'is added to the antenna feed' do
           expect(antenna_feed_of(antenna)).to include status.id
+        end
+      end
+
+      context 'when local timeline is disabled' do
+        let(:ltl_enabled) { false }
+
+        it 'is not added to the antenna feed of antenna follower' do
+          expect(antenna_feed_of(antenna)).to_not include status.id
+          expect(antenna_feed_of(empty_antenna)).to_not include status.id
         end
       end
     end
@@ -384,6 +469,15 @@ RSpec.describe FanOutOnWriteService, type: :service do
       end
     end
 
+    context 'when local timeline is disabled' do
+      let(:ltl_enabled) { false }
+
+      it 'is broadcast to the hashtag stream' do
+        expect(redis).to have_received(:publish).with('timeline:hashtag:hoge', anything)
+        expect(redis).to_not have_received(:publish).with('timeline:hashtag:hoge:local', anything)
+      end
+    end
+
     context 'with list' do
       let!(:list) { list_with_account(bob, alice) }
       let!(:empty_list) { list_with_account(ohagi, bob) }
@@ -412,6 +506,15 @@ RSpec.describe FanOutOnWriteService, type: :service do
         expect(antenna_feed_of(antenna)).to include status.id
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
+
+      context 'when local timeline is disabled' do
+        let(:ltl_enabled) { false }
+
+        it 'is not added to the antenna feed of antenna follower' do
+          expect(antenna_feed_of(antenna)).to_not include status.id
+          expect(antenna_feed_of(empty_antenna)).to_not include status.id
+        end
+      end
     end
 
     context 'with LTL antenna' do
@@ -419,6 +522,14 @@ RSpec.describe FanOutOnWriteService, type: :service do
 
       it 'is added to the antenna feed of antenna follower' do
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
+      end
+
+      context 'when local timeline is disabled' do
+        let(:ltl_enabled) { false }
+
+        it 'is not added to the antenna feed of antenna follower' do
+          expect(antenna_feed_of(empty_antenna)).to_not include status.id
+        end
       end
     end
 

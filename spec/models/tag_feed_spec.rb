@@ -59,6 +59,12 @@ describe TagFeed, type: :service do
       expect(results).to_not include status_tagged_with_cats
     end
 
+    it 'can restrict to local but local timeline is disabled' do
+      Form::AdminSettings.new(enable_local_timeline: '0').save
+      results = described_class.new(tag_cats, nil, any: [tag_dogs.name], local: true).get(20)
+      expect(results).to_not include status_tagged_with_cats
+    end
+
     it 'allows replies to be included' do
       original = Fabricate(:status)
       status = Fabricate(:status, tags: [tag_cats], in_reply_to_id: original.id)

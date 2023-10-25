@@ -45,6 +45,7 @@ defaults: &defaults
   enable_public_unlisted_visibility: true
   unlocked_friend: false
   stranger_mention_from_local_ng: true
+  enable_local_timeline: true
 
 development:
   <<: *defaults

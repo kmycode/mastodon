@@ -27,7 +27,8 @@ class DeliveryAntennaService
     return if must_dtl_tag && !DTL_ENABLED
 
     tag_ids = @status.tags.pluck(:id)
-    domain = @account.domain || Rails.configuration.x.local_domain
+    domain = @account.domain
+    domain ||= Rails.configuration.x.local_domain if Setting.enable_local_timeline
     follower_ids = @status.unlisted_visibility? ? @status.account.followers.pluck(:id) : []
 
     antennas = Antenna.availables
@@ -77,6 +78,8 @@ class DeliveryAntennaService
   end
 
   def delivery_stl!
+    return unless Setting.enable_local_timeline
+
     antennas = Antenna.available_stls
     antennas = antennas.where(account_id: Account.without_suspended.joins(:user).select('accounts.id').where('users.current_sign_in_at > ?', User::ACTIVE_DURATION.ago))
 
@@ -101,6 +104,7 @@ class DeliveryAntennaService
     return if %i(public public_unlisted login).exclude?(@status.visibility.to_sym)
     return unless @account.local?
     return if @status.reblog?
+    return unless Setting.enable_local_timeline
 
     antennas = Antenna.available_ltls
     antennas = antennas.where(account_id: Account.without_suspended.joins(:user).select('accounts.id').where('users.current_sign_in_at > ?', User::ACTIVE_DURATION.ago))

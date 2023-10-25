@@ -130,6 +130,16 @@ RSpec.describe PublicFeed do
         it 'includes public_unlisted statuses' do
           expect(subject).to include(public_unlisted_status.id)
         end
+
+        context 'when local timeline is disabled' do
+          before do
+            Form::AdminSettings.new(enable_local_timeline: '0').save
+          end
+
+          it 'does not include all statuses' do
+            expect(subject).to eq []
+          end
+        end
       end
 
       context 'with a viewer' do
@@ -148,6 +158,16 @@ RSpec.describe PublicFeed do
 
         it 'includes public_unlisted statuses' do
           expect(subject).to include(public_unlisted_status.id)
+        end
+      end
+
+      context 'when local timeline is disabled' do
+        before do
+          Form::AdminSettings.new(enable_local_timeline: '0').save
+        end
+
+        it 'does not include all statuses' do
+          expect(subject).to eq []
         end
       end
     end
