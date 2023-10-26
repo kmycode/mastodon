@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 
-import { withRouter } from 'react-router-dom';
-
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+
+import { ReactComponent as ListAltIcon } from '@material-symbols/svg-600/outlined/list_alt.svg';
+import { ReactComponent as AntennaIcon } from '@material-symbols/svg-600/outlined/wifi.svg';
 
 import { fetchAntennas } from 'mastodon/actions/antennas';
 import { fetchLists } from 'mastodon/actions/lists';
@@ -60,10 +61,10 @@ class ListPanel extends ImmutablePureComponent {
         <hr />
 
         {lists && lists.map(list => (
-          <ColumnLink icon='list-ul' key={list.get('id')} strict text={list.get('title')} to={`/lists/${list.get('id')}`} transparent />
+          <ColumnLink icon='list-ul' iconComponent={ListAltIcon} key={list.get('id')} strict text={list.get('title')} to={`/lists/${list.get('id')}`} transparent />
         ))}
         {antennas && antennas.take(8 - (lists ? lists.size : 0)).map(antenna => (
-          <ColumnLink icon='wifi' key={antenna.get('id')} strict text={antenna.get('title')} to={`/antennast/${antenna.get('id')}`} transparent />
+          <ColumnLink icon='wifi' iconComponent={AntennaIcon} key={antenna.get('id')} strict text={antenna.get('title')} to={`/antennast/${antenna.get('id')}`} transparent />
         ))}
       </div>
     );
@@ -71,4 +72,4 @@ class ListPanel extends ImmutablePureComponent {
 
 }
 
-export default withRouter(connect(mapStateToProps)(ListPanel));
+export default connect(mapStateToProps)(ListPanel);

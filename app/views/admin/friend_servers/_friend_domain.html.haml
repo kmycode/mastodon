@@ -3,29 +3,29 @@
     - unless friend.available
       %span.negative-hint
         = fa_icon('times')
-        = ' '
+        &nbsp;
         = t 'admin.friend_servers.disabled'
     %samp= friend.domain
   %td
     - if friend.accepted?
       %span.positive-hint
         = fa_icon('check')
-        = ' '
+        &nbsp;
         = t 'admin.friend_servers.enabled'
     - elsif friend.i_am_pending?
       = fa_icon('hourglass')
-      = ' '
+      &nbsp;
       = t 'admin.friend_servers.pending'
     - elsif friend.they_are_pending?
       %span.warning-hint
         = fa_icon('hourglass')
-        = ' '
+        &nbsp;
         = t 'admin.friend_servers.pending_you'
     - else
       %span.negative-hint
         = fa_icon('times')
-        = ' '
+        &nbsp;
         = t 'admin.friend_servers.disabled'
   %td
-    = table_link_to 'pencil', t('admin.friend_servers.edit_friend'),   edit_admin_friend_server_path(friend)
+    = table_link_to 'pencil', t('admin.friend_servers.edit_friend'), edit_admin_friend_server_path(friend)
     = table_link_to 'times', t('admin.friend_servers.delete'), admin_friend_server_path(friend), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }

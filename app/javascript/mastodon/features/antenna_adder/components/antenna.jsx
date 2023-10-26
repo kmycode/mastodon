@@ -6,6 +6,10 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
+import { ReactComponent as AddIcon } from '@material-symbols/svg-600/outlined/add.svg';
+import { ReactComponent as CloseIcon } from '@material-symbols/svg-600/outlined/close.svg';
+import { ReactComponent as AntennaIcon } from '@material-symbols/svg-600/outlined/wifi.svg';
+
 import { Icon }  from 'mastodon/components/icon';
 
 import { removeFromAntennaAdder, addToAntennaAdder, removeExcludeFromAntennaAdder, addExcludeToAntennaAdder } from '../../../actions/antennas';
@@ -67,16 +71,16 @@ class Antenna extends ImmutablePureComponent {
     let button;
 
     if (added) {
-      button = <IconButton icon='times' title={intl.formatMessage(messages.remove)} onClick={this.handleRemove} />;
+      button = <IconButton icon='times' iconComponent={CloseIcon} title={intl.formatMessage(messages.remove)} onClick={this.handleRemove} />;
     } else {
-      button = <IconButton icon='plus' title={intl.formatMessage(messages.add)} onClick={this.handleAdd} />;
+      button = <IconButton icon='plus' iconComponent={AddIcon} title={intl.formatMessage(messages.add)} onClick={this.handleAdd} />;
     }
 
     return (
       <div className='list'>
         <div className='list__wrapper'>
           <div className='list__display-name'>
-            <Icon id='wifi' className='column-link__icon' fixedWidth />
+            <Icon id='wifi' icon={AntennaIcon} className='column-link__icon' fixedWidth />
             {antenna.get('title')}
           </div>
 

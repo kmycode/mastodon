@@ -7,6 +7,9 @@ import { Link, withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
+import { ReactComponent as RefreshIcon } from '@material-symbols/svg-600/outlined/refresh.svg';
+import { ReactComponent as SearchIcon } from '@material-symbols/svg-600/outlined/search.svg';
+
 import { openModal } from 'mastodon/actions/modal';
 import { fetchServer } from 'mastodon/actions/server';
 import { Avatar } from 'mastodon/components/avatar';
@@ -73,8 +76,8 @@ class Header extends PureComponent {
     if (signedIn) {
       content = (
         <>
-          {<button onClick={this.handleReload} className='button button-secondary' aria-label={intl.formatMessage(messages.reload)}><Icon id='refresh' /></button>}
-          {location.pathname !== '/search' && <Link to='/search' className='button button-secondary' aria-label={intl.formatMessage(messages.search)}><Icon id='search' /></Link>}
+          {<button onClick={this.handleReload} className='button button-secondary' aria-label={intl.formatMessage(messages.reload)}><Icon id='refresh' icon={RefreshIcon} /></button>}
+          {location.pathname !== '/search' && <Link to='/search' className='button button-secondary' aria-label={intl.formatMessage(messages.search)}><Icon id='search' icon={SearchIcon} /></Link>}
           {location.pathname !== '/publish' && <Link to='/publish' className='button button-secondary'><FormattedMessage id='compose_form.publish_form' defaultMessage='New post' /></Link>}
           <Account />
         </>

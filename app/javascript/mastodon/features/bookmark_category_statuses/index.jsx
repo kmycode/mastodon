@@ -2,12 +2,18 @@ import PropTypes from 'prop-types';
 
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 
+
 import { Helmet } from 'react-helmet';
+import { withRouter } from 'react-router-dom';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
+
+import { ReactComponent as BookmarkIcon } from '@material-symbols/svg-600/outlined/bookmark-fill.svg';
+import { ReactComponent as DeleteIcon } from '@material-symbols/svg-600/outlined/delete.svg';
+import { ReactComponent as EditIcon } from '@material-symbols/svg-600/outlined/edit.svg';
 import { debounce } from 'lodash';
 
 import { deleteBookmarkCategory, expandBookmarkCategoryStatuses, fetchBookmarkCategory, fetchBookmarkCategoryStatuses , setupBookmarkCategoryEditor } from 'mastodon/actions/bookmark_categories';
@@ -20,6 +26,7 @@ import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import StatusList from 'mastodon/components/status_list';
 import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';
 import { getBookmarkCategoryStatusList } from 'mastodon/selectors';
+import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import EditBookmarkCategoryForm from './components/edit_bookmark_category_form';
 
@@ -40,10 +47,6 @@ const mapStateToProps = (state, { params }) => ({
 
 class BookmarkCategoryStatuses extends ImmutablePureComponent {
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   static propTypes = {
     params: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -55,6 +58,7 @@ class BookmarkCategoryStatuses extends ImmutablePureComponent {
     hasMore: PropTypes.bool,
     isLoading: PropTypes.bool,
     isEditing: PropTypes.bool,
+    ...WithRouterPropTypes,
   };
 
   UNSAFE_componentWillMount () {
@@ -69,7 +73,7 @@ class BookmarkCategoryStatuses extends ImmutablePureComponent {
       dispatch(removeColumn(columnId));
     } else {
       dispatch(addColumn('BOOKMARKS_EX', { id: this.props.params.id }));
-      this.context.router.history.push('/');
+      this.props.history.push('/');
     }
   };
 
@@ -101,7 +105,7 @@ class BookmarkCategoryStatuses extends ImmutablePureComponent {
           if (columnId) {
             dispatch(removeColumn(columnId));
           } else {
-            this.context.router.history.push('/bookmark_categories');
+            this.props.history.push('/bookmark_categories');
           }
         },
       },
@@ -144,6 +148,7 @@ class BookmarkCategoryStatuses extends ImmutablePureComponent {
       <Column bindToDocument={!multiColumn} ref={this.setRef} label={intl.formatMessage(messages.heading)}>
         <ColumnHeader
           icon='bookmark'
+          iconComponent={BookmarkIcon}
           title={bookmarkCategory.get('title')}
           onPin={this.handlePin}
           onMove={this.handleMove}
@@ -153,11 +158,11 @@ class BookmarkCategoryStatuses extends ImmutablePureComponent {
         >
           <div className='column-settings__row column-header__links'>
             <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditClick}>
-              <Icon id='pencil' /> <FormattedMessage id='bookmark_categories.edit' defaultMessage='Edit category' />
+              <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='bookmark_categories.edit' defaultMessage='Edit category' />
             </button>
 
             <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
-              <Icon id='trash' /> <FormattedMessage id='bookmark_categories.delete' defaultMessage='Delete category' />
+              <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='bookmark_categories.delete' defaultMessage='Delete category' />
             </button>
 
             {editor}
@@ -185,4 +190,4 @@ class BookmarkCategoryStatuses extends ImmutablePureComponent {
 
 }
 
-export default connect(mapStateToProps)(injectIntl(BookmarkCategoryStatuses));
+export default withRouter(connect(mapStateToProps)(injectIntl(BookmarkCategoryStatuses)));

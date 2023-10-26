@@ -7,11 +7,20 @@ import classNames from 'classnames';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 
+import { ReactComponent as AlternateEmailIcon } from '@material-symbols/svg-600/outlined/alternate_email.svg';
+import { ReactComponent as QuoteIcon } from '@material-symbols/svg-600/outlined/format_quote.svg';
+import { ReactComponent as ReferenceIcon } from '@material-symbols/svg-600/outlined/link.svg';
+import { ReactComponent as PushPinIcon } from '@material-symbols/svg-600/outlined/push_pin.svg';
+import { ReactComponent as RepeatIcon } from '@material-symbols/svg-600/outlined/repeat.svg';
+import { ReactComponent as ReplyIcon } from '@material-symbols/svg-600/outlined/reply.svg';
+import { ReactComponent as LimitedIcon } from '@material-symbols/svg-600/outlined/shield.svg';
+import { ReactComponent as TimerIcon } from '@material-symbols/svg-600/outlined/timer.svg';
 import { HotKeys } from 'react-hotkeys';
 
 import AttachmentList from 'mastodon/components/attachment_list';
 import { Icon }  from 'mastodon/components/icon';
 import PictureInPicturePlaceholder from 'mastodon/components/picture_in_picture_placeholder';
+import { withOptionalRouter, WithOptionalRouterPropTypes } from 'mastodon/utils/react_router';
 
 import CompactedStatusContainer from '../containers/compacted_status_container';
 import Card from '../features/status/components/card';
@@ -29,6 +38,7 @@ import { RelativeTimestamp } from './relative_timestamp';
 import StatusActionBar from './status_action_bar';
 import StatusContent from './status_content';
 import StatusEmojiReactionsBar from './status_emoji_reactions_bar';
+import { VisibilityIcon } from './visibility_icon';
 
 const domParser = new DOMParser();
 
@@ -81,10 +91,6 @@ const messages = defineMessages({
 
 class Status extends ImmutablePureComponent {
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   static propTypes = {
     status: ImmutablePropTypes.map,
     account: ImmutablePropTypes.map,
@@ -130,6 +136,7 @@ class Status extends ImmutablePureComponent {
       available: PropTypes.bool,
     }),
     withoutEmojiReactions: PropTypes.bool,
+    ...WithOptionalRouterPropTypes,
   };
 
   // Avoid checking props that are functions (and whose equality will always
@@ -272,7 +279,7 @@ class Status extends ImmutablePureComponent {
 
   handleHotkeyReply = e => {
     e.preventDefault();
-    this.props.onReply(this._properStatus(), this.context.router.history);
+    this.props.onReply(this._properStatus(), this.props.history);
   };
 
   handleHotkeyFavourite = () => {
@@ -285,7 +292,7 @@ class Status extends ImmutablePureComponent {
 
   handleHotkeyMention = e => {
     e.preventDefault();
-    this.props.onMention(this._properStatus().get('account'), this.context.router.history);
+    this.props.onMention(this._properStatus().get('account'), this.props.history);
   };
 
   handleHotkeyOpen = () => {
@@ -294,14 +301,14 @@ class Status extends ImmutablePureComponent {
       return;
     }
 
-    const { router } = this.context;
+    const { history } = this.props;
     const status = this._properStatus();
 
-    if (!router) {
+    if (!history) {
       return;
     }
 
-    router.history.push(`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`);
+    history.push(`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`);
   };
 
   handleHotkeyOpenProfile = () => {
@@ -309,14 +316,14 @@ class Status extends ImmutablePureComponent {
   };
 
   _openProfile = (proper = true) => {
-    const { router } = this.context;
+    const { history } = this.props;
     const status = proper ? this._properStatus() : this.props.status;
 
-    if (!router) {
+    if (!history) {
       return;
     }
 
-    router.history.push(`/@${status.getIn(['account', 'acct'])}`);
+    history.push(`/@${status.getIn(['account', 'acct'])}`);
   };
 
   handleHotkeyMoveUp = e => {
@@ -401,25 +408,12 @@ class Status extends ImmutablePureComponent {
     const connectReply = nextInReplyToId && nextInReplyToId === status.get('id');
     const matchedFilters = status.get('matched_filters');
 
-    const visibilityIconInfo = {
-      'public': { icon: 'globe', text: intl.formatMessage(messages.public_short) },
-      'unlisted': { icon: 'unlock', text: intl.formatMessage(messages.unlisted_short) },
-      'public_unlisted': { icon: 'cloud', text: intl.formatMessage(messages.public_unlisted_short) },
-      'login': { icon: 'key', text: intl.formatMessage(messages.login_short) },
-      'private': { icon: 'lock', text: intl.formatMessage(messages.private_short) },
-      'limited': { icon: 'get-pocket', text: intl.formatMessage(messages.limited_short) },
-      'mutual': { icon: 'exchange', text: intl.formatMessage(messages.mutual_short) },
-      'circle': { icon: 'user-circle', text: intl.formatMessage(messages.circle_short) },
-      'personal': { icon: 'sticky-note-o', text: intl.formatMessage(messages.personal_short) },
-      'direct': { icon: 'at', text: intl.formatMessage(messages.direct_short) },
-    };
-
-    let visibilityIcon = visibilityIconInfo[status.get('limited_scope') || status.get('visibility_ex')] || visibilityIconInfo[status.get('visibility')];
+    let visibilityName = status.get('limited_scope') || status.get('visibility_ex') || status.get('visibility');
 
     if (featured) {
       prepend = (
         <div className='status__prepend'>
-          <div className='status__prepend-icon-wrapper'><Icon id='thumb-tack' className='status__prepend-icon' fixedWidth /></div>
+          <div className='status__prepend-icon-wrapper'><Icon id='thumb-tack' icon={PushPinIcon} className='status__prepend-icon' /></div>
           <FormattedMessage id='status.pinned' defaultMessage='Pinned post' />
         </div>
       );
@@ -428,8 +422,8 @@ class Status extends ImmutablePureComponent {
 
       prepend = (
         <div className='status__prepend'>
-          <div className='status__prepend-icon-wrapper'><Icon id='retweet' className='status__prepend-icon' fixedWidth /></div>
-          <div className='status__prepend-icon-wrapper'><Icon id={visibilityIcon.icon} className='status__prepend-icon' /></div>
+          <div className='status__prepend-icon-wrapper'><Icon id='retweet' icon={RepeatIcon} className='status__prepend-icon' /></div>
+          <div className='status__prepend-icon-wrapper'><VisibilityIcon visibility={visibilityName} className='status__prepend-icon' /></div>
           <FormattedMessage id='status.reblogged_by' defaultMessage='{name} boosted' values={{ name: <a onClick={this.handlePrependAccountClick} data-id={status.getIn(['account', 'id'])} href={`/@${status.getIn(['account', 'acct'])}`} className='status__display-name muted'><bdi><strong dangerouslySetInnerHTML={display_name_html} /></bdi></a> }} />
         </div>
       );
@@ -441,7 +435,7 @@ class Status extends ImmutablePureComponent {
     } else if (status.get('visibility') === 'direct') {
       prepend = (
         <div className='status__prepend'>
-          <div className='status__prepend-icon-wrapper'><Icon id='at' className='status__prepend-icon' fixedWidth /></div>
+          <div className='status__prepend-icon-wrapper'><Icon id='at' icon={AlternateEmailIcon} className='status__prepend-icon' /></div>
           <FormattedMessage id='status.direct_indicator' defaultMessage='Private mention' />
         </div>
       );
@@ -450,7 +444,7 @@ class Status extends ImmutablePureComponent {
 
       prepend = (
         <div className='status__prepend'>
-          <div className='status__prepend-icon-wrapper'><Icon id='reply' className='status__prepend-icon' fixedWidth /></div>
+          <div className='status__prepend-icon-wrapper'><Icon id='reply' icon={ReplyIcon} className='status__prepend-icon' /></div>
           <FormattedMessage id='status.replied_to' defaultMessage='Replied to {name}' values={{ name: <a onClick={this.handlePrependAccountClick} data-id={status.getIn(['account', 'id'])} href={`/@${status.getIn(['account', 'acct'])}`} className='status__display-name muted'><bdi><strong dangerouslySetInnerHTML={display_name_html} /></bdi></a> }} />
         </div>
       );
@@ -475,7 +469,7 @@ class Status extends ImmutablePureComponent {
               {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
               <div onClick={this.handleClick} className='status__info'>
                 <a href={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`} className='status__relative-time' target='_blank' rel='noopener noreferrer'>
-                  <span className='status__visibility-icon'><Icon id={visibilityIcon.icon} title={visibilityIcon.text} /></span>
+                  <span className='status__visibility-icon'><VisibilityIcon visibility={visibilityName} /></span>
                   <RelativeTimestamp timestamp={status.get('created_at')} />{status.get('edited_at') && <abbr title={intl.formatMessage(messages.edited, { date: intl.formatDate(status.get('edited_at'), { hour12: false, year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }) })}> *</abbr>}
                 </a>
 
@@ -610,7 +604,7 @@ class Status extends ImmutablePureComponent {
       isCardMediaWithSensitive = status.get('spoiler_text').length > 0;
     }
 
-    visibilityIcon = visibilityIconInfo[status.get('limited_scope') || status.get('visibility_ex')] || visibilityIconInfo[status.get('visibility')];
+    visibilityName = status.get('limited_scope') || status.get('visibility_ex') || status.get('visibility');
 
     let emojiReactionsBar = null;
     if (!this.props.withoutEmojiReactions && status.get('emoji_reactions')) {
@@ -623,12 +617,12 @@ class Status extends ImmutablePureComponent {
     const {statusContentProps, hashtagBar} = getHashtagBarForStatus(status);
     const expanded = !status.get('hidden') || status.get('spoiler_text').length === 0;
 
-    const withLimited = status.get('visibility_ex') === 'limited' && status.get('limited_scope') ? <span className='status__visibility-icon'><Icon id='get-pocket' title='Limited' /></span> : null;
-    const withQuote = status.get('quote_id') ? <span className='status__visibility-icon'><Icon id='quote-right' title='Quote' /></span> : null;
-    const withReference = (!withQuote && status.get('status_references_count') > 0) ? <span className='status__visibility-icon'><Icon id='link' title='Reference' /></span> : null;
-    const withExpiration = status.get('expires_at') ? <span className='status__visibility-icon'><Icon id='clock-o' title='Expiration' /></span> : null;
+    const withLimited = status.get('visibility_ex') === 'limited' && status.get('limited_scope') ? <span className='status__visibility-icon'><Icon id='get-pocket' icon={LimitedIcon} title='Limited' /></span> : null;
+    const withQuote = status.get('quote_id') ? <span className='status__visibility-icon'><Icon id='quote-right' icon={QuoteIcon} title='Quote' /></span> : null;
+    const withReference = (!withQuote && status.get('status_references_count') > 0) ? <span className='status__visibility-icon'><Icon id='link' icon={ReferenceIcon} title='Reference' /></span> : null;
+    const withExpiration = status.get('expires_at') ? <span className='status__visibility-icon'><Icon id='clock-o' icon={TimerIcon} title='Expiration' /></span> : null;
 
-    const quote = !muted && status.get('quote_id') && (['public', 'community'].includes(contextType) ? showQuoteInPublic : showQuoteInHome) && <CompactedStatusContainer id={status.get('quote_id')} />;
+    const quote = !muted && status.get('quote_id') && (['public', 'community'].includes(contextType) ? showQuoteInPublic : showQuoteInHome) && <CompactedStatusContainer id={status.get('quote_id')} history={this.props.history} />;
 
     return (
       <HotKeys handlers={handlers}>
@@ -645,7 +639,7 @@ class Status extends ImmutablePureComponent {
                 {withReference}
                 {withExpiration}
                 {withLimited}
-                <span className='status__visibility-icon'><Icon id={visibilityIcon.icon} title={visibilityIcon.text} /></span>
+                <span className='status__visibility-icon'><VisibilityIcon visibility={visibilityName} /></span>
                 <RelativeTimestamp timestamp={status.get('created_at')} />{status.get('edited_at') && <abbr title={intl.formatMessage(messages.edited, { date: intl.formatDate(status.get('edited_at'), { hour12: false, year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }) })}> *</abbr>}
               </a>
 
@@ -686,4 +680,4 @@ class Status extends ImmutablePureComponent {
 
 }
 
-export default injectIntl(Status);
+export default withOptionalRouter(injectIntl(Status));

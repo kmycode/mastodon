@@ -6,7 +6,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
-import Button from 'mastodon/components/button';
+import { Button } from 'mastodon/components/button';
 import EmojiPickerDropdownContainer from 'mastodon/features/compose/containers/emoji_picker_dropdown_container';
 import emojify from 'mastodon/features/emoji/emoji';
 import { autoPlayGif } from 'mastodon/initial_state';

@@ -5,7 +5,7 @@
   .fields-row__column.fields-row__column-6.fields-group
     = f.input :title, as: :string, wrapper: :with_label, hint: false
   .fields-row__column.fields-row__column-6.fields-group
-    = f.input :expires_in, wrapper: :with_label, collection: [30.minutes, 1.hour, 6.hours, 12.hours, 1.day, 1.week].map(&:to_i), label_method: lambda { |i| I18n.t("invites.expires_in.#{i}") }, include_blank: I18n.t('invites.expires_in_prompt')
+    = f.input :expires_in, wrapper: :with_label, collection: [30.minutes, 1.hour, 6.hours, 12.hours, 1.day, 1.week].map(&:to_i), label_method: ->(i) { I18n.t("invites.expires_in.#{i}") }, include_blank: I18n.t('invites.expires_in_prompt')
 
 .fields-row
   = f.input :available, wrapper: :with_label, label: t('antennas.edit.available'), hint: false

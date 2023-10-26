@@ -39,7 +39,7 @@
   - elsif status.preview_card
     = render_card_component(status)
 
-  - if grouped_emoji_reactions.size > 0
+  - if grouped_emoji_reactions.size.positive?
     .status__emoji-reactions-bar
       - grouped_emoji_reactions.each do |reaction|
         %button.emoji-reactions-bar__button
@@ -72,18 +72,18 @@
       - else
         = fa_icon('reply-all')
       %span.detailed-status__reblogs>= friendly_number_to_human status.replies_count
-      = ' '
+      &nbsp;
     ·
     - if status.public_visibility? || status.unlisted_visibility?
       %span.detailed-status__link
         = fa_icon('retweet')
         %span.detailed-status__reblogs>= friendly_number_to_human status.reblogs_count
-        = ' '
+        &nbsp;
       ·
     %span.detailed-status__link
       = fa_icon('star')
       %span.detailed-status__favorites>= friendly_number_to_human status.favourites_count
-      = ' '
+      &nbsp;
 
     - if user_signed_in?
       ·

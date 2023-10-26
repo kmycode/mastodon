@@ -6,7 +6,7 @@ import { hideRecentEmojis } from 'mastodon/initial_state';
 
 import { useEmoji } from '../../../actions/emojis';
 import { changeSetting } from '../../../actions/settings';
-import unicodeMapping from '../../emoji/emoji_unicode_mapping_light';
+import { unicodeMapping } from '../../emoji/emoji_unicode_mapping_light';
 import EmojiPickerDropdown from '../components/emoji_picker_dropdown';
 
 

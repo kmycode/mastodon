@@ -15,10 +15,9 @@ import { VerifiedBadge } from 'mastodon/components/verified_badge';
 import { me } from '../initial_state';
 
 import { Avatar } from './avatar';
-import Button from './button';
+import { Button } from './button';
 import { FollowersCounter } from './counters';
 import { DisplayName } from './display_name';
-import { IconButton } from './icon_button';
 import { RelativeTimestamp } from './relative_timestamp';
 
 const messages = defineMessages({
@@ -46,10 +45,7 @@ class Account extends ImmutablePureComponent {
     hidden: PropTypes.bool,
     hideButtons: PropTypes.bool,
     minimal: PropTypes.bool,
-    actionIcon: PropTypes.string,
-    actionTitle: PropTypes.string,
     defaultAction: PropTypes.string,
-    onActionClick: PropTypes.func,
     children: PropTypes.object,
     withBio: PropTypes.bool,
   };
@@ -78,12 +74,8 @@ class Account extends ImmutablePureComponent {
     this.props.onMuteNotifications(this.props.account, false);
   };
 
-  handleAction = () => {
-    this.props.onActionClick(this.props.account);
-  };
-
   render () {
-    const { account, intl, hidden, hideButtons, withBio, onActionClick, actionIcon, actionTitle, defaultAction, size, minimal, children } = this.props;
+    const { account, intl, hidden, hideButtons, withBio, defaultAction, size, minimal, children } = this.props;
 
     if (!account) {
       return <EmptyAccount size={size} minimal={minimal} />;
@@ -100,9 +92,7 @@ class Account extends ImmutablePureComponent {
 
     let buttons;
 
-    if (actionIcon && onActionClick) {
-      buttons = <IconButton icon={actionIcon} title={actionTitle} onClick={this.handleAction} />;
-    } else if (!hideButtons && !actionIcon && account.get('id') !== me && account.get('relationship', null) !== null) {
+    if (!hideButtons && account.get('id') !== me && account.get('relationship', null) !== null) {
       const following = account.getIn(['relationship', 'following']);
       const requested = account.getIn(['relationship', 'requested']);
       const blocking  = account.getIn(['relationship', 'blocking']);

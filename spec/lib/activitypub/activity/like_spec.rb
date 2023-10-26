@@ -16,6 +16,28 @@ RSpec.describe ActivityPub::Activity::Like do
       object: ActivityPub::TagManager.instance.uri_for(status),
     }.with_indifferent_access
   end
+  let(:original_emoji) do
+    {
+      id: 'https://example.com/aaa',
+      type: 'Emoji',
+      icon: {
+        url: 'http://example.com/emoji.png',
+      },
+      name: 'tinking',
+      license: 'This is ohagi',
+    }
+  end
+  let(:original_invalid_emoji) do
+    {
+      id: 'https://example.com/invalid',
+      type: 'Emoji',
+      icon: {
+        url: 'http://example.com/emoji.png',
+      },
+      name: 'other',
+      license: 'This is other ohagi',
+    }
+  end
 
   describe '#perform' do
     subject { described_class.new(json, sender) }
@@ -37,6 +59,9 @@ RSpec.describe ActivityPub::Activity::Like do
 
     before do
       stub_request(:get, 'http://example.com/emoji.png').to_return(body: attachment_fixture('emojo.png'))
+      stub_request(:get, 'http://foo.bar/emoji2.png').to_return(body: attachment_fixture('emojo.png'))
+      stub_request(:get, 'https://example.com/aaa').to_return(status: 200, body: Oj.dump(original_emoji))
+      stub_request(:get, 'https://example.com/invalid').to_return(status: 200, body: Oj.dump(original_invalid_emoji))
     end
 
     let(:json) do
@@ -122,18 +147,22 @@ RSpec.describe ActivityPub::Activity::Like do
       end
     end
 
-    context 'with custom emoji and custom domain' do
+    context 'with custom emoji from non-original server account' do
       let(:content) { ':tinking:' }
       let(:tag) do
         {
           id: 'https://example.com/aaa',
           type: 'Emoji',
-          domain: 'post.kmycode.net',
           icon: {
             url: 'http://example.com/emoji.png',
           },
           name: 'tinking',
         }
+      end
+
+      before do
+        sender.update(domain: 'ohagi.com')
+        Fabricate(:custom_emoji, domain: 'example.com', uri: 'https://example.com/aaa', shortcode: 'tinking')
       end
 
       it 'create emoji reaction' do
@@ -142,8 +171,84 @@ RSpec.describe ActivityPub::Activity::Like do
         expect(subject.first.account).to eq sender
         expect(subject.first.custom_emoji).to_not be_nil
         expect(subject.first.custom_emoji.shortcode).to eq 'tinking'
-        expect(subject.first.custom_emoji.domain).to eq 'post.kmycode.net'
+        expect(subject.first.custom_emoji.domain).to eq 'example.com'
         expect(sender.favourited?(status)).to be false
+      end
+    end
+
+    context 'with custom emoji and update license from non-original server account' do
+      let(:content) { ':tinking:' }
+      let(:tag) do
+        {
+          id: 'https://example.com/aaa',
+          type: 'Emoji',
+          icon: {
+            url: 'http://example.com/emoji.png',
+          },
+          name: 'tinking',
+          license: 'Old license',
+        }
+      end
+
+      before do
+        sender.update(domain: 'ohagi.com')
+        Fabricate(:custom_emoji, domain: 'example.com', uri: 'https://example.com/aaa', shortcode: 'tinking')
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 1
+        expect(subject.first.custom_emoji.license).to eq 'This is ohagi'
+        expect(sender.favourited?(status)).to be false
+      end
+    end
+
+    context 'with custom emoji but icon url is not valid' do
+      let(:content) { ':tinking:' }
+      let(:tag) do
+        {
+          id: 'https://example.com/aaa',
+          type: 'Emoji',
+          icon: {
+            url: 'http://foo.bar/emoji.png',
+          },
+          name: 'tinking',
+          license: 'Good for using darwin',
+        }
+      end
+
+      before do
+        sender.update(domain: 'ohagi.com')
+        Fabricate(:custom_emoji, domain: 'example.com', uri: 'https://example.com/aaa', shortcode: 'tinking', image_remote_url: 'http://example.com/emoji.png')
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 1
+        expect(subject.first.custom_emoji.reload.license).to eq 'This is ohagi'
+        expect(subject.first.custom_emoji.image_remote_url).to eq 'http://example.com/emoji.png'
+      end
+    end
+
+    context 'with custom emoji but uri is not valid' do
+      let(:content) { ':tinking:' }
+      let(:tag) do
+        {
+          id: 'https://example.com/invalid',
+          type: 'Emoji',
+          icon: {
+            url: 'http://foo.bar/emoji2.png',
+          },
+          name: 'tinking',
+          license: 'Good for using darwin',
+        }
+      end
+
+      before do
+        sender.update(domain: 'ohagi.com')
+        Fabricate(:custom_emoji, domain: 'example.com', uri: 'https://example.com/aaa', shortcode: 'tinking', image_remote_url: 'http://example.com/emoji.png')
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 0
       end
     end
 
@@ -175,7 +280,7 @@ RSpec.describe ActivityPub::Activity::Like do
       let(:content) { ':tinking:' }
       let(:tag) do
         {
-          id: 'aaa',
+          id: 'https://cb6e6126.ngrok.io/aaa',
           type: 'Emoji',
           domain: Rails.configuration.x.local_domain,
           icon: {
@@ -197,6 +302,7 @@ RSpec.describe ActivityPub::Activity::Like do
         expect(subject.first.custom_emoji).to_not be_nil
         expect(subject.first.custom_emoji.shortcode).to eq 'tinking'
         expect(subject.first.custom_emoji.domain).to be_nil
+        expect(subject.first.custom_emoji.license).to eq 'Everyone but Ohagi'
         expect(sender.favourited?(status)).to be false
       end
 

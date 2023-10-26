@@ -2,12 +2,18 @@ import PropTypes from 'prop-types';
 
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 
+
 import { Helmet } from 'react-helmet';
+import { withRouter } from 'react-router-dom';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
+
+import { ReactComponent as CircleIcon } from '@material-symbols/svg-600/outlined/account_circle.svg';
+import { ReactComponent as DeleteIcon } from '@material-symbols/svg-600/outlined/delete.svg';
+import { ReactComponent as EditIcon } from '@material-symbols/svg-600/outlined/edit.svg';
 import { debounce } from 'lodash';
 
 import { deleteCircle, expandCircleStatuses, fetchCircle, fetchCircleStatuses } from 'mastodon/actions/circles';
@@ -20,6 +26,7 @@ import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import StatusList from 'mastodon/components/status_list';
 import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';
 import { getCircleStatusList } from 'mastodon/selectors';
+import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 
 const messages = defineMessages({
@@ -38,10 +45,6 @@ const mapStateToProps = (state, { params }) => ({
 
 class CircleStatuses extends ImmutablePureComponent {
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   static propTypes = {
     params: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -52,6 +55,7 @@ class CircleStatuses extends ImmutablePureComponent {
     multiColumn: PropTypes.bool,
     hasMore: PropTypes.bool,
     isLoading: PropTypes.bool,
+    ...WithRouterPropTypes,
   };
 
   UNSAFE_componentWillMount () {
@@ -66,7 +70,7 @@ class CircleStatuses extends ImmutablePureComponent {
       dispatch(removeColumn(columnId));
     } else {
       dispatch(addColumn('CIRCLE_STATUSES', { id: this.props.params.id }));
-      this.context.router.history.push('/');
+      this.props.history.push('/');
     }
   };
 
@@ -101,7 +105,7 @@ class CircleStatuses extends ImmutablePureComponent {
           if (columnId) {
             dispatch(removeColumn(columnId));
           } else {
-            this.context.router.history.push('/circles');
+            this.props.history.push('/circles');
           }
         },
       },
@@ -140,6 +144,7 @@ class CircleStatuses extends ImmutablePureComponent {
       <Column bindToDocument={!multiColumn} ref={this.setRef} label={intl.formatMessage(messages.heading)}>
         <ColumnHeader
           icon='user-circle'
+          iconComponent={CircleIcon}
           title={circle.get('title')}
           onPin={this.handlePin}
           onMove={this.handleMove}
@@ -149,11 +154,11 @@ class CircleStatuses extends ImmutablePureComponent {
         >
           <div className='column-settings__row column-header__links'>
             <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditClick}>
-              <Icon id='pencil' /> <FormattedMessage id='circles.edit' defaultMessage='Edit circle' />
+              <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='circles.edit' defaultMessage='Edit circle' />
             </button>
 
             <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
-              <Icon id='trash' /> <FormattedMessage id='circles.delete' defaultMessage='Delete circle' />
+              <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='circles.delete' defaultMessage='Delete circle' />
             </button>
           </div>
         </ColumnHeader>
@@ -179,4 +184,4 @@ class CircleStatuses extends ImmutablePureComponent {
 
 }
 
-export default connect(mapStateToProps)(injectIntl(CircleStatuses));
+export default withRouter(connect(mapStateToProps)(injectIntl(CircleStatuses)));

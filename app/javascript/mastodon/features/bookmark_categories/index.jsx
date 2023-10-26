@@ -9,6 +9,9 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 
+import { ReactComponent as BookmarksIcon } from '@material-symbols/svg-600/outlined/bookmark-fill.svg';
+import { ReactComponent as BookmarkIcon } from '@material-symbols/svg-600/outlined/bookmark.svg';
+
 import { fetchBookmarkCategories } from 'mastodon/actions/bookmark_categories';
 import Column from 'mastodon/components/column';
 import ColumnHeader from 'mastodon/components/column_header';
@@ -66,11 +69,11 @@ class BookmarkCategories extends ImmutablePureComponent {
 
     return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.heading)}>
-        <ColumnHeader title={intl.formatMessage(messages.heading)} icon='list-ul' multiColumn={multiColumn} />
+        <ColumnHeader title={intl.formatMessage(messages.heading)} icon='bookmark' iconComponent={BookmarksIcon} multiColumn={multiColumn} />
 
         <NewListForm />
 
-        <ColumnLink to='/bookmarks' icon='bookmark' text={intl.formatMessage(messages.allBookmarks)} />
+        <ColumnLink to='/bookmarks' icon='bookmark' iconComponent={BookmarkIcon} text={intl.formatMessage(messages.allBookmarks)} />
         <ScrollableList
           scrollKey='bookmark_categories'
           emptyMessage={emptyMessage}
@@ -78,7 +81,7 @@ class BookmarkCategories extends ImmutablePureComponent {
           bindToDocument={!multiColumn}
         >
           {categories.map(category =>
-            <ColumnLink key={category.get('id')} to={`/bookmark_categories/${category.get('id')}`} icon='bookmark' text={category.get('title')} />,
+            <ColumnLink key={category.get('id')} to={`/boozkmark_categories/${category.get('id')}`} icon='bookmark' iconComponent={BookmarkIcon} text={category.get('title')} />,
           )}
         </ScrollableList>
 

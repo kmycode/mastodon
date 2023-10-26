@@ -6,7 +6,7 @@ import { defineMessages, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
 import { changeCircleEditorTitle, submitCircleEditor } from 'mastodon/actions/circles';
-import Button from 'mastodon/components/button';
+import { Button } from 'mastodon/components/button';
 
 const messages = defineMessages({
   label: { id: 'circles.new.title_placeholder', defaultMessage: 'New circle title' },

@@ -6,6 +6,10 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
+import { ReactComponent as CircleIcon } from '@material-symbols/svg-600/outlined/account_circle.svg';
+import { ReactComponent as AddIcon } from '@material-symbols/svg-600/outlined/add.svg';
+import { ReactComponent as CloseIcon } from '@material-symbols/svg-600/outlined/close.svg';
+
 import { Icon }  from 'mastodon/components/icon';
 
 import { removeFromCircleAdder, addToCircleAdder } from '../../../actions/circles';
@@ -46,16 +50,16 @@ class Circle extends ImmutablePureComponent {
     let button;
 
     if (added) {
-      button = <IconButton icon='times' title={intl.formatMessage(messages.remove)} onClick={onRemove} />;
+      button = <IconButton icon='times' iconComponent={CloseIcon} title={intl.formatMessage(messages.remove)} onClick={onRemove} />;
     } else {
-      button = <IconButton icon='plus' title={intl.formatMessage(messages.add)} onClick={onAdd} />;
+      button = <IconButton icon='plus' iconComponent={AddIcon} title={intl.formatMessage(messages.add)} onClick={onAdd} />;
     }
 
     return (
       <div className='list'>
         <div className='list__wrapper'>
           <div className='list__display-name'>
-            <Icon id='user-circle' className='column-link__icon' fixedWidth />
+            <Icon id='user-circle' icon={CircleIcon} className='column-link__icon' fixedWidth />
             {circle.get('title')}
           </div>
 

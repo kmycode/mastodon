@@ -3,6 +3,7 @@
 class ActivityPub::Activity::Like < ActivityPub::Activity
   include Redisable
   include Lockable
+  include JsonLdHelper
 
   def perform
     @original_status = status_from_uri(object_uri)
@@ -102,7 +103,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
 
     return if custom_emoji_parser.shortcode.blank? || custom_emoji_parser.image_remote_url.blank?
 
-    domain = tag['domain'] || URI.split(custom_emoji_parser.uri)[2] || @account.domain
+    domain = URI.split(custom_emoji_parser.uri)[2] || @account.domain
 
     if domain == Rails.configuration.x.local_domain || domain == Rails.configuration.x.web_domain
       # Block overwriting remote-but-local data
@@ -117,6 +118,9 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
                         custom_emoji_parser.image_remote_url != emoji.image_remote_url ||
                         (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at) ||
                         custom_emoji_parser.license != emoji.license
+
+    custom_emoji_parser = original_emoji_parser(custom_emoji_parser) if @account.domain != domain
+    return if custom_emoji_parser.nil?
 
     begin
       emoji ||= CustomEmoji.new(
@@ -134,6 +138,17 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
     end
 
     emoji
+  end
+
+  def original_emoji_parser(custom_emoji_parser)
+    uri = custom_emoji_parser.uri
+    emoji = fetch_resource_without_id_validation(uri)
+    return nil unless emoji
+
+    parser = ActivityPub::Parser::CustomEmojiParser.new(emoji)
+    return nil unless parser.uri == uri && custom_emoji_parser.shortcode == parser.shortcode
+
+    parser
   end
 
   def skip_download?(domain)

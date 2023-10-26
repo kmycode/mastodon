@@ -307,7 +307,7 @@ RSpec.describe PostStatusService, type: :service do
 
   it 'processes duplicate mentions correctly' do
     account = Fabricate(:account)
-    mentioned_account = Fabricate(:account, username: 'alice')
+    Fabricate(:account, username: 'alice')
 
     expect do
       subject.call(account, text: '@alice @alice @alice hey @alice')
@@ -377,7 +377,7 @@ RSpec.describe PostStatusService, type: :service do
     account = Fabricate(:account)
     media = Fabricate(:media_attachment, account: Fabricate(:account))
 
-    status = subject.call(
+    subject.call(
       account,
       text: 'test status update',
       media_ids: [media.id]
@@ -458,7 +458,7 @@ RSpec.describe PostStatusService, type: :service do
 
     it 'hit ng words for mention' do
       account = Fabricate(:account)
-      mentioned = Fabricate(:account, username: 'ohagi', domain: nil)
+      Fabricate(:account, username: 'ohagi', domain: nil)
       text = 'ng word test @ohagi'
       Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
 
@@ -467,7 +467,7 @@ RSpec.describe PostStatusService, type: :service do
 
     it 'hit ng words for mention but local posts are not checked' do
       account = Fabricate(:account)
-      mentioned = Fabricate(:account, username: 'ohagi', domain: nil)
+      Fabricate(:account, username: 'ohagi', domain: nil)
       text = 'ng word test @ohagi'
       Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '0').save
 

@@ -3,6 +3,8 @@
 class AddInReplyToAccountIdToStatuses < ActiveRecord::Migration[5.0]
   def up
     add_column :statuses, :in_reply_to_account_id, :integer, null: true, default: nil
+    add_column :statuses, :searchability, :integer
+    add_column :statuses, :limited_scope, :integer
 
     ActiveRecord::Base.transaction do
       Status.unscoped.where.not(in_reply_to_id: nil).includes(:thread).find_each do |status|
@@ -12,6 +14,9 @@ class AddInReplyToAccountIdToStatuses < ActiveRecord::Migration[5.0]
         status.save(validate: false)
       end
     end
+
+    remove_column :statuses, :searchability
+    remove_column :statuses, :limited_scope
   end
 
   def down
