@@ -12,7 +12,10 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 
 import { ReactComponent as DeleteIcon } from '@material-symbols/svg-600/outlined/delete.svg';
+import { ReactComponent as DomainIcon } from '@material-symbols/svg-600/outlined/dns.svg';
 import { ReactComponent as EditIcon } from '@material-symbols/svg-600/outlined/edit.svg';
+import { ReactComponent as HashtagIcon } from '@material-symbols/svg-600/outlined/tag.svg';
+import { ReactComponent as KeywordIcon } from '@material-symbols/svg-600/outlined/title.svg';
 import { ReactComponent as AntennaIcon } from '@material-symbols/svg-600/outlined/wifi.svg';
 import Select, { NonceProvider } from 'react-select';
 import Toggle from 'react-toggle';
@@ -473,6 +476,7 @@ class AntennaSetting extends PureComponent {
                   value={this.state.domainName}
                   values={domains.get('domains') || ImmutableList()}
                   icon='sitemap'
+                  iconComponent={DomainIcon}
                   label={intl.formatMessage(messages.addDomainLabel)}
                   title={intl.formatMessage(messages.addDomainTitle)}
                 />
@@ -490,6 +494,7 @@ class AntennaSetting extends PureComponent {
                   value={this.state.tagName}
                   values={tags.get('tags') || ImmutableList()}
                   icon='hashtag'
+                  iconComponent={HashtagIcon}
                   label={intl.formatMessage(messages.addTagLabel)}
                   title={intl.formatMessage(messages.addTagTitle)}
                 />
@@ -503,6 +508,7 @@ class AntennaSetting extends PureComponent {
                   value={this.state.keywordName}
                   values={keywords.get('keywords') || ImmutableList()}
                   icon='paragraph'
+                  iconComponent={KeywordIcon}
                   label={intl.formatMessage(messages.addKeywordLabel)}
                   title={intl.formatMessage(messages.addKeywordTitle)}
                 />
@@ -521,6 +527,7 @@ class AntennaSetting extends PureComponent {
                 value={this.state.excludeDomainName}
                 values={domains.get('exclude_domains') || ImmutableList()}
                 icon='sitemap'
+                iconComponent={DomainIcon}
                 label={intl.formatMessage(messages.addDomainLabel)}
                 title={intl.formatMessage(messages.addDomainTitle)}
               />
@@ -532,6 +539,7 @@ class AntennaSetting extends PureComponent {
                 value={this.state.excludeKeywordName}
                 values={keywords.get('exclude_keywords') || ImmutableList()}
                 icon='paragraph'
+                iconComponent={KeywordIcon}
                 label={intl.formatMessage(messages.addKeywordLabel)}
                 title={intl.formatMessage(messages.addKeywordTitle)}
               />
@@ -543,6 +551,7 @@ class AntennaSetting extends PureComponent {
                 value={this.state.excludeTagName}
                 values={tags.get('exclude_tags') || ImmutableList()}
                 icon='hashtag'
+                iconComponent={HashtagIcon}
                 label={intl.formatMessage(messages.addTagLabel)}
                 title={intl.formatMessage(messages.addTagTitle)}
               />
