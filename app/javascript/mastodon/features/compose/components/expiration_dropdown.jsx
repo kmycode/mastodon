@@ -5,6 +5,7 @@ import { injectIntl, defineMessages } from 'react-intl';
 
 import classNames from 'classnames';
 
+import { ReactComponent as TimerIcon } from '@material-symbols/svg-600/outlined/timer.svg';
 import { supportsPassiveEvents } from 'detect-passive-events';
 import Overlay from 'react-overlays/Overlay';
 
@@ -237,6 +238,7 @@ class ExpirationDropdown extends PureComponent {
           <IconButton
             className='expiration-dropdown__value-icon'
             icon='clock-o'
+            iconComponent={TimerIcon}
             title={intl.formatMessage(messages.add_expiration)}
             size={18}
             expanded={open}

@@ -11,16 +11,16 @@
       - if @friend.accepted?
         %span.positive-hint
           = fa_icon('check')
-          = ' '
+          &nbsp;
           = t 'admin.friend_servers.enabled'
       - elsif @friend.pending?
         = fa_icon('hourglass')
-        = ' '
+        &nbsp;
         = t 'admin.friend_servers.pending'
       - else
         %span.negative-hint
           = fa_icon('times')
-          = ' '
+          &nbsp;
           = t 'admin.friend_servers.disabled'
       .action-buttons
         %div

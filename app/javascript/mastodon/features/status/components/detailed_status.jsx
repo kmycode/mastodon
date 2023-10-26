@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { injectIntl, defineMessages, FormattedDate, FormattedMessage } from 'react-intl';
+import { FormattedDate, FormattedMessage } from 'react-intl';
 
 import classNames from 'classnames';
 import { Link, withRouter } from 'react-router-dom';
@@ -8,11 +8,19 @@ import { Link, withRouter } from 'react-router-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 
+import { ReactComponent as AlternateEmailIcon } from '@material-symbols/svg-600/outlined/alternate_email.svg';
+import { ReactComponent as ReferenceIcon } from '@material-symbols/svg-600/outlined/link.svg';
+import { ReactComponent as EmojiReactionIcon } from '@material-symbols/svg-600/outlined/mood.svg';
+import { ReactComponent as RepeatIcon } from '@material-symbols/svg-600/outlined/repeat.svg';
+import { ReactComponent as StarIcon } from '@material-symbols/svg-600/outlined/star-fill.svg';
+
 import { AnimatedNumber } from 'mastodon/components/animated_number';
 import EditedTimestamp from 'mastodon/components/edited_timestamp';
 import { getHashtagBarForStatus } from 'mastodon/components/hashtag_bar';
 import { Icon }  from 'mastodon/components/icon';
 import PictureInPicturePlaceholder from 'mastodon/components/picture_in_picture_placeholder';
+import { SearchabilityIcon } from 'mastodon/components/searchability_icon';
+import { VisibilityIcon } from 'mastodon/components/visibility_icon';
 import { enableEmojiReaction } from 'mastodon/initial_state';
 import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
@@ -26,24 +34,6 @@ import scheduleIdleTask from '../../ui/util/schedule_idle_task';
 import Video from '../../video';
 
 import Card from './card';
-
-const messages = defineMessages({
-  public_short: { id: 'privacy.public.short', defaultMessage: 'Public' },
-  unlisted_short: { id: 'privacy.unlisted.short', defaultMessage: 'Unlisted' },
-  public_unlisted_short: { id: 'privacy.public_unlisted.short', defaultMessage: 'Public unlisted' },
-  login_short: { id: 'privacy.login.short', defaultMessage: 'Login only' },
-  private_short: { id: 'privacy.private.short', defaultMessage: 'Followers only' },
-  limited_short: { id: 'privacy.limited.short', defaultMessage: 'Limited menbers only' },
-  mutual_short: { id: 'privacy.mutual.short', defaultMessage: 'Mutual followers only' },
-  circle_short: { id: 'privacy.circle.short', defaultMessage: 'Circle members only' },
-  personal_short: { id: 'privacy.personal.short', defaultMessage: 'Yourself only' },
-  direct_short: { id: 'privacy.direct.short', defaultMessage: 'Mentioned people only' },
-  searchability_public_short: { id: 'searchability.public.short', defaultMessage: 'Public' },
-  searchability_public_unlisted_short: { id: 'searchability.public_unlisted.short', defaultMessage: 'Public unlisted' },
-  searchability_private_short: { id: 'searchability.unlisted.short', defaultMessage: 'Followers' },
-  searchability_direct_short: { id: 'searchability.private.short', defaultMessage: 'Reactionners' },
-  searchability_limited_short: { id: 'searchability.direct.short', defaultMessage: 'Self only' },
-});
 
 class DetailedStatus extends ImmutablePureComponent {
 
@@ -152,7 +142,7 @@ class DetailedStatus extends ImmutablePureComponent {
   render () {
     const status = this._properStatus();
     const outerStyle = { boxSizing: 'border-box' };
-    const { intl, compact, pictureInPicture } = this.props;
+    const { compact, pictureInPicture } = this.props;
 
     if (!status) {
       return null;
@@ -162,7 +152,8 @@ class DetailedStatus extends ImmutablePureComponent {
     let isCardMediaWithSensitive = false;
     let applicationLink = '';
     let reblogLink = '';
-    let reblogIcon = 'retweet';
+    const reblogIcon = 'retweet';
+    const reblogIconComponent = RepeatIcon;
     let favouriteLink = '';
     let emojiReactionsLink = '';
     let statusReferencesLink = '';
@@ -251,32 +242,8 @@ class DetailedStatus extends ImmutablePureComponent {
       applicationLink = <> · <a className='detailed-status__application' href={status.getIn(['application', 'website'])} target='_blank' rel='noopener noreferrer'>{status.getIn(['application', 'name'])}</a></>;
     }
 
-    const visibilityIconInfo = {
-      'public': { icon: 'globe', text: intl.formatMessage(messages.public_short) },
-      'unlisted': { icon: 'unlock', text: intl.formatMessage(messages.unlisted_short) },
-      'public_unlisted': { icon: 'cloud', text: intl.formatMessage(messages.public_unlisted_short) },
-      'login': { icon: 'key', text: intl.formatMessage(messages.login_short) },
-      'private': { icon: 'lock', text: intl.formatMessage(messages.private_short) },
-      'limited': { icon: 'get-pocket', text: intl.formatMessage(messages.limited_short) },
-      'mutual': { icon: 'exchange', text: intl.formatMessage(messages.mutual_short) },
-      'circle': { icon: 'user-circle', text: intl.formatMessage(messages.circle_short) },
-      'personal': { icon: 'sticky-note-o', text: intl.formatMessage(messages.personal_short) },
-      'direct': { icon: 'at', text: intl.formatMessage(messages.direct_short) },
-    };
-
-    const visibilityIcon = visibilityIconInfo[status.get('limited_scope') || status.get('visibility_ex')];
-    const visibilityLink = <> · <Icon id={visibilityIcon.icon} title={visibilityIcon.text} /></>;
-
-    const searchabilityIconInfo = {
-      'public': { icon: 'globe', text: intl.formatMessage(messages.searchability_public_short) },
-      'public_unlisted': { icon: 'cloud', text: intl.formatMessage(messages.searchability_public_unlisted_short) },
-      'private': { icon: 'unlock', text: intl.formatMessage(messages.searchability_private_short) },
-      'direct': { icon: 'lock', text: intl.formatMessage(messages.searchability_direct_short) },
-      'limited': { icon: 'at', text: intl.formatMessage(messages.searchability_limited_short) },
-    };
-
-    const searchabilityIcon = searchabilityIconInfo[status.get('searchability')];
-    const searchabilityLink = <> · <Icon id={searchabilityIcon.icon} title={searchabilityIcon.text} /></>;
+    const visibilityLink = <> · <VisibilityIcon visibility={status.get('limited_scope') || status.get('visibility_ex')} /></>;
+    const searchabilityLink = <> · <SearchabilityIcon searchability={status.get('searchability')} /></>;
 
     if (['private', 'direct'].includes(status.get('visibility_ex'))) {
       reblogLink = '';
@@ -285,7 +252,7 @@ class DetailedStatus extends ImmutablePureComponent {
         <>
           {' · '}
           <Link to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}/reblogs`} className='detailed-status__link'>
-            <Icon id={reblogIcon} />
+            <Icon id={reblogIcon} icon={reblogIconComponent} />
             <span className='detailed-status__reblogs'>
               <AnimatedNumber value={status.get('reblogs_count')} />
             </span>
@@ -297,7 +264,7 @@ class DetailedStatus extends ImmutablePureComponent {
         <>
           {' · '}
           <a href={`/interact/${status.get('id')}?type=reblog`} className='detailed-status__link' onClick={this.handleModalLink}>
-            <Icon id={reblogIcon} />
+            <Icon id={reblogIcon} icon={reblogIconComponent} />
             <span className='detailed-status__reblogs'>
               <AnimatedNumber value={status.get('reblogs_count')} />
             </span>
@@ -309,7 +276,7 @@ class DetailedStatus extends ImmutablePureComponent {
     if (this.props.history) {
       favouriteLink = (
         <Link to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}/favourites`} className='detailed-status__link'>
-          <Icon id='star' />
+          <Icon id='star' icon={StarIcon} />
           <span className='detailed-status__favorites'>
             <AnimatedNumber value={status.get('favourites_count')} />
           </span>
@@ -318,7 +285,7 @@ class DetailedStatus extends ImmutablePureComponent {
     } else {
       favouriteLink = (
         <a href={`/interact/${status.get('id')}?type=favourite`} className='detailed-status__link' onClick={this.handleModalLink}>
-          <Icon id='star' />
+          <Icon id='star' icon={StarIcon} />
           <span className='detailed-status__favorites'>
             <AnimatedNumber value={status.get('favourites_count')} />
           </span>
@@ -329,7 +296,7 @@ class DetailedStatus extends ImmutablePureComponent {
     if (this.context.router) {
       emojiReactionsLink = (
         <Link to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}/emoji_reactions`} className='detailed-status__link'>
-          <Icon id='smile-o' />
+          <Icon id='smile-o' icon={EmojiReactionIcon} />
           <span className='detailed-status__favorites'>
             <AnimatedNumber value={status.get('emoji_reactions_count')} />
           </span>
@@ -338,7 +305,7 @@ class DetailedStatus extends ImmutablePureComponent {
     } else {
       emojiReactionsLink = (
         <a href={`/interact/${status.get('id')}?type=emoji_reactions`} className='detailed-status__link' onClick={this.handleModalLink}>
-          <Icon id='smile-o' />
+          <Icon id='smile-o' icon={EmojiReactionIcon} />
           <span className='detailed-status__favorites'>
             <AnimatedNumber value={status.get('emoji_reactions_count')} />
           </span>
@@ -349,7 +316,7 @@ class DetailedStatus extends ImmutablePureComponent {
     if (this.context.router) {
       statusReferencesLink = (
         <Link to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}/references`} className='detailed-status__link'>
-          <Icon id='link' />
+          <Icon id='link' icon={ReferenceIcon} />
           <span className='detailed-status__favorites'>
             <AnimatedNumber value={status.get('status_referred_by_count')} />
           </span>
@@ -358,7 +325,7 @@ class DetailedStatus extends ImmutablePureComponent {
     } else {
       statusReferencesLink = (
         <a href={`/interact/${status.get('id')}?type=references`} className='detailed-status__link' onClick={this.handleModalLink}>
-          <Icon id='link' />
+          <Icon id='link' icon={ReferenceIcon} />
           <span className='detailed-status__favorites'>
             <AnimatedNumber value={status.get('status_referred_by_count')} />
           </span>
@@ -383,7 +350,7 @@ class DetailedStatus extends ImmutablePureComponent {
         <div ref={this.setRef} className={classNames('detailed-status', { compact })}>
           {status.get('visibility_ex') === 'direct' && (
             <div className='status__prepend'>
-              <div className='status__prepend-icon-wrapper'><Icon id='at' className='status__prepend-icon' fixedWidth /></div>
+              <div className='status__prepend-icon-wrapper'><Icon id='at' icon={AlternateEmailIcon} className='status__prepend-icon' /></div>
               <FormattedMessage id='status.direct_indicator' defaultMessage='Private mention' />
             </div>
           )}
@@ -418,4 +385,4 @@ class DetailedStatus extends ImmutablePureComponent {
 
 }
 
-export default withRouter(injectIntl(DetailedStatus));
+export default withRouter(DetailedStatus);

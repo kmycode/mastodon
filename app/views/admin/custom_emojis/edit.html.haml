@@ -14,7 +14,7 @@
   .fields-group
     %samp= @custom_emoji.shortcode
 
-  - if !@custom_emoji.local?
+  - unless @custom_emoji.local?
     %h4= t('admin.custom_emojis.domain')
 
     .fields-group

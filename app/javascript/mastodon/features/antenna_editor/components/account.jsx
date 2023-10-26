@@ -2,9 +2,13 @@ import PropTypes from 'prop-types';
 
 import { defineMessages, injectIntl } from 'react-intl';
 
+
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
+
+import { ReactComponent as AddIcon } from '@material-symbols/svg-600/outlined/add.svg';
+import { ReactComponent as CloseIcon } from '@material-symbols/svg-600/outlined/close.svg';
 
 import { removeFromAntennaEditor, addToAntennaEditor, removeExcludeFromAntennaEditor, addExcludeToAntennaEditor } from '../../../actions/antennas';
 import { Avatar } from '../../../components/avatar';
@@ -58,9 +62,9 @@ class Account extends ImmutablePureComponent {
     let button;
 
     if (added) {
-      button = <IconButton icon='times' title={intl.formatMessage(messages.remove)} onClick={isExclude ? onExcludeRemove : onRemove} />;
+      button = <IconButton icon='times' iconComponent={CloseIcon} title={intl.formatMessage(messages.remove)} onClick={isExclude ? onExcludeRemove : onRemove} />;
     } else {
-      button = <IconButton icon='plus' title={intl.formatMessage(messages.add)} onClick={isExclude ? onExcludeAdd : onAdd} />;
+      button = <IconButton icon='plus' iconComponent={AddIcon} title={intl.formatMessage(messages.add)} onClick={isExclude ? onExcludeAdd : onAdd} />;
     }
 
     return (

@@ -26,7 +26,7 @@
               .permissions-list__item__text__title
                 = t('antennas.index.domains', count: antenna.antenna_domains.size)
               .permissions-list__item__text__type
-                - domains = antenna.antenna_domains.map { |domain| domain.name }
+                - domains = antenna.antenna_domains.map(&:name)
                 - domains = domains.take(5) + ['…'] if domains.size > 5 # TODO
                 = domains.join(', ')
         - unless antenna.antenna_accounts.empty?
@@ -40,7 +40,7 @@
                 - accounts = antenna.antenna_accounts.map { |account| account.account.domain ? "@#{account.account.username}@#{account.account.domain}" : "@#{account.account.username}" }
                 - accounts = accounts.take(5) + ['…'] if accounts.size > 5 # TODO
                 = accounts.join(', ')
-        - unless antenna.keywords.nil? || antenna.keywords.empty?
+        - if antenna.keywords.present?
           %li.permissions-list__item
             .permissions-list__item__icon
               = fa_icon('paragraph')

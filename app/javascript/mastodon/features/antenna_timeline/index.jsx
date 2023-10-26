@@ -3,10 +3,16 @@ import { PureComponent } from 'react';
 
 import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
 
+
 import { Helmet } from 'react-helmet';
+import { withRouter } from 'react-router-dom';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
+
+import { ReactComponent as DeleteIcon } from '@material-symbols/svg-600/outlined/delete.svg';
+import { ReactComponent as EditIcon } from '@material-symbols/svg-600/outlined/edit.svg';
+import { ReactComponent as AntennaIcon } from '@material-symbols/svg-600/outlined/wifi.svg';
 
 import { fetchAntenna, deleteAntenna } from 'mastodon/actions/antennas';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
@@ -19,6 +25,7 @@ import { Icon }  from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';
 import StatusListContainer from 'mastodon/features/ui/containers/status_list_container';
+import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 const messages = defineMessages({
   deleteMessage: { id: 'confirmations.delete_antenna.message', defaultMessage: 'Are you sure you want to permanently delete this antenna?' },
@@ -32,10 +39,6 @@ const mapStateToProps = (state, props) => ({
 
 class AntennaTimeline extends PureComponent {
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   static propTypes = {
     params: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -44,6 +47,7 @@ class AntennaTimeline extends PureComponent {
     multiColumn: PropTypes.bool,
     antenna: PropTypes.oneOfType([ImmutablePropTypes.map, PropTypes.bool]),
     intl: PropTypes.object.isRequired,
+    ...WithRouterPropTypes,
   };
 
   handlePin = () => {
@@ -53,7 +57,7 @@ class AntennaTimeline extends PureComponent {
       dispatch(removeColumn(columnId));
     } else {
       dispatch(addColumn('ANTENNA_TIMELINE', { id: this.props.params.id }));
-      this.context.router.history.push('/');
+      this.props.history.push('/');
     }
   };
 
@@ -110,7 +114,7 @@ class AntennaTimeline extends PureComponent {
   };
 
   handleEditClick = () => {
-    this.context.router.history.push(`/antennasw/${this.props.params.id}`);
+    this.props.history.push(`/antennasw/${this.props.params.id}`);
   };
 
   handleDeleteClick = () => {
@@ -128,7 +132,7 @@ class AntennaTimeline extends PureComponent {
           if (columnId) {
             dispatch(removeColumn(columnId));
           } else {
-            this.context.router.history.push('/antennasw');
+            this.props.history.push('/antennasw');
           }
         },
       },
@@ -159,6 +163,7 @@ class AntennaTimeline extends PureComponent {
       <Column bindToDocument={!multiColumn} ref={this.setRef} label={title}>
         <ColumnHeader
           icon='wifi'
+          iconComponent={AntennaIcon}
           active={hasUnread}
           title={title}
           onPin={this.handlePin}
@@ -169,11 +174,11 @@ class AntennaTimeline extends PureComponent {
         >
           <div className='column-settings__row column-header__links'>
             <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditClick}>
-              <Icon id='pencil' /> <FormattedMessage id='antennas.edit' defaultMessage='Edit antenna' />
+              <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='antennas.edit' defaultMessage='Edit antenna' />
             </button>
 
             <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
-              <Icon id='trash' /> <FormattedMessage id='antennas.delete' defaultMessage='Delete antenna' />
+              <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='antennas.delete' defaultMessage='Delete antenna' />
             </button>
           </div>
         </ColumnHeader>
@@ -197,4 +202,4 @@ class AntennaTimeline extends PureComponent {
 
 }
 
-export default connect(mapStateToProps)(injectIntl(AntennaTimeline));
+export default withRouter(connect(mapStateToProps)(injectIntl(AntennaTimeline)));

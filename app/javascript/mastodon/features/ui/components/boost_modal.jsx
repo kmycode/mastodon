@@ -9,9 +9,12 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
+import { ReactComponent as RepeatIcon } from '@material-symbols/svg-600/outlined/repeat.svg';
+
 import { changeBoostPrivacy } from 'mastodon/actions/boosts';
 import AttachmentList from 'mastodon/components/attachment_list';
 import { Icon }  from 'mastodon/components/icon';
+import { VisibilityIcon } from 'mastodon/components/visibility_icon';
 import PrivacyDropdown from 'mastodon/features/compose/components/privacy_dropdown';
 import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
@@ -24,16 +27,6 @@ import StatusContent from '../../../components/status_content';
 const messages = defineMessages({
   cancel_reblog: { id: 'status.cancel_reblog_private', defaultMessage: 'Unboost' },
   reblog: { id: 'status.reblog', defaultMessage: 'Boost' },
-  public_short: { id: 'privacy.public.short', defaultMessage: 'Public' },
-  unlisted_short: { id: 'privacy.unlisted.short', defaultMessage: 'Unlisted' },
-  public_unlisted_short: { id: 'privacy.public_unlisted.short', defaultMessage: 'Public unlisted' },
-  login_short: { id: 'privacy.login.short', defaultMessage: 'Login only' },
-  private_short: { id: 'privacy.private.short', defaultMessage: 'Followers only' },
-  limited_short: { id: 'privacy.limited.short', defaultMessage: 'Limited menbers only' },
-  mutual_short: { id: 'privacy.mutual.short', defaultMessage: 'Mutual followers only' },
-  circle_short: { id: 'privacy.circle.short', defaultMessage: 'Circle members only' },
-  personal_short: { id: 'privacy.personal.short', defaultMessage: 'Yourself only' },
-  direct_short: { id: 'privacy.direct.short', defaultMessage: 'Mentioned people only' },
 });
 
 const mapStateToProps = state => {
@@ -82,28 +75,13 @@ class BoostModal extends ImmutablePureComponent {
     const { status, privacy, intl } = this.props;
     const buttonText = status.get('reblogged') ? messages.cancel_reblog : messages.reblog;
 
-    const visibilityIconInfo = {
-      'public': { icon: 'globe', text: intl.formatMessage(messages.public_short) },
-      'unlisted': { icon: 'unlock', text: intl.formatMessage(messages.unlisted_short) },
-      'public_unlisted': { icon: 'cloud', text: intl.formatMessage(messages.public_unlisted_short) },
-      'login': { icon: 'key', text: intl.formatMessage(messages.login_short) },
-      'private': { icon: 'lock', text: intl.formatMessage(messages.private_short) },
-      'limited': { icon: 'get-pocket', text: intl.formatMessage(messages.limited_short) },
-      'mutual': { icon: 'exchange', text: intl.formatMessage(messages.mutual_short) },
-      'circle': { icon: 'user-circle', text: intl.formatMessage(messages.circle_short) },
-      'personal': { icon: 'sticky-note-o', text: intl.formatMessage(messages.personal_short) },
-      'direct': { icon: 'at', text: intl.formatMessage(messages.direct_short) },
-    };
-
-    const visibilityIcon = visibilityIconInfo[status.get('limited_scope') || status.get('visibility_ex')];
-
     return (
       <div className='modal-root__modal boost-modal'>
         <div className='boost-modal__container'>
           <div className={classNames('status', `status-${status.get('visibility_ex')}`, 'light')}>
             <div className='status__info'>
               <a href={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`} className='status__relative-time' target='_blank' rel='noopener noreferrer'>
-                <span className='status__visibility-icon'><Icon id={visibilityIcon.icon} title={visibilityIcon.text} /></span>
+                <span className='status__visibility-icon'><VisibilityIcon visibility={status.get('limited_scope') || status.get('visibility_ex')} /></span>
                 <RelativeTimestamp timestamp={status.get('created_at')} />
               </a>
 
@@ -128,8 +106,8 @@ class BoostModal extends ImmutablePureComponent {
         </div>
 
         <div className='boost-modal__action-bar'>
-          <div><FormattedMessage id='boost_modal.combo' defaultMessage='You can press {combo} to skip this next time' values={{ combo: <span>Shift + <Icon id='retweet' /></span> }} /></div>
-          {status.get('visibility_ex') !== 'private' && !status.get('reblogged') && (
+          <div><FormattedMessage id='boost_modal.combo' defaultMessage='You can press {combo} to skip this next time' values={{ combo: <span>Shift + <Icon id='retweet' icon={RepeatIcon} /></span> }} /></div>
+          {status.get('visibility') !== 'private' && !status.get('reblogged') && (
             <PrivacyDropdown
               noDirect
               value={privacy}

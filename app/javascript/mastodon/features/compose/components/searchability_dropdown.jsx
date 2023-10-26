@@ -5,12 +5,19 @@ import { injectIntl, defineMessages } from 'react-intl';
 
 import classNames from 'classnames';
 
+import { ReactComponent as AlternateEmailIcon } from '@material-symbols/svg-600/outlined/alternate_email.svg';
+import { ReactComponent as PublicUnlistedIcon } from '@material-symbols/svg-600/outlined/cloud.svg';
+import { ReactComponent as LockIcon } from '@material-symbols/svg-600/outlined/lock.svg';
+import { ReactComponent as LockOpenIcon } from '@material-symbols/svg-600/outlined/lock_open.svg';
+import { ReactComponent as PublicIcon } from '@material-symbols/svg-600/outlined/public.svg';
+import { ReactComponent as SearchIcon } from '@material-symbols/svg-600/outlined/search.svg';
 import { supportsPassiveEvents } from 'detect-passive-events';
 import Overlay from 'react-overlays/Overlay';
 
 import { Icon }  from 'mastodon/components/icon';
 
 import { IconButton } from '../../../components/icon_button';
+
 
 const messages = defineMessages({
   public_short: { id: 'searchability.public.short', defaultMessage: 'Public' },
@@ -125,7 +132,7 @@ class SearchabilityDropdownMenu extends PureComponent {
         {items.map(item => (
           <div role='option' tabIndex='0' key={item.value} data-index={item.value} onKeyDown={this.handleKeyDown} onClick={this.handleClick} className={classNames('privacy-dropdown__option', { active: item.value === value })} aria-selected={item.value === value} ref={item.value === value ? this.setFocusRef : null}>
             <div className='privacy-dropdown__option__icon'>
-              <Icon id={item.icon} fixedWidth />
+              <Icon id={item.icon} icon={item.iconComponent} fixedWidth />
             </div>
 
             <div className='privacy-dropdown__option__content'>
@@ -224,11 +231,11 @@ class SearchabilityDropdown extends PureComponent {
     const { intl: { formatMessage } } = this.props;
 
     this.options = [
-      { icon: 'globe', value: 'public', text: formatMessage(messages.public_short), meta: formatMessage(messages.public_long) },
-      { icon: 'cloud', value: 'public_unlisted', text: formatMessage(messages.public_unlisted_short), meta: formatMessage(messages.public_unlisted_long) },
-      { icon: 'unlock', value: 'private', text: formatMessage(messages.private_short), meta: formatMessage(messages.private_long) },
-      { icon: 'lock', value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
-      { icon: 'at', value: 'limited', text: formatMessage(messages.limited_short), meta: formatMessage(messages.limited_long) },
+      { icon: 'globe', iconComponent: PublicIcon, value: 'public', text: formatMessage(messages.public_short), meta: formatMessage(messages.public_long) },
+      { icon: 'cloud', iconComponent: PublicUnlistedIcon, value: 'public_unlisted', text: formatMessage(messages.public_unlisted_short), meta: formatMessage(messages.public_unlisted_long) },
+      { icon: 'unlock', iconComponent: LockOpenIcon, value: 'private', text: formatMessage(messages.private_short), meta: formatMessage(messages.private_long) },
+      { icon: 'lock', iconComponent: LockIcon, value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
+      { icon: 'at', iconComponent: AlternateEmailIcon, value: 'limited', text: formatMessage(messages.limited_short), meta: formatMessage(messages.limited_long) },
     ];
   }
 
@@ -256,6 +263,7 @@ class SearchabilityDropdown extends PureComponent {
           <IconButton
             className='privacy-dropdown__value-icon'
             icon={valueOption.icon}
+            iconComponent={valueOption.iconComponent}
             title={intl.formatMessage(messages.change_searchability)}
             size={18}
             expanded={open}
@@ -270,6 +278,7 @@ class SearchabilityDropdown extends PureComponent {
           <Icon
             className='searchability-dropdown__value-overlay'
             id='search'
+            icon={SearchIcon}
           />
         </div>
 

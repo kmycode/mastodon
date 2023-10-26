@@ -5,11 +5,15 @@ class CopyStatusStats < ActiveRecord::Migration[5.2]
 
   def up
     safety_assured do
+      add_column :statuses, :searchability, :integer
+      add_column :statuses, :limited_scope, :integer
       if supports_upsert?
         up_fast
       else
         up_slow
       end
+      remove_column :statuses, :searchability
+      remove_column :statuses, :limited_scope
     end
   end
 

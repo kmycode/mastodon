@@ -8,7 +8,6 @@
   = render 'shared/error_messages', object: current_user
 
   = f.simple_fields_for :settings, current_user.settings do |ff|
-
     %h4= t 'preferences.visibility'
 
     .fields-row
@@ -16,7 +15,7 @@
         = ff.input :default_privacy, collection: Status.selectable_visibilities, wrapper: :with_label, include_blank: false, label_method: ->(visibility) { safe_join([I18n.t("statuses.visibilities.#{visibility}"), I18n.t("statuses.visibilities.#{visibility}_long")], ' - ') }, required: false, hint: false, label: I18n.t('simple_form.labels.defaults.setting_default_privacy')
 
       .fields-group.fields-row__column.fields-row__column-6
-        = ff.input :default_reblog_privacy, collection: Status.selectable_reblog_visibilities, wrapper: :with_label, kmyblue: true, include_blank: false, label_method: lambda { |visibility| safe_join([I18n.t("statuses.visibilities.#{visibility}"), I18n.t("statuses.visibilities.#{visibility}_long")], ' - ') }, required: false, hint: false, label: I18n.t('simple_form.labels.defaults.setting_default_reblog_privacy')
+        = ff.input :default_reblog_privacy, collection: Status.selectable_reblog_visibilities, wrapper: :with_label, kmyblue: true, include_blank: false, label_method: ->(visibility) { safe_join([I18n.t("statuses.visibilities.#{visibility}"), I18n.t("statuses.visibilities.#{visibility}_long")], ' - ') }, required: false, hint: false, label: I18n.t('simple_form.labels.defaults.setting_default_reblog_privacy')
 
     .fields-group
       = ff.input :stay_privacy, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_stay_privacy')
@@ -32,7 +31,7 @@
 
     .fields-row
       .fields-group.fields-row__column.fields-row__column-12
-        = ff.input :default_searchability, collection: Status.selectable_searchabilities, wrapper: :with_label, kmyblue: true, include_blank: false, label_method: lambda { |searchability| safe_join([I18n.t("statuses.searchabilities.#{searchability}"), I18n.t("statuses.searchabilities.#{searchability}_long")], ' - ') }, required: false, hint: false, label: I18n.t('simple_form.labels.defaults.setting_default_searchability'), hint: I18n.t('simple_form.hints.defaults.setting_default_searchability')
+        = ff.input :default_searchability, collection: Status.selectable_searchabilities, wrapper: :with_label, kmyblue: true, include_blank: false, label_method: ->(searchability) { safe_join([I18n.t("statuses.searchabilities.#{searchability}"), I18n.t("statuses.searchabilities.#{searchability}_long")], ' - ') }, required: false, label: I18n.t('simple_form.labels.defaults.setting_default_searchability'), hint: I18n.t('simple_form.hints.defaults.setting_default_searchability')
 
     .fields-group
       = ff.input :disallow_unlisted_public_searchability, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_disallow_unlisted_public_searchability'), hint: I18n.t('simple_form.hints.defaults.setting_disallow_unlisted_public_searchability')
@@ -41,7 +40,7 @@
 
     .fields-row
       .fields-group.fields-row__column.fields-row__column-12
-        = ff.input :default_searchability_of_search, collection: Status.selectable_searchabilities_for_search, wrapper: :with_label, kmyblue: true, include_blank: false, label_method: lambda { |searchability| safe_join([I18n.t("statuses.searchabilities.#{searchability}"), I18n.t("statuses.searchabilities.#{searchability}_search_long")], ' - ') }, required: false, hint: false, label: I18n.t('simple_form.labels.defaults.setting_default_searchability_of_search')
+        = ff.input :default_searchability_of_search, collection: Status.selectable_searchabilities_for_search, wrapper: :with_label, kmyblue: true, include_blank: false, label_method: ->(searchability) { safe_join([I18n.t("statuses.searchabilities.#{searchability}"), I18n.t("statuses.searchabilities.#{searchability}_search_long")], ' - ') }, required: false, hint: false, label: I18n.t('simple_form.labels.defaults.setting_default_searchability_of_search')
 
     .fields-group
       = ff.input :use_public_index, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_use_public_index')

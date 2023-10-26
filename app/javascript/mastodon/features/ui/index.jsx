@@ -562,7 +562,7 @@ class UI extends PureComponent {
   };
 
   handleHotkeyGoToEmojiReactions = () => {
-    this.context.router.history.push('/emoji_reactions');
+    this.props.history.push('/emoji_reactions');
   };
 
   handleHotkeyGoToPinned = () => {

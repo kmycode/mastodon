@@ -12,6 +12,8 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { ReactComponent as MenuIcon } from '@material-symbols/svg-600/outlined/menu.svg';
+import { ReactComponent as EmojiReactionIcon } from '@material-symbols/svg-600/outlined/mood.svg';
 
 import { updateReactionDeck } from 'mastodon/actions/reaction_deck';
 import { Button } from 'mastodon/components/button';
@@ -118,6 +120,7 @@ class ReactionDeck extends ImmutablePureComponent {
       <Column bindToDocument={!multiColumn}>
         <ColumnHeader
           icon='smile-o'
+          iconComponent={EmojiReactionIcon}
           title={intl.formatMessage(messages.heading)}
           multiColumn={multiColumn}
           showBackButton
@@ -135,7 +138,9 @@ class ReactionDeck extends ImmutablePureComponent {
                     <Draggable key={index} draggableId={'' + index} index={index}>
                       {(provided2) => (
                         <div className='reaction_deck_container__row' ref={provided2.innerRef} {...provided2.draggableProps}>
-                          <Icon id='bars' className='handle' {...provided2.dragHandleProps} />
+                          <span {...provided2.dragHandleProps}>
+                            <Icon id='bars' icon={MenuIcon} className='handle'  />
+                          </span>
                           <ReactionEmoji emojiMap={emojiMap}
                             emoji={emoji.get('name')}
                             index={index}

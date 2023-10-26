@@ -6,7 +6,7 @@
       = custom_emoji_tag(custom_emoji)
 
     .batch-table__row__content__text
-      %samp= ":#{custom_emoji.shortcode}:"
+      %samp :#{custom_emoji.shortcode}:
       = link_to safe_join([fa_icon('pencil'), t('admin.custom_emojis.edit.label')]), edit_admin_custom_emoji_path(custom_emoji, local: params[:local], remote: params[:remote], shortcode: params[:shortcode], by_domain: params[:by_domain]), method: :get, class: 'table-action-link'
 
       - if custom_emoji.local?
