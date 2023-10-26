@@ -97,6 +97,7 @@ en:
         closed_registrations_message: Displayed when sign-ups are closed
         content_cache_retention_period: All posts and boosts from other servers will be deleted after the specified number of days. Some posts may not be recoverable. All related bookmarks, favourites and boosts will also be lost and impossible to undo.
         custom_css: You can apply custom styles on the web version of Mastodon.
+        enable_local_timeline: While enabling this feature will allow for interaction between like-minded users, it may also strengthen the internal atmosphere; since Mastodon is supposed to have a local timeline, we recommend annotating it in the server introduction if it is to be disabled.
         enable_public_unlisted_visibility: If true, your community maybe closed-minded. If turn it false, strongly recommend that you disclose that you have disabled this setting!
         mascot: Overrides the illustration in the advanced web interface.
         media_cache_retention_period: Downloaded media files will be deleted after the specified number of days when set to a positive value, and re-downloaded on demand.
@@ -329,6 +330,7 @@ en:
         content_cache_retention_period: Content cache retention period
         custom_css: Custom CSS
         enable_emoji_reaction: Enable stamp function
+        enable_local_timeline: Enable local timeline
         enable_public_unlisted_visibility: Enable public-unlisted visibility
         mascot: Custom mascot (legacy)
         media_cache_retention_period: Media cache retention period

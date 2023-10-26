@@ -22,6 +22,7 @@ const messages = defineMessages({
   title: { id: 'column.about', defaultMessage: 'About' },
   rules: { id: 'about.rules', defaultMessage: 'Server rules' },
   blocks: { id: 'about.blocks', defaultMessage: 'Moderated servers' },
+  localTimeline: { id: 'column.community', defaultMessage: 'Local timeline' },
   noop: { id: 'about.domain_blocks.noop.title', defaultMessage: 'Soft limited' },
   noopExplanation: { id: 'about.domain_blocks.noop.explanation', defaultMessage: 'This server is limited partically.' },
   silenced: { id: 'about.domain_blocks.silenced.title', defaultMessage: 'Limited' },
@@ -130,6 +131,7 @@ class About extends PureComponent {
     const fedibirdCapabilities = server.get('fedibird_capabilities') || [];   // thinking about isLoading is true
     const isPublicUnlistedVisibility = fedibirdCapabilities.includes('kmyblue_visibility_public_unlisted');
     const isEmojiReaction = fedibirdCapabilities.includes('emoji_reaction');
+    const isLocalTimeline = !fedibirdCapabilities.includes('timeline_no_local');
 
     return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
@@ -200,6 +202,9 @@ class About extends PureComponent {
                 </li>
                 <li>
                   <span className='rules-list__text'>{intl.formatMessage(messages.publicUnlistedVisibility)}: {intl.formatMessage(isPublicUnlistedVisibility ? messages.enabled : messages.disabled)}</span>
+                </li>
+                <li>
+                  <span className='rules-list__text'>{intl.formatMessage(messages.localTimeline)}: {intl.formatMessage(isLocalTimeline ? messages.enabled : messages.disabled)}</span>
                 </li>
               </ol>
             )}

@@ -62,6 +62,7 @@
  * @property {boolean} enable_emoji_reaction
  * @property {boolean} enable_login_privacy
  * @property {boolean} enable_local_privacy
+ * @property {boolean} enable_local_timeline
  * @property {boolean} enable_dtl_menu
  * @property {boolean=} expand_spoilers
  * @property {boolean} hide_blocking_quote
@@ -136,6 +137,7 @@ export const domain = getMeta('domain');
 export const dtlTag = getMeta('dtl_tag');
 export const enableEmojiReaction = getMeta('enable_emoji_reaction');
 export const enableLocalPrivacy = getMeta('enable_local_privacy');
+export const enableLocalTimeline = getMeta('enable_local_timeline');
 export const enableLoginPrivacy = getMeta('enable_login_privacy');
 export const enableDtlMenu = getMeta('enable_dtl_menu');
 export const expandSpoilers = getMeta('expand_spoilers');

@@ -111,6 +111,7 @@ ja:
         closed_registrations_message: アカウント作成を停止している時に表示されます
         content_cache_retention_period: 指定した日数が経過した他のサーバーの投稿とブーストを削除します。削除された投稿は再取得できない場合があります。削除された投稿についたブックマークやお気に入り、ブーストも失われ、元に戻せません。
         custom_css: ウェブ版のMastodonでカスタムスタイルを適用できます。
+        enable_local_timeline: 有効にすると気の合ったユーザー同士の交流が捗る反面、内輪の雰囲気が強くなるかもしれません。Mastodonはローカルタイムラインがあるものだと思われているので、無効にする場合はサーバー紹介での注記をおすすめします。
         enable_public_unlisted_visibility: 有効にするとあなたのコミュニティは閉鎖的になるかもしれません。この設定はkmyblueの主要機能の1つであり、無効にする場合は概要などに記載することを強くおすすめします。
         mascot: 上級者向けWebインターフェースのイラストを上書きします。
         media_cache_retention_period: 正の値に設定されている場合、ダウンロードされたメディアファイルは指定された日数の後に削除され、リクエストに応じて再ダウンロードされます。
@@ -345,6 +346,7 @@ ja:
         content_cache_retention_period: コンテンツキャッシュの保持期間
         custom_css: カスタムCSS
         enable_emoji_reaction: スタンプ機能を有効にする
+        enable_local_timeline: ローカルタイムラインを有効にする
         enable_public_unlisted_visibility: 公開範囲「ローカル公開」を有効にする
         mascot: カスタムマスコット（レガシー）
         media_cache_retention_period: メディアキャッシュの保持期間

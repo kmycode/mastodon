@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 import { WordmarkLogo } from 'mastodon/components/logo';
 import NavigationPortal from 'mastodon/components/navigation_portal';
-import { enableDtlMenu, timelinePreview, trendsEnabled, dtlTag } from 'mastodon/initial_state';
+import { enableDtlMenu, timelinePreview, trendsEnabled, dtlTag, enableLocalTimeline } from 'mastodon/initial_state';
 import { transientSingleColumn } from 'mastodon/is_mobile';
 
 import ColumnLink from './column_link';
@@ -89,8 +89,11 @@ class NavigationPanel extends Component {
           <>
             <ColumnLink transparent to='/home' icon='home' text={intl.formatMessage(messages.home)} />
             <ColumnLink transparent to='/notifications' icon={<NotificationsCounterIcon className='column-link__icon' />} text={intl.formatMessage(messages.notifications)} />
-            <ColumnLink transparent to='/public/local/fixed' icon='users' text={intl.formatMessage(messages.local)} />
           </>
+        )}
+
+        {signedIn && enableLocalTimeline && (
+          <ColumnLink transparent to='/public/local/fixed' icon='users' text={intl.formatMessage(messages.local)} />
         )}
 
         {signedIn && enableDtlMenu && dtlTag && (
@@ -104,7 +107,7 @@ class NavigationPanel extends Component {
         )}
 
         {(!signedIn && timelinePreview) && (
-          <ColumnLink transparent to='/public/local' isActive={this.isFirehoseActive} icon='globe' text={intl.formatMessage(messages.firehose)} />
+          <ColumnLink transparent to={enableLocalTimeline ? '/public/local' : '/public'} isActive={this.isFirehoseActive} icon='globe' text={intl.formatMessage(messages.firehose)} />
         )}
 
         {signedIn && (

@@ -7,9 +7,12 @@ describe 'Public' do
   let(:scopes)  { 'read:statuses' }
   let(:token)   { Fabricate(:accessible_access_token, resource_owner_id: user.id, scopes: scopes) }
   let(:headers) { { 'Authorization' => "Bearer #{token.token}" } }
+  let(:ltl_enabled) { true }
 
   shared_examples 'a successful request to the public timeline' do
     it 'returns the expected statuses successfully', :aggregate_failures do
+      Form::AdminSettings.new(enable_local_timeline: '0').save unless ltl_enabled
+
       subject
 
       expect(response).to have_http_status(200)
@@ -47,6 +50,13 @@ describe 'Public' do
         let(:expected_statuses) { [local_status, media_status] }
 
         it_behaves_like 'a successful request to the public timeline'
+
+        context 'when local timeline is disabled' do
+          let(:expected_statuses) { [] }
+          let(:ltl_enabled) { false }
+
+          it_behaves_like 'a successful request to the public timeline'
+        end
       end
 
       context 'with remote param' do
@@ -54,6 +64,12 @@ describe 'Public' do
         let(:expected_statuses) { [remote_status] }
 
         it_behaves_like 'a successful request to the public timeline'
+
+        context 'when local timeline is disabled' do
+          let(:ltl_enabled) { false }
+
+          it_behaves_like 'a successful request to the public timeline'
+        end
       end
 
       context 'with local and remote params' do
@@ -61,6 +77,12 @@ describe 'Public' do
         let(:expected_statuses) { [local_status, remote_status, media_status] }
 
         it_behaves_like 'a successful request to the public timeline'
+
+        context 'when local timeline is disabled' do
+          let(:ltl_enabled) { false }
+
+          it_behaves_like 'a successful request to the public timeline'
+        end
       end
 
       context 'with only_media param' do

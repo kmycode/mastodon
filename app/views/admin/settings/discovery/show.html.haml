@@ -45,6 +45,9 @@
   .fields-group
     = f.input :enable_public_unlisted_visibility, as: :boolean, wrapper: :with_label, kmyblue: true, hint: false
 
+  .fields-group
+    = f.input :enable_local_timeline, as: :boolean, wrapper: :with_label, kmyblue: true
+
   %h4= t('admin.settings.discovery.friend_servers')
 
   .fields-group
