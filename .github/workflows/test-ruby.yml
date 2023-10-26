@@ -114,6 +114,7 @@ jobs:
       BUNDLE_WITH: 'pam_authentication test'
       CI_JOBS: ${{ matrix.ci_job }}/4
       ES_ENABLED: false
+      GITHUB_RSPEC: ${{ matrix.ruby-version == '.ruby-version' && github.event.pull_request && 'true' }}
 
     strategy:
       fail-fast: false

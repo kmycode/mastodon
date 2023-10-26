@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage, defineMessages } from 'react-intl';
 
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
@@ -15,6 +15,7 @@ import { Icon }  from 'mastodon/components/icon';
 import AccountContainer from 'mastodon/containers/account_container';
 import StatusContainer from 'mastodon/containers/status_container';
 import { me } from 'mastodon/initial_state';
+import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import FollowRequestContainer from '../containers/follow_request_container';
 
@@ -44,11 +45,6 @@ const notificationForScreenReader = (intl, message, timestamp) => {
 };
 
 class Notification extends ImmutablePureComponent {
-
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   static propTypes = {
     notification: ImmutablePropTypes.map.isRequired,
     hidden: PropTypes.bool,
@@ -65,6 +61,7 @@ class Notification extends ImmutablePureComponent {
     cacheMediaWidth: PropTypes.func,
     cachedMediaWidth: PropTypes.number,
     unread: PropTypes.bool,
+    ...WithRouterPropTypes,
   };
 
   handleMoveUp = () => {
@@ -81,7 +78,7 @@ class Notification extends ImmutablePureComponent {
     const { notification } = this.props;
 
     if (notification.get('status')) {
-      this.context.router.history.push(`/@${notification.getIn(['status', 'account', 'acct'])}/${notification.get('status')}`);
+      this.props.history.push(`/@${notification.getIn(['status', 'account', 'acct'])}/${notification.get('status')}`);
     } else {
       this.handleOpenProfile();
     }
@@ -89,14 +86,14 @@ class Notification extends ImmutablePureComponent {
 
   handleOpenProfile = () => {
     const { notification } = this.props;
-    this.context.router.history.push(`/@${notification.getIn(['account', 'acct'])}`);
+    this.props.history.push(`/@${notification.getIn(['account', 'acct'])}`);
   };
 
   handleMention = e => {
     e.preventDefault();
 
     const { notification, onMention } = this.props;
-    onMention(notification.get('account'), this.context.router.history);
+    onMention(notification.get('account'), this.props.history);
   };
 
   handleHotkeyFavourite = () => {
@@ -560,4 +557,4 @@ class Notification extends ImmutablePureComponent {
 
 }
 
-export default injectIntl(Notification);
+export default withRouter(injectIntl(Notification));

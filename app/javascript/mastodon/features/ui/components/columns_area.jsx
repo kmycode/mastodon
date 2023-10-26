@@ -54,11 +54,6 @@ const componentMap = {
 };
 
 export default class ColumnsArea extends ImmutablePureComponent {
-
-  static contextTypes = {
-    router: PropTypes.object.isRequired,
-  };
-
   static propTypes = {
     columns: ImmutablePropTypes.list.isRequired,
     isModalOpen: PropTypes.bool.isRequired,

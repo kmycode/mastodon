@@ -6,7 +6,7 @@ import { defineMessages, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
 import { changeBookmarkCategoryEditorTitle, submitBookmarkCategoryEditor } from 'mastodon/actions/bookmark_categories';
-import Button from 'mastodon/components/button';
+import { Button } from 'mastodon/components/button';
 
 const messages = defineMessages({
   label: { id: 'bookmark_categories.new.title_placeholder', defaultMessage: 'New category title' },

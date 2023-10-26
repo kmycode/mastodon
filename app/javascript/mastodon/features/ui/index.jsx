@@ -16,6 +16,7 @@ import { synchronouslySubmitMarkers, submitMarkers, fetchMarkers } from 'mastodo
 import { INTRODUCTION_VERSION } from 'mastodon/actions/onboarding';
 import PictureInPicture from 'mastodon/features/picture_in_picture';
 import { layoutFromWindow } from 'mastodon/is_mobile';
+import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import { uploadCompose, resetCompose, changeComposeSpoilerness } from '../../actions/compose';
 import { clearHeight } from '../../actions/height_cache';
@@ -278,7 +279,6 @@ class SwitchingColumnsArea extends PureComponent {
 class UI extends PureComponent {
 
   static contextTypes = {
-    router: PropTypes.object.isRequired,
     identity: PropTypes.object.isRequired,
   };
 
@@ -289,12 +289,12 @@ class UI extends PureComponent {
     hasComposingText: PropTypes.bool,
     hasMediaAttachments: PropTypes.bool,
     canUploadMore: PropTypes.bool,
-    location: PropTypes.object,
     intl: PropTypes.object.isRequired,
     dropdownMenuIsOpen: PropTypes.bool,
     layout: PropTypes.string.isRequired,
     firstLaunch: PropTypes.bool,
     username: PropTypes.string,
+    ...WithRouterPropTypes,
   };
 
   state = {
@@ -391,7 +391,7 @@ class UI extends PureComponent {
 
   handleServiceWorkerPostMessage = ({ data }) => {
     if (data.type === 'navigate') {
-      this.context.router.history.push(data.path);
+      this.props.history.push(data.path);
     } else {
       console.warn('Unknown message type:', data.type);
     }
@@ -512,12 +512,12 @@ class UI extends PureComponent {
   };
 
   handleHotkeyBack = () => {
-    const { router } = this.context;
+    const { history } = this.props;
 
-    if (router.history.location?.state?.fromMastodon) {
-      router.history.goBack();
+    if (history.location?.state?.fromMastodon) {
+      history.goBack();
     } else {
-      router.history.push('/');
+      history.push('/');
     }
   };
 
@@ -527,38 +527,38 @@ class UI extends PureComponent {
 
   handleHotkeyToggleHelp = () => {
     if (this.props.location.pathname === '/keyboard-shortcuts') {
-      this.context.router.history.goBack();
+      this.props.history.goBack();
     } else {
-      this.context.router.history.push('/keyboard-shortcuts');
+      this.props.history.push('/keyboard-shortcuts');
     }
   };
 
   handleHotkeyGoToHome = () => {
-    this.context.router.history.push('/home');
+    this.props.history.push('/home');
   };
 
   handleHotkeyGoToNotifications = () => {
-    this.context.router.history.push('/notifications');
+    this.props.history.push('/notifications');
   };
 
   handleHotkeyGoToLocal = () => {
-    this.context.router.history.push('/public/local');
+    this.props.history.push('/public/local');
   };
 
   handleHotkeyGoToFederated = () => {
-    this.context.router.history.push('/public');
+    this.props.history.push('/public');
   };
 
   handleHotkeyGoToDirect = () => {
-    this.context.router.history.push('/conversations');
+    this.props.history.push('/conversations');
   };
 
   handleHotkeyGoToStart = () => {
-    this.context.router.history.push('/getting-started');
+    this.props.history.push('/getting-started');
   };
 
   handleHotkeyGoToFavourites = () => {
-    this.context.router.history.push('/favourites');
+    this.props.history.push('/favourites');
   };
 
   handleHotkeyGoToEmojiReactions = () => {
@@ -566,23 +566,23 @@ class UI extends PureComponent {
   };
 
   handleHotkeyGoToPinned = () => {
-    this.context.router.history.push('/pinned');
+    this.props.history.push('/pinned');
   };
 
   handleHotkeyGoToProfile = () => {
-    this.context.router.history.push(`/@${this.props.username}`);
+    this.props.history.push(`/@${this.props.username}`);
   };
 
   handleHotkeyGoToBlocked = () => {
-    this.context.router.history.push('/blocks');
+    this.props.history.push('/blocks');
   };
 
   handleHotkeyGoToMuted = () => {
-    this.context.router.history.push('/mutes');
+    this.props.history.push('/mutes');
   };
 
   handleHotkeyGoToRequests = () => {
-    this.context.router.history.push('/follow_requests');
+    this.props.history.push('/follow_requests');
   };
 
   render () {

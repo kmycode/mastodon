@@ -4,14 +4,14 @@ import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 
 import classNames from 'classnames';
 import { Helmet } from 'react-helmet';
-import { NavLink } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 
 import { Avatar } from 'mastodon/components/avatar';
 import { Badge, AutomatedBadge, GroupBadge } from 'mastodon/components/badge';
-import Button from 'mastodon/components/button';
+import { Button } from 'mastodon/components/button';
 import { FollowersCounter, FollowingCounter, StatusesCounter } from 'mastodon/components/counters';
 import { Icon }  from 'mastodon/components/icon';
 import { IconButton } from 'mastodon/components/icon_button';
@@ -19,6 +19,7 @@ import { ShortNumber } from 'mastodon/components/short_number';
 import DropdownMenuContainer from 'mastodon/containers/dropdown_menu_container';
 import { autoPlayGif, me, domain } from 'mastodon/initial_state';
 import { PERMISSION_MANAGE_USERS, PERMISSION_MANAGE_FEDERATION } from 'mastodon/permissions';
+import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import AccountNoteContainer from '../containers/account_note_container';
 import FollowRequestNoteContainer from '../containers/follow_request_note_container';
@@ -86,11 +87,6 @@ const dateFormatOptions = {
 
 class Header extends ImmutablePureComponent {
 
-  static contextTypes = {
-    identity: PropTypes.object,
-    router: PropTypes.object,
-  };
-
   static propTypes = {
     account: ImmutablePropTypes.map,
     identity_props: ImmutablePropTypes.list,
@@ -117,6 +113,11 @@ class Header extends ImmutablePureComponent {
     intl: PropTypes.object.isRequired,
     domain: PropTypes.string.isRequired,
     hidden: PropTypes.bool,
+    ...WithRouterPropTypes,
+  };
+
+  static contextTypes = {
+    identity: PropTypes.object,
   };
 
   setRef = c => {
@@ -179,25 +180,24 @@ class Header extends ImmutablePureComponent {
   };
 
   handleHashtagClick = e => {
-    const { router } = this.context;
+    const { history } = this.props;
     const value = e.currentTarget.textContent.replace(/^#/, '');
 
-    if (router && e.button === 0 && !(e.ctrlKey || e.metaKey)) {
+    if (history && e.button === 0 && !(e.ctrlKey || e.metaKey)) {
       e.preventDefault();
-      router.history.push(`/tags/${value}`);
+      history.push(`/tags/${value}`);
     }
   };
 
   handleMentionClick = e => {
-    const { router } = this.context;
-    const { onOpenURL } = this.props;
+    const { history, onOpenURL } = this.props;
 
-    if (router && e.button === 0 && !(e.ctrlKey || e.metaKey)) {
+    if (history && e.button === 0 && !(e.ctrlKey || e.metaKey)) {
       e.preventDefault();
 
       const link = e.currentTarget;
 
-      onOpenURL(link.href, router.history, () => {
+      onOpenURL(link.href, history, () => {
         window.location = link.href;
       });
     }
@@ -506,4 +506,4 @@ class Header extends ImmutablePureComponent {
 
 }
 
-export default injectIntl(Header);
+export default withRouter(injectIntl(Header));

@@ -44,7 +44,7 @@ RSpec.configure do |config|
   config.display_try_failure_messages = true
 
   # Use the GitHub Annotations formatter for CI
-  if ENV['GITHUB_ACTIONS'] == 'true'
+  if ENV['GITHUB_ACTIONS'] == 'true' && ENV['GITHUB_RSPEC'] == 'true'
     require 'rspec/github'
     config.add_formatter RSpec::Github::Formatter
   end

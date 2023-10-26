@@ -6,7 +6,7 @@ import { defineMessages, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
 import { changeAntennaEditorTitle, submitAntennaEditor } from 'mastodon/actions/antennas';
-import Button from 'mastodon/components/button';
+import { Button } from 'mastodon/components/button';
 
 const messages = defineMessages({
   label: { id: 'antennas.new.title_placeholder', defaultMessage: 'New antenna title' },

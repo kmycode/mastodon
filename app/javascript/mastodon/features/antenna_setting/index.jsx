@@ -35,7 +35,7 @@ import {
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { fetchLists } from 'mastodon/actions/lists';
 import { openModal } from 'mastodon/actions/modal';
-import Button from 'mastodon/components/button';
+import { Button } from 'mastodon/components/button';
 import Column from 'mastodon/components/column';
 import ColumnHeader from 'mastodon/components/column_header';
 import { Icon }  from 'mastodon/components/icon';

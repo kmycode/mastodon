@@ -14,7 +14,7 @@ import { createSelector } from 'reselect';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 import { updateReactionDeck } from 'mastodon/actions/reaction_deck';
-import Button from 'mastodon/components/button';
+import { Button } from 'mastodon/components/button';
 import ColumnHeader from 'mastodon/components/column_header';
 import { Icon } from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
