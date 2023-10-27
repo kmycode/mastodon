@@ -22,7 +22,7 @@ import { focusCompose } from 'mastodon/actions/compose';
 import { closeOnboarding } from 'mastodon/actions/onboarding';
 import { Icon }  from 'mastodon/components/icon';
 import Column from 'mastodon/features/ui/components/column';
-import { me } from 'mastodon/initial_state';
+import { enableLocalTimeline, me } from 'mastodon/initial_state';
 import { makeGetAccount } from 'mastodon/selectors';
 import { assetHost } from 'mastodon/utils/config';
 import { WithRouterPropTypes } from 'mastodon/utils/react_router';
@@ -132,9 +132,12 @@ class Onboarding extends ImmutablePureComponent {
               <FormattedMessage id='onboarding.actions.go_to_explore' defaultMessage='Take me to trending' />
               <Icon icon={ArrowRightAltIcon} />
             </Link>
-            <Link to='/public/local' onClick={this.handleClose} className='onboarding__link'>
-              <FormattedMessage id='onboarding.actions.go_to_local_timeline' defaultMessage='See posts from local' />
-            </Link>
+            {enableLocalTimeline && (
+              <Link to='/public/local' onClick={this.handleClose} className='onboarding__link'>
+                <FormattedMessage id='onboarding.actions.go_to_local_timeline' defaultMessage='See posts from local' />
+                <Icon icon={ArrowRightAltIcon} />
+              </Link>
+            )}
             <Link to='/home' onClick={this.handleClose} className='onboarding__link'>
               <FormattedMessage id='onboarding.actions.go_to_home' defaultMessage='Take me to my home feed' />
               <Icon icon={ArrowRightAltIcon} />

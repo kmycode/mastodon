@@ -9,6 +9,7 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 
+import { ReactComponent as CirclesIcon } from '@material-symbols/svg-600/outlined/account_circle-fill.svg';
 import { ReactComponent as CircleIcon } from '@material-symbols/svg-600/outlined/account_circle.svg';
 
 import { fetchCircles, deleteCircle } from 'mastodon/actions/circles';
@@ -96,7 +97,7 @@ class Circles extends ImmutablePureComponent {
 
     return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.heading)}>
-        <ColumnHeader title={intl.formatMessage(messages.heading)} icon='user-circle' iconComponent={CircleIcon} multiColumn={multiColumn} />
+        <ColumnHeader title={intl.formatMessage(messages.heading)} icon='user-circle' iconComponent={CirclesIcon} multiColumn={multiColumn} />
 
         <NewCircleForm />
 
