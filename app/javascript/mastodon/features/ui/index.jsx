@@ -236,7 +236,7 @@ class SwitchingColumnsArea extends PureComponent {
             <WrappedRoute path='/directory' component={Directory} content={children} />
             <WrappedRoute path={['/explore', '/search']} component={Explore} content={children} />
             <WrappedRoute path={['/publish', '/statuses/new']} component={Compose} content={children} />
-            
+
             <WrappedRoute path={['/@:acct', '/accounts/:id']} exact component={AccountTimeline} content={children} />
             <WrappedRoute path='/@:acct/tagged/:tagged?' exact component={AccountTimeline} content={children} />
             <WrappedRoute path={['/@:acct/with_replies', '/accounts/:id/with_replies']} component={AccountTimeline} content={children} componentParams={{ withReplies: true }} />
