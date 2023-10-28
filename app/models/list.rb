@@ -11,6 +11,7 @@
 #  updated_at     :datetime         not null
 #  replies_policy :integer          default("list"), not null
 #  exclusive      :boolean          default(FALSE), not null
+#  notify         :boolean          default(FALSE), not null
 #
 
 class List < ApplicationRecord
@@ -25,6 +26,8 @@ class List < ApplicationRecord
   has_many :list_accounts, inverse_of: :list, dependent: :destroy
   has_many :accounts, through: :list_accounts
   has_many :antennas, inverse_of: :list, dependent: :destroy
+  has_many :list_statuses, inverse_of: :list, dependent: :destroy
+  has_many :statuses, through: :list_statuses
 
   validates :title, presence: true
 

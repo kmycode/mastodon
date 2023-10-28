@@ -22,6 +22,7 @@ class Notification < ApplicationRecord
   LEGACY_TYPE_CLASS_MAP = {
     'Mention' => :mention,
     'Status' => :reblog,
+    'ListStatus' => :list_status,
     'Follow' => :follow,
     'FollowRequest' => :follow_request,
     'Favourite' => :favourite,
@@ -34,6 +35,7 @@ class Notification < ApplicationRecord
   TYPES = %i(
     mention
     status
+    list_status
     reblog
     status_reference
     follow
@@ -50,6 +52,7 @@ class Notification < ApplicationRecord
 
   TARGET_STATUS_INCLUDES_BY_TYPE = {
     status: :status,
+    list_status: [list_status: :status],
     reblog: [status: :reblog],
     status_reference: [status_reference: :status],
     mention: [mention: :status],
@@ -68,6 +71,7 @@ class Notification < ApplicationRecord
   with_options foreign_key: 'activity_id', optional: true do
     belongs_to :mention, inverse_of: :notification
     belongs_to :status, inverse_of: :notification
+    belongs_to :list_status, inverse_of: :notification
     belongs_to :follow, inverse_of: :notification
     belongs_to :follow_request, inverse_of: :notification
     belongs_to :favourite, inverse_of: :notification
@@ -90,6 +94,8 @@ class Notification < ApplicationRecord
     case type
     when :status, :update
       status
+    when :list_status
+      list_status&.status
     when :reblog
       status&.reblog
     when :status_reference
@@ -143,6 +149,8 @@ class Notification < ApplicationRecord
         case notification.type
         when :status, :update
           notification.status = cached_status
+        when :list_status
+          notification.list_status.status = cached_status
         when :reblog
           notification.status.reblog = cached_status
         when :status_reference
@@ -182,7 +190,7 @@ class Notification < ApplicationRecord
     case activity_type
     when 'Status', 'Follow', 'Favourite', 'EmojiReaction', 'EmojiReact', 'FollowRequest', 'Poll', 'Report', 'AccountWarning'
       self.from_account_id = activity&.account_id
-    when 'Mention', 'StatusReference'
+    when 'Mention', 'StatusReference', 'ListStatus'
       self.from_account_id = activity&.status&.account_id
     when 'Account'
       self.from_account_id = activity&.id

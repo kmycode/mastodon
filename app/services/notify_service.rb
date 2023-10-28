@@ -10,6 +10,7 @@ class NotifyService < BaseService
     poll
     emoji_reaction
     status_reference
+    list_status
     warning
   ).freeze
 

@@ -38,6 +38,7 @@ class FeedInsertWorker
     else
       perform_push
       perform_notify if notify?
+      perform_notify_for_list if notify_for_list?
     end
   end
 
@@ -56,6 +57,12 @@ class FeedInsertWorker
     return false if @type != :home || @status.reblog? || (@status.reply? && @status.in_reply_to_account_id != @status.account_id)
 
     Follow.find_by(account: @follower, target_account: @status.account)&.notify?
+  end
+
+  def notify_for_list?
+    return false unless @type == :list
+
+    @list.notify?
   end
 
   def perform_push
@@ -88,6 +95,11 @@ class FeedInsertWorker
 
   def perform_notify
     LocalNotificationWorker.perform_async(@follower.id, @status.id, 'Status', 'status')
+  end
+
+  def perform_notify_for_list
+    @list.statuses << @status
+    LocalNotificationWorker.perform_async(@list.account_id, @status.id, 'ListStatus', 'list_status')
   end
 
   def update?
