@@ -6,6 +6,10 @@ export function Compose () {
   return import(/* webpackChunkName: "features/compose" */'../../compose');
 }
 
+export function ComposePage () {
+  return import(/* webpackChunkName: "features/compose_page" */'../../compose_page');
+}
+
 export function Notifications () {
   return import(/* webpackChunkName: "features/notifications" */'../../notifications');
 }
