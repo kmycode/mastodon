@@ -12,7 +12,7 @@ import { ReactComponent as PublicUnlistedIcon } from '@material-symbols/svg-600/
 import { ReactComponent as MutualIcon } from '@material-symbols/svg-600/outlined/compare_arrows.svg';
 import { ReactComponent as LoginIcon } from '@material-symbols/svg-600/outlined/key.svg';
 import { ReactComponent as LockIcon } from '@material-symbols/svg-600/outlined/lock.svg';
-import { ReactComponent as LockOpenIcon } from '@material-symbols/svg-600/outlined/lock_open.svg';
+import { ReactComponent as LockOpenIcon } from '@material-symbols/svg-600/outlined/no_encryption.svg';
 import { ReactComponent as PublicIcon } from '@material-symbols/svg-600/outlined/public.svg';
 import { supportsPassiveEvents } from 'detect-passive-events';
 import Overlay from 'react-overlays/Overlay';
