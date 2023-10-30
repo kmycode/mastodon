@@ -65,7 +65,7 @@ class DetailedStatus extends ImmutablePureComponent {
   handleAccountClick = (e) => {
     if (e.button === 0 && !(e.ctrlKey || e.metaKey) && this.props.history) {
       e.preventDefault();
-      this.history.push(`/@${this.props.status.getIn(['account', 'acct'])}`);
+      this.props.history.push(`/@${this.props.status.getIn(['account', 'acct'])}`);
     }
 
     e.stopPropagation();
