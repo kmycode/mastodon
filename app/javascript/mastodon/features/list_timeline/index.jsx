@@ -154,13 +154,19 @@ class ListTimeline extends PureComponent {
   handleRepliesPolicyChange = ({ target }) => {
     const { dispatch } = this.props;
     const { id } = this.props.params;
-    dispatch(updateList(id, undefined, false, undefined, target.value));
+    dispatch(updateList(id, undefined, false, undefined, target.value, undefined));
   };
 
   onExclusiveToggle = ({ target }) => {
     const { dispatch } = this.props;
     const { id } = this.props.params;
-    dispatch(updateList(id, undefined, false, target.checked, undefined));
+    dispatch(updateList(id, undefined, false, target.checked, undefined, undefined));
+  };
+
+  onNotifyToggle = ({ target }) => {
+    const { dispatch } = this.props;
+    const { id } = this.props.params;
+    dispatch(updateList(id, undefined, false, undefined, undefined, target.checked));
   };
 
   render () {
@@ -170,6 +176,7 @@ class ListTimeline extends PureComponent {
     const title  = list ? list.get('title') : id;
     const replies_policy = list ? list.get('replies_policy') : undefined;
     const isExclusive = list ? list.get('exclusive') : undefined;
+    const isNotify = list ? list.get('notify') : undefined;
     const antennas = list ? (list.get('antennas')?.toArray() || []) : [];
 
     if (typeof list === 'undefined') {
@@ -213,6 +220,13 @@ class ListTimeline extends PureComponent {
             <Toggle id={`list-${id}-exclusive`} defaultChecked={isExclusive} onChange={this.onExclusiveToggle} />
             <label htmlFor={`list-${id}-exclusive`} className='setting-toggle__label'>
               <FormattedMessage id='lists.exclusive' defaultMessage='Hide these posts from home or STL' />
+            </label>
+          </div>
+
+          <div className='setting-toggle'>
+            <Toggle id={`list-${id}-exclusive`} defaultChecked={isNotify} onChange={this.onNotifyToggle} />
+            <label htmlFor={`list-${id}-notify`} className='setting-toggle__label'>
+              <FormattedMessage id='lists.notify' defaultMessage='Notify these posts' />
             </label>
           </div>
 

@@ -148,6 +148,7 @@ const excludeTypesFromFilter = filter => {
     'mention',
     'poll',
     'status',
+    'list_status',
     'update',
     'admin.sign_up',
     'admin.report',

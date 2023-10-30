@@ -190,6 +190,17 @@ export default class ColumnSettings extends PureComponent {
           </div>
         </div>
 
+        <div role='group' aria-labelledby='notifications-list_status'>
+          <span id='notifications-list_status' className='column-settings__section'><FormattedMessage id='notifications.column_settings.list_status' defaultMessage='New posts of list:' /></span>
+
+          <div className='column-settings__row'>
+            <SettingToggle disabled={browserPermission === 'denied'} prefix='notifications_desktop' settings={settings} settingPath={['alerts', 'list_status']} onChange={onChange} label={alertStr} />
+            {showPushSettings && <SettingToggle prefix='notifications_push' settings={pushSettings} settingPath={['alerts', 'list_status']} onChange={this.onPushChange} label={pushStr} />}
+            <SettingToggle prefix='notifications' settings={settings} settingPath={['shows', 'list_status']} onChange={onChange} label={showStr} />
+            <SettingToggle prefix='notifications' settings={settings} settingPath={['sounds', 'list_status']} onChange={onChange} label={soundStr} />
+          </div>
+        </div>
+
         <div role='group' aria-labelledby='notifications-update'>
           <span id='notifications-update' className='column-settings__section'><FormattedMessage id='notifications.column_settings.update' defaultMessage='Edits:' /></span>
 

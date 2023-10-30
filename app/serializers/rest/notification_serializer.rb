@@ -33,4 +33,8 @@ class REST::NotificationSerializer < ActiveModel::Serializer
   def list_status_type?
     object.type == :list_status
   end
+
+  def list
+    object.list_status.list
+  end
 end

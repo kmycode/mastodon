@@ -13,6 +13,7 @@ import { ReactComponent as FlagIcon } from '@material-symbols/svg-600/outlined/f
 import { ReactComponent as HomeIcon } from '@material-symbols/svg-600/outlined/home-fill.svg';
 import { ReactComponent as InsertChartIcon } from '@material-symbols/svg-600/outlined/insert_chart.svg';
 import { ReactComponent as ReferenceIcon } from '@material-symbols/svg-600/outlined/link.svg';
+import { ReactComponent as ListAltIcon } from '@material-symbols/svg-600/outlined/list_alt.svg';
 import { ReactComponent as PersonIcon } from '@material-symbols/svg-600/outlined/person-fill.svg';
 import { ReactComponent as PersonAddIcon } from '@material-symbols/svg-600/outlined/person_add-fill.svg';
 import { ReactComponent as RepeatIcon } from '@material-symbols/svg-600/outlined/repeat.svg';
@@ -38,6 +39,7 @@ const messages = defineMessages({
   poll: { id: 'notification.poll', defaultMessage: 'A poll you have voted in has ended' },
   reblog: { id: 'notification.reblog', defaultMessage: '{name} boosted your status' },
   status: { id: 'notification.status', defaultMessage: '{name} just posted' },
+  listStatus: { id: 'notification.list_status', defaultMessage: '{name} post is added on {listName}' },
   statusReference: { id: 'notification.status_reference', defaultMessage: '{name} refered' },
   update: { id: 'notification.update', defaultMessage: '{name} edited a post' },
   warning: { id: 'notification.warning', defaultMessage: 'You have been warned and "{action}" has been executed. Check your mailbox' },
@@ -358,6 +360,42 @@ class Notification extends ImmutablePureComponent {
     );
   }
 
+  renderListStatus (notification, listLink, link) {
+    const { intl, unread, status } = this.props;
+
+    if (!status) {
+      return null;
+    }
+
+    return (
+      <HotKeys handlers={this.getHandlers()}>
+        <div className={classNames('notification notification-list_status focusable', { unread })} tabIndex={0} aria-label={notificationForScreenReader(intl, intl.formatMessage(messages.listStatus, { name: notification.getIn(['account', 'acct']) }), notification.get('created_at'))}>
+          <div className='notification__message'>
+            <Icon id='list-ul' icon={ListAltIcon} />
+
+            <span title={notification.get('created_at')}>
+              <FormattedMessage id='notification.list_status' defaultMessage='{name} post is added to {listName}' values={{ listName: listLink, name: link }} />
+            </span>
+          </div>
+
+          <StatusContainer
+            id={notification.get('status')}
+            account={notification.get('account')}
+            contextType='notifications'
+            muted
+            withDismiss
+            hidden={this.props.hidden}
+            getScrollPosition={this.props.getScrollPosition}
+            updateScrollBottom={this.props.updateScrollBottom}
+            cachedMediaWidth={this.props.cachedMediaWidth}
+            cacheMediaWidth={this.props.cacheMediaWidth}
+            withoutEmojiReactions
+          />
+        </div>
+      </HotKeys>
+    );
+  }
+
   renderUpdate (notification, link) {
     const { intl, unread, status } = this.props;
 
@@ -531,6 +569,10 @@ class Notification extends ImmutablePureComponent {
       return this.renderStatusReference(notification, link);
     case 'status':
       return this.renderStatus(notification, link);
+    case 'list_status':
+      const list = notification.get('list');
+      const listLink = <bdi><Link className='notification__display-name' href={`/lists/${list.get('id')}`} title={list.get('title')} to={`/lists/${list.get('id')}`}>{list.get('title')}</Link></bdi>;
+      return this.renderListStatus(notification, listLink, link);
     case 'update':
       return this.renderUpdate(notification, link);
     case 'poll':
