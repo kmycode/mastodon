@@ -81,7 +81,7 @@ class BookmarkCategories extends ImmutablePureComponent {
           bindToDocument={!multiColumn}
         >
           {categories.map(category =>
-            <ColumnLink key={category.get('id')} to={`/boozkmark_categories/${category.get('id')}`} icon='bookmark' iconComponent={BookmarkIcon} text={category.get('title')} />,
+            <ColumnLink key={category.get('id')} to={`/bookmark_categories/${category.get('id')}`} icon='bookmark' iconComponent={BookmarkIcon} text={category.get('title')} />,
           )}
         </ScrollableList>
 

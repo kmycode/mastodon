@@ -5,7 +5,7 @@ import { defineMessages, injectIntl } from 'react-intl';
 
 import { Link } from 'react-router-dom';
 
-import { ReactComponent as CircleIcon } from '@material-symbols/svg-600/outlined/account_circle.svg';
+import { ReactComponent as CirclesIcon } from '@material-symbols/svg-600/outlined/account_circle-fill.svg';
 import { ReactComponent as AlternateEmailIcon } from '@material-symbols/svg-600/outlined/alternate_email.svg';
 import { ReactComponent as BookmarksIcon } from '@material-symbols/svg-600/outlined/bookmarks-fill.svg';
 import { ReactComponent as PeopleIcon } from '@material-symbols/svg-600/outlined/group.svg';
@@ -140,7 +140,7 @@ class NavigationPanel extends Component {
           <>
             <ColumnLink transparent to='/lists' icon='list-ul' iconComponent={ListAltIcon} text={intl.formatMessage(messages.lists)} />
             <ColumnLink transparent to='/antennasw' icon='wifi' iconComponent={AntennaIcon} text={intl.formatMessage(messages.antennas)} isActive={this.isAntennasActive} />
-            <ColumnLink transparent to='/circles' icon='user-circle' iconComponent={CircleIcon} text={intl.formatMessage(messages.circles)} />
+            <ColumnLink transparent to='/circles' icon='user-circle' iconComponent={CirclesIcon} text={intl.formatMessage(messages.circles)} />
             <FollowRequestsColumnLink />
             <ColumnLink transparent to='/conversations' icon='at' iconComponent={AlternateEmailIcon} text={intl.formatMessage(messages.direct)} />
           </>

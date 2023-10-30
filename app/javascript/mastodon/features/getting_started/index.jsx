@@ -9,7 +9,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
-import { ReactComponent as CircleIcon } from '@material-symbols/svg-600/outlined/account_circle.svg';
+import { ReactComponent as CirclesIcon } from '@material-symbols/svg-600/outlined/account_circle-fill.svg';
 import { ReactComponent as AlternateEmailIcon } from '@material-symbols/svg-600/outlined/alternate_email.svg';
 import { ReactComponent as BookmarksIcon } from '@material-symbols/svg-600/outlined/bookmarks-fill.svg';
 import { ReactComponent as PeopleIcon } from '@material-symbols/svg-600/outlined/group.svg';
@@ -135,7 +135,7 @@ class GettingStarted extends ImmutablePureComponent {
         <ColumnLink key='favourites' icon='star' iconComponent={StarIcon} text={intl.formatMessage(messages.favourites)} to='/favourites' />,
         <ColumnLink key='lists' icon='list-ul' iconComponent={ListAltIcon} text={intl.formatMessage(messages.lists)} to='/lists' />,
         <ColumnLink key='antennas' icon='wifi' iconComponent={AntennaIcon} text={intl.formatMessage(messages.antennas)} to='/antennasw' />,
-        <ColumnLink key='circles' icon='user-circle' iconComponent={CircleIcon} text={intl.formatMessage(messages.circles)} to='/circles' />,
+        <ColumnLink key='circles' icon='user-circle' iconComponent={CirclesIcon} text={intl.formatMessage(messages.circles)} to='/circles' />,
       );
 
       if (myAccount.get('locked') || unreadFollowRequests > 0) {

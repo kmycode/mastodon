@@ -283,7 +283,7 @@ ja:
         setting_hide_followers_count: フォロワー数を隠す
         setting_hide_following_count: フォロー数を隠す
         setting_hide_network: 繋がりを隠す
-        setting_hide_recent_emojis: 絵文字ピッカーで最近使用した絵文字を隠す（リアクションデッキのみを表示する）
+        setting_hide_recent_emojis: 絵文字ピッカーで最近使用した絵文字を隠す（絵文字デッキのみを表示する）
         setting_hide_statuses_count: 投稿数を隠す
         setting_link_preview: リンクのプレビューを生成する
         setting_lock_follow_from_bot: botからのフォローを承認制にする

@@ -249,6 +249,13 @@ class PrivacyDropdown extends PureComponent {
       { icon: 'exchange', iconComponent: MutualIcon, value: 'mutual', text: formatMessage(messages.mutual_short), meta: formatMessage(messages.mutual_long) },
       { icon: 'user-circle', iconComponent: CircleIcon, value: 'circle', text: formatMessage(messages.circle_short), meta: formatMessage(messages.circle_long) },
     ];
+
+    if (!this.props.noDirect) {
+      this.options.push(
+        { icon: 'at', iconComponent: AlternateEmailIcon, value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
+      );
+    }
+
     this.selectableOptions = [...this.options];
 
     if (!enableLoginPrivacy) {
@@ -257,12 +264,6 @@ class PrivacyDropdown extends PureComponent {
 
     if (!enableLocalPrivacy) {
       this.selectableOptions = this.selectableOptions.filter((opt) => opt.value !== 'public_unlisted');
-    }
-
-    if (!this.props.noDirect) {
-      this.options.push(
-        { icon: 'at', iconComponent: AlternateEmailIcon, value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
-      );
     }
   }
 
