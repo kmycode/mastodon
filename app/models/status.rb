@@ -111,6 +111,7 @@ class Status < ApplicationRecord
   has_one :trend, class_name: 'StatusTrend', inverse_of: :status
   has_one :scheduled_expiration_status, inverse_of: :status, dependent: :destroy
   has_one :circle_status, inverse_of: :status, dependent: :destroy
+  has_many :list_status, inverse_of: :status, dependent: :destroy
 
   validates :uri, uniqueness: true, presence: true, unless: :local?
   validates :text, presence: true, unless: -> { with_media? || reblog? }

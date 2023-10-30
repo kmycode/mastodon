@@ -98,8 +98,8 @@ class FeedInsertWorker
   end
 
   def perform_notify_for_list
-    @list.statuses << @status
-    LocalNotificationWorker.perform_async(@list.account_id, @status.id, 'ListStatus', 'list_status')
+    list_status = ListStatus.create!(list: @list, status: @status)
+    LocalNotificationWorker.perform_async(@list.account_id, list_status.id, 'ListStatus', 'list_status')
   end
 
   def update?

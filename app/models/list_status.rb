@@ -15,5 +15,7 @@ class ListStatus < ApplicationRecord
   belongs_to :list
   belongs_to :status
 
+  has_one :notification, as: :activity, dependent: :destroy
+
   validates :status, uniqueness: { scope: :list }
 end

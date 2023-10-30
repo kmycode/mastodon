@@ -25,11 +25,16 @@ class Scheduler::VacuumScheduler
       applications_vacuum,
       feeds_vacuum,
       imports_vacuum,
+      list_statuses_vacuum,
     ]
   end
 
   def statuses_vacuum
     Vacuum::StatusesVacuum.new(content_retention_policy.content_cache_retention_period)
+  end
+
+  def list_statuses_vacuum
+    Vacuum::ListStatusesVacuum.new
   end
 
   def media_attachments_vacuum
