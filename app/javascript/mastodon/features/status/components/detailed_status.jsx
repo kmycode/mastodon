@@ -293,7 +293,7 @@ class DetailedStatus extends ImmutablePureComponent {
       );
     }
 
-    if (this.context.router) {
+    if (this.props.history) {
       emojiReactionsLink = (
         <Link to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}/emoji_reactions`} className='detailed-status__link'>
           <Icon id='smile-o' icon={EmojiReactionIcon} />
@@ -313,7 +313,7 @@ class DetailedStatus extends ImmutablePureComponent {
       );
     }
 
-    if (this.context.router) {
+    if (this.props.history) {
       statusReferencesLink = (
         <Link to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}/references`} className='detailed-status__link'>
           <Icon id='link' icon={ReferenceIcon} />
