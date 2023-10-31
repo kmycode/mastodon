@@ -22,7 +22,7 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
       actor: ActivityPub::TagManager.instance.uri_for(@status.account),
       published: @status.edited_at,
       to: for_friend ? ActivityPub::TagManager.instance.to_for_friend(@status) : ActivityPub::TagManager.instance.to(@status),
-      cc: for_misskey ? ActivityPub::TagManager.instance.cc_for_misskey : ActivityPub::TagManager.instance.cc(@status),
+      cc: for_misskey ? ActivityPub::TagManager.instance.cc_for_misskey(@status) : ActivityPub::TagManager.instance.cc(@status),
       virtual_object: @status
     )
   end
