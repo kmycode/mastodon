@@ -97,14 +97,33 @@ RSpec.describe Api::V1::StatusesController do
     describe 'GET #context' do
       let(:scopes) { 'read:statuses' }
       let(:status) { Fabricate(:status, account: user.account) }
-
-      before do
-        Fabricate(:status, account: user.account, thread: status)
-      end
+      let!(:thread) { Fabricate(:status, account: user.account, thread: status) }
 
       it 'returns http success' do
         get :context, params: { id: status.id }
         expect(response).to have_http_status(200)
+      end
+
+      context 'when has also reference' do
+        before do
+          Fabricate(:status_reference, status: thread, target_status: status)
+        end
+
+        it 'returns unique ancestors' do
+          get :context, params: { id: thread.id }
+          status_ids = body_as_json[:ancestors].map { |ref| ref[:id].to_i }
+
+          expect(status_ids).to eq [status.id]
+        end
+
+        it 'returns unique references' do
+          get :context, params: { id: thread.id, with_reference: true }
+          ancestor_status_ids = body_as_json[:ancestors].map { |ref| ref[:id].to_i }
+          reference_status_ids = body_as_json[:references].map { |ref| ref[:id].to_i }
+
+          expect(ancestor_status_ids).to eq [status.id]
+          expect(reference_status_ids).to eq []
+        end
       end
     end
 

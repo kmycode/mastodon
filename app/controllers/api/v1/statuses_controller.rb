@@ -49,7 +49,9 @@ class Api::V1::StatusesController < Api::BaseController
     loaded_descendants  = cache_collection(descendants_results, Status)
     loaded_references   = cache_collection(references_results, Status)
 
-    unless params[:with_reference]
+    if params[:with_reference]
+      loaded_references.reject! { |status| loaded_ancestors.any? { |ancestor| ancestor.id == status.id } }
+    else
       loaded_ancestors = (loaded_ancestors + loaded_references).uniq(&:id)
       loaded_references = []
     end
