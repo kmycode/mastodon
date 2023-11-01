@@ -180,7 +180,7 @@ export function fetchContext(id) {
   return (dispatch, getState) => {
     dispatch(fetchContextRequest(id));
 
-    api(getState).get(`/api/v1/statuses/${id}/context`).then(response => {
+    api(getState).get(`/api/v1/statuses/${id}/context?with_reference=1`).then(response => {
       dispatch(importFetchedStatuses(response.data.ancestors.concat(response.data.descendants).concat(response.data.references)));
       dispatch(fetchContextSuccess(id, response.data.ancestors, response.data.descendants, response.data.references));
 

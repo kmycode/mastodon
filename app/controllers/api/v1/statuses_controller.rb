@@ -49,6 +49,11 @@ class Api::V1::StatusesController < Api::BaseController
     loaded_descendants  = cache_collection(descendants_results, Status)
     loaded_references   = cache_collection(references_results, Status)
 
+    unless params[:with_reference]
+      loaded_ancestors = (loaded_ancestors + loaded_references).uniq(&:id)
+      loaded_references = []
+    end
+
     @context = Context.new(ancestors: loaded_ancestors, descendants: loaded_descendants, references: loaded_references)
     statuses = [@status] + @context.ancestors + @context.descendants + @context.references
 
