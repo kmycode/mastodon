@@ -1,3 +1,5 @@
+// Kmyblue tracking marker: copied antenna_adder, circle_adder, bookmark_category_adder
+
 import PropTypes from 'prop-types';
 
 import { injectIntl } from 'react-intl';

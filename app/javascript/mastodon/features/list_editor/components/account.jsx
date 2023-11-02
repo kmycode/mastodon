@@ -1,3 +1,5 @@
+// Kmyblue tracking marker: copied antenna_editor/account, circle_editor/account
+
 import PropTypes from 'prop-types';
 
 import { defineMessages, injectIntl } from 'react-intl';

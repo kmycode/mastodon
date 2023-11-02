@@ -1,3 +1,5 @@
+// Kmyblue tracking marker: copied antennas, circles, bookmark_categories
+
 import PropTypes from 'prop-types';
 
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';

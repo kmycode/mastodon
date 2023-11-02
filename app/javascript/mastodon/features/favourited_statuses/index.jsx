@@ -1,3 +1,5 @@
+// Kmyblue tracking marker: copied emoji_reacted_statuses, status_references
+
 import PropTypes from 'prop-types';
 
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';

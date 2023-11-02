@@ -1,3 +1,5 @@
+// Kmyblue tracking marker: copied circles.js, antennas.js
+
 import api from '../api';
 
 import { showAlertForError } from './alerts';

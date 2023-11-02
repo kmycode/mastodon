@@ -1,3 +1,5 @@
+// Kmyblue tracking marker: copied bookmark_category_statuses, circle_statuses
+
 import PropTypes from 'prop-types';
 
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';

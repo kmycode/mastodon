@@ -1,3 +1,5 @@
+// Kmyblue tracking marker: copied antenna_editor/search, circle_editor/search
+
 import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
 

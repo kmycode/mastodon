@@ -1,3 +1,5 @@
+// Kmyblue tracking marker: copied antenna_adder/account, circle_adder/account
+
 import { injectIntl } from 'react-intl';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
