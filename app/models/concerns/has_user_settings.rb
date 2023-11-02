@@ -259,6 +259,10 @@ module HasUserSettings
     settings['lock_follow_from_bot']
   end
 
+  def setting_hide_emoji_reaction_unavailable_server
+    settings['web.hide_emoji_reaction_unavailable_server']
+  end
+
   def allows_report_emails?
     settings['notification_emails.report']
   end

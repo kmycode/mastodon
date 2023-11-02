@@ -71,6 +71,7 @@ class UserSettings
     setting :show_quote_in_home, default: true
     setting :show_quote_in_public, default: false
     setting :hide_blocking_quote, default: true
+    setting :hide_emoji_reaction_unavailable_server, default: false
   end
 
   namespace :notification_emails do

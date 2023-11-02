@@ -25,7 +25,7 @@ import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import { IconButton } from '../../../components/icon_button';
 import DropdownMenuContainer from '../../../containers/dropdown_menu_container';
-import { enableEmojiReaction , bookmarkCategoryNeeded, me } from '../../../initial_state';
+import { enableEmojiReaction , bookmarkCategoryNeeded, me, hideEmojiReactionUnavailableServer } from '../../../initial_state';
 import EmojiPickerDropdown from '../../compose/containers/emoji_picker_dropdown_container';
 
 const messages = defineMessages({
@@ -358,6 +358,7 @@ class ActionBar extends PureComponent {
       reblogTitle = intl.formatMessage(messages.cannot_reblog);
     }
 
+    const emojiReactionAvailableServer = !hideEmojiReactionUnavailableServer || status.get('emoji_reaction_available_server');
     const emojiReactionPolicy = account.getIn(['other_settings', 'emoji_reaction_policy']) || 'allow';
     const following = emojiReactionPolicy !== 'following_only' || (relationship && relationship.get('following'));
     const followed = emojiReactionPolicy !== 'followers_only' || (relationship && relationship.get('followed_by'));
@@ -367,7 +368,7 @@ class ActionBar extends PureComponent {
     const emojiPickerButton = (
       <IconButton icon='smile-o' iconComponent={EmojiReactionIcon} onClick={this.handleEmojiPickInnerButton} title={intl.formatMessage(messages.pickEmoji)} />
     );
-    const emojiPickerDropdown = enableEmojiReaction && denyFromAll && (writtenByMe || (following && followed && mutual && outside)) && (
+    const emojiPickerDropdown = enableEmojiReaction && emojiReactionAvailableServer && denyFromAll && (writtenByMe || (following && followed && mutual && outside)) && (
       <div className='detailed-status__button'><EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} button={emojiPickerButton} /></div>
     );
 

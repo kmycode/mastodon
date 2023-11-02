@@ -525,6 +525,10 @@ class Status < ApplicationRecord
       Status.where(id: status_ids).pluck(:account_id).uniq.index_with { |a| Account.find_by(id: a).show_emoji_reaction?(my_account) }
     end
 
+    def emoji_reaction_availables_map(domains)
+      domains.index_with { |d| InstanceInfo.emoji_reaction_available?(d) }
+    end
+
     def reload_stale_associations!(cached_items)
       account_ids = []
 

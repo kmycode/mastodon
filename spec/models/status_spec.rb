@@ -460,6 +460,45 @@ RSpec.describe Status do
     end
   end
 
+  describe '.emoji_reaction_availables_map' do
+    subject { described_class.emoji_reaction_availables_map(domains) }
+
+    let(:domains) { %w(features_available.com features_unavailable.com features_invalid.com features_nil.com no_info.com mastodon.com misskey.com) }
+
+    before do
+      Fabricate(:instance_info, domain: 'features_available.com', software: 'mastodon', data: { metadata: { features: ['emoji_reaction'] } })
+      Fabricate(:instance_info, domain: 'features_unavailable.com', software: 'mastodon', data: { metadata: { features: ['ohagi'] } })
+      Fabricate(:instance_info, domain: 'features_invalid.com', software: 'mastodon', data: { metadata: { features: 'good_for_ohagi' } })
+      Fabricate(:instance_info, domain: 'features_nil.com', software: 'mastodon', data: { metadata: { features: nil } })
+      Fabricate(:instance_info, domain: 'mastodon.com', software: 'mastodon')
+      Fabricate(:instance_info, domain: 'misskey.com', software: 'misskey')
+    end
+
+    it 'availables if features contains emoji_reaction' do
+      expect(subject['features_available.com']).to be true
+    end
+
+    it 'unavailables if features does not contain emoji_reaction' do
+      expect(subject['features_unavailable.com']).to be false
+    end
+
+    it 'unavailables if features is not valid' do
+      expect(subject['features_invalid.com']).to be false
+    end
+
+    it 'unavailables if features is nil' do
+      expect(subject['features_nil.com']).to be false
+    end
+
+    it 'unavailables if mastodon server' do
+      expect(subject['mastodon.com']).to be false
+    end
+
+    it 'availables if misskey server' do
+      expect(subject['misskey.com']).to be true
+    end
+  end
+
   describe '.tagged_with' do
     let(:tag_cats) { Fabricate(:tag, name: 'cats') }
     let(:tag_dogs) { Fabricate(:tag, name: 'dogs') }

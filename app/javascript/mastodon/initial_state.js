@@ -66,6 +66,7 @@
  * @property {boolean} enable_dtl_menu
  * @property {boolean=} expand_spoilers
  * @property {boolean} hide_blocking_quote
+ * @property {boolean} hide_emoji_reaction_unavailable_server
  * @property {boolean} hide_recent_emojis
  * @property {boolean} limited_federation_mode
  * @property {string} locale
@@ -143,6 +144,7 @@ export const enableDtlMenu = getMeta('enable_dtl_menu');
 export const expandSpoilers = getMeta('expand_spoilers');
 export const forceSingleColumn = !getMeta('advanced_layout');
 export const hideBlockingQuote = getMeta('hide_blocking_quote');
+export const hideEmojiReactionUnavailableServer = getMeta('hide_emoji_reaction_unavailable_server');
 export const hideRecentEmojis = getMeta('hide_recent_emojis');
 export const limitedFederationMode = getMeta('limited_federation_mode');
 export const mascot = getMeta('mascot');
