@@ -22,7 +22,6 @@ class InstanceInfo < ApplicationRecord
     firefish
     renedon
     fedibird
-    kmyblue
     pleroma
     akkoma
   ).freeze
