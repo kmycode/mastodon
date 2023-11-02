@@ -167,6 +167,8 @@ class REST::StatusSerializer < ActiveModel::Serializer
   end
 
   def emoji_reaction_available_server
+    return Setting.enable_emoji_reaction if object.local?
+
     if relationships
       relationships.emoji_reaction_availables_map[object.account.domain] || false
     else
