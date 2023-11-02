@@ -19,7 +19,6 @@ class StatusRelationshipsPresenter
       @pins_map            = {}
       @filters_map         = {}
       @emoji_reaction_allows_map = nil
-      @emoji_reaction_availables_map = {}
     else
       statuses = statuses.compact
       statuses += statuses.filter_map(&:quote)
@@ -36,7 +35,6 @@ class StatusRelationshipsPresenter
       @domain_blocks_map = Status.domain_blocks_map(statuses.filter_map { |status| status.account.domain }.uniq, current_account_id).merge(options[:domain_blocks_map] || {})
       @pins_map          = Status.pins_map(pinnable_status_ids, current_account_id).merge(options[:pins_map] || {})
       @emoji_reaction_allows_map = Status.emoji_reaction_allows_map(status_ids, current_account_id).merge(options[:emoji_reaction_allows_map] || {})
-      @emoji_reaction_availables_map = Status.emoji_reaction_availables_map(statuses.filter_map { |status| status.account.domain }.uniq).merge(options[:emoji_reaction_availables_map] || {})
       @attributes_map = options[:attributes_map] || {}
     end
   end
