@@ -251,7 +251,7 @@ const insertExpiration = (state, position, data) => {
   return state.merge({
     text: `${oldText.slice(0, position)} ${data} ${oldText.slice(position)}`,
     focusDate: new Date(),
-    caretPosition: position + data.length + 1,
+    caretPosition: position + data.length + 2,
     idempotencyKey: uuid(),
   });
 };

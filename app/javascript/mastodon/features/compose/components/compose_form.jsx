@@ -230,7 +230,7 @@ class ComposeForm extends ImmutablePureComponent {
   };
 
   handleExpirationPick = (data) => {
-    const position     = this.autosuggestTextarea.textarea.selectionStart;
+    const position     = this.textareaRef.current.selectionStart;
 
     this.props.onPickExpiration(position, data);
   };
