@@ -7,6 +7,10 @@
   "scripts": {
     "build:development": "cross-env RAILS_ENV=development NODE_ENV=development ./bin/webpack",
     "build:production": "cross-env RAILS_ENV=production NODE_ENV=production ./bin/webpack",
+    "clean:all": "yarn clean:kbdraft & yarn clean:kbtopic & yarn clean:upstream",
+    "clean:kbdraft": "git branch | grep kb-draft- | xargs git branch -d",
+    "clean:kbtopic": "git branch | grep kbtopic- | xargs git branch -d",
+    "clean:upstream": "git branch | grep upstream- | xargs git branch -d",
     "fix:js": "yarn lint:js --fix",
     "fix:json": "prettier --write \"**/*.{json,json5}\"",
     "fix:md": "prettier --write \"**/*.md\"",
