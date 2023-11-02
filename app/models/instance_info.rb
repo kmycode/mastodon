@@ -14,6 +14,8 @@
 #
 
 class InstanceInfo < ApplicationRecord
+  after_commit :reset_cache
+
   EMOJI_REACTION_AVAILABLE_SOFTWARES = %w(
     misskey
     calckey
@@ -42,5 +44,9 @@ class InstanceInfo < ApplicationRecord
     return false if features.nil? || !features.is_a?(Array)
 
     features.include?('emoji_reaction')
+  end
+
+  def reset_cache
+    Rails.cache.delete("emoji_reaction_available_domain:#{domain}")
   end
 end
