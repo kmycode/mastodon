@@ -344,7 +344,6 @@ class Notification extends ImmutablePureComponent {
 
           <StatusContainer
             id={notification.get('status')}
-            account={notification.get('account')}
             contextType='notifications'
             muted
             withDismiss
@@ -380,7 +379,6 @@ class Notification extends ImmutablePureComponent {
 
           <StatusContainer
             id={notification.get('status')}
-            account={notification.get('account')}
             contextType='notifications'
             muted
             withDismiss
