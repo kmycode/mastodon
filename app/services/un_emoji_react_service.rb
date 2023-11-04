@@ -4,13 +4,14 @@ class UnEmojiReactService < BaseService
   include Redisable
   include Payloadable
 
-  def call(account_id, status_id, emoji_reaction = nil)
-    @status = Status.find(status_id)
+  def call(account, status, emoji_reaction = nil)
+    @account = account
+    @status = status
 
     if emoji_reaction
       emoji_reaction.destroy!
 
-      @status.touch # rubocop:disable Rails/SkipsModelValidations
+      status.touch # rubocop:disable Rails/SkipsModelValidations
 
       create_notification(emoji_reaction) if !@status.account.local? && @status.account.activitypub?
       notify_to_followers(emoji_reaction) if @status.account.local?
@@ -19,8 +20,7 @@ class UnEmojiReactService < BaseService
       relay_for_undo_emoji_reaction!(emoji_reaction)
       relay_friend_for_undo_emoji_reaction!(emoji_reaction)
     else
-      account = Account.find(account_id)
-      bulk(account, @status)
+      bulk(account, status)
     end
     emoji_reaction
   end
@@ -28,8 +28,8 @@ class UnEmojiReactService < BaseService
   private
 
   def bulk(account, status)
-    EmojiReaction.where(account: account).where(status: status).each do |emoji_reaction|
-      call(account.id, status.id, emoji_reaction)
+    EmojiReaction.where(account: account, status: status).each do |emoji_reaction|
+      call(account, status, emoji_reaction)
     end
   end
 
@@ -38,7 +38,7 @@ class UnEmojiReactService < BaseService
   end
 
   def notify_to_followers(emoji_reaction)
-    ActivityPub::RawDistributionWorker.perform_async(build_json(emoji_reaction), @status.account_id)
+    ActivityPub::RawDistributionWorker.perform_async(build_json(emoji_reaction), @account.id)
   end
 
   def write_stream(emoji_reaction)

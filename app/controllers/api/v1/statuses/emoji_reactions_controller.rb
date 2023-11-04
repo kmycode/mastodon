@@ -27,7 +27,7 @@ class Api::V1::Statuses::EmojiReactionsController < Api::BaseController
 
       authorize @status, :show? if emoji_reaction.nil?
 
-      UnEmojiReactService.new.call(current_account.id, @status.id, emoji_reaction) if emoji_reaction.present?
+      UnEmojiReactService.new.call(current_account, @status, emoji_reaction) if emoji_reaction.present?
     else
       authorize @status, :show?
     end

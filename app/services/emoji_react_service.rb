@@ -46,29 +46,15 @@ class EmojiReactService < BaseService
 
   def create_notification
     status = @emoji_reaction.status
+    return unless status.account.local?
+    return unless status.account.user&.setting_enable_emoji_reaction
 
-    if status.account.local?
-      if status.account.user&.setting_enable_emoji_reaction
-        LocalNotificationWorker.perform_async(status.account_id, @emoji_reaction.id, 'EmojiReaction', 'reaction') if status.account.user&.setting_emoji_reaction_streaming_notify_impl2
-        LocalNotificationWorker.perform_async(status.account_id, @emoji_reaction.id, 'EmojiReaction', 'emoji_reaction')
-      end
-    elsif status.account.activitypub?
-      ActivityPub::DeliveryWorker.perform_async(payload, @emoji_reaction.account_id, status.account.inbox_url)
-    end
+    LocalNotificationWorker.perform_async(status.account_id, @emoji_reaction.id, 'EmojiReaction', 'reaction') if status.account.user&.setting_emoji_reaction_streaming_notify_impl2
+    LocalNotificationWorker.perform_async(status.account_id, @emoji_reaction.id, 'EmojiReaction', 'emoji_reaction')
   end
 
   def notify_to_followers
-    status = @emoji_reaction.status
-
-    return unless status.account.local?
-
-    ActivityPub::DeliveryWorker.push_bulk(inboxes, limit: 1_000) do |inbox_url|
-      [payload, @status.account.id, inbox_url]
-    end
-  end
-
-  def inboxes
-    StatusReachFinder.new(@status).all_inboxes
+    ActivityPub::EmojiReactionDistributionWorker.perform_async(@emoji_reaction.id)
   end
 
   def write_stream!

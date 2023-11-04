@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe UnEmojiReactService, type: :service do
   subject do
-    described_class.new.call(sender.id, status.id, emoji_reaction)
+    described_class.new.call(sender, status, emoji_reaction)
     EmojiReaction.where(status: status, account: sender)
   end
 
@@ -82,12 +82,30 @@ RSpec.describe UnEmojiReactService, type: :service do
     end
   end
 
-  context 'when has remote followers' do
+  context 'when remote status' do
+    let(:author) { Fabricate(:account, domain: 'author.foo.bar', uri: 'https://author.foo.bar/actor', inbox_url: 'https://author.foo.bar/inbox', protocol: 'activitypub') }
+    let(:emoji_reaction) { Fabricate(:emoji_reaction, account: sender, status: status, name: '😀') }
+
+    before do
+      stub_request(:post, 'https://author.foo.bar/inbox')
+    end
+
+    it 'react with emoji' do
+      expect(subject.count).to eq 0
+      expect(a_request(:post, 'https://author.foo.bar/inbox').with(body: hash_including({
+        type: 'Undo',
+        actor: ActivityPub::TagManager.instance.uri_for(sender),
+        content: '😀',
+      }))).to have_been_made.once
+    end
+  end
+
+  context 'when sender has remote followers' do
     let!(:bob) { Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/actor', inbox_url: 'https://foo.bar/inbox', protocol: 'activitypub') }
     let(:emoji_reaction) { Fabricate(:emoji_reaction, account: sender, status: status, name: '😀') }
 
     before do
-      bob.follow!(author)
+      bob.follow!(sender)
       stub_request(:post, 'https://foo.bar/inbox')
     end
 

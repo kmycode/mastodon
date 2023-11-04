@@ -54,36 +54,9 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
     Trends.statuses.register(@original_status)
     write_stream(reaction)
 
-    if @original_status.account.local?
-      NotifyService.new.call(@original_status.account, :emoji_reaction, reaction)
-      forward_for_emoji_reaction
-      relay_for_emoji_reaction
-      relay_friend_for_emoji_reaction
-    end
+    NotifyService.new.call(@original_status.account, :emoji_reaction, reaction) if @original_status.account.local?
   rescue Seahorse::Client::NetworkingError
     nil
-  end
-
-  def forward_for_emoji_reaction
-    return if @json['signature'].blank?
-
-    ActivityPub::RawDistributionWorker.perform_async(Oj.dump(@json), @original_status.account.id, [@account.preferred_inbox_url])
-  end
-
-  def relay_for_emoji_reaction
-    return unless @json['signature'].present? && @original_status.public_visibility?
-
-    ActivityPub::DeliveryWorker.push_bulk(Relay.enabled.pluck(:inbox_url)) do |inbox_url|
-      [Oj.dump(@json), @original_status.account.id, inbox_url]
-    end
-  end
-
-  def relay_friend_for_emoji_reaction
-    return unless @json['signature'].present? && @original_status.distributable_friend?
-
-    ActivityPub::DeliveryWorker.push_bulk(FriendDomain.distributables.pluck(:inbox_url)) do |inbox_url|
-      [Oj.dump(@json), @original_status.account.id, inbox_url]
-    end
   end
 
   def shortcode
