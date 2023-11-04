@@ -695,6 +695,10 @@ body > [data-popper-placement] {
         height: 100%;
       }
 
+      .searchability .icon-button {
+        height: 27px;
+      }
+
       .compose-form__upload-button-icon {
         line-height: 27px;
       }
@@ -5122,6 +5126,8 @@ a.status-card {
     bottom: 0;
     color: purple;
     pointer-events: none;
+    width: 60%;
+    height: 60%;
   }
 }
 
