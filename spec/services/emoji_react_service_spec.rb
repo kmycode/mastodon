@@ -176,6 +176,24 @@ RSpec.describe EmojiReactService, type: :service do
         content: '😀',
       }))).to have_been_made.once
     end
+
+    context 'when has followers' do
+      let!(:bob) { Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/actor', inbox_url: 'https://foo.bar/inbox', protocol: 'activitypub') }
+
+      before do
+        bob.follow!(sender)
+        stub_request(:post, 'https://foo.bar/inbox')
+      end
+
+      it 'react with emoji' do
+        expect(subject.count).to eq 1
+        expect(a_request(:post, 'https://foo.bar/inbox').with(body: hash_including({
+          type: 'Like',
+          actor: ActivityPub::TagManager.instance.uri_for(sender),
+          content: '😀',
+        }))).to have_been_made.once
+      end
+    end
   end
 
   context 'when sender has remote followers' do
