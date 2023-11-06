@@ -14,8 +14,11 @@ class AddMasterSettingsToAccounts < ActiveRecord::Migration[7.1]
       add_column :accounts, :master_settings, :jsonb
 
       Account.transaction do
-        Account.where(dissubscribable: false).update_all(master_settings: { 'subscribtion_policy' => 'allow' }) # rubocop:disable Rails/SkipsModelValidations
-        Account.where(dissubscribable: true).update_all(master_settings: { 'subscribtion_policy' => 'block' })  # rubocop:disable Rails/SkipsModelValidations
+        Account.find_in_batches do |accounts|
+          accounts.each do |account|
+            account.update(master_settings: { 'subscribtion_policy' => account.dissubscribable ? 'block' : 'allow' })
+          end
+        end
       end
 
       remove_column :accounts, :dissubscribable
