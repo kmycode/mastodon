@@ -44,7 +44,7 @@ class AccountStatusesFilter
   private
 
   def initial_scope
-    if (suspended? || (domain_block&.reject_send_dissubscribable && @account.dissubscribable)) || domain_block&.reject_send_media || blocked?
+    if (suspended? || (domain_block&.reject_send_dissubscribable && !@account.all_subscribable?)) || domain_block&.reject_send_media || blocked?
       Status.none
     elsif anonymous?
       account.statuses.where(visibility: %i(public unlisted public_unlisted))

@@ -236,7 +236,14 @@ class ActivityPub::TagManager
   end
 
   def subscribable_by(account)
-    account.dissubscribable ? [] : [COLLECTIONS[:public]]
+    case account.subscribtion_policy
+    when :allow
+      [COLLECTIONS[:public]]
+    when :followers_only
+      [account_followers_url(account)]
+    else
+      []
+    end
   end
 
   def searchable_by(status)

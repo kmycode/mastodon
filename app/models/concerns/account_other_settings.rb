@@ -98,7 +98,7 @@ module AccountOtherSettings
         'link_preview' => link_preview?,
         'allow_quote' => allow_quote?,
         'emoji_reaction_policy' => Setting.enable_emoji_reaction ? emoji_reaction_policy : :block,
-      }
+      }.merge(public_master_settings)
       config = config.merge(settings) if settings.present?
       config
     end

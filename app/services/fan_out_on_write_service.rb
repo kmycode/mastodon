@@ -53,12 +53,12 @@ class FanOutOnWriteService < BaseService
     when :public, :unlisted, :public_unlisted, :login, :private
       deliver_to_all_followers!
       deliver_to_lists!
-      deliver_to_antennas! if !@account.dissubscribable || (@status.dtl? && DTL_ENABLED && @account.user&.setting_dtl_force_subscribable && @status.tags.exists?(name: DTL_TAG))
+      deliver_to_antennas!
       deliver_to_stl_antennas! if Setting.enable_local_timeline
       deliver_to_ltl_antennas! if Setting.enable_local_timeline
     when :limited
       deliver_to_lists_mentioned_accounts_only!
-      deliver_to_antennas! unless @account.dissubscribable
+      deliver_to_antennas!
       deliver_to_stl_antennas! if Setting.enable_local_timeline
       deliver_to_mentioned_followers!
     else

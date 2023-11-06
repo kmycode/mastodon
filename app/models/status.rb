@@ -320,7 +320,7 @@ class Status < ApplicationRecord
   end
 
   def dtl?
-    tags.where(name: DTL_TAG).exists?
+    (%w(public public_unlisted login).include?(visibility) || (unlisted_visibility? && public_searchability?)) && tags.where(name: DTL_TAG).exists?
   end
 
   def emojis

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_28_005948) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_05_225839) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -200,9 +200,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_28_005948) do
     t.datetime "requested_review_at", precision: nil
     t.boolean "group_allow_private_message"
     t.integer "searchability", default: 2, null: false
-    t.boolean "dissubscribable", default: false, null: false
     t.jsonb "settings"
     t.boolean "indexable", default: false, null: false
+    t.jsonb "master_settings"
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), COALESCE(lower((domain)::text), ''::text)", name: "index_accounts_on_username_and_domain_lower", unique: true
     t.index ["domain", "id"], name: "index_accounts_on_domain_and_id"

@@ -10,10 +10,10 @@ RSpec.describe FanOutOnWriteService, type: :service do
   let(:last_active_at) { Time.now.utc }
   let(:visibility) { 'public' }
   let(:searchability) { 'public' }
-  let(:dissubscribable) { false }
+  let(:subscribtion_policy) { :allow }
   let(:status) { Fabricate(:status, account: alice, visibility: visibility, searchability: searchability, text: 'Hello @bob #hoge') }
 
-  let!(:alice) { Fabricate(:user, current_sign_in_at: last_active_at, account_attributes: { dissubscribable: dissubscribable }).account }
+  let!(:alice) { Fabricate(:user, current_sign_in_at: last_active_at, account_attributes: { master_settings: { subscribtion_policy: subscribtion_policy } }).account }
   let!(:bob)   { Fabricate(:user, current_sign_in_at: last_active_at, account_attributes: { username: 'bob' }).account }
   let!(:tom)   { Fabricate(:user, current_sign_in_at: last_active_at).account }
   let!(:ohagi) { Fabricate(:user, current_sign_in_at: last_active_at).account }
@@ -123,11 +123,28 @@ RSpec.describe FanOutOnWriteService, type: :service do
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
 
-      context 'when dissubscribable is true' do
-        let(:dissubscribable) { true }
+      context 'when subscribtion is blocked' do
+        let(:subscribtion_policy) { :block }
 
         it 'is not added to the antenna feed' do
           expect(antenna_feed_of(antenna)).to_not include status.id
+        end
+      end
+
+      context 'when subscribtion is allowed followers only' do
+        let(:subscribtion_policy) { :followers_only }
+        let!(:antenna) { antenna_with_account(ohagi, alice) }
+
+        it 'is not added to the antenna feed' do
+          expect(antenna_feed_of(antenna)).to_not include status.id
+        end
+
+        context 'with following' do
+          let!(:antenna) { antenna_with_account(bob, alice) }
+
+          it 'is added to the antenna feed' do
+            expect(antenna_feed_of(antenna)).to include status.id
+          end
         end
       end
     end
@@ -141,8 +158,8 @@ RSpec.describe FanOutOnWriteService, type: :service do
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
 
-      context 'when dissubscribable is true' do
-        let(:dissubscribable) { true }
+      context 'when subscribtion is blocked' do
+        let(:subscribtion_policy) { :block }
 
         it 'is added to the antenna feed' do
           expect(antenna_feed_of(antenna)).to include status.id
@@ -168,8 +185,8 @@ RSpec.describe FanOutOnWriteService, type: :service do
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
 
-      context 'when dissubscribable is true' do
-        let(:dissubscribable) { true }
+      context 'when subscribtion is blocked' do
+        let(:subscribtion_policy) { :block }
 
         it 'is added to the antenna feed' do
           expect(antenna_feed_of(antenna)).to include status.id
@@ -370,8 +387,8 @@ RSpec.describe FanOutOnWriteService, type: :service do
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
 
-      context 'when dissubscribable is true' do
-        let(:dissubscribable) { true }
+      context 'when subscribtion is blocked' do
+        let(:subscribtion_policy) { :block }
 
         it 'is not added to the antenna feed' do
           expect(antenna_feed_of(antenna)).to_not include status.id
@@ -388,8 +405,8 @@ RSpec.describe FanOutOnWriteService, type: :service do
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
 
-      context 'when dissubscribable is true' do
-        let(:dissubscribable) { true }
+      context 'when subscribtion is blocked' do
+        let(:subscribtion_policy) { :block }
 
         it 'is added to the antenna feed' do
           expect(antenna_feed_of(antenna)).to include status.id
@@ -415,8 +432,8 @@ RSpec.describe FanOutOnWriteService, type: :service do
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
 
-      context 'when dissubscribable is true' do
-        let(:dissubscribable) { true }
+      context 'when subscribtion is blocked' do
+        let(:subscribtion_policy) { :block }
 
         it 'is added to the antenna feed' do
           expect(antenna_feed_of(antenna)).to include status.id

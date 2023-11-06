@@ -83,7 +83,6 @@ class ActivityPub::ProcessAccountService < BaseService
     @account.suspension_origin = :local if auto_suspend?
     @account.silenced_at       = domain_block.created_at if auto_silence?
     @account.searchability     = :direct   # not null
-    @account.dissubscribable   = false     # not null
 
     set_immediate_protocol_attributes!
 
@@ -125,8 +124,8 @@ class ActivityPub::ProcessAccountService < BaseService
     @account.discoverable            = @json['discoverable'] || false
     @account.indexable               = @json['indexable'] || false
     @account.searchability           = searchability_from_audience
-    @account.dissubscribable         = !subscribable(@account.note)
     @account.settings                = other_settings
+    @account.master_settings         = master_settings(@account.note)
     @account.memorial                = @json['memorial'] || false
   end
 
@@ -320,12 +319,22 @@ class ActivityPub::ProcessAccountService < BaseService
     @subscribable_by = as_array(@json['subscribableBy']).map { |x| value_or_id(x) }
   end
 
-  def subscribable(note)
+  def subscribtion_policy(note)
     if subscribable_by.nil?
-      note.exclude?('[subscribable:no]')
+      note.include?('[subscribable:no]') ? :block : :allow
+    elsif subscribable_by.any? { |uri| ActivityPub::TagManager.instance.public_collection?(uri) }
+      :allow
+    elsif subscribable_by.include?(@account.followers_url)
+      :followers_only
     else
-      subscribable_by.any? { |uri| ActivityPub::TagManager.instance.public_collection?(uri) }
+      :block
     end
+  end
+
+  def master_settings(note)
+    {
+      'subscribtion_policy' => subscribtion_policy(note),
+    }
   end
 
   def other_settings

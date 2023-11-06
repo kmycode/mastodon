@@ -52,9 +52,9 @@
 #  requested_review_at           :datetime
 #  group_allow_private_message   :boolean
 #  searchability                 :integer          default("direct"), not null
-#  dissubscribable               :boolean          default(FALSE), not null
 #  settings                      :jsonb
 #  indexable                     :boolean          default(FALSE), not null
+#  master_settings               :jsonb
 #
 
 class Account < ApplicationRecord
@@ -88,6 +88,7 @@ class Account < ApplicationRecord
   include AccountSearch
   include AccountStatusesSearch
   include AccountOtherSettings
+  include AccountMasterSettings
 
   enum protocol: { ostatus: 0, activitypub: 1 }
   enum suspension_origin: { local: 0, remote: 1 }, _prefix: true

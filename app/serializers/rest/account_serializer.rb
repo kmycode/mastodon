@@ -112,7 +112,7 @@ class REST::AccountSerializer < ActiveModel::Serializer
   end
 
   def subscribable
-    !object.dissubscribable
+    object.all_subscribable?
   end
 
   def moved_to_account

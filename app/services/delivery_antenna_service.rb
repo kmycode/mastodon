@@ -23,8 +23,10 @@ class DeliveryAntennaService
   private
 
   def delivery!
-    must_dtl_tag = @account.dissubscribable
-    return if must_dtl_tag && !DTL_ENABLED
+    subscribtion_policy = @account.subscribtion_policy
+
+    dtl_post = @status.dtl? && DTL_ENABLED
+    return if subscribtion_policy == :block && (!dtl_post || !@account.user&.setting_dtl_force_subscribable)
 
     tag_ids = @status.tags.pluck(:id)
     domain = @account.domain
@@ -38,7 +40,7 @@ class DeliveryAntennaService
     antennas = antennas.left_joins(:antenna_accounts).where(any_accounts: true).or(Antenna.left_joins(:antenna_accounts).where(antenna_accounts: { account: @account }))
 
     antennas = Antenna.where(id: antennas.select(:id))
-    if must_dtl_tag
+    if subscribtion_policy == :block
       dtl_tag = Tag.find_or_create_by_names(DTL_TAG).first
       return if !dtl_tag || tag_ids.exclude?(dtl_tag.id)
 
@@ -125,9 +127,9 @@ class DeliveryAntennaService
   def followers_only?
     case @status.visibility.to_sym
     when :public, :public_unlisted, :login, :limited
-      false
+      @status.account.subscribtion_policy == :followers_only
     when :unlisted
-      @status.compute_searchability != 'public'
+      @status.compute_searchability != 'public' || @status.account.subscribtion_policy == :followers_only
     else
       true
     end
