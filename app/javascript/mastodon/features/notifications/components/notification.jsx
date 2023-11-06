@@ -368,7 +368,7 @@ class Notification extends ImmutablePureComponent {
 
     return (
       <HotKeys handlers={this.getHandlers()}>
-        <div className={classNames('notification notification-list_status focusable', { unread })} tabIndex={0} aria-label={notificationForScreenReader(intl, intl.formatMessage(messages.listStatus, { name: notification.getIn(['account', 'acct']) }), notification.get('created_at'))}>
+        <div className={classNames('notification notification-list_status focusable', { unread })} tabIndex={0} aria-label={notificationForScreenReader(intl, intl.formatMessage(messages.listStatus, { name: notification.getIn(['account', 'acct']), listName: notification.getIn(['list', 'title']) }), notification.get('created_at'))}>
           <div className='notification__message'>
             <Icon id='list-ul' icon={ListAltIcon} />
 
