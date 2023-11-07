@@ -47,7 +47,6 @@ en:
         digest: Only sent after a long period of inactivity and only if you have received any personal messages in your absence
         discoverable: Allow your account to be discovered by strangers through recommendations, trends and other features
         discoverable_local: Disable the setting on federated servers. The setting is available this server only for avoiding full-text search on other servers
-        dissubscribable: Your post is not picked by antenna
         email: You will be sent a confirmation e-mail
         group: Reps sent to this account will be automatically BT'd and distributed to all accounts you follow!
         group_allow_private_message: Posts are duplicated and cannot be edited or deleted by the post
@@ -76,6 +75,7 @@ en:
         setting_single_ref_to_quote: If this server does not have target post, target server maybe cannot read your quote
         setting_use_blurhash: Gradients are based on the colors of the hidden visuals but obfuscate any details
         setting_use_pending_items: Hide timeline updates behind a click instead of automatically scrolling the feed
+        subscription_policy: Your post is not picked by antenna
         username: You can use letters, numbers, and underscores
         whole_word: When the keyword or phrase is alphanumeric only, it will only be applied if it matches the whole word
       domain_allow:
@@ -143,6 +143,10 @@ en:
       settings:
         indexable: Your profile page may appear in search results on Google, Bing, and others.
         show_application: You will always be able to see which app published your post regardless.
+      subscription_policy:
+        allow: Allow
+        block: Block
+        followers_only: Followers only
       tag:
         name: You can only change the casing of the letters, for example, to make it more readable
       user:
@@ -208,7 +212,6 @@ en:
         discoverable: Suggest account to others
         discoverable_local: Disallow suggesting account on other servers
         display_name: Display name
-        dissubscribable: Reject any subscriptions
         email: E-mail address
         expires_in: Expire after
         fields: Extra fields
@@ -249,7 +252,7 @@ en:
         setting_display_media_expand: Show more medias
         setting_display_media_hide_all: Hide all
         setting_display_media_show_all: Show all
-        setting_dtl_force_subscribable: Ignore your dissubscribable setting when using the DTL tag
+        setting_dtl_force_subscribable: Ignore your subscribability setting when using the DTL tag
         setting_dtl_force_searchability: Post searchability
         setting_dtl_force_visibility: Post visibility
         setting_emoji_reaction_streaming_notify_impl2: Enable stamp notification compat with Nyastodon, Catstodon, glitch-soc
@@ -298,6 +301,7 @@ en:
         setting_use_public_index: Include permitted accounts post to results of search
         severity: Severity
         sign_in_token_attempt: Security code
+        subscription_policy: Subscribability
         title: Title
         type: Import type
         username: Username

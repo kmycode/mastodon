@@ -22,7 +22,7 @@
       = ff.input :link_preview, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_link_preview'), hint: I18n.t('simple_form.hints.defaults.setting_link_preview')
 
     .fields-group
-      = f.input :dissubscribable, as: :boolean, wrapper: :with_label, kmyblue: true, hint: t('simple_form.hints.defaults.dissubscribable')
+      = f.input :subscription_policy, kmyblue: true, collection: %w(allow followers_only block), label_method: ->(item) { safe_join([t("simple_form.labels.subscription_policy.#{item}")]) }, as: :radio_buttons, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', wrapper: :with_floating_label, label: t('simple_form.labels.defaults.subscription_policy'), hint: t('simple_form.hints.defaults.subscription_policy')
 
     .fields-group
       = ff.input :allow_quote, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_allow_quote'), hint: false

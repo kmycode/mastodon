@@ -11,6 +11,10 @@ module AccountMasterSettings
       :allow
     end
 
+    def subscription_policy=(val)
+      self.master_settings = (master_settings.nil? ? {} : master_settings).merge({ 'subscription_policy' => val })
+    end
+
     def all_subscribable?
       subscription_policy == :allow
     end

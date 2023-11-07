@@ -49,7 +49,6 @@ ja:
         digest: 長期間使用していない場合と不在時に返信を受けた場合のみ送信されます
         discoverable: レコメンド、トレンド、その他の機能により、あなたのアカウントを他の人から見つけられるようにします。なおkmyblueのローカルユーザーはこの設定をオンにしても全文検索結果には掲載されません。全文検索結果への掲載には、投稿の検索許可設定を変更する必要があります
         discoverable_local: 上記設定を当サーバー内でのみ適用するようにします。他のサーバーの全文検索結果への掲載を回避できますが、レコメンド、トレンドなどその他の機能への掲載も回避されます
-        dissubscribable: あなたの投稿はすべてのアンテナに掲載されなくなります。Misskeyのアンテナを拒否することはできません。Mastodonの一部のサーバーもこの設定に対応しますが、挙動が一部kmyblueと異なる場合があります
         email: 確認のメールが送信されます
         group: このアカウントに送られたメンションは自動でBTされ、フォローしている全てのアカウントに配信されます
         group_allow_private_message: 投稿は複製されるため、投稿者が編集・削除することはできません
@@ -90,6 +89,7 @@ ja:
         setting_unsafe_limited_distribution: Mastodon 3.5、4.0、4.1のサーバーにも限定投稿（相互のみ）が届くようになりますが、安全でない方法で送信します
         setting_use_blurhash: ぼかしはメディアの色を元に生成されますが、細部は見えにくくなっています
         setting_use_pending_items: 新着があってもタイムラインを自動的にスクロールしないようにします
+        subscription_policy: あなたの投稿はこの設定の範囲外にあるアカウントのアンテナに掲載されなくなります。Misskeyのアンテナを拒否することはできません。Mastodonの一部のサーバーもこの設定に対応しますが、挙動が一部kmyblueと異なる場合があります
         username: アルファベット大文字と小文字、数字、アンダーバー「_」が使えます
         whole_word: キーワードまたはフレーズが英数字のみの場合、単語全体と一致する場合のみ適用されるようになります
       domain_allow:
@@ -222,7 +222,6 @@ ja:
         discoverable: ディレクトリに掲載する
         discoverable_local: 他サーバーのディレクトリに掲載しない
         display_name: 表示名
-        dissubscribable: 購読を拒否する
         email: メールアドレス
         expires_in: 有効期限
         fields: プロフィール補足情報
@@ -314,6 +313,7 @@ ja:
         setting_use_public_index: Mastodonの標準設定によって検索が許可されたアカウントの公開投稿を検索結果に含める
         severity: 重大性
         sign_in_token_attempt: セキュリティコード
+        subscription_policy: 購読許可
         title: タイトル
         type: インポートする項目
         username: ユーザー名
@@ -420,6 +420,10 @@ ja:
       settings:
         indexable: 検索エンジンからアクセスできるようにする
         show_application: 投稿に使ったアプリを開示する
+      subscription_policy:
+        allow: 全員に許可
+        block: 全員拒否
+        followers_only: フォロワーにのみ許可
       tag:
         listable: 検索とディレクトリへの使用を許可する
         name: ハッシュタグ
