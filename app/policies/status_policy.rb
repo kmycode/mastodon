@@ -28,6 +28,13 @@ class StatusPolicy < ApplicationPolicy
     owned?
   end
 
+  def show_activity?
+    return false unless show?
+    return true if record.scheduled_expiration_status.blank?
+
+    following_author?
+  end
+
   def reblog?
     !requires_mention? && (!private? || owned?) && show? && !blocking_author?
   end

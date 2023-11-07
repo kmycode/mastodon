@@ -65,7 +65,7 @@ class StatusesController < ApplicationController
     if request.authorization.present? && request.authorization.match(/^Bearer /i)
       raise Mastodon::NotPermittedError unless @status.capability_tokens.find_by(token: request.authorization.gsub(/^Bearer /i, ''))
     else
-      authorize @status, :show?
+      authorize @status, request.format == :json ? :show_activity? : :show?
     end
   rescue Mastodon::NotPermittedError
     not_found
