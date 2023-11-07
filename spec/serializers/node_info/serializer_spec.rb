@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe NodeInfo::Serializer do # rubocop:disable RSpec/FilePath
+describe NodeInfo::Serializer do
   let(:serialization) do
     JSON.parse(
       ActiveModelSerializers::SerializableResource.new(
