@@ -125,7 +125,7 @@ class ActivityPub::ProcessAccountService < BaseService
     @account.indexable               = @json['indexable'] || false
     @account.searchability           = searchability_from_audience
     @account.settings                = other_settings
-    @account.master_settings         = master_settings(@account.note)
+    @account.master_settings         = (@account.master_settings || {}).merge(master_settings(@account.note))
     @account.memorial                = @json['memorial'] || false
   end
 
