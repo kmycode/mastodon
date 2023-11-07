@@ -105,10 +105,10 @@ class PostStatusService < BaseService
   end
 
   def overwrite_dtl_post
-    return unless DTL_ENABLED
+    return unless dtl_enabled?
 
     raw_tags = Extractor.extract_hashtags(@text)
-    return if raw_tags.exclude?(DTL_TAG)
+    return if raw_tags.exclude?(dtl_tag_name)
     return unless %i(public public_unlisted unlisted).include?(@visibility)
 
     @visibility = @account.user&.setting_dtl_force_visibility if %i(public public_unlisted unlisted).include?(@account.user&.setting_dtl_force_visibility)

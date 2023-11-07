@@ -36,7 +36,7 @@ class InitialStateSerializer < ActiveModel::Serializer
       trends_as_landing_page: Setting.trends_as_landing_page,
       status_page_url: Setting.status_page_url,
       sso_redirect: sso_redirect,
-      dtl_tag: DTL_ENABLED ? DTL_TAG : nil,
+      dtl_tag: dtl_enabled? ? dtl_tag_name : nil,
       enable_local_privacy: Setting.enable_public_unlisted_visibility,
       enable_local_timeline: Setting.enable_local_timeline,
     }

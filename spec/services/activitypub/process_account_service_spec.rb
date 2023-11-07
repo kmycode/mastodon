@@ -156,6 +156,71 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
     end
   end
 
+  context 'with subscribtion policy' do
+    subject { described_class.new.call('alice', 'example.com', payload) }
+
+    let(:subscribable_by) { 'https://www.w3.org/ns/activitystreams#Public' }
+    let(:sender_bio) { '' }
+    let(:payload) do
+      {
+        id: 'https://foo.test',
+        type: 'Actor',
+        inbox: 'https://foo.test/inbox',
+        followers: 'https://example.com/followers',
+        subscribableBy: subscribable_by,
+        summary: sender_bio,
+        actor_type: 'Person',
+      }.with_indifferent_access
+    end
+
+    before do
+      stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(body: '{}')
+      stub_request(:get, 'https://example.com/followers').to_return(body: '[]')
+    end
+
+    context 'when public' do
+      it 'subscribtion policy is allow' do
+        expect(subject.subscribtion_policy.to_s).to eq 'allow'
+      end
+    end
+
+    context 'when private' do
+      let(:subscribable_by) { 'https://example.com/followers' }
+
+      it 'subscribtion policy is followers_only' do
+        expect(subject.subscribtion_policy.to_s).to eq 'followers_only'
+      end
+    end
+
+    context 'when empty' do
+      let(:subscribable_by) { '' }
+
+      it 'subscribtion policy is block' do
+        expect(subject.subscribtion_policy.to_s).to eq 'block'
+      end
+    end
+
+    context 'when default value' do
+      let(:subscribable_by) { nil }
+
+      it 'subscribtion policy is allow' do
+        expect(subject.subscribtion_policy.to_s).to eq 'allow'
+      end
+    end
+
+    context 'with bio' do
+      let(:subscribable_by) { nil }
+
+      context 'with no-subscribe' do
+        let(:sender_bio) { '[subscribable:no]' }
+
+        it 'subscribtion policy is block' do
+          expect(subject.subscribtion_policy.to_s).to eq 'block'
+        end
+      end
+    end
+  end
+
   context 'with property values' do
     let(:payload) do
       {

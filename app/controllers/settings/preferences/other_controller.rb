@@ -4,8 +4,8 @@ class Settings::Preferences::OtherController < Settings::Preferences::BaseContro
   include DtlHelper
 
   def show
-    @dtl_enabled = DTL_ENABLED
-    @dtl_tag = DTL_TAG
+    @dtl_enabled = dtl_enabled?
+    @dtl_tag = dtl_tag_name
   end
 
   private

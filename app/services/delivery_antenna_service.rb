@@ -25,7 +25,7 @@ class DeliveryAntennaService
   def delivery!
     subscribtion_policy = @account.subscribtion_policy
 
-    dtl_post = @status.dtl? && DTL_ENABLED
+    dtl_post = @status.dtl? && dtl_enabled?
     return if subscribtion_policy == :block && (!dtl_post || !@account.user&.setting_dtl_force_subscribable)
 
     tag_ids = @status.tags.pluck(:id)
@@ -41,7 +41,7 @@ class DeliveryAntennaService
 
     antennas = Antenna.where(id: antennas.select(:id))
     if subscribtion_policy == :block
-      dtl_tag = Tag.find_or_create_by_names(DTL_TAG).first
+      dtl_tag = Tag.find_or_create_by_names(dtl_tag_name).first
       return if !dtl_tag || tag_ids.exclude?(dtl_tag.id)
 
       antennas = antennas.left_joins(:antenna_tags).where(antenna_tags: { tag_id: dtl_tag.id })
