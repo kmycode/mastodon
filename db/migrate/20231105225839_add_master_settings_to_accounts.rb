@@ -16,7 +16,7 @@ class AddMasterSettingsToAccounts < ActiveRecord::Migration[7.1]
       Account.transaction do
         Account.find_in_batches do |accounts|
           accounts.each do |account|
-            account.update(master_settings: { 'subscribtion_policy' => account.dissubscribable ? 'block' : 'allow' })
+            account.update(master_settings: { 'subscription_policy' => account.dissubscribable ? 'block' : 'allow' })
           end
         end
       end
@@ -32,7 +32,7 @@ class AddMasterSettingsToAccounts < ActiveRecord::Migration[7.1]
       Account.transaction do
         Account.find_in_batches do |accounts|
           accounts.each do |account|
-            account.update(dissubscribable: account.master_settings.present? && account.master_settings['subscribtion_policy'] != 'allow')
+            account.update(dissubscribable: account.master_settings.present? && account.master_settings['subscription_policy'] != 'allow')
           end
         end
       end

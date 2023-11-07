@@ -319,7 +319,7 @@ class ActivityPub::ProcessAccountService < BaseService
     @subscribable_by = as_array(@json['subscribableBy']).map { |x| value_or_id(x) }
   end
 
-  def subscribtion_policy(note)
+  def subscription_policy(note)
     if subscribable_by.nil?
       note.include?('[subscribable:no]') ? :block : :allow
     elsif subscribable_by.any? { |uri| ActivityPub::TagManager.instance.public_collection?(uri) }
@@ -333,7 +333,7 @@ class ActivityPub::ProcessAccountService < BaseService
 
   def master_settings(note)
     {
-      'subscribtion_policy' => subscribtion_policy(note),
+      'subscription_policy' => subscription_policy(note),
     }
   end
 

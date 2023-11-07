@@ -23,10 +23,10 @@ class DeliveryAntennaService
   private
 
   def delivery!
-    subscribtion_policy = @account.subscribtion_policy
+    subscription_policy = @account.subscription_policy
 
     dtl_post = @status.dtl? && dtl_enabled?
-    return if subscribtion_policy == :block && (!dtl_post || !@account.user&.setting_dtl_force_subscribable)
+    return if subscription_policy == :block && (!dtl_post || !@account.user&.setting_dtl_force_subscribable)
 
     tag_ids = @status.tags.pluck(:id)
     domain = @account.domain
@@ -40,7 +40,7 @@ class DeliveryAntennaService
     antennas = antennas.left_joins(:antenna_accounts).where(any_accounts: true).or(Antenna.left_joins(:antenna_accounts).where(antenna_accounts: { account: @account }))
 
     antennas = Antenna.where(id: antennas.select(:id))
-    if subscribtion_policy == :block
+    if subscription_policy == :block
       dtl_tag = Tag.find_or_create_by_names(dtl_tag_name).first
       return if !dtl_tag || tag_ids.exclude?(dtl_tag.id)
 
@@ -127,9 +127,9 @@ class DeliveryAntennaService
   def followers_only?
     case @status.visibility.to_sym
     when :public, :public_unlisted, :login, :limited
-      @status.account.subscribtion_policy == :followers_only
+      @status.account.subscription_policy == :followers_only
     when :unlisted
-      @status.compute_searchability != 'public' || @status.account.subscribtion_policy == :followers_only
+      @status.compute_searchability != 'public' || @status.account.subscription_policy == :followers_only
     else
       true
     end

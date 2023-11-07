@@ -4,20 +4,20 @@ module AccountMasterSettings
   extend ActiveSupport::Concern
 
   included do
-    def subscribtion_policy
-      return master_settings['subscribtion_policy']&.to_sym || :allow if master_settings.present?
+    def subscription_policy
+      return master_settings['subscription_policy']&.to_sym || :allow if master_settings.present?
 
       # allow, followers_only, block
       :allow
     end
 
     def all_subscribable?
-      subscribtion_policy == :allow
+      subscription_policy == :allow
     end
 
     def public_master_settings
       {
-        'subscribtion_policy' => subscribtion_policy,
+        'subscription_policy' => subscription_policy,
       }
     end
   end

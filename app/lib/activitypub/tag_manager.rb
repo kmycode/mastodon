@@ -236,7 +236,7 @@ class ActivityPub::TagManager
   end
 
   def subscribable_by(account)
-    case account.subscribtion_policy
+    case account.subscription_policy
     when :allow
       [COLLECTIONS[:public]]
     when :followers_only
