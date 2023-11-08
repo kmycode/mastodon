@@ -59,7 +59,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
       forward_for_emoji_reaction
       relay_for_emoji_reaction
     end
-  rescue Seahorse::Client::NetworkingError
+  rescue Seahorse::Client::NetworkingError, ActiveRecord::RecordInvalid
     nil
   end
 
