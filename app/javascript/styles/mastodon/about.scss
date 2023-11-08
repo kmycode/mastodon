@@ -53,4 +53,18 @@ $fluid-breakpoint: $maximum-width + 20px;
       border-bottom: 0;
     }
   }
+
+  .capability-icon {
+    svg {
+      transform: translateY(4px);
+    }
+
+    &.enabled {
+      color: green;
+    }
+
+    &.disabled {
+      color: red;
+    }
+  }
 }

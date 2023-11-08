@@ -11,6 +11,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 
 import { ReactComponent as ChevronRightIcon } from '@material-symbols/svg-600/outlined/chevron_right.svg';
+import { ReactComponent as DisabledIcon } from '@material-symbols/svg-600/outlined/close-fill.svg';
+import { ReactComponent as EnabledIcon } from '@material-symbols/svg-600/outlined/done-fill.svg';
 import { ReactComponent as ExpandMoreIcon } from '@material-symbols/svg-600/outlined/expand_more.svg';
 
 import { fetchServer, fetchExtendedDescription, fetchDomainBlocks  } from 'mastodon/actions/server';
@@ -99,6 +101,28 @@ class Section extends PureComponent {
     );
   }
 
+}
+
+class CapabilityIcon extends PureComponent {
+
+  static propTypes = {
+    intl: PropTypes.object.isRequired,
+    state: PropTypes.bool,
+  };
+
+  render () {
+    const { intl, state } = this.props;
+
+    if (state) {
+      return (
+        <span className='capability-icon enabled'><Icon id='check' icon={EnabledIcon} title={intl.formatMessage(messages.enabled)} />{intl.formatMessage(messages.enabled)}</span>
+      );
+    } else {
+      return (
+        <span className='capability-icon disabled'><Icon id='times' icon={DisabledIcon} title={intl.formatMessage(messages.disabled)} />{intl.formatMessage(messages.disabled)}</span>
+      );
+    }
+  }
 }
 
 class About extends PureComponent {
@@ -201,13 +225,13 @@ class About extends PureComponent {
             {!isLoading && (
               <ol className='rules-list'>
                 <li>
-                  <span className='rules-list__text'>{intl.formatMessage(messages.emojiReaction)}: {intl.formatMessage(isEmojiReaction ? messages.enabled : messages.disabled)}</span>
+                  <span className='rules-list__text'>{intl.formatMessage(messages.emojiReaction)}: <CapabilityIcon state={isEmojiReaction} intl={intl} /></span>
                 </li>
                 <li>
-                  <span className='rules-list__text'>{intl.formatMessage(messages.publicUnlistedVisibility)}: {intl.formatMessage(isPublicUnlistedVisibility ? messages.enabled : messages.disabled)}</span>
+                  <span className='rules-list__text'>{intl.formatMessage(messages.publicUnlistedVisibility)}: <CapabilityIcon state={isPublicUnlistedVisibility} intl={intl} /></span>
                 </li>
                 <li>
-                  <span className='rules-list__text'>{intl.formatMessage(messages.localTimeline)}: {intl.formatMessage(isLocalTimeline ? messages.enabled : messages.disabled)}</span>
+                  <span className='rules-list__text'>{intl.formatMessage(messages.localTimeline)}: <CapabilityIcon state={isLocalTimeline} intl={intl} /></span>
                 </li>
               </ol>
             )}
