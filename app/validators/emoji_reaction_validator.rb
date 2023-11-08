@@ -27,13 +27,13 @@ class EmojiReactionValidator < ActiveModel::Validator
   end
 
   def blocking?(emoji_reaction)
-    return false if emoji_reaction.status.account == emoji_reaction.account
+    return false if !emoji_reaction.status.local? || emoji_reaction.status.account == emoji_reaction.account
 
     emoji_reaction.status.account.blocking?(emoji_reaction.account)
   end
 
   def domain_blocking?(emoji_reaction)
-    return false if emoji_reaction.account.local? || !emoji_reaction.status.account.local?
+    return false unless !emoji_reaction.account.local? && emoji_reaction.status.local?
 
     emoji_reaction.status.account.domain_blocking?(emoji_reaction.account.domain)
   end
