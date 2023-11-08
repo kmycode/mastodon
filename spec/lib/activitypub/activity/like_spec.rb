@@ -391,9 +391,58 @@ RSpec.describe ActivityPub::Activity::Like do
         expect(sender.favourited?(status)).to be false
       end
     end
+
+    context 'when receiver is blocking sender' do
+      let(:content) { '😀' }
+
+      before do
+        recipient.block!(sender)
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 0
+      end
+    end
+
+    context 'when receiver is blocking emoji reactions' do
+      let(:content) { '😀' }
+
+      before do
+        recipient.user.settings['emoji_reaction_policy'] = 'block'
+        recipient.user.save!
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 0
+      end
+    end
+
+    context 'when receiver is domain-blocking emoji reactions' do
+      let(:content) { '😀' }
+
+      before do
+        recipient.domain_blocks.create!(domain: 'example.com')
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 0
+      end
+    end
+
+    context 'when receiver is not domain-blocking emoji reactions' do
+      let(:content) { '😀' }
+
+      before do
+        recipient.domain_blocks.create!(domain: 'other-example.com')
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 1
+      end
+    end
   end
 
-  describe '#perform when domain_block' do
+  describe '#perform when rejecting favourite domain block' do
     subject { described_class.new(json, sender) }
 
     before do
@@ -415,19 +464,6 @@ RSpec.describe ActivityPub::Activity::Like do
     end
 
     it 'does not create a favourite from sender to status' do
-      expect(sender.favourited?(status)).to be false
-    end
-  end
-
-  describe '#perform when account domain_block' do
-    subject { described_class.new(json, sender) }
-
-    before do
-      Fabricate(:account_domain_block, account: recipient, domain: 'example.com')
-      subject.perform
-    end
-
-    it 'does not create a favourite from sender to status', pending: 'considering spec' do
       expect(sender.favourited?(status)).to be false
     end
   end

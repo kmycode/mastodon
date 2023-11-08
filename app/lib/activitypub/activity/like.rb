@@ -55,7 +55,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
     write_stream(reaction)
 
     NotifyService.new.call(@original_status.account, :emoji_reaction, reaction) if @original_status.account.local?
-  rescue Seahorse::Client::NetworkingError
+  rescue Seahorse::Client::NetworkingError, ActiveRecord::RecordInvalid
     nil
   end
 
