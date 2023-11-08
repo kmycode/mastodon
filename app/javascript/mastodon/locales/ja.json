@@ -12,6 +12,7 @@
   "about.domain_blocks.suspended.explanation": "これらのサーバーからのデータは処理されず、保存や変換もされません。該当するユーザーとの交流もできません。",
   "about.domain_blocks.suspended.title": "停止中",
   "about.enabled": "有効",
+  "about.full_text_search": "全文検索",
   "about.kmyblue_capability": "このサーバーは、kmyblueというMastodonフォークを利用しています。kmyblue独自機能の一部は、サーバー管理者によって有効・無効を切り替えることができます。",
   "about.not_available": "この情報はこのサーバーでは利用できません。",
   "about.powered_by": "{mastodon}による分散型ソーシャルメディア",

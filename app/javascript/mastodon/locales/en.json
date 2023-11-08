@@ -12,6 +12,7 @@
   "about.domain_blocks.suspended.explanation": "No data from this server will be processed, stored or exchanged, making any interaction or communication with users from this server impossible.",
   "about.domain_blocks.suspended.title": "Suspended",
   "about.enabled": "Enabled",
+  "about.full_text_search": "Full text search",
   "about.kmyblue_capability": "This server is using kmyblue, a fork of Mastodon. On this server, kmyblues unique features are configured as follows.",
   "about.not_available": "This information has not been made available on this server.",
   "about.powered_by": "Decentralized social media powered by {mastodon}",

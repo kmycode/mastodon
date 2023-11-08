@@ -27,6 +27,7 @@ const messages = defineMessages({
   title: { id: 'column.about', defaultMessage: 'About' },
   rules: { id: 'about.rules', defaultMessage: 'Server rules' },
   blocks: { id: 'about.blocks', defaultMessage: 'Moderated servers' },
+  fullTextSearch: { id: 'about.full_text_search', defaultMessage: 'Full text search' },
   localTimeline: { id: 'column.community', defaultMessage: 'Local timeline' },
   noop: { id: 'about.domain_blocks.noop.title', defaultMessage: 'Soft limited' },
   noopExplanation: { id: 'about.domain_blocks.noop.explanation', defaultMessage: 'This server is limited partically.' },
@@ -159,6 +160,7 @@ class About extends PureComponent {
     const isPublicUnlistedVisibility = fedibirdCapabilities.includes('kmyblue_visibility_public_unlisted');
     const isEmojiReaction = fedibirdCapabilities.includes('emoji_reaction');
     const isLocalTimeline = !fedibirdCapabilities.includes('timeline_no_local');
+    const isFullTextSearch = !fedibirdCapabilities.includes('profile_search');
 
     return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
@@ -232,6 +234,9 @@ class About extends PureComponent {
                 </li>
                 <li>
                   <span className='rules-list__text'>{intl.formatMessage(messages.localTimeline)}: <CapabilityIcon state={isLocalTimeline} intl={intl} /></span>
+                </li>
+                <li>
+                  <span className='rules-list__text'>{intl.formatMessage(messages.fullTextSearch)}: <CapabilityIcon state={isFullTextSearch} intl={intl} /></span>
                 </li>
               </ol>
             )}
