@@ -2290,9 +2290,19 @@ $ui-header-height: 55px;
       display: none;
     }
 
-    @media screen and (width >= 320px) {
+    @media screen and (width >= 370px) {
       .logo--wordmark {
         display: block;
+      }
+
+      .logo--icon {
+        display: none;
+      }
+    }
+
+    @media screen and (width < 330px) {
+      .logo--wordmark {
+        display: none;
       }
 
       .logo--icon {
