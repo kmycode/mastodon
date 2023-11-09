@@ -17,6 +17,7 @@ RSpec.describe FanOutOnWriteService, type: :service do
   let!(:bob)   { Fabricate(:user, current_sign_in_at: last_active_at, account_attributes: { username: 'bob' }).account }
   let!(:tom)   { Fabricate(:user, current_sign_in_at: last_active_at).account }
   let!(:ohagi) { Fabricate(:user, current_sign_in_at: last_active_at).account }
+  let!(:tagf)  { Fabricate(:user, current_sign_in_at: last_active_at).account }
 
   let!(:list)          { nil }
   let!(:empty_list)    { nil }
@@ -36,6 +37,9 @@ RSpec.describe FanOutOnWriteService, type: :service do
     ProcessHashtagsService.new.call(status)
 
     allow(redis).to receive(:publish)
+
+    tag = status.tags.first
+    Fabricate(:tag_follow, account: tagf, tag: tag) if tag.present?
 
     subject.call(status) unless custom_before
   end
@@ -85,6 +89,10 @@ RSpec.describe FanOutOnWriteService, type: :service do
     it 'is added to the home feed of a follower' do
       expect(home_feed_of(bob)).to include status.id
       expect(home_feed_of(tom)).to include status.id
+    end
+
+    it 'is added to the tag follower' do
+      expect(home_feed_of(tagf)).to include status.id
     end
 
     it 'is broadcast to the hashtag stream' do
@@ -265,6 +273,10 @@ RSpec.describe FanOutOnWriteService, type: :service do
       expect(home_feed_of(tom)).to_not include status.id
     end
 
+    it 'is not added to the tag follower' do
+      expect(home_feed_of(tagf)).to_not include status.id
+    end
+
     it 'is not broadcast publicly' do
       expect(redis).to_not have_received(:publish).with('timeline:hashtag:hoge', anything)
       expect(redis).to_not have_received(:publish).with('timeline:public', anything)
@@ -319,6 +331,10 @@ RSpec.describe FanOutOnWriteService, type: :service do
     it 'is added to the home feed of a follower' do
       expect(home_feed_of(bob)).to include status.id
       expect(home_feed_of(tom)).to include status.id
+    end
+
+    it 'is not added to the tag follower' do
+      expect(home_feed_of(tagf)).to_not include status.id
     end
 
     it 'is not broadcast publicly' do
@@ -392,6 +408,10 @@ RSpec.describe FanOutOnWriteService, type: :service do
     it 'is added to the home feed of a follower' do
       expect(home_feed_of(bob)).to include status.id
       expect(home_feed_of(tom)).to include status.id
+    end
+
+    it 'is added to the tag follower' do
+      expect(home_feed_of(tagf)).to include status.id
     end
 
     it 'is broadcast publicly' do
@@ -509,6 +529,10 @@ RSpec.describe FanOutOnWriteService, type: :service do
       expect(home_feed_of(tom)).to include status.id
     end
 
+    it 'is added to the tag follower' do
+      expect(home_feed_of(tagf)).to include status.id
+    end
+
     it 'is not broadcast publicly' do
       expect(redis).to have_received(:publish).with('timeline:hashtag:hoge', anything)
       expect(redis).to_not have_received(:publish).with('timeline:public', anything)
@@ -517,9 +541,13 @@ RSpec.describe FanOutOnWriteService, type: :service do
     context 'with searchability public_unlisted' do
       let(:searchability) { 'public_unlisted' }
 
-      it 'is not broadcast to the hashtag stream' do
+      it 'is broadcast to the hashtag stream' do
         expect(redis).to have_received(:publish).with('timeline:hashtag:hoge', anything)
         expect(redis).to have_received(:publish).with('timeline:hashtag:hoge:local', anything)
+      end
+
+      it 'is added to the tag follower' do
+        expect(home_feed_of(tagf)).to include status.id
       end
     end
 
@@ -529,6 +557,10 @@ RSpec.describe FanOutOnWriteService, type: :service do
       it 'is not broadcast to the hashtag stream' do
         expect(redis).to_not have_received(:publish).with('timeline:hashtag:hoge', anything)
         expect(redis).to_not have_received(:publish).with('timeline:hashtag:hoge:local', anything)
+      end
+
+      it 'is not added to the tag follower' do
+        expect(home_feed_of(tagf)).to_not include status.id
       end
     end
 
@@ -619,6 +651,10 @@ RSpec.describe FanOutOnWriteService, type: :service do
 
     it 'is not added to the home feed of the other follower' do
       expect(home_feed_of(tom)).to_not include status.id
+    end
+
+    it 'is not added to the tag follower' do
+      expect(home_feed_of(tagf)).to_not include status.id
     end
 
     it 'is not broadcast publicly' do

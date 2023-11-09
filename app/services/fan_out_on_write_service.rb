@@ -22,8 +22,8 @@ class FanOutOnWriteService < BaseService
     if broadcastable?
       fan_out_to_public_recipients!
       fan_out_to_public_streams!
-    elsif broadcastable_unlisted2?
-      fan_out_to_unlisted_streams!
+    elsif broadcastable_unlisted_public?
+      fan_out_to_unlisted_public_streams!
     end
   end
 
@@ -76,8 +76,9 @@ class FanOutOnWriteService < BaseService
     broadcast_to_public_streams!
   end
 
-  def fan_out_to_unlisted_streams!
+  def fan_out_to_unlisted_public_streams!
     broadcast_to_hashtag_streams!
+    deliver_to_hashtag_followers!
   end
 
   def deliver_to_self!
@@ -201,7 +202,7 @@ class FanOutOnWriteService < BaseService
     (@status.public_visibility? || @status.public_unlisted_visibility? || @status.login_visibility?) && !@status.reblog? && !@account.silenced?
   end
 
-  def broadcastable_unlisted2?
+  def broadcastable_unlisted_public?
     @status.unlisted_visibility? && @status.compute_searchability == 'public' && !@status.reblog? && !@account.silenced?
   end
 end
