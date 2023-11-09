@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 
 import { toServerSideType } from 'mastodon/utils/filters';
 
-import { me, hideBlockingQuote } from '../initial_state';
+import { me, isHideItem } from '../initial_state';
 
 export { makeGetAccount } from "./accounts";
 
@@ -40,7 +40,7 @@ export const makeGetStatus = () => {
         statusReblog = null;
       }
 
-      if (hideBlockingQuote && (statusReblog || statusBase).getIn(['quote', 'quote_muted'])) {
+      if (isHideItem('blocking_quote') && (statusReblog || statusBase).getIn(['quote', 'quote_muted'])) {
         return null;
       }
 

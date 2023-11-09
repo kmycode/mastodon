@@ -2,7 +2,7 @@ import { Map as ImmutableMap, List as ImmutableList } from 'immutable';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 
-import { hideRecentEmojis } from 'mastodon/initial_state';
+import { isHideItem } from 'mastodon/initial_state';
 
 import { useEmoji } from '../../../actions/emojis';
 import { changeSetting } from '../../../actions/settings';
@@ -51,7 +51,7 @@ const getFrequentlyUsedEmojis = createSelector([
   deckEmojis = [...new Set(deckEmojis)];
 
   let emojis;
-  if (!hideRecentEmojis) {
+  if (!isHideItem('recent_emojis')) {
     emojis = emojiCounters
       .keySeq()
       .filter((ee) => deckEmojis.indexOf(ee) < 0)

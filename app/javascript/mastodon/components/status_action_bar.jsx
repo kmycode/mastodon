@@ -26,7 +26,7 @@ import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import DropdownMenuContainer from '../containers/dropdown_menu_container';
 import EmojiPickerDropdown from '../features/compose/containers/emoji_picker_dropdown_container';
-import { enableEmojiReaction , bookmarkCategoryNeeded, simpleTimelineMenu, me, hideEmojiReactionUnavailableServer } from '../initial_state';
+import { enableEmojiReaction , bookmarkCategoryNeeded, simpleTimelineMenu, me, isHideItem } from '../initial_state';
 
 import { IconButton } from './icon_button';
 
@@ -453,7 +453,7 @@ class StatusActionBar extends ImmutablePureComponent {
       <IconButton className='status__action-bar__button' title={intl.formatMessage(messages.hide)} icon='eye' iconComponent={VisibilityIcon} onClick={this.handleHideClick} />
     );
 
-    const emojiReactionAvailableServer = !hideEmojiReactionUnavailableServer || status.get('emoji_reaction_available_server');
+    const emojiReactionAvailableServer = !isHideItem('emoji_reaction_unavailable_server') || status.get('emoji_reaction_available_server');
     const emojiReactionPolicy = account.getIn(['other_settings', 'emoji_reaction_policy']) || 'allow';
     const following = emojiReactionPolicy !== 'following_only' || (relationship && relationship.get('following'));
     const followed = emojiReactionPolicy !== 'followers_only' || (relationship && relationship.get('followed_by'));

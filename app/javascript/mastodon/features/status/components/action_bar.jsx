@@ -25,7 +25,7 @@ import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import { IconButton } from '../../../components/icon_button';
 import DropdownMenuContainer from '../../../containers/dropdown_menu_container';
-import { enableEmojiReaction , bookmarkCategoryNeeded, me, hideEmojiReactionUnavailableServer } from '../../../initial_state';
+import { enableEmojiReaction , bookmarkCategoryNeeded, me, isHideItem } from '../../../initial_state';
 import EmojiPickerDropdown from '../../compose/containers/emoji_picker_dropdown_container';
 
 const messages = defineMessages({
@@ -358,7 +358,7 @@ class ActionBar extends PureComponent {
       reblogTitle = intl.formatMessage(messages.cannot_reblog);
     }
 
-    const emojiReactionAvailableServer = !hideEmojiReactionUnavailableServer || status.get('emoji_reaction_available_server');
+    const emojiReactionAvailableServer = !isHideItem('emoji_reaction_unavailable_server') || status.get('emoji_reaction_available_server');
     const emojiReactionPolicy = account.getIn(['other_settings', 'emoji_reaction_policy']) || 'allow';
     const following = emojiReactionPolicy !== 'following_only' || (relationship && relationship.get('following'));
     const followed = emojiReactionPolicy !== 'followers_only' || (relationship && relationship.get('followed_by'));

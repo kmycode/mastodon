@@ -269,6 +269,7 @@ en:
         setting_expand_spoilers: Always expand posts marked with content warnings
         setting_hide_blocking_quote: Hide posts which have a quote written by the user you are blocking
         setting_hide_emoji_reaction_unavailable_server: Hide stamp button from unavailable server
+        setting_hide_favourite_menu: Hide favourite menu
         setting_hide_followers_count: Hide followers count
         setting_hide_following_count: Hide following count
         setting_hide_network: Hide your social graph

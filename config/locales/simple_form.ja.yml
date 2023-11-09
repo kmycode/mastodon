@@ -280,6 +280,7 @@ ja:
         setting_expand_spoilers: 閲覧注意としてマークされた投稿を常に展開する
         setting_hide_blocking_quote: ブロックしたユーザーの投稿を引用した投稿を隠す
         setting_hide_emoji_reaction_unavailable_server: スタンプに対応していないと思われるサーバーの投稿からスタンプボタンを隠す
+        setting_hide_favourite_menu: 右サイドメニューから「お気に入り」を隠す
         setting_hide_followers_count: フォロワー数を隠す
         setting_hide_following_count: フォロー数を隠す
         setting_hide_network: 繋がりを隠す

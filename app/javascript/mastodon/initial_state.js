@@ -2,6 +2,17 @@
 
 
 /**
+ * @typedef { 'blocking_quote'
+ *   | 'emoji_reaction_on_timeline'
+ *   | 'emoji_reaction_unavailable_server'
+ *   | 'favourite_menu'
+ *   | 'quote_in_home'
+ *   | 'quote_in_public'
+ *   | 'recent_emojis'
+ * } HideItemsDefinition
+ */
+
+/**
  * @typedef {[code: string, name: string, localName: string]} InitialStateLanguage
  */
 
@@ -27,9 +38,7 @@
  * @property {boolean} enable_local_timeline
  * @property {boolean} enable_dtl_menu
  * @property {boolean=} expand_spoilers
- * @property {boolean} hide_blocking_quote
- * @property {boolean} hide_emoji_reaction_unavailable_server
- * @property {boolean} hide_recent_emojis
+ * @property {HideItemsDefinition[]} hide_items
  * @property {boolean} limited_federation_mode
  * @property {string} locale
  * @property {string | null} mascot
@@ -42,9 +51,6 @@
  * @property {string} repository
  * @property {boolean} search_enabled
  * @property {boolean} trends_enabled
- * @property {boolean} show_emoji_reaction_on_timeline
- * @property {boolean} show_quote_in_home
- * @property {boolean} show_quote_in_public
  * @property {string} simple_timeline_menu
  * @property {boolean} single_user_mode
  * @property {string} source_url
@@ -87,6 +93,20 @@ export const hasMultiColumnPath = initialPath === '/'
  */
 const getMeta = (prop) => initialState?.meta && initialState.meta[prop];
 
+const hideItems = getMeta('hide_items');
+
+/**
+ * @param {HideItemsDefinition} key
+ * @returns {boolean}
+ */
+export const isHideItem = (key) => (hideItems && hideItems.includes(key)) || false;
+
+/**
+ * @param {HideItemsDefinition} key
+ * @returns {boolean}
+ */
+export const isShowItem = (key) => !isHideItem(key);
+
 export const activityApiEnabled = getMeta('activity_api_enabled');
 export const autoPlayGif = getMeta('auto_play_gif');
 export const bookmarkCategoryNeeded = getMeta('bookmark_category_needed');
@@ -105,9 +125,6 @@ export const enableLoginPrivacy = getMeta('enable_login_privacy');
 export const enableDtlMenu = getMeta('enable_dtl_menu');
 export const expandSpoilers = getMeta('expand_spoilers');
 export const forceSingleColumn = !getMeta('advanced_layout');
-export const hideBlockingQuote = getMeta('hide_blocking_quote');
-export const hideEmojiReactionUnavailableServer = getMeta('hide_emoji_reaction_unavailable_server');
-export const hideRecentEmojis = getMeta('hide_recent_emojis');
 export const limitedFederationMode = getMeta('limited_federation_mode');
 export const mascot = getMeta('mascot');
 export const me = getMeta('me');
@@ -119,9 +136,6 @@ export const registrationsOpen = getMeta('registrations_open');
 export const repository = getMeta('repository');
 export const searchEnabled = getMeta('search_enabled');
 export const trendsEnabled = getMeta('trends_enabled');
-export const showEmojiReactionOnTimeline = getMeta('show_emoji_reaction_on_timeline');
-export const showQuoteInHome = getMeta('show_quote_in_home');
-export const showQuoteInPublic = getMeta('show_quote_in_public');
 export const showTrends = getMeta('show_trends');
 export const simpleTimelineMenu = getMeta('simple_timeline_menu');
 export const singleUserMode = getMeta('single_user_mode');

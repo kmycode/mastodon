@@ -263,6 +263,10 @@ module HasUserSettings
     settings['web.hide_emoji_reaction_unavailable_server']
   end
 
+  def setting_hide_favourite_menu
+    settings['web.hide_favourite_menu']
+  end
+
   def allows_report_emails?
     settings['notification_emails.report']
   end
