@@ -245,7 +245,7 @@ class Status < ApplicationRecord
   end
 
   def quote?
-    !quote_of_id.nil?
+    !quote_of_id.nil? && !quote.nil?
   end
 
   def within_realtime_window?
