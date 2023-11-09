@@ -280,10 +280,13 @@ class Status extends ImmutablePureComponent {
     if (signedIn) {
       dispatch(emojiReact(status, emoji));
     } else {
-      dispatch(openModal('INTERACTION', {
-        type: 'favourite',
-        accountId: status.getIn(['account', 'id']),
-        url: status.get('url'),
+      dispatch(openModal({
+        modalType: 'INTERACTION',
+        modalProps: {
+          type: 'favourite',
+          accountId: status.getIn(['account', 'id']),
+          url: status.get('uri'),
+        },
       }));
     }
   };
