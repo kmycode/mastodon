@@ -1189,12 +1189,16 @@ ja:
     advanced_web_interface_hint: 'ディスプレイを幅いっぱいまで活用したい場合、上級者向け UI をおすすめします。ホーム、通知、連合タイムライン、更にはリストやハッシュタグなど、様々な異なるカラムから望む限りの情報を一度に受け取れるような設定が可能になります。'
     animations_and_accessibility: アニメーションとアクセシビリティー
     confirmation_dialogs: 確認ダイアログ
+    custom_emoji_and_emoji_reactions: カスタム絵文字とスタンプ
     discovery: 見つける
     localization:
       body: Mastodonは有志によって翻訳されています。
       guide_link: https://ja.crowdin.com/project/mastodon
       guide_link_text: 誰でも参加することができます。
+    quotes: 引用
+    saved_posts: 投稿の記録
     sensitive_content: 閲覧注意コンテンツ
+    timelines: タイムライン
   application_mailer:
     notification_preferences: メール設定の変更
     salutation: "%{name}さん"
@@ -1703,6 +1707,7 @@ ja:
   preferences:
     dtl: ディープタイムライン
     dtl_hint: "#%{tag} ハッシュタグに参加することで、ディープタイムラインに投稿できます。ここではディープタイムラインを利用しやすくするための設定ができます。"
+    emoji_reaction_permitting: スタンプの受け入れ
     other: その他
     posting_defaults: デフォルトの投稿設定
     public_timelines: 公開タイムライン

@@ -1194,12 +1194,16 @@ en:
     advanced_web_interface_hint: 'If you want to make use of your entire screen width, the advanced web interface allows you to configure many different columns to see as much information at the same time as you want: Home, notifications, federated timeline, any number of lists and hashtags.'
     animations_and_accessibility: Animations and accessibility
     confirmation_dialogs: Confirmation dialogs
+    custom_emoji_and_emoji_reactions: Custom emoji and stamps
     discovery: Discovery
     localization:
       body: Mastodon is translated by volunteers.
       guide_link: https://crowdin.com/project/mastodon
       guide_link_text: Everyone can contribute.
+    quotes: Quotes
+    saved_posts: Saving posts
     sensitive_content: Sensitive content
+    timelines: Timelines
   application_mailer:
     notification_preferences: Change e-mail preferences
     salutation: "%{name},"
@@ -1717,6 +1721,7 @@ en:
   preferences:
     dtl: Deep timeline
     dtl_hint: "You can join deep timeline with #%{tag} tag. Following settings make convenient to use deep timeline."
+    emoji_reaction_permitting: Receiving stamps
     other: Other
     posting_defaults: Posting defaults
     public_timelines: Public timelines
