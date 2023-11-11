@@ -110,6 +110,8 @@ RSpec/MultipleExpectations:
 # Configuration parameters: AllowSubject.
 RSpec/MultipleMemoizedHelpers:
   Max: 21
+  Exclude:
+    - 'spec/services/delete_account_service_spec.rb'
 
 # Configuration parameters: AllowedGroups.
 RSpec/NestedGroups:

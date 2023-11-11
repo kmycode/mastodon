@@ -42,7 +42,6 @@ module AccountAssociations
 
     has_many :report_notes, dependent: :destroy
     has_many :custom_filters, inverse_of: :account, dependent: :destroy
-    has_many :antennas, inverse_of: :account, dependent: :destroy
     has_many :antenna_accounts, inverse_of: :account, dependent: :destroy
 
     # Moderation notes
