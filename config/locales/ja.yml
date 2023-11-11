@@ -686,6 +686,7 @@ ja:
       action_taken_by: 通報処理者
       actions:
         delete_description_html: 報告された投稿は削除され、ストライクが記録されます。同じアカウントによる今後の違反行為のエスカレーションに役立てられます。
+        force_cw_description_html: 報告された投稿には強制的に警告文が追加され、ストライクが記録され、同じアカウントによる今後の違反行為のエスカレーションに役立てられます。
         mark_as_sensitive_description_html: 報告された投稿のメディアは閲覧注意となり、ストライクが記録され、同じアカウントによる今後の違反行為のエスカレーションに役立てられます。
         other_description_html: アカウントの動作を制御するためのオプションや、報告されたアカウントへの通信をカスタマイズするためのオプションを確認してください。
         resolve_description_html: 報告されたアカウントに対していかなる措置も取られず、ストライクも記録されず、報告は終了します。
@@ -708,6 +709,7 @@ ja:
       confirm_action: '@%{acct} さんに対するアクション'
       created_at: 通報日時
       delete_and_resolve: 投稿を削除
+      force_cw: 強制的にCWにする
       forwarded: 転送済み
       forwarded_to: '%{domain}に転送されました'
       mark_as_resolved: 解決済みとしてマーク
@@ -738,11 +740,13 @@ ja:
       summary:
         action_preambles:
           delete_html: "<strong>@%{acct}</strong>さんの投稿を<strong>削除</strong>します。この操作は:"
+          force_cw_html: "<strong>@%{acct}</strong>さんの投稿に<strong>警告文</strong>を<strong>追加</strong>します。この操作は:"
           mark_as_sensitive_html: "<strong>@%{acct}</strong>さんの投稿を<strong>閲覧注意</strong>として<strong>マーク</strong>します。この操作は:"
           silence_html: "<strong>@%{acct}</strong>さんのアカウントを<strong>制限 (サイレンス) </strong>します。この操作は:"
           suspend_html: "<strong>@%{acct}</strong>さんのアカウントを<strong>停止 (サスペンド) </strong>します。この操作は:"
         actions:
           delete_html: 当該の投稿を削除します
+          force_cw_html: 当該の投稿に警告文を強制的に追加します
           mark_as_sensitive_html: 当該の投稿に含まれるメディアを閲覧注意にします
           silence_html: "<strong>@%{acct}</strong>さんのプロフィールとコンテンツの表示範囲をフォロー中の人や意図的にプロフィールにアクセスした人のみに制限することで、アカウントを発見されにくくします"
           suspend_html: "<strong>@%{acct}</strong>さんのアカウントが凍結され、プロフィールとコンテンツへのアクセス、および投稿ができなくなります"
