@@ -7,12 +7,22 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
     @status  = Status.find(status_id)
     @account = @status.account
 
-    distribute!
+    if @status.limited_visibility?
+      distribute_limited!
+    else
+      distribute!
+    end
   rescue ActiveRecord::RecordNotFound
     true
   end
 
   protected
+
+  def distribute_limited!
+    ActivityPub::DeliveryWorker.push_bulk(inboxes_for_limited, limit: 1_000) do |inbox_url|
+      [payload, @account.id, inbox_url, options]
+    end
+  end
 
   def inboxes
     @inboxes ||= status_reach_finder.inboxes
@@ -24,6 +34,10 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
 
   def inboxes_for_friend
     @inboxes_for_friend ||= status_reach_finder.inboxes_for_friend
+  end
+
+  def inboxes_for_limited
+    @inboxes_for_limited ||= status_reach_finder.inboxes_for_limited
   end
 
   def status_reach_finder

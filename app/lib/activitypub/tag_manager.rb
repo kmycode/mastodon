@@ -119,10 +119,7 @@ class ActivityPub::TagManager
         end.compact
       end
     when 'limited'
-      status.mentions.each_with_object([]) do |mention, result|
-        result << uri_for(mention.account)
-        result << followers_uri_for(mention.account) if mention.account.group?
-      end.compact
+      []
     end
   end
 
