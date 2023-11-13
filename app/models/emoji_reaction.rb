@@ -18,7 +18,7 @@ class EmojiReaction < ApplicationRecord
   include Paginable
 
   EMOJI_REACTION_LIMIT = 32_767
-  EMOJI_REACTION_PER_ACCOUNT_LIMIT = ENV.fetch('EMOJI_REACTION_PER_ACCOUNT_LIMIT', 3)
+  EMOJI_REACTION_PER_ACCOUNT_LIMIT = ENV.fetch('EMOJI_REACTION_PER_ACCOUNT_LIMIT', 3).to_i
 
   update_index('statuses', :status)
 
