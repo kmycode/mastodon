@@ -119,7 +119,7 @@ class ActivityPub::TagManager
         end.compact
       end
     when 'limited'
-      []
+      ['kmyblue:Limited'] # to avoid Fedibird personal visibility
     end
   end
 
