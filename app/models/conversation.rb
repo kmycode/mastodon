@@ -16,7 +16,7 @@ class Conversation < ApplicationRecord
   validates :uri, uniqueness: true, if: :uri?
 
   has_many :statuses
-  has_one :ancestor_status, class_name: 'Status', inverse_of: false
+  belongs_to :ancestor_status, class_name: 'Status', inverse_of: :owned_conversation, optional: true
 
   def local?
     uri.nil?
