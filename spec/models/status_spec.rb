@@ -593,6 +593,16 @@ RSpec.describe Status do
       expect(described_class.create(account: alice, text: 'First').conversation_id).to_not be_nil
     end
 
+    it 'creates new owned-conversation for stand-alone status' do
+      expect(described_class.create(account: alice, text: 'First').owned_conversation.id).to_not be_nil
+    end
+
+    it 'creates new owned-conversation and linked for stand-alone status' do
+      status = described_class.create(account: alice, text: 'First')
+      expect(status.owned_conversation.ancestor_status_id).to eq status.id
+      expect(status.conversation.ancestor_status_id).to eq status.id
+    end
+
     it 'keeps conversation of parent node' do
       parent = Fabricate(:status, text: 'First')
       expect(described_class.create(account: alice, thread: parent, text: 'Response').conversation_id).to eq parent.conversation_id

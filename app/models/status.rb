@@ -66,6 +66,7 @@ class Status < ApplicationRecord
   belongs_to :account, inverse_of: :statuses
   belongs_to :in_reply_to_account, class_name: 'Account', optional: true
   belongs_to :conversation, optional: true
+  has_one :owned_conversation, class_name: 'Conversation', foreign_key: 'ancestor_status_id', inverse_of: false
   belongs_to :preloadable_poll, class_name: 'Poll', foreign_key: 'poll_id', optional: true, inverse_of: false
 
   belongs_to :thread, foreign_key: 'in_reply_to_id', class_name: 'Status', inverse_of: :replies, optional: true
@@ -655,7 +656,12 @@ class Status < ApplicationRecord
       self.in_reply_to_account_id = carried_over_reply_to_account_id
       self.conversation_id        = thread.conversation_id if conversation_id.nil?
     elsif conversation_id.nil?
-      self.conversation = Conversation.new
+      if local?
+        self.owned_conversation = Conversation.new
+        self.conversation = owned_conversation
+      else
+        self.conversation = Conversation.new
+      end
     end
   end
 

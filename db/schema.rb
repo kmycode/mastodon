@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_05_225839) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_15_001356) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -475,6 +475,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_05_225839) do
     t.string "uri"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "inbox_url"
+    t.bigint "ancestor_status_id"
     t.index ["uri"], name: "index_conversations_on_uri", unique: true, opclass: :text_pattern_ops, where: "(uri IS NOT NULL)"
   end
 
@@ -1463,6 +1465,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_05_225839) do
   add_foreign_key "circles", "accounts", on_delete: :cascade
   add_foreign_key "conversation_mutes", "accounts", name: "fk_225b4212bb", on_delete: :cascade
   add_foreign_key "conversation_mutes", "conversations", on_delete: :cascade
+  add_foreign_key "conversations", "statuses", column: "ancestor_status_id", on_delete: :nullify
   add_foreign_key "custom_filter_keywords", "custom_filters", on_delete: :cascade
   add_foreign_key "custom_filter_statuses", "custom_filters", on_delete: :cascade
   add_foreign_key "custom_filter_statuses", "statuses", on_delete: :cascade
