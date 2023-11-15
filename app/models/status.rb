@@ -656,8 +656,12 @@ class Status < ApplicationRecord
       self.in_reply_to_account_id = carried_over_reply_to_account_id
       self.conversation_id        = thread.conversation_id if conversation_id.nil?
     elsif conversation_id.nil?
-      self.owned_conversation = Conversation.new
-      self.conversation = owned_conversation
+      if local?
+        self.owned_conversation = Conversation.new
+        self.conversation = owned_conversation
+      else
+        self.conversation = Conversation.new
+      end
     end
   end
 
