@@ -132,7 +132,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       limited_scope: @status_parser.limited_scope,
       searchability: @status_parser.searchability,
       thread: replied_to_status,
-      conversation: conversation_from_uri(@object['conversation']),
+      conversation: conversation_from_activity,
       media_attachment_ids: process_attachments.take(MediaAttachment::ACTIVITYPUB_STATUS_ATTACHMENT_MAX).map(&:id),
       poll: process_poll,
     }
@@ -182,6 +182,10 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     # Accounts that are tagged but are not in the audience are not
     # supposed to be notified explicitly
     @silenced_account_ids = @mentions.map(&:account_id) - accounts_in_audience.map(&:id)
+  end
+
+  def account_representative
+    accounts_in_audience.detect(&:local?) || Account.representative
   end
 
   def postprocess_audience_and_deliver
@@ -373,6 +377,10 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     ActivityPub::FetchRepliesWorker.perform_async(status.id, uri, { 'request_id' => @options[:request_id] }) unless uri.nil?
   end
 
+  def conversation_from_activity
+    conversation_from_context(@object['context']) || conversation_from_uri(@object['conversation'])
+  end
+
   def conversation_from_uri(uri)
     return nil if uri.nil?
     return Conversation.find_by(id: OStatus::TagManager.instance.unique_tag_to_local_id(uri, 'Conversation')) if OStatus::TagManager.instance.local_id?(uri)
@@ -381,6 +389,26 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       Conversation.find_or_create_by!(uri: uri)
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
       retry
+    end
+  end
+
+  def conversation_from_context(uri)
+    return nil if uri.nil?
+    return Conversation.find_by(id: ActivityPub::TagManager.instance.uri_to_local_id(uri)) if ActivityPub::TagManager.instance.local_uri?(uri)
+
+    begin
+      conversation = Conversation.find_or_create_by!(uri: uri)
+
+      json = fetch_resource_without_id_validation(uri, account_representative)
+      return conversation if json.nil? || json['type'] != 'Group'
+      return conversation if json['inbox'].blank? || json['inbox'] == conversation.inbox_url
+
+      conversation.update!(inbox_url: json['inbox'])
+      conversation
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+      retry
+    rescue Mastodon::UnexpectedResponseError
+      Conversation.find_or_create_by!(uri: uri)
     end
   end
 

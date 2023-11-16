@@ -16,12 +16,22 @@ RSpec.describe ActivityPub::Activity::Create do
     }.with_indifferent_access
   end
 
+  let(:conversation) do
+    {
+      id: 'http://example.com/conversation',
+      type: 'Group',
+      inbox: 'http://example.com/actor/inbox',
+    }.with_indifferent_access
+  end
+
   before do
     sender.update(uri: ActivityPub::TagManager.instance.uri_for(sender))
 
     stub_request(:get, 'http://example.com/attachment.png').to_return(request_fixture('avatar.txt'))
     stub_request(:get, 'http://example.com/emoji.png').to_return(body: attachment_fixture('emojo.png'))
     stub_request(:get, 'http://example.com/emojib.png').to_return(body: attachment_fixture('emojo.png'), headers: { 'Content-Type' => 'application/octet-stream' })
+    stub_request(:get, 'http://example.com/conversation').to_return(body: Oj.dump(conversation))
+    stub_request(:get, 'http://example.com/invalid-conversation').to_return(status: 404)
   end
 
   describe 'processing posts received out of order' do
@@ -936,6 +946,86 @@ RSpec.describe ActivityPub::Activity::Create do
 
             expect(status).to be_nil
           end
+        end
+      end
+
+      context 'with a context' do
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            context: 'http://example.com/conversation',
+          }
+        end
+
+        it 'creates status' do
+          status = sender.statuses.first
+
+          expect(status).to_not be_nil
+          expect(status.conversation).to_not be_nil
+          expect(status.conversation.uri).to eq 'http://example.com/conversation'
+          expect(status.conversation.inbox_url).to eq 'http://example.com/actor/inbox'
+        end
+
+        context 'when existing' do
+          let(:custom_before) { true }
+          let!(:existing) { Fabricate(:conversation, uri: 'http://example.com/conversation', inbox_url: 'http://example.com/actor/invalid') }
+
+          before do
+            subject.perform
+          end
+
+          it 'creates status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.conversation).to_not be_nil
+            expect(status.conversation.id).to eq existing.id
+            expect(status.conversation.inbox_url).to eq 'http://example.com/actor/inbox'
+          end
+        end
+      end
+
+      context 'with an invalid context' do
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            context: 'http://example.com/invalid-conversation',
+          }
+        end
+
+        it 'creates status' do
+          status = sender.statuses.first
+
+          expect(status).to_not be_nil
+          expect(status.text).to eq 'Lorem ipsum'
+          expect(status.conversation).to_not be_nil
+          expect(status.conversation.uri).to eq 'http://example.com/invalid-conversation'
+        end
+      end
+
+      context 'with a local context' do
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            context: "https://cb6e6126.ngrok.io/contexts/#{existing.id}",
+          }
+        end
+
+        let(:existing) { Fabricate(:conversation, id: 3500) }
+
+        it 'creates status' do
+          status = sender.statuses.first
+
+          expect(status).to_not be_nil
+          expect(status.conversation).to_not be_nil
+          expect(status.conversation.uri).to be_nil
+          expect(status.conversation.id).to eq existing.id
         end
       end
 
