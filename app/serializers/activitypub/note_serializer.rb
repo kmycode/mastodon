@@ -9,11 +9,12 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
              :in_reply_to, :published, :url,
              :attributed_to, :to, :cc, :sensitive,
              :atom_uri, :in_reply_to_atom_uri,
-             :conversation, :searchable_by, :limited_scope
+             :conversation, :searchable_by, :context
 
   attribute :content
   attribute :content_map, if: :language?
   attribute :updated, if: :edited?
+  attribute :limited_scope, if: :limited_visibility?
 
   attribute :quote_uri, if: :quote?
   attribute :misskey_quote, key: :_misskey_quote, if: :quote?
@@ -52,6 +53,10 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
     { object.language => content }
   end
 
+  def context
+    ActivityPub::TagManager.instance.uri_for(object.conversation)
+  end
+
   def replies
     replies = object.self_replies(5).pluck(:id, :uri)
     last_id = replies.last&.first
@@ -87,6 +92,8 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
   def language?
     object.language.present?
   end
+
+  delegate :limited_visibility?, to: :object
 
   delegate :edited?, to: :object
 

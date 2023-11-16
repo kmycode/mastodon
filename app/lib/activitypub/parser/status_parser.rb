@@ -105,6 +105,8 @@ class ActivityPub::Parser::StatusParser
       :mutual
     when 'Circle'
       :circle
+    when 'Reply'
+      :reply
     else
       :none
     end

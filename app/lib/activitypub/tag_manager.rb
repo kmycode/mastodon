@@ -49,6 +49,8 @@ class ActivityPub::TagManager
       emoji_url(target)
     when :emoji_reaction
       emoji_reaction_url(target)
+    when :conversation
+      context_url(target)
     when :flag
       target.uri
     end
@@ -119,10 +121,7 @@ class ActivityPub::TagManager
         end.compact
       end
     when 'limited'
-      status.mentions.each_with_object([]) do |mention, result|
-        result << uri_for(mention.account)
-        result << followers_uri_for(mention.account) if mention.account.group?
-      end.compact
+      status.conversation.nil? ? ['kmyblue:Limited'] : [context_url(status.conversation)]
     end
   end
 
@@ -228,10 +227,15 @@ class ActivityPub::TagManager
   end
 
   def limited_scope(status)
-    if status.mutual_limited?
+    case status.limited_scope
+    when 'mutual'
       'Mutual'
+    when 'circle'
+      'Circle'
+    when 'reply'
+      'Reply'
     else
-      status.circle_limited? ? 'Circle' : ''
+      ''
     end
   end
 
