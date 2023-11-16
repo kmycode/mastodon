@@ -147,7 +147,6 @@ class StatusesIndex < Chewy::Index
   index_scope ::Status.unscoped.kept.without_reblogs.includes(
     :account,
     :media_attachments,
-    :preview_cards,
     :local_mentioned,
     :local_favorited,
     :local_reblogged,
@@ -155,6 +154,7 @@ class StatusesIndex < Chewy::Index
     :local_emoji_reacted,
     :tags,
     :local_referenced,
+    preview_cards_status: :preview_card,
     preloadable_poll: :local_voters
   ),
               delete_if: lambda { |status|

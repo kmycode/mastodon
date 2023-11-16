@@ -121,7 +121,7 @@ RSpec.describe FetchLinkCardService, type: :service do
       let(:status) { Fabricate(:status, text: 'Check out http://example.com/sjis') }
 
       it 'decodes the HTML' do
-        expect(status.preview_cards.first.title).to eq('SJISのページ')
+        expect(status.preview_card.title).to eq('SJISのページ')
       end
     end
 
@@ -129,7 +129,7 @@ RSpec.describe FetchLinkCardService, type: :service do
       let(:status) { Fabricate(:status, text: 'Check out http://example.com/sjis_with_wrong_charset') }
 
       it 'decodes the HTML despite the wrong charset header' do
-        expect(status.preview_cards.first.title).to eq('SJISのページ')
+        expect(status.preview_card.title).to eq('SJISのページ')
       end
     end
 
@@ -137,7 +137,7 @@ RSpec.describe FetchLinkCardService, type: :service do
       let(:status) { Fabricate(:status, text: 'Check out http://example.com/koi8-r') }
 
       it 'decodes the HTML' do
-        expect(status.preview_cards.first.title).to eq('Московя начинаетъ только въ XVI ст. привлекать внимане иностранцевъ.')
+        expect(status.preview_card.title).to eq('Московя начинаетъ только въ XVI ст. привлекать внимане иностранцевъ.')
       end
     end
 
@@ -145,7 +145,7 @@ RSpec.describe FetchLinkCardService, type: :service do
       let(:status) { Fabricate(:status, text: 'Check out http://example.com/windows-1251') }
 
       it 'decodes the HTML' do
-        expect(status.preview_cards.first.title).to eq('сэмпл текст')
+        expect(status.preview_card.title).to eq('сэмпл текст')
       end
     end
 
@@ -253,11 +253,21 @@ RSpec.describe FetchLinkCardService, type: :service do
         expect(status.preview_card.title).to eq 'Hello world'
       end
     end
+
+    context 'with URL but author is not allow preview card' do
+      let(:account) { Fabricate(:user, settings: { link_preview: false }).account }
+      let(:status) { Fabricate(:status, text: 'http://example.com/html', account: account) }
+
+      it 'not create preview card' do
+        expect(status.preview_card).to be_nil
+      end
+    end
   end
 
   context 'with a remote status' do
+    let(:account) { Fabricate(:account, domain: 'example.com') }
     let(:status) do
-      Fabricate(:status, account: Fabricate(:account, domain: 'example.com'), text: <<-TEXT)
+      Fabricate(:status, account: account, text: <<-TEXT)
       Habt ihr ein paar gute Links zu <a>foo</a>
       #<span class="tag"><a href="https://quitter.se/tag/wannacry" target="_blank" rel="tag noopener noreferrer" title="https://quitter.se/tag/wannacry">Wannacry</a></span> herumfliegen?
       Ich will mal unter <br> <a href="http://example.com/not-found" target="_blank" rel="noopener noreferrer" title="http://example.com/not-found">http://example.com/not-found</a> was sammeln. !
@@ -271,6 +281,14 @@ RSpec.describe FetchLinkCardService, type: :service do
 
     it 'ignores URLs to hashtags' do
       expect(a_request(:get, 'https://quitter.se/tag/wannacry')).to_not have_been_made
+    end
+
+    context 'with URL but author is not allow preview card' do
+      let(:account) { Fabricate(:account, domain: 'example.com', settings: { link_preview: false }) }
+
+      it 'not create link preview' do
+        expect(status.preview_card).to be_nil
+      end
     end
   end
 

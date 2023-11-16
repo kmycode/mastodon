@@ -25,6 +25,12 @@ class StatusReachFinder
     (reached_account_inboxes_for_friend + followers_inboxes_for_friend + friend_inboxes).uniq
   end
 
+  def inboxes_for_limited
+    DeliveryFailureTracker.without_unavailable(
+      @status.mentioned_accounts.where.not(domain: nil).pluck(:inbox_url).compact.uniq
+    )
+  end
+
   def all_inboxes
     (inboxes + inboxes_for_misskey + inboxes_for_friend).uniq
   end

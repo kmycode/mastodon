@@ -229,10 +229,10 @@ class SwitchingColumnsArea extends PureComponent {
             <WrappedRoute path='/bookmark_categories/:id' component={BookmarkCategoryStatuses} content={children} />
             <WrappedRoute path='/bookmark_categories' component={BookmarkCategories} content={children} />
             <WrappedRoute path='/pinned' component={PinnedStatuses} content={children} />
-
+            
             <WrappedRoute path='/reaction_deck' component={ReactionDeck} content={children} />
 
-            <WrappedRoute path='/start' exact component={Onboarding} content={children} />
+            <WrappedRoute path='/start' component={Onboarding} content={children} />
             <WrappedRoute path='/directory' component={Directory} content={children} />
             <WrappedRoute path={['/explore', '/search']} component={Explore} content={children} />
             <WrappedRoute path={['/publish', '/statuses/new']} component={Compose} content={children} />

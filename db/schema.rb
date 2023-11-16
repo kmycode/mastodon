@@ -1022,6 +1022,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_15_001356) do
   create_table "preview_cards_statuses", primary_key: ["status_id", "preview_card_id"], force: :cascade do |t|
     t.bigint "preview_card_id", null: false
     t.bigint "status_id", null: false
+    t.string "url"
   end
 
   create_table "relays", force: :cascade do |t|
