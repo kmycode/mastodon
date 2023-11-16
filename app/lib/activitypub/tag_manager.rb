@@ -257,8 +257,6 @@ class ActivityPub::TagManager
         [COLLECTIONS[:public]]
       when 'private'
         [account_followers_url(status.account)]
-      when 'direct'
-        status.conversation_id.present? ? [uri_for(status.conversation)] : []
       when 'limited'
         ['as:Limited', 'kmyblue:Limited']
       else
@@ -278,7 +276,7 @@ class ActivityPub::TagManager
     case account.compute_searchability_activitypub
     when 'public'
       [COLLECTIONS[:public]]
-    when 'private', 'direct'
+    when 'private'
       [account_followers_url(account)]
     when 'limited'
       ['as:Limited', 'kmyblue:Limited']
