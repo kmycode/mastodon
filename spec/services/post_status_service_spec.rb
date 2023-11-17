@@ -295,29 +295,76 @@ RSpec.describe PostStatusService, type: :service do
     expect(status.mentioned_accounts.count).to eq 1
   end
 
-  it 'creates a new response status to limited post' do
-    in_reply_to_status = Fabricate(:status, visibility: :limited)
-    account = Fabricate(:account)
-    text = 'test status update'
+  describe 'create a new response status to limited post' do
+    it 'when reply visibility' do
+      in_reply_to_status = Fabricate(:status, visibility: :limited)
+      account = Fabricate(:account)
+      text = 'test status update'
 
-    status = subject.call(account, text: text, thread: in_reply_to_status)
+      status = subject.call(account, text: text, thread: in_reply_to_status, visibility: 'reply')
 
-    expect(status).to be_persisted
-    expect(status.thread).to eq in_reply_to_status
-    expect(status.visibility).to eq 'limited'
-    expect(status.limited_scope).to eq 'reply'
-  end
+      expect(status).to be_persisted
+      expect(status.thread).to eq in_reply_to_status
+      expect(status.visibility).to eq 'limited'
+      expect(status.limited_scope).to eq 'reply'
+    end
 
-  it 'creates a new direct message to limited post' do
-    in_reply_to_status = Fabricate(:status, visibility: :limited)
-    account = Fabricate(:account)
-    text = 'test status update'
+    it 'when limited visibility' do
+      in_reply_to_status = Fabricate(:status, visibility: :limited)
+      account = Fabricate(:account)
+      text = 'test status update'
 
-    status = subject.call(account, text: text, thread: in_reply_to_status, visibility: :direct)
+      status = subject.call(account, text: text, thread: in_reply_to_status, visibility: :limited)
 
-    expect(status).to be_persisted
-    expect(status.thread).to eq in_reply_to_status
-    expect(status.visibility).to eq 'direct'
+      expect(status).to be_persisted
+      expect(status.thread).to eq in_reply_to_status
+      expect(status.visibility).to eq 'limited'
+      expect(status.limited_scope).to eq 'reply'
+    end
+
+    it 'when circle visibility' do
+      in_reply_to_status = Fabricate(:status, visibility: :limited)
+      account = Fabricate(:account)
+      text = 'test status update'
+
+      circle = Fabricate(:circle, account: account)
+      circle_account = Fabricate(:account)
+      circle_account.follow!(account)
+      circle.accounts << circle_account
+      circle.save!
+
+      status = subject.call(account, text: text, thread: in_reply_to_status, visibility: 'circle', circle_id: circle.id)
+
+      expect(status).to be_persisted
+      expect(status.thread).to eq in_reply_to_status
+      expect(status.visibility).to eq 'limited'
+      expect(status.limited_scope).to eq 'circle'
+      expect(status.mentioned_accounts.pluck(:id)).to eq [circle_account.id]
+    end
+
+    it 'when public visibility' do
+      in_reply_to_status = Fabricate(:status, visibility: :limited)
+      account = Fabricate(:account)
+      text = 'test status update'
+
+      status = subject.call(account, text: text, thread: in_reply_to_status, visibility: :public)
+
+      expect(status).to be_persisted
+      expect(status.thread).to eq in_reply_to_status
+      expect(status.visibility).to eq 'public'
+    end
+
+    it 'when direct visibility' do
+      in_reply_to_status = Fabricate(:status, visibility: :limited)
+      account = Fabricate(:account)
+      text = 'test status update'
+
+      status = subject.call(account, text: text, thread: in_reply_to_status, visibility: :direct)
+
+      expect(status).to be_persisted
+      expect(status.thread).to eq in_reply_to_status
+      expect(status.visibility).to eq 'direct'
+    end
   end
 
   it 'safeguards mentions' do

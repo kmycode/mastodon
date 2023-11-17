@@ -87,7 +87,7 @@ class PostStatusService < BaseService
     @reference_ids = (@options[:status_reference_ids] || []).map(&:to_i).filter(&:positive?)
     raise ArgumentError if !Setting.enable_public_unlisted_visibility && @visibility == :public_unlisted
 
-    if @in_reply_to&.limited_visibility? && @visibility != :direct
+    if @in_reply_to.present? && ((@visibility == :limited && @options[:circle_id].nil?) || @limited_scope == :reply)
       @visibility = :limited
       @limited_scope = :reply
     end
@@ -100,8 +100,8 @@ class PostStatusService < BaseService
   end
 
   def load_circle
-    return if @visibility == :limited && @limited_scope == :reply
-    return unless %w(circle limited).include?(@options[:visibility])
+    return if @visibility == :limited && @limited_scope == :reply && @in_reply_to.present?
+    return unless %w(circle limited reply).include?(@options[:visibility])
     raise ArgumentError if @options[:circle_id].nil?
 
     @circle = @options[:circle_id].present? && Circle.find(@options[:circle_id])
