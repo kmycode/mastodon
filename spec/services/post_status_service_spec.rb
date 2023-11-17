@@ -263,7 +263,7 @@ RSpec.describe PostStatusService, type: :service do
     expect(status.limited_scope).to eq 'circle'
   end
 
-  it 'limited visibility and empty circle' do
+  it 'limited visibility without circle' do
     account = Fabricate(:account)
     text = 'This is an English text.'
 
@@ -293,6 +293,31 @@ RSpec.describe PostStatusService, type: :service do
     expect(status.visibility).to eq 'limited'
     expect(status.limited_scope).to eq 'circle'
     expect(status.mentioned_accounts.count).to eq 1
+  end
+
+  it 'creates a new response status to limited post' do
+    in_reply_to_status = Fabricate(:status, visibility: :limited)
+    account = Fabricate(:account)
+    text = 'test status update'
+
+    status = subject.call(account, text: text, thread: in_reply_to_status)
+
+    expect(status).to be_persisted
+    expect(status.thread).to eq in_reply_to_status
+    expect(status.visibility).to eq 'limited'
+    expect(status.limited_scope).to eq 'reply'
+  end
+
+  it 'creates a new direct message to limited post' do
+    in_reply_to_status = Fabricate(:status, visibility: :limited)
+    account = Fabricate(:account)
+    text = 'test status update'
+
+    status = subject.call(account, text: text, thread: in_reply_to_status, visibility: :direct)
+
+    expect(status).to be_persisted
+    expect(status.thread).to eq in_reply_to_status
+    expect(status.visibility).to eq 'direct'
   end
 
   it 'safeguards mentions' do

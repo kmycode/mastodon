@@ -77,6 +77,7 @@ const initialState = ImmutableMap({
   caretPosition: null,
   preselectDate: null,
   in_reply_to: null,
+  reply_to_limited: false,
   is_composing: false,
   is_submitting: false,
   is_changing_upload: false,
@@ -144,6 +145,8 @@ function clearAll(state) {
     if (!state.get('in_reply_to')) {
       map.set('posted_on_this_session', true);
     }
+    map.set('reply_to_limited', false);
+    console.dir(map.get('reply_to_limited'));
     map.set('limited_scope', null);
     map.set('id', null);
     map.set('in_reply_to', null);
@@ -293,6 +296,10 @@ const insertReference = (state, url, attributeType) => {
 };
 
 const privacyPreference = (a, b) => {
+  if (a === 'limited') {
+    return 'reply';
+  }
+
   const order = ['public', 'public_unlisted', 'unlisted', 'login', 'private', 'direct'];
   return order[Math.max(order.indexOf(a), order.indexOf(b), 0)];
 };
@@ -411,6 +418,8 @@ export default function compose(state = initialState, action) {
       map.set('id', null);
       map.set('in_reply_to', action.status.get('id'));
       map.set('text', statusToTextMentions(state, action.status));
+      map.set('reply_to_limited', action.status.get('visibility_ex') === 'limited');
+      console.dir(map.get('reply_to_limited'));
       map.set('privacy', privacyPreference(action.status.get('visibility_ex'), state.get('default_privacy')));
       map.set('limited_scope', null);
       map.set('searchability', privacyPreference(action.status.get('searchability'), state.get('default_searchability')));
@@ -521,7 +530,11 @@ export default function compose(state = initialState, action) {
     return state.set('tagHistory', fromJS(action.tags));
   case TIMELINE_DELETE:
     if (action.id === state.get('in_reply_to')) {
-      return state.set('in_reply_to', null);
+      if (state.get('privacy') === 'reply') {
+        return state.set('in_reply_to', null).set('privacy', 'circle');
+      } else {
+        return state.set('in_reply_to', null);
+      }
     } else if (action.id === state.get('id')) {
       return state.set('id', null);
     } else {
@@ -549,6 +562,8 @@ export default function compose(state = initialState, action) {
       map.set('text', action.raw_text || unescapeHTML(expandMentions(action.status)));
       map.set('in_reply_to', action.status.get('in_reply_to_id'));
       map.set('privacy', action.status.get('visibility_ex'));
+      map.set('reply_to_limited', action.status.get('limited_scope') === 'reply');
+      console.dir(map.get('reply_to_limited'));
       map.set('limited_scope', null);
       map.set('media_attachments', action.status.get('media_attachments').map((media) => media.set('unattached', true)));
       map.set('focusDate', new Date());
@@ -583,8 +598,10 @@ export default function compose(state = initialState, action) {
       if (action.status.get('visibility_ex') !== 'limited') {
         map.set('privacy', action.status.get('visibility_ex'));
       } else {
-        map.set('privacy', action.status.get('limited_scope') === 'mutual' ? 'mutual' : 'circle');
+        map.set('privacy', action.status.get('limited_scope') || 'circle');
       }
+      map.set('reply_to_limited', action.status.get('limited_scope') === 'reply');
+      console.dir(map.get('reply_to_limited'));
       map.set('limited_scope', action.status.get('limited_scope'));
       map.set('media_attachments', action.status.get('media_attachments'));
       map.set('focusDate', new Date());

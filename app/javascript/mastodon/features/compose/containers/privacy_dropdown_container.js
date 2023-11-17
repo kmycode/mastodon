@@ -7,6 +7,7 @@ import PrivacyDropdown from '../components/privacy_dropdown';
 
 const mapStateToProps = state => ({
   value: state.getIn(['compose', 'privacy']),
+  replyToLimited: state.getIn(['compose', 'reply_to_limited']),
 });
 
 const mapDispatchToProps = dispatch => ({
