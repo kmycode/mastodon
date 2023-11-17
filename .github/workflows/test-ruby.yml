@@ -310,7 +310,7 @@ jobs:
         uses: elastic/elastic-github-actions/elasticsearch@master
         with:
           stack-version: 7.17.13
-          plugins: analysis-sudachi analysis-icu
+          plugins: https://github.com/WorksApplications/elasticsearch-sudachi/releases/download/v3.0.0/analysis-sudachi-8.6.0-3.0.0.zip analysis-icu
           security-enabled: false
 
       - name: Load database schema
