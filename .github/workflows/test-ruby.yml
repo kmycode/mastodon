@@ -313,6 +313,13 @@ jobs:
           plugins: https://github.com/WorksApplications/elasticsearch-sudachi/releases/download/v3.1.0/elasticsearch-7.17.10-analysis-sudachi-3.1.0.zip analysis-icu
           security-enabled: false
 
+      - name: Install dictionary
+        run: |
+          wget https://object-storage.tyo2.conoha.io/v1/nc_2520839e1f9641b08211a5c85243124a/sudachi/sudachi-dictionary-latest-core.zip
+          unzip sudachi-dictionary-latest-core.zip
+          mkdir /usr/share/elasticsearch/config/sudachi
+          cp sudachi-dictionary-*/system_core.dic /usr/share/elasticsearch/config/sudachi/
+
       - name: Load database schema
         run: './bin/rails db:create db:schema:load db:seed'
 
