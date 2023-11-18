@@ -315,7 +315,7 @@ jobs:
 
       - name: Install dictionary
         run: |
-          wget https://object-storage.tyo2.conoha.io/v1/nc_2520839e1f9641b08211a5c85243124a/sudachi/sudachi-dictionary-latest-core.zip
+          wget http://sudachi.s3-website-ap-northeast-1.amazonaws.com/sudachidict/sudachi-dictionary-latest-core.zip
           unzip sudachi-dictionary-latest-core.zip
           mkdir /usr/share/elasticsearch/config/sudachi
           cp sudachi-dictionary-*/system_core.dic /usr/share/elasticsearch/config/sudachi/
