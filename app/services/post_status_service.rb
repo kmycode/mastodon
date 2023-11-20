@@ -78,7 +78,7 @@ class PostStatusService < BaseService
     @visibility   = :limited if %w(mutual circle reply).include?(@options[:visibility])
     @visibility   = :unlisted if (@visibility == :public || @visibility == :public_unlisted || @visibility == :login) && @account.silenced?
     @visibility   = :public_unlisted if @visibility == :public && !@options[:force_visibility] && !@options[:application]&.superapp && @account.user&.setting_public_post_to_unlisted && Setting.enable_public_unlisted_visibility
-    @limited_scope = @options[:visibility]&.to_sym if @visibility == :limited
+    @limited_scope = @options[:visibility]&.to_sym if @visibility == :limited && @options[:visibility] != 'limited'
     @searchability = searchability
     @searchability = :private if @account.silenced? && %i(public public_unlisted).include?(@searchability&.to_sym)
     @markdown     = @options[:markdown] || false
@@ -87,7 +87,7 @@ class PostStatusService < BaseService
     @reference_ids = (@options[:status_reference_ids] || []).map(&:to_i).filter(&:positive?)
     raise ArgumentError if !Setting.enable_public_unlisted_visibility && @visibility == :public_unlisted
 
-    if @in_reply_to.present? && ((@visibility == :limited && @options[:circle_id].nil?) || @limited_scope == :reply)
+    if @in_reply_to.present? && ((@options[:visibility] == 'limited' && @options[:circle_id].nil?) || @limited_scope == :reply)
       @visibility = :limited
       @limited_scope = :reply
     end
@@ -201,6 +201,7 @@ class PostStatusService < BaseService
 
     process_hashtags_service.call(@status)
     Trends.tags.register(@status)
+    ProcessConversionService.new.call(@status) if @status.limited_visibility? && @status.reply_limited?
     ProcessReferencesService.call_service(@status, @reference_ids, [])
     LinkCrawlWorker.perform_async(@status.id)
     DistributionWorker.perform_async(@status.id)

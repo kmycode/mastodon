@@ -96,6 +96,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     process_references!
     distribute
     forward_for_reply
+    forward_for_conversation if @status.limited_visibility?
     join_group!
   end
 
@@ -509,6 +510,16 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     return unless @status.distributable? && @json['signature'].present? && reply_to_local?
 
     ActivityPub::RawDistributionWorker.perform_async(Oj.dump(@json), replied_to_status.account_id, [@account.preferred_inbox_url])
+  end
+
+  def forward_for_conversation
+    return unless @status.conversation.present? && @status.conversation.local?
+
+    ProcessConversionService.new.call(@status)
+
+    return if @json['signature'].blank?
+
+    ActivityPub::ForwardConversationWorker.perform_async(Oj.dump(@json), @status.id)
   end
 
   def increment_voters_count!

@@ -314,7 +314,7 @@ RSpec.describe PostStatusService, type: :service do
       account = Fabricate(:account)
       text = 'test status update'
 
-      status = subject.call(account, text: text, thread: in_reply_to_status, visibility: :limited)
+      status = subject.call(account, text: text, thread: in_reply_to_status, visibility: 'limited')
 
       expect(status).to be_persisted
       expect(status.thread).to eq in_reply_to_status
@@ -364,6 +364,86 @@ RSpec.describe PostStatusService, type: :service do
       expect(status).to be_persisted
       expect(status.thread).to eq in_reply_to_status
       expect(status.visibility).to eq 'direct'
+    end
+
+    it 'duplicate replies' do
+      in_reply_to_status = Fabricate(:status, visibility: :limited)
+      in_reply_to_status.mentions.create!(account: Fabricate(:account))
+
+      status = subject.call(Fabricate(:user).account, text: 'Ohagi is good', thread: in_reply_to_status, visibility: 'reply')
+
+      thread_account_ids = [in_reply_to_status.account, in_reply_to_status.mentions.first.account].map(&:id)
+
+      expect(status).to be_persisted
+      expect(status.conversation_id).to eq in_reply_to_status.conversation_id
+      expect(status.conversation.ancestor_status_id).to eq in_reply_to_status.id
+      expect(status.mentions.pluck(:account_id)).to match_array thread_account_ids
+    end
+
+    it 'duplicate reply-to-reply' do
+      ancestor_account = Fabricate(:account, username: 'ancestor', domain: nil)
+      reply_account = Fabricate(:account)
+
+      first_status = Fabricate(:status, account: ancestor_account, visibility: :limited)
+      in_reply_to_status = subject.call(reply_account, text: 'Ohagi is good, @ancestor', thread: first_status, visibility: 'reply')
+      status = subject.call(ancestor_account, text: 'Ohagi is good', thread: in_reply_to_status, visibility: 'reply')
+
+      thread_account_ids = [ancestor_account, reply_account].map(&:id)
+
+      expect(status).to be_persisted
+      expect(status.conversation_id).to eq in_reply_to_status.conversation_id
+      expect(status.conversation_id).to eq first_status.conversation_id
+      expect(status.conversation.ancestor_status_id).to eq first_status.id
+      expect(status.mentions.pluck(:account_id)).to match_array thread_account_ids
+    end
+
+    it 'duplicate reply-to-third_reply' do
+      first_status = Fabricate(:status, visibility: :limited)
+      first_status.mentions.create!(account: Fabricate(:account))
+
+      mentioned_account = Fabricate(:account, username: 'ohagi', domain: nil)
+      mentioned_account2 = Fabricate(:account, username: 'bob', domain: nil)
+      in_reply_to_status = subject.call(Fabricate(:user).account, text: 'Ohagi is good, @ohagi', thread: first_status, visibility: 'reply')
+      status = subject.call(Fabricate(:user).account, text: 'Ohagi is good, @bob', thread: in_reply_to_status, visibility: 'reply')
+
+      thread_account_ids = [first_status.account, first_status.mentions.first.account, mentioned_account, mentioned_account2, in_reply_to_status.account].map(&:id)
+
+      expect(status).to be_persisted
+      expect(status.conversation_id).to eq in_reply_to_status.conversation_id
+      expect(status.conversation_id).to eq first_status.conversation_id
+      expect(status.conversation.ancestor_status_id).to eq first_status.id
+      expect(status.mentions.pluck(:account_id)).to match_array thread_account_ids
+    end
+
+    it 'do not duplicate replies when limited post' do
+      in_reply_to_status = Fabricate(:status, visibility: :limited)
+      in_reply_to_status.mentions.create!(account: Fabricate(:account))
+
+      status = subject.call(Fabricate(:user).account, text: 'Ohagi is good', thread: in_reply_to_status, visibility: 'mutual')
+
+      [in_reply_to_status.account, in_reply_to_status.mentions.first.account].map(&:id)
+
+      expect(status).to be_persisted
+      expect(status.limited_scope).to eq 'personal'
+
+      mentions = status.mentions.pluck(:account_id)
+      expect(mentions).to_not include in_reply_to_status.account_id
+      expect(mentions).to_not include in_reply_to_status.mentions.first.account_id
+    end
+
+    it 'do not duplicate replies when not limited post' do
+      in_reply_to_status = Fabricate(:status, visibility: :limited)
+      in_reply_to_status.mentions.create!(account: Fabricate(:account))
+
+      status = subject.call(Fabricate(:user).account, text: 'Ohagi is good', thread: in_reply_to_status, visibility: 'public')
+
+      [in_reply_to_status.account, in_reply_to_status.mentions.first.account].map(&:id)
+
+      expect(status).to be_persisted
+
+      mentions = status.mentions.pluck(:account_id)
+      expect(mentions).to_not include in_reply_to_status.account_id
+      expect(mentions).to_not include in_reply_to_status.mentions.first.account_id
     end
   end
 

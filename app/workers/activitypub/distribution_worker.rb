@@ -19,9 +19,24 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
   protected
 
   def distribute_limited!
+    if @status.reply? && @status.conversation.present? && !@status.conversation.local?
+      distribute_conversation!
+    else
+      distribute_limited_mentions!
+    end
+  end
+
+  def distribute_limited_mentions!
     ActivityPub::DeliveryWorker.push_bulk(inboxes_for_limited, limit: 1_000) do |inbox_url|
       [payload, @account.id, inbox_url, options]
     end
+  end
+
+  def distribute_conversation!
+    inbox_url = @status.conversation.inbox_url
+    return if inbox_url.blank?
+
+    ActivityPub::DeliveryWorker.perform_async(payload, @account.id, inbox_url, options)
   end
 
   def inboxes
