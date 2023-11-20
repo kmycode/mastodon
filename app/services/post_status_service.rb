@@ -201,7 +201,7 @@ class PostStatusService < BaseService
 
     process_hashtags_service.call(@status)
     Trends.tags.register(@status)
-    ProcessConversionService.new.call(@status) if @status.limited_visibility? && @status.reply_limited?
+    ProcessConversationService.new.call(@status) if @status.limited_visibility? && @status.reply_limited?
     ProcessReferencesService.call_service(@status, @reference_ids, [])
     LinkCrawlWorker.perform_async(@status.id)
     DistributionWorker.perform_async(@status.id)
