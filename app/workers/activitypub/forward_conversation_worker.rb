@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ActivityPub::ForwardConversationWorker
+  include Sidekiq::Worker
+
   def perform(payload, status_id)
     @status  = Status.find(status_id)
     @payload = payload

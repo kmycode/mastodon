@@ -139,11 +139,12 @@ RSpec.describe ActivityPub::Activity::Create do
 
   describe '#perform' do
     context 'when fetching' do
-      subject { described_class.new(json, sender) }
+      subject { delivered_to_account_id ? described_class.new(json, sender, delivered_to_account_id: delivered_to_account_id) : described_class.new(json, sender) }
 
       let(:sender_software) { 'mastodon' }
       let(:custom_before) { false }
       let(:active_friend) { false }
+      let(:delivered_to_account_id) { nil }
 
       before do
         Fabricate(:instance_info, domain: 'example.com', software: sender_software)
@@ -1026,6 +1027,175 @@ RSpec.describe ActivityPub::Activity::Create do
           expect(status.conversation).to_not be_nil
           expect(status.conversation.uri).to be_nil
           expect(status.conversation.id).to eq existing.id
+        end
+      end
+
+      context 'with a context as a reply' do
+        let(:custom_before) { true }
+        let(:custom_before_sub) { false }
+        let(:ancestor_account) { Fabricate(:account, domain: 'or.example.com', inbox_url: 'http://or.example.com/actor/inbox') }
+        let(:mentioned_account) { Fabricate(:account, domain: 'example.com', uri: 'http://example.com/bob', inbox_url: 'http://example.com/bob/inbox', shared_inbox_url: 'http://exmaple.com/inbox') }
+        let(:local_mentioned_account) { Fabricate(:account, domain: nil) }
+        let(:original_status) { Fabricate(:status, conversation: conversation, account: ancestor_account) }
+        let!(:conversation) { Fabricate(:conversation) }
+        let(:recipient) { Fabricate(:account) }
+        let(:delivered_to_account_id) { recipient.id }
+
+        let(:json) do
+          {
+            '@context': 'https://www.w3.org/ns/activitystreams',
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#foo'].join,
+            type: 'Create',
+            actor: ActivityPub::TagManager.instance.uri_for(sender),
+            object: object_json,
+            signature: 'dummy',
+          }.with_indifferent_access
+        end
+
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            context: ActivityPub::TagManager.instance.uri_for(conversation),
+            inReplyTo: ActivityPub::TagManager.instance.uri_for(original_status),
+          }
+        end
+
+        before do
+          original_status.mentions << Fabricate(:mention, account: mentioned_account, silent: true)
+          original_status.mentions << Fabricate(:mention, account: local_mentioned_account, silent: true)
+          original_status.save!
+          conversation.update(ancestor_status: original_status)
+
+          stub_request(:post, 'http://or.example.com/actor/inbox').to_return(status: 200)
+          stub_request(:post, 'http://example.com/bob/inbox').to_return(status: 200)
+
+          subject.perform unless custom_before_sub
+        end
+
+        it 'creates status' do
+          status = sender.statuses.first
+
+          expect(status).to_not be_nil
+          expect(status.conversation_id).to eq conversation.id
+          expect(status.thread.id).to eq original_status.id
+          expect(status.mentions.map(&:account_id)).to contain_exactly(recipient.id, ancestor_account.id, mentioned_account.id, local_mentioned_account.id)
+        end
+
+        it 'forwards to observers' do
+          expect(a_request(:post, 'http://or.example.com/actor/inbox')).to have_been_made.once
+          expect(a_request(:post, 'http://example.com/bob/inbox')).to have_been_made.once
+        end
+
+        context 'when new mention is added' do
+          let(:custom_before_sub) { true }
+
+          let(:new_mentioned_account) { Fabricate(:account, domain: 'example.com', uri: 'http://example.com/alice', inbox_url: 'http://example.com/alice/inbox', shared_inbox_url: 'http://exmaple.com/inbox') }
+          let(:new_local_mentioned_account) { Fabricate(:account, domain: nil) }
+
+          let(:object_json) do
+            {
+              id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+              type: 'Note',
+              content: 'Lorem ipsum',
+              context: ActivityPub::TagManager.instance.uri_for(conversation),
+              inReplyTo: ActivityPub::TagManager.instance.uri_for(original_status),
+              tag: [
+                {
+                  type: 'Mention',
+                  href: ActivityPub::TagManager.instance.uri_for(new_mentioned_account),
+                },
+                {
+                  type: 'Mention',
+                  href: ActivityPub::TagManager.instance.uri_for(new_local_mentioned_account),
+                },
+              ],
+            }
+          end
+
+          before do
+            stub_request(:post, 'http://example.com/alice/inbox').to_return(status: 200)
+            subject.perform
+          end
+
+          it 'creates status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.mentions.map(&:account_id)).to contain_exactly(recipient.id, ancestor_account.id, mentioned_account.id, local_mentioned_account.id, new_mentioned_account.id, new_local_mentioned_account.id)
+          end
+
+          it 'forwards to observers' do
+            expect(a_request(:post, 'http://or.example.com/actor/inbox')).to have_been_made.once
+            expect(a_request(:post, 'http://example.com/bob/inbox')).to have_been_made.once
+            expect(a_request(:post, 'http://example.com/alice/inbox')).to have_been_made.once
+          end
+        end
+
+        context 'when unknown mentioned account' do
+          let(:custom_before_sub) { true }
+
+          let(:actor_json) do
+            {
+              id: 'https://foo.test',
+              type: 'Actor',
+              inbox: 'https://foo.test/inbox',
+              followers: 'https://example.com/followers',
+              actor_type: 'Person',
+            }.with_indifferent_access
+          end
+
+          let(:object_json) do
+            {
+              id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+              type: 'Note',
+              content: 'Lorem ipsum',
+              context: ActivityPub::TagManager.instance.uri_for(conversation),
+              inReplyTo: ActivityPub::TagManager.instance.uri_for(original_status),
+              tag: [
+                {
+                  type: 'Mention',
+                  href: 'https://foo.test',
+                },
+              ],
+            }
+          end
+
+          before do
+            stub_request(:get, 'https://foo.test').to_return(status: 200, body: Oj.dump(actor_json))
+            stub_request(:post, 'https://foo.test/inbox').to_return(status: 200)
+            subject.perform
+          end
+
+          it 'creates status', pending: 'in development' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.mentioned_accounts.map(&:uri)).to include 'https://foo.test'
+          end
+
+          it 'forwards to observers', pending: 'in development' do
+            expect(a_request(:post, 'https://foo.test/inbox')).to have_been_made.once
+          end
+        end
+
+        context 'when remote conversation' do
+          let(:conversation) { Fabricate(:conversation, uri: 'http://example.com/conversation', inbox_url: 'http://example.com/actor/inbox') }
+
+          it 'creates status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.conversation_id).to eq conversation.id
+            expect(status.thread.id).to eq original_status.id
+            expect(status.mentions.map(&:account_id)).to contain_exactly(recipient.id)
+          end
+
+          it 'do not forward to observers' do
+            expect(a_request(:post, 'http://or.example.com/actor/inbox')).to_not have_been_made
+            expect(a_request(:post, 'http://example.com/bob/inbox')).to_not have_been_made
+          end
         end
       end
 
