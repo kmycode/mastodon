@@ -515,7 +515,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def forward_for_conversation
     return unless @status.conversation.present? && @status.conversation.local?
 
-    ProcessConversionService.new.call(@status)
+    ProcessConversationService.new.call(@status)
 
     return if @json['signature'].blank?
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProcessConversionService < BaseService
+class ProcessConversationService < BaseService
   def call(status)
     @status = status
 
