@@ -1138,13 +1138,15 @@ RSpec.describe ActivityPub::Activity::Create do
 
           let(:actor_json) do
             {
+              '@context': 'https://www.w3.org/ns/activitystreams',
               id: 'https://foo.test',
-              type: 'Actor',
+              type: 'Person',
+              preferredUsername: 'actor',
+              name: 'Tomas Cat',
               inbox: 'https://foo.test/inbox',
-              followers: 'https://example.com/followers',
-              actor_type: 'Person',
             }.with_indifferent_access
           end
+          let!(:webfinger) { { subject: 'acct:actor@foo.test', links: [{ rel: 'self', href: 'https://foo.test' }] } }
 
           let(:object_json) do
             {
@@ -1164,18 +1166,20 @@ RSpec.describe ActivityPub::Activity::Create do
 
           before do
             stub_request(:get, 'https://foo.test').to_return(status: 200, body: Oj.dump(actor_json))
+            stub_request(:get, 'https://foo.test/.well-known/webfinger?resource=acct:actor@foo.test').to_return(status: 200, body: Oj.dump(webfinger))
             stub_request(:post, 'https://foo.test/inbox').to_return(status: 200)
+            stub_request(:get, 'https://foo.test/.well-known/nodeinfo').to_return(status: 200)
             subject.perform
           end
 
-          it 'creates status', pending: 'in development' do
+          it 'creates status' do
             status = sender.statuses.first
 
             expect(status).to_not be_nil
             expect(status.mentioned_accounts.map(&:uri)).to include 'https://foo.test'
           end
 
-          it 'forwards to observers', pending: 'in development' do
+          it 'forwards to observers' do
             expect(a_request(:post, 'https://foo.test/inbox')).to have_been_made.once
           end
         end
