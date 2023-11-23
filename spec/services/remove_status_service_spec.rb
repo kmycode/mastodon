@@ -8,12 +8,14 @@ RSpec.describe RemoveStatusService, type: :service do
   let!(:alice)  { Fabricate(:account) }
   let!(:bob)    { Fabricate(:account, username: 'bob', domain: 'example.com') }
   let!(:jeff)   { Fabricate(:account) }
-  let!(:hank)   { Fabricate(:account, username: 'hank', protocol: :activitypub, domain: 'example.com', inbox_url: 'http://example.com/inbox') }
-  let!(:bill)   { Fabricate(:account, username: 'bill', protocol: :activitypub, domain: 'example2.com', inbox_url: 'http://example2.com/inbox') }
+  let!(:hank)   { Fabricate(:account, username: 'hank', protocol: :activitypub, domain: 'example.com', shared_inbox_url: 'http://example.com/inbox', inbox_url: 'http://example.com/hank/inbox') }
+  let!(:bill)   { Fabricate(:account, username: 'bill', protocol: :activitypub, domain: 'example2.com', shared_inbox_url: 'http://example2.com/inbox', inbox_url: 'http://example2.com/bill/inbox') }
 
   before do
     stub_request(:post, 'http://example.com/inbox').to_return(status: 200)
+    stub_request(:post, 'http://example.com/hank/inbox').to_return(status: 200)
     stub_request(:post, 'http://example2.com/inbox').to_return(status: 200)
+    stub_request(:post, 'http://example2.com/bill/inbox').to_return(status: 200)
 
     jeff.follow!(alice)
     hank.follow!(alice)
@@ -69,6 +71,57 @@ RSpec.describe RemoveStatusService, type: :service do
       expect { subject.call(status) }.to change {
         Notification.where(activity_type: 'Favourite', from_account: jeff, account: alice).count
       }.from(1).to(0)
+    end
+  end
+
+  context 'when removed status is limited' do
+    let(:status) { PostStatusService.new.call(alice, visibility: 'mutual', text: 'limited post') }
+
+    before do
+      status.mentions << Fabricate(:mention, account: hank, silent: true)
+    end
+
+    it 'sends Delete activity to followers' do
+      subject.call(status)
+      expect(a_request(:post, 'http://example.com/inbox').with(
+               body: hash_including({
+                 'type' => 'Delete',
+                 'object' => {
+                   'type' => 'Tombstone',
+                   'id' => ActivityPub::TagManager.instance.uri_for(status),
+                   'atomUri' => OStatus::TagManager.instance.uri_for(status),
+                 },
+               })
+             )).to have_been_made.once
+    end
+  end
+
+  context 'when removed status is limited and remote conversation' do
+    let(:status) { PostStatusService.new.call(alice, visibility: 'mutual', text: 'limited post') }
+
+    before do
+      status.conversation.update(uri: 'http://example2.com/conversation', inbox_url: 'http://example2.com/bill/inbox')
+      status.mentions << Fabricate(:mention, account: hank, silent: true)
+    end
+
+    it 'sends Delete activity to conversation' do
+      subject.call(status)
+      expect(a_request(:post, 'http://example2.com/bill/inbox').with(
+               body: hash_including({
+                 'type' => 'Delete',
+                 'object' => {
+                   'type' => 'Tombstone',
+                   'id' => ActivityPub::TagManager.instance.uri_for(status),
+                   'atomUri' => OStatus::TagManager.instance.uri_for(status),
+                 },
+               })
+             )).to have_been_made.once
+    end
+
+    it 'do not send Delete activity to followers' do
+      subject.call(status)
+      expect(a_request(:post, 'http://example.com/hank/inbox')).to_not have_been_made
+      expect(a_request(:post, 'http://example.com/inbox')).to_not have_been_made
     end
   end
 

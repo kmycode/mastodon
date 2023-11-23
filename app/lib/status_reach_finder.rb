@@ -54,9 +54,9 @@ class StatusReachFinder
     if @status.reblog?
       []
     elsif @status.limited_visibility?
-      Account.where(id: mentioned_account_ids).where(domain: banned_domains_for_misskey).inboxes
+      Account.where(id: mentioned_account_ids, domain: banned_domains_for_misskey).inboxes
     else
-      Account.where(id: reached_account_ids).where(domain: banned_domains_for_misskey - friend_domains).inboxes
+      Account.where(id: reached_account_ids, domain: banned_domains_for_misskey - friend_domains).inboxes
     end
   end
 
@@ -64,7 +64,7 @@ class StatusReachFinder
     if @status.reblog?
       []
     elsif @status.limited_visibility?
-      Account.where(id: mentioned_account_ids).where.not(domain: banned_domains).inboxes
+      Account.where(id: mentioned_account_ids, domain: friend_domains).where.not(domain: banned_domains).inboxes
     else
       Account.where(id: reached_account_ids, domain: friend_domains).where.not(domain: banned_domains - friend_domains).inboxes
     end

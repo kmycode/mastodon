@@ -64,6 +64,47 @@ RSpec.describe ActivityPub::Activity::Update do
       end
     end
 
+    context 'with a Status object' do
+      let!(:at_time) { Time.now.utc }
+      let!(:status) { Fabricate(:status, uri: 'https://example.com/status', account: sender) }
+
+      let(:json) do
+        {
+          '@context': 'https://www.w3.org/ns/activitystreams',
+          id: 'foo',
+          type: 'Update',
+          actor: sender.uri,
+          object: {
+            type: 'Note',
+            id: status.uri,
+            content: 'Foo',
+            updated: at_time.iso8601,
+          },
+        }.with_indifferent_access
+      end
+
+      before do
+        subject.perform
+      end
+
+      it 'content is updated' do
+        expect(status.reload.text).to eq 'Foo'
+      end
+
+      it 'set status as edited' do
+        expect(status.reload.edited_at).to_not be_nil
+      end
+
+      it 'history is set' do
+        expect(status.reload.edits.count).to eq 2
+      end
+
+      it 'duplication activity' do
+        subject.perform # again
+        expect(status.reload.edits.count).to eq 2
+      end
+    end
+
     context 'with a Question object' do
       let!(:at_time) { Time.now.utc }
       let!(:status) { Fabricate(:status, uri: 'https://example.com/statuses/poll', account: sender, poll: Poll.new(account: sender, options: %w(Bar Baz), cached_tallies: [0, 0], expires_at: at_time + 5.days)) }
