@@ -51,22 +51,18 @@ class StatusReachFinder
   end
 
   def reached_account_inboxes_for_misskey
-    if @status.reblog?
+    if @status.reblog? || @status.limited_visibility?
       []
-    elsif @status.limited_visibility?
-      Account.where(id: mentioned_account_ids, domain: banned_domains_for_misskey).inboxes
     else
       Account.where(id: reached_account_ids, domain: banned_domains_for_misskey - friend_domains).inboxes
     end
   end
 
   def reached_account_inboxes_for_friend
-    if @status.reblog?
+    if @status.reblog? || @status.limited_visibility?
       []
-    elsif @status.limited_visibility?
-      Account.where(id: mentioned_account_ids, domain: friend_domains).where.not(domain: banned_domains).inboxes
     else
-      Account.where(id: reached_account_ids, domain: friend_domains).where.not(domain: banned_domains - friend_domains).inboxes
+      Account.where(id: reached_account_ids, domain: friend_domains).inboxes
     end
   end
 
