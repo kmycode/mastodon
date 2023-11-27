@@ -683,6 +683,56 @@ RSpec.describe FanOutOnWriteService, type: :service do
     end
   end
 
+  context 'when status has a conversation' do
+    let(:conversation) { Fabricate(:conversation) }
+    let(:status) { Fabricate(:status, account: alice, visibility: visibility, thread: parent_status, conversation: conversation) }
+    let(:parent_status) { Fabricate(:status, account: bob, visibility: visibility, conversation: conversation) }
+    let(:custom_before) { true }
+
+    before do
+      Fabricate(:status, account: tom, visibility: visibility, conversation: conversation)
+      Fabricate(:status, account: ohagi, visibility: visibility, conversation: conversation)
+      status.mentions << Fabricate(:mention, account: bob, silent: true)
+      status.mentions << Fabricate(:mention, account: ohagi, silent: true)
+      status.mentions << Fabricate(:mention, account: tom, silent: false)
+      status.save
+      subject.call(status)
+    end
+
+    context 'when public visibility' do
+      it 'does not create notification' do
+        notification = Notification.find_by(account: bob, type: 'mention')
+
+        expect(notification).to be_nil
+      end
+
+      it 'creates notification for active mention' do
+        notification = Notification.find_by(account: tom, type: 'mention')
+
+        expect(notification).to_not be_nil
+        expect(notification.mention.status_id).to eq status.id
+      end
+    end
+
+    context 'when limited visibility' do
+      let(:visibility) { :limited }
+
+      it 'creates notification' do
+        notification = Notification.find_by(account: bob, type: 'mention')
+
+        expect(notification).to_not be_nil
+        expect(notification.mention.status_id).to eq status.id
+      end
+
+      it 'creates notification for other conversation account' do
+        notification = Notification.find_by(account: ohagi, type: 'mention')
+
+        expect(notification).to_not be_nil
+        expect(notification.mention.status_id).to eq status.id
+      end
+    end
+  end
+
   context 'when updated status is already boosted or quoted' do
     let(:custom_before) { true }
 

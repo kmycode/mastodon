@@ -40,8 +40,15 @@ class ActivityPub::Activity::Delete < ActivityPub::Activity
       return if @status.nil?
 
       forwarder.forward! if forwarder.forwardable?
+      forward_for_conversation
       delete_now!
     end
+  end
+
+  def forward_for_conversation
+    return unless @status.conversation.present? && @status.conversation.local? && @json['signature'].present?
+
+    ActivityPub::ForwardConversationWorker.perform_async(Oj.dump(@json), @status.id, true)
   end
 
   def delete_friend

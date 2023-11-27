@@ -60,15 +60,15 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
   end
 
   def payload
-    @payload ||= Oj.dump(serialize_payload(activity, ActivityPub::ActivitySerializer, signer: @account))
+    @payload ||= Oj.dump(serialize_payload(activity, ActivityPub::ActivitySerializer, signer: @account, always_sign: always_sign))
   end
 
   def payload_for_misskey
-    @payload_for_misskey ||= Oj.dump(serialize_payload(activity_for_misskey, ActivityPub::ActivityForMisskeySerializer, signer: @account))
+    @payload_for_misskey ||= Oj.dump(serialize_payload(activity_for_misskey, ActivityPub::ActivityForMisskeySerializer, signer: @account, always_sign: always_sign))
   end
 
   def payload_for_friend
-    @payload_for_friend ||= Oj.dump(serialize_payload(activity_for_friend, ActivityPub::ActivityForFriendSerializer, signer: @account))
+    @payload_for_friend ||= Oj.dump(serialize_payload(activity_for_friend, ActivityPub::ActivityForFriendSerializer, signer: @account, always_sign: always_sign))
   end
 
   def activity
@@ -81,6 +81,10 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
 
   def activity_for_friend
     ActivityPub::ActivityPresenter.from_status(@status, for_friend: true)
+  end
+
+  def always_sign
+    false
   end
 
   def options

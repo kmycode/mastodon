@@ -46,4 +46,8 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
   def activity_for_friend
     build_activity(for_friend: true)
   end
+
+  def always_sign
+    true
+  end
 end

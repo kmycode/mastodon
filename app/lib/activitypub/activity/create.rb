@@ -93,10 +93,10 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
     resolve_thread(@status)
     fetch_replies(@status)
+    process_conversation! if @status.limited_visibility?
     process_references!
     distribute
     forward_for_reply
-    forward_for_conversation if @status.limited_visibility?
     join_group!
   end
 
@@ -512,7 +512,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     ActivityPub::RawDistributionWorker.perform_async(Oj.dump(@json), replied_to_status.account_id, [@account.preferred_inbox_url])
   end
 
-  def forward_for_conversation
+  def process_conversation!
     return unless @status.conversation.present? && @status.conversation.local?
 
     ProcessConversationService.new.call(@status)

@@ -115,6 +115,10 @@ const initialPoll = ImmutableMap({
 });
 
 function statusToTextMentions(state, status) {
+  if (status.get('visibility_ex') === 'limited') {
+    return '';
+  }
+
   let set = ImmutableOrderedSet([]);
 
   if (status.getIn(['account', 'id']) !== me) {

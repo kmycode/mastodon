@@ -115,5 +115,39 @@ RSpec.describe ActivityPub::Activity::Update do
         expect(status.edited_at).to be_nil
       end
     end
+
+    context 'when the status is limited post and has conversation' do
+      let(:status) { Fabricate(:status, visibility: :limited, account: sender, uri: 'https://example.com/note', text: 'Ohagi is koshian') }
+      let(:conversation) { Fabricate(:conversation, ancestor_status: status) }
+      let(:json) do
+        {
+          '@context': 'https://www.w3.org/ns/activitystreams',
+          id: 'foo',
+          type: 'Update',
+          actor: sender.uri,
+          signature: 'foo',
+          object: {
+            type: 'Note',
+            id: status.uri,
+            content: 'Ohagi is tsubuan',
+          },
+        }.with_indifferent_access
+      end
+
+      before do
+        status.update(conversation: conversation, visibility: :limited)
+        status.mentions << Fabricate(:mention, silent: true, account: Fabricate(:account, protocol: :activitypub, domain: 'example.com', inbox_url: 'https://example.com/actor/inbox', shared_inbox_url: 'https://example.com/inbox'))
+        status.save
+        stub_request(:post, 'https://example.com/inbox').to_return(status: 200)
+        subject.perform
+      end
+
+      it 'forwards to parent status holder' do
+        expect(a_request(:post, 'https://example.com/inbox').with(body: hash_including({
+          type: 'Update',
+          signature: 'foo',
+        }))).to have_been_made.once
+      end
+    end
   end
 end

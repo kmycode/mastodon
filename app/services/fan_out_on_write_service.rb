@@ -46,6 +46,7 @@ class FanOutOnWriteService < BaseService
 
     unless @options[:skip_notifications]
       notify_mentioned_accounts!
+      notify_for_conversation! if @status.limited_visibility?
       notify_about_update! if update?
     end
 
@@ -87,6 +88,17 @@ class FanOutOnWriteService < BaseService
 
   def notify_mentioned_accounts!
     @status.active_mentions.where.not(id: @options[:silenced_account_ids] || []).joins(:account).merge(Account.local).select(:id, :account_id).reorder(nil).find_in_batches do |mentions|
+      LocalNotificationWorker.push_bulk(mentions) do |mention|
+        [mention.account_id, mention.id, 'Mention', 'mention']
+      end
+    end
+  end
+
+  def notify_for_conversation!
+    return if @status.conversation.nil?
+
+    account_ids = @status.conversation.statuses.pluck(:account_id).uniq.reject { |account_id| account_id == @status.account_id }
+    @status.silent_mentions.where(account_id: account_ids).joins(:account).merge(Account.local).select(:id, :account_id).reorder(nil).find_in_batches do |mentions|
       LocalNotificationWorker.push_bulk(mentions) do |mention|
         [mention.account_id, mention.id, 'Mention', 'mention']
       end

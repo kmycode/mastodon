@@ -3,9 +3,10 @@
 class ActivityPub::ForwardConversationWorker
   include Sidekiq::Worker
 
-  def perform(payload, status_id)
+  def perform(payload, status_id, shared_inbox = false) # rubocop:disable Style/OptionalBooleanParameter
     @status  = Status.find(status_id)
     @payload = payload
+    @shared_inbox = shared_inbox
 
     return unless @status.conversation.present? && @status.conversation.local? && @status.conversation.ancestor_status.present?
     return unless @status.limited_visibility?
@@ -26,9 +27,15 @@ class ActivityPub::ForwardConversationWorker
   end
 
   def inboxes_for_limited
-    DeliveryFailureTracker.without_unavailable(
-      Account.remote.merge(@status.mentioned_accounts).pluck(:inbox_url).compact_blank.uniq
-    )
+    if @shared_inbox
+      inbox_accounts.inboxes
+    else
+      DeliveryFailureTracker.without_unavailable(inbox_accounts.pluck(:inbox_url).compact_blank.uniq)
+    end
+  end
+
+  def inbox_accounts
+    Account.remote.merge(@status.mentioned_accounts)
   end
 
   def options
