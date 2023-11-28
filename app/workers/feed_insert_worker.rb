@@ -50,7 +50,7 @@ class FeedInsertWorker
     when :tags
       FeedManager.instance.filter?(:tags, @status, @follower)
     when :list
-      FeedManager.instance.filter?(:list, @status, @list, stl_home?)
+      FeedManager.instance.filter?(:list, @status, @list, stl_home: stl_home?)
     end
   end
 

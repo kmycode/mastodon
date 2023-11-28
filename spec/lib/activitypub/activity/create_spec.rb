@@ -34,7 +34,7 @@ RSpec.describe ActivityPub::Activity::Create do
     stub_request(:get, 'http://example.com/invalid-conversation').to_return(status: 404)
   end
 
-  describe 'processing posts received out of order' do
+  describe 'processing posts received out of order', :sidekiq_fake do
     let(:follower) { Fabricate(:account, username: 'bob') }
 
     let(:object_json) do
@@ -86,13 +86,6 @@ RSpec.describe ActivityPub::Activity::Create do
 
     before do
       follower.follow!(sender)
-    end
-
-    around do |example|
-      Sidekiq::Testing.fake! do
-        example.run
-        Sidekiq::Worker.clear_all
-      end
     end
 
     it 'correctly processes posts and inserts them in timelines', :aggregate_failures do

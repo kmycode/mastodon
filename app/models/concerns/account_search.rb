@@ -129,6 +129,8 @@ module AccountSearch
     LIMIT :limit OFFSET :offset
   SQL
 
+  DEFAULT_LIMIT = 10
+
   def searchable_text
     PlainTextFormatter.new(note, local?).to_s if discoverable?
   end
@@ -141,7 +143,7 @@ module AccountSearch
   end
 
   class_methods do
-    def search_for(terms, limit: 10, offset: 0)
+    def search_for(terms, limit: DEFAULT_LIMIT, offset: 0)
       tsquery = generate_query_for_search(terms)
 
       find_by_sql([BASIC_SEARCH_SQL, { limit: limit, offset: offset, tsquery: tsquery }]).tap do |records|
@@ -149,7 +151,7 @@ module AccountSearch
       end
     end
 
-    def advanced_search_for(terms, account, limit: 10, following: false, follower: false, offset: 0)
+    def advanced_search_for(terms, account, limit: DEFAULT_LIMIT, following: false, follower: false, offset: 0)
       tsquery = generate_query_for_search(terms)
       sql_template = if following
                        ADVANCED_SEARCH_WITH_FOLLOWING

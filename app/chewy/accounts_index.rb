@@ -1,72 +1,9 @@
 # frozen_string_literal: true
 
 class AccountsIndex < Chewy::Index
-  DEVELOPMENT_SETTINGS = {
-    filter: {
-      english_stop: {
-        type: 'stop',
-        stopwords: '_english_',
-      },
+  include DatetimeClampingConcern
 
-      english_stemmer: {
-        type: 'stemmer',
-        language: 'english',
-      },
-
-      english_possessive_stemmer: {
-        type: 'stemmer',
-        language: 'possessive_english',
-      },
-    },
-
-    analyzer: {
-      natural: {
-        tokenizer: 'standard',
-        filter: %w(
-          lowercase
-          asciifolding
-          cjk_width
-          elision
-          english_possessive_stemmer
-          english_stop
-          english_stemmer
-        ),
-      },
-
-      sudachi_analyzer: {
-        tokenizer: 'standard',
-        filter: %w(
-          lowercase
-          asciifolding
-          cjk_width
-          elision
-          english_possessive_stemmer
-          english_stop
-          english_stemmer
-        ),
-      },
-
-      verbatim: {
-        tokenizer: 'standard',
-        filter: %w(lowercase asciifolding cjk_width),
-      },
-
-      edge_ngram: {
-        tokenizer: 'edge_ngram',
-        filter: %w(lowercase asciifolding cjk_width),
-      },
-    },
-
-    tokenizer: {
-      edge_ngram: {
-        type: 'edge_ngram',
-        min_gram: 1,
-        max_gram: 15,
-      },
-    },
-  }.freeze
-
-  PRODUCTION_SETTINGS = {
+  settings index: index_preset(refresh_interval: '30s'), analysis: {
     filter: {
       english_stop: {
         type: 'stop',
@@ -142,9 +79,7 @@ class AccountsIndex < Chewy::Index
         discard_punctuation: 'true',
       },
     },
-  }.freeze
-
-  settings index: index_preset(refresh_interval: '30s'), analysis: Rails.env.test? ? DEVELOPMENT_SETTINGS : PRODUCTION_SETTINGS
+  }
 
   index_scope ::Account.searchable.includes(:account_stat)
 
@@ -153,7 +88,7 @@ class AccountsIndex < Chewy::Index
     field(:following_count, type: 'long', value: ->(account) { account.public_following_count })
     field(:followers_count, type: 'long', value: ->(account) { account.public_followers_count })
     field(:properties, type: 'keyword', value: ->(account) { account.searchable_properties })
-    field(:last_status_at, type: 'date', value: ->(account) { account.last_status_at || account.created_at })
+    field(:last_status_at, type: 'date', value: ->(account) { clamp_date(account.last_status_at || account.created_at) })
     field(:domain, type: 'keyword', value: ->(account) { account.domain || '' })
     field(:display_name, type: 'text', analyzer: 'verbatim') { field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'verbatim' }
     field(:username, type: 'text', analyzer: 'verbatim', value: ->(account) { [account.username, account.domain].compact.join('@') }) { field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'verbatim' }

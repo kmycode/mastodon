@@ -37,12 +37,12 @@ class FeedManager
   # @param [Status] status
   # @param [Account|List] receiver
   # @return [Boolean]
-  def filter?(timeline_type, status, receiver, stl_home = false) # rubocop:disable Style/OptionalBooleanParameter
+  def filter?(timeline_type, status, receiver, stl_home: false)
     case timeline_type
     when :home
       filter_from_home?(status, receiver.id, build_crutches(receiver.id, [status]), :home)
     when :list
-      filter_from_list?(status, receiver) || filter_from_home?(status, receiver.account_id, build_crutches(receiver.account_id, [status]), :list, stl_home)
+      filter_from_list?(status, receiver) || filter_from_home?(status, receiver.account_id, build_crutches(receiver.account_id, [status]), :list, stl_home: stl_home)
     when :mentions
       filter_from_mentions?(status, receiver.id)
     when :tags
@@ -409,7 +409,7 @@ class FeedManager
   # @param [Integer] receiver_id
   # @param [Hash] crutches
   # @return [Boolean]
-  def filter_from_home?(status, receiver_id, crutches, timeline_type = :home, stl_home = false) # rubocop:disable Style/OptionalBooleanParameter, Metrics/PerceivedComplexity
+  def filter_from_home?(status, receiver_id, crutches, timeline_type = :home, stl_home: false) # rubocop:disable Metrics/PerceivedComplexity
     return false if receiver_id == status.account_id
     return true  if status.reply? && (status.in_reply_to_id.nil? || status.in_reply_to_account_id.nil?) && !(timeline_type == :home && status.limited_visibility?)
     return true if (timeline_type != :list || stl_home) && (crutches[:exclusive_list_users][status.account_id].present? || crutches[:exclusive_antenna_users][status.account_id].present?)

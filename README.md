@@ -32,6 +32,9 @@ DB_USER=postgres DB_PASS=password foreman start
 RAILS_ENV=test bundle exec rspec spec
 
 # ElasticSearch連携テストを行う
+新
+RAILS_ENV=test ES_ENABLED=true bundle exec rspec --tag search
+旧
 RAILS_ENV=test ES_ENABLED=true RUN_SEARCH_SPECS=true bundle exec rspec spec/search
 ```
 
