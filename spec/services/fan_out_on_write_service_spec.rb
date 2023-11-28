@@ -687,13 +687,17 @@ RSpec.describe FanOutOnWriteService, type: :service do
     let(:conversation) { Fabricate(:conversation) }
     let(:status) { Fabricate(:status, account: alice, visibility: visibility, thread: parent_status, conversation: conversation) }
     let(:parent_status) { Fabricate(:status, account: bob, visibility: visibility, conversation: conversation) }
+    let(:zilu) { Fabricate(:user, current_sign_in_at: last_active_at).account }
     let(:custom_before) { true }
 
     before do
+      zilu.follow!(alice)
+      zilu.follow!(bob)
       Fabricate(:status, account: tom, visibility: visibility, conversation: conversation)
       Fabricate(:status, account: ohagi, visibility: visibility, conversation: conversation)
       status.mentions << Fabricate(:mention, account: bob, silent: true)
       status.mentions << Fabricate(:mention, account: ohagi, silent: true)
+      status.mentions << Fabricate(:mention, account: zilu, silent: true)
       status.mentions << Fabricate(:mention, account: tom, silent: false)
       status.save
       subject.call(status)
@@ -712,6 +716,18 @@ RSpec.describe FanOutOnWriteService, type: :service do
         expect(notification).to_not be_nil
         expect(notification.mention.status_id).to eq status.id
       end
+
+      it 'inserts home feed for reply' do
+        expect(home_feed_of(bob)).to include status.id
+      end
+
+      it 'inserts home feed for non-replied but mentioned and following replied account' do
+        expect(home_feed_of(zilu)).to include status.id
+      end
+
+      it 'does not insert home feed for non-replied, non-following replied account but mentioned' do
+        expect(home_feed_of(tom)).to_not include status.id
+      end
     end
 
     context 'when limited visibility' do
@@ -729,6 +745,18 @@ RSpec.describe FanOutOnWriteService, type: :service do
 
         expect(notification).to_not be_nil
         expect(notification.mention.status_id).to eq status.id
+      end
+
+      it 'inserts home feed for reply' do
+        expect(home_feed_of(bob)).to include status.id
+      end
+
+      it 'inserts home feed for non-replied but mentioned and following replied account' do
+        expect(home_feed_of(zilu)).to include status.id
+      end
+
+      it 'does not insert home feed for non-replied, non-following replied account but mentioned' do
+        expect(home_feed_of(tom)).to_not include status.id
       end
     end
   end

@@ -409,9 +409,9 @@ class FeedManager
   # @param [Integer] receiver_id
   # @param [Hash] crutches
   # @return [Boolean]
-  def filter_from_home?(status, receiver_id, crutches, timeline_type = :home, stl_home = false) # rubocop:disable Style/OptionalBooleanParameter
+  def filter_from_home?(status, receiver_id, crutches, timeline_type = :home, stl_home = false) # rubocop:disable Style/OptionalBooleanParameter, Metrics/PerceivedComplexity
     return false if receiver_id == status.account_id
-    return true  if status.reply? && (status.in_reply_to_id.nil? || status.in_reply_to_account_id.nil?)
+    return true  if status.reply? && (status.in_reply_to_id.nil? || status.in_reply_to_account_id.nil?) && !(timeline_type == :home && status.limited_visibility?)
     return true if (timeline_type != :list || stl_home) && (crutches[:exclusive_list_users][status.account_id].present? || crutches[:exclusive_antenna_users][status.account_id].present?)
     return true if crutches[:languages][status.account_id].present? && status.language.present? && !crutches[:languages][status.account_id].include?(status.language)
 
@@ -426,10 +426,11 @@ class FeedManager
     return true if check_for_blocks.any? { |target_account_id| crutches[:blocking][target_account_id] || crutches[:muting][target_account_id] }
     return true if crutches[:blocked_by][status.account_id]
 
-    if status.reply? && !status.in_reply_to_account_id.nil?                                                                      # Filter out if it's a reply
-      should_filter   = !crutches[:following][status.in_reply_to_account_id]                                                     # and I'm not following the person it's a reply to
-      should_filter &&= receiver_id != status.in_reply_to_account_id                                                             # and it's not a reply to me
-      should_filter &&= status.account_id != status.in_reply_to_account_id                                                       # and it's not a self-reply
+    if status.reply? && (!status.in_reply_to_account_id.nil? || (status.thread.present? && status.limited_visibility?)) # Filter out if it's a reply
+      account_id      = status.in_reply_to_account_id || status.thread.account_id
+      should_filter   = !crutches[:following][account_id]                                                     # and I'm not following the person it's a reply to
+      should_filter &&= receiver_id != account_id                                                             # and it's not a reply to me
+      should_filter &&= status.account_id != account_id                                                       # and it's not a self-reply
 
       return !!should_filter
     elsif status.reblog?                                                                                                         # Filter out a reblog
@@ -607,7 +608,10 @@ class FeedManager
     lists = List.where(account_id: receiver_id, exclusive: true)
     antennas = Antenna.where(list: lists, insert_feeds: true)
 
-    crutches[:following]            = Follow.where(account_id: receiver_id, target_account_id: statuses.filter_map(&:in_reply_to_account_id)).pluck(:target_account_id).index_with(true)
+    replied_accounts  = statuses.filter_map(&:in_reply_to_account_id)
+    replied_accounts += statuses.filter { |status| status.limited_visibility? && status.thread.present? }.map { |status| status.thread.account_id }
+
+    crutches[:following]            = Follow.where(account_id: receiver_id, target_account_id: replied_accounts).pluck(:target_account_id).index_with(true)
     crutches[:languages]            = Follow.where(account_id: receiver_id, target_account_id: statuses.map(&:account_id)).pluck(:target_account_id, :languages).to_h
     crutches[:hiding_reblogs]       = Follow.where(account_id: receiver_id, target_account_id: statuses.filter_map { |s| s.account_id if s.reblog? }, show_reblogs: false).pluck(:target_account_id).index_with(true)
     crutches[:blocking]             = Block.where(account_id: receiver_id, target_account_id: check_for_blocks).pluck(:target_account_id).index_with(true)
