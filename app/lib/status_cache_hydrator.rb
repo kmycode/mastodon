@@ -80,7 +80,7 @@ class StatusCacheHydrator
 
   def mapped_applied_custom_filter(account_id, status)
     CustomFilter
-      .apply_cached_filters(CustomFilter.cached_filters_for(account_id), status, following?(account_id))
+      .apply_cached_filters(CustomFilter.cached_filters_for(account_id), status, following: following?(account_id))
       .map { |filter| serialized_filter(filter) }
   end
 
