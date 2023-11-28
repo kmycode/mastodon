@@ -97,22 +97,6 @@ RSpec.describe ActivityPub::Activity::Announce do
       end
     end
 
-    context 'with domain block' do
-      before do
-        Fabricate(:account)
-        Fabricate(:domain_block, domain: 'example.com', severity: :suspend)
-        subject.perform
-      end
-
-      let(:object_json) do
-        ActivityPub::TagManager.instance.uri_for(status)
-      end
-
-      it 'does not creates a reblog by sender of status', pending: 'considering spec' do
-        expect(sender.reblogged?(status)).to be false
-      end
-    end
-
     context 'when the status belongs to a local user' do
       before do
         subject.perform
