@@ -711,7 +711,8 @@ ja:
       delete_and_resolve: 投稿を削除
       force_cw: 強制的にCWにする
       forwarded: 転送済み
-      forwarded_to: '%{domain}に転送されました'
+      forwarded_replies_explanation: この報告はリモートユーザーからのものであり、またリモートコンテンツに関するものです。報告されたコンテンツがあなたのユーザーの内の一人に対するリプライの中にあるため、あなたに転送されました。
+      forwarded_to: "%{domain}に転送されました"
       mark_as_resolved: 解決済みとしてマーク
       mark_as_sensitive: 閲覧注意にする
       mark_as_unresolved: 未解決に戻す
@@ -1120,8 +1121,6 @@ ja:
       new_trending_statuses:
         title: トレンド投稿
       new_trending_tags:
-        no_approved_tags: 承認されたトレンドハッシュタグはありません。
-        requirements: 'これらの候補はいずれも %{rank} 位の承認済みトレンドハッシュタグのスコアを上回ります。現在 #%{lowest_tag_name} のスコアは %{lowest_tag_score} です。'
         title: トレンドハッシュタグ
       subject: '%{instance}で新しいトレンドが審査待ちです'
   aliases:
@@ -1547,6 +1546,7 @@ ja:
       '86400': 1日
     expires_in_prompt: 無期限
     generate: 招待リンクを作成
+    invalid: この招待は無効です
     invited_by: '次の人に招待されました:'
     max_uses:
       other: "%{count}"

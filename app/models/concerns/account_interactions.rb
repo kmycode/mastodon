@@ -247,7 +247,7 @@ module AccountInteractions
     status.proper.favourites.where(account: self).exists?
   end
 
-  def emoji_reacted?(status, shortcode = nil, domain = nil, domain_force = false) # rubocop:disable Style/OptionalBooleanParameter
+  def emoji_reacted?(status, shortcode = nil, domain = nil, domain_force: false)
     if shortcode.present?
       if domain.present? || domain_force
         status.proper.emoji_reactions.joins(:custom_emoji).where(account: self, name: shortcode, custom_emoji: { domain: domain }).exists?
@@ -277,7 +277,7 @@ module AccountInteractions
 
   def status_matches_filters(status)
     active_filters = CustomFilter.cached_filters_for(id)
-    CustomFilter.apply_cached_filters(active_filters, status, following?(status.account))
+    CustomFilter.apply_cached_filters(active_filters, status, following: following?(status.account))
   end
 
   def followers_for_local_distribution

@@ -1,69 +1,9 @@
 # frozen_string_literal: true
 
 class PublicStatusesIndex < Chewy::Index
-  DEVELOPMENT_SETTINGS = {
-    filter: {
-      english_stop: {
-        type: 'stop',
-        stopwords: '_english_',
-      },
+  include DatetimeClampingConcern
 
-      english_stemmer: {
-        type: 'stemmer',
-        language: 'english',
-      },
-
-      english_possessive_stemmer: {
-        type: 'stemmer',
-        language: 'possessive_english',
-      },
-    },
-
-    analyzer: {
-      verbatim: {
-        tokenizer: 'uax_url_email',
-        filter: %w(lowercase),
-      },
-
-      content: {
-        tokenizer: 'standard',
-        filter: %w(
-          lowercase
-          asciifolding
-          cjk_width
-          elision
-          english_possessive_stemmer
-          english_stop
-          english_stemmer
-        ),
-      },
-
-      sudachi_analyzer: {
-        tokenizer: 'standard',
-        filter: %w(
-          lowercase
-          asciifolding
-          cjk_width
-          elision
-          english_possessive_stemmer
-          english_stop
-          english_stemmer
-        ),
-      },
-
-      hashtag: {
-        tokenizer: 'keyword',
-        filter: %w(
-          word_delimiter_graph
-          lowercase
-          asciifolding
-          cjk_width
-        ),
-      },
-    },
-  }.freeze
-
-  PRODUCTION_SETTINGS = {
+  settings index: index_preset(refresh_interval: '30s', number_of_shards: 5), analysis: {
     filter: {
       english_stop: {
         type: 'stop',
@@ -137,9 +77,7 @@ class PublicStatusesIndex < Chewy::Index
         discard_punctuation: 'true',
       },
     },
-  }.freeze
-
-  settings index: index_preset(refresh_interval: '30s', number_of_shards: 5), analysis: Rails.env.test? ? DEVELOPMENT_SETTINGS : PRODUCTION_SETTINGS
+  }
 
   index_scope ::Status.unscoped
                       .kept
@@ -154,6 +92,6 @@ class PublicStatusesIndex < Chewy::Index
     field(:language, type: 'keyword')
     field(:domain, type: 'keyword', value: ->(status) { status.account.domain || '' })
     field(:properties, type: 'keyword', value: ->(status) { status.searchable_properties })
-    field(:created_at, type: 'date')
+    field(:created_at, type: 'date', value: ->(status) { clamp_date(status.created_at) })
   end
 end
