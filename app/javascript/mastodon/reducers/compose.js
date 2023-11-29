@@ -299,10 +299,6 @@ const insertReference = (state, url, attributeType) => {
 };
 
 const privacyPreference = (a, b) => {
-  if (a === 'limited') {
-    return 'reply';
-  }
-
   const order = ['public', 'public_unlisted', 'unlisted', 'login', 'private', 'direct'];
   return order[Math.max(order.indexOf(a), order.indexOf(b), 0)];
 };
@@ -422,7 +418,11 @@ export default function compose(state = initialState, action) {
       map.set('in_reply_to', action.status.get('id'));
       map.set('text', statusToTextMentions(state, action.status));
       map.set('reply_to_limited', action.status.get('visibility_ex') === 'limited');
-      map.set('privacy', privacyPreference(action.status.get('visibility_ex'), state.get('default_privacy')));
+      if (action.status.get('visibility_ex') === 'limited') {
+        map.set('privacy', 'reply');
+      } else {
+        map.set('privacy', privacyPreference(action.status.get('visibility_ex'), state.get('default_privacy')));
+      }
       map.set('limited_scope', null);
       map.set('searchability', privacyPreference(action.status.get('searchability'), state.get('default_searchability')));
       map.set('focusDate', new Date());
