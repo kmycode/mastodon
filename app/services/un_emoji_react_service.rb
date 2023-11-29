@@ -42,8 +42,8 @@ class UnEmojiReactService < BaseService
   end
 
   def write_stream(emoji_reaction)
-    emoji_group = @status.emoji_reactions_grouped_by_name
-                         .find { |reaction_group| reaction_group['name'] == emoji_reaction.name && (!reaction_group.key?(:domain) || reaction_group['domain'] == emoji_reaction.custom_emoji&.domain) }
+    emoji_group = @status.emoji_reactions_grouped_by_name(@account)
+                         .find { |reaction_group| reaction_group['name'] == emoji_reaction.name }
     if emoji_group
       emoji_group['status_id'] = @status.id.to_s
     else
@@ -51,6 +51,7 @@ class UnEmojiReactService < BaseService
       emoji_group = { 'name' => emoji_reaction.name, 'count' => 0, 'account_ids' => [], 'status_id' => @status.id.to_s }
       emoji_group['domain'] = emoji_reaction.custom_emoji.domain if emoji_reaction.custom_emoji
     end
+
     DeliveryEmojiReactionWorker.perform_async(render_emoji_reaction(emoji_group), @status.id, emoji_reaction.account_id)
   end
 
