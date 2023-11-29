@@ -336,7 +336,7 @@ class StatusActionBar extends ImmutablePureComponent {
     }
 
     if (signedIn) {
-      if (writtenByMe) {
+      if (writtenByMe && status.get('limited_scope') !== 'reply') {
         menu.push({ text: intl.formatMessage(messages.mentions), action: this.handleOpenMentions });
       }
 

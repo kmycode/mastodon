@@ -287,7 +287,10 @@ class ActionBar extends PureComponent {
           menu.push(null);
         }
 
-        menu.push({ text: intl.formatMessage(messages.mentions), action: this.handleOpenMentions });
+        if (status.get('limited_scope') !== 'reply') {
+          menu.push({ text: intl.formatMessage(messages.mentions), action: this.handleOpenMentions });
+        }
+        
         menu.push({ text: intl.formatMessage(mutingConversation ? messages.unmuteConversation : messages.muteConversation), action: this.handleConversationMuteClick });
         menu.push(null);
         menu.push({ text: intl.formatMessage(messages.edit), action: this.handleEditClick });

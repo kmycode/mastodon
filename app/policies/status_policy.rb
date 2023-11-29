@@ -25,7 +25,7 @@ class StatusPolicy < ApplicationPolicy
   end
 
   def show_mentioned_users?
-    owned?
+    record.limited_visibility? ? owned_conversation? : owned?
   end
 
   def reblog?
@@ -62,6 +62,11 @@ class StatusPolicy < ApplicationPolicy
 
   def owned?
     author.id == current_account&.id
+  end
+
+  def owned_conversation?
+    record.conversation&.local? &&
+      (record.conversation.ancestor_status.nil? ? owned? : record.conversation.ancestor_status.account_id == current_account&.id)
   end
 
   def private?
