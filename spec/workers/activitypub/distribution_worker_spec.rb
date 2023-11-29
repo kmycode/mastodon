@@ -79,6 +79,22 @@ describe ActivityPub::DistributionWorker do
       end
     end
 
+    context 'with limited status for no-follower but non-mentioned follower' do
+      let(:no_follower) { Fabricate(:account, domain: 'example.com', inbox_url: 'http://example.com/no_follower/inbox', shared_inbox_url: 'http://example.com') }
+
+      before do
+        status.update(visibility: :limited)
+        status.capability_tokens.create!
+        status.mentions.create!(account: no_follower, silent: true)
+      end
+
+      it 'delivers to followers' do
+        expect_push_bulk_to_match(ActivityPub::DeliveryWorker, [[kind_of(String), status.account.id, 'http://example.com/no_follower/inbox', anything]]) do
+          subject.perform(status.id)
+        end
+      end
+    end
+
     context 'with direct status' do
       let(:mentioned_account) { Fabricate(:account, protocol: :activitypub, inbox_url: 'https://foo.bar/inbox', domain: 'foo.bar') }
 

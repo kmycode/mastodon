@@ -322,6 +322,10 @@ jobs:
           sudo mkdir /etc/elasticsearch/sudachi -p
           sudo cp sudachi-dictionary-*/system_core.dic /etc/elasticsearch/sudachi
 
+      - name: Set security settings
+        run: |
+          sudo cp .github/workflows/elasticsearch-settings/elasticsearch.yml /etc/elasticsearch
+
       - name: Running Elasticsearch
         run: |
           sudo systemctl start elasticsearch
