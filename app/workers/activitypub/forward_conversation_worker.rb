@@ -3,7 +3,7 @@
 class ActivityPub::ForwardConversationWorker
   include Sidekiq::Worker
 
-  def perform(payload, status_id, shared_inbox = false) # rubocop:disable Style/OptionalBooleanParameter
+  def perform(payload, status_id, shared_inbox)
     @status  = Status.find(status_id)
     @payload = payload
     @shared_inbox = shared_inbox

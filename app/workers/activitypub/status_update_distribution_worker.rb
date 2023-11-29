@@ -48,6 +48,6 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
   end
 
   def always_sign
-    true
+    @status.limited_visibility?
   end
 end

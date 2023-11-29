@@ -519,7 +519,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
     return if @json['signature'].blank?
 
-    ActivityPub::ForwardConversationWorker.perform_async(Oj.dump(@json), @status.id)
+    ActivityPub::ForwardConversationWorker.perform_async(Oj.dump(@json), @status.id, false)
   end
 
   def increment_voters_count!
