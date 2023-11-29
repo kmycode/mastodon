@@ -78,7 +78,7 @@ describe ActivityPub::DistributionWorker do
         expect(ActivityPub::DeliveryWorker).to have_received(:perform_async)
       end
     end
-    
+
     context 'with limited status for no-follower but non-mentioned follower' do
       let(:no_follower) { Fabricate(:account, domain: 'example.com', inbox_url: 'http://example.com/no_follower/inbox', shared_inbox_url: 'http://example.com') }
 
