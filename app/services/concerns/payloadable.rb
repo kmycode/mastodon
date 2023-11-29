@@ -19,7 +19,7 @@ module Payloadable
     object      = record.respond_to?(:virtual_object) ? record.virtual_object : record
     bearcap     = object.is_a?(String) && record.respond_to?(:type) && (record.type == 'Create' || record.type == 'Update')
 
-    if ((object.respond_to?(:sign?) && object.sign?) && signer && (always_sign || signing_enabled?)) || bearcap || always_sign_unsafe
+    if ((object.respond_to?(:sign?) && object.sign?) && signer && (always_sign || signing_enabled?)) || bearcap || (signer && always_sign_unsafe)
       ActivityPub::LinkedDataSignature.new(payload).sign!(signer, sign_with: sign_with)
     else
       payload
