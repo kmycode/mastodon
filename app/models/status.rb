@@ -412,6 +412,8 @@ class Status < ApplicationRecord
         end
 
         public_emoji_reactions
+      else
+        emoji_reactions
       end
     end
   end
