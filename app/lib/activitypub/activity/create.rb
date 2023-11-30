@@ -394,7 +394,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def conversation_from_context(uri)
-    return nil if uri.nil?
+    return nil if uri.nil? || (!uri.start_with?('https://') && !uri.start_with?('http://'))
     return Conversation.find_by(id: ActivityPub::TagManager.instance.uri_to_local_id(uri)) if ActivityPub::TagManager.instance.local_uri?(uri)
 
     begin
