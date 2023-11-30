@@ -33,6 +33,8 @@ class ActivityPub::Activity::Update < ActivityPub::Activity
     ActivityPub::ProcessStatusUpdateService.new.call(@status, @json, @object, request_id: @options[:request_id])
 
     forward_for_conversation
+
+    @status
   end
 
   def forward_for_conversation
