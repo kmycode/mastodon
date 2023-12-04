@@ -106,9 +106,9 @@ class ProcessReferencesService < BaseService
 
   def scan_text_and_quotes
     text = extract_status_plain_text(@status)
-    url_to_attributes = text.scan(REFURL_EXP).to_h { |result| [result[3], result[0]] }
-    url_to_attributes = @urls.index_with('BT').merge(url_to_attributes)
-    url_to_attributes = url_to_attributes.merge(@quote_urls.index_with('QT'))
+    url_to_attributes = @urls.index_with('BT')
+                             .merge(text.scan(REFURL_EXP).to_h { |result| [result[3], result[0]] })
+                             .merge(@quote_urls.index_with('QT'))
 
     url_to_statuses = fetch_statuses(url_to_attributes.keys.uniq)
 
