@@ -107,9 +107,8 @@ class ProcessReferencesService < BaseService
   def scan_text_and_quotes
     text = extract_status_plain_text(@status)
     url_to_attributes = text.scan(REFURL_EXP).to_h { |result| [result[3], result[0]] }
-    @quote_urls.each do |url|
-      url_to_attributes[url] = 'QT'
-    end
+    url_to_attributes = @urls.index_with { |_url| 'BT' }.merge(url_to_attributes)
+    url_to_attributes = url_to_attributes.merge(@quote_urls.index_with { |_url| 'QT' })
 
     url_to_statuses = fetch_statuses(url_to_attributes.keys.uniq)
 
@@ -160,7 +159,10 @@ class ProcessReferencesService < BaseService
       next if status.blank?
 
       attribute_type = @added_items[status_id]
-      @added_objects << @status.reference_objects.new(target_status: status, attribute_type: attribute_type, quote: quote_attribute?(attribute_type))
+      quote = quote_attribute?(attribute_type)
+      @added_objects << @status.reference_objects.new(target_status: status, attribute_type: attribute_type, quote: quote)
+
+      @status.update!(quote_of_id: status_id) if quote
 
       status.increment_count!(:status_referred_by_count)
       @references_count += 1
@@ -186,6 +188,7 @@ class ProcessReferencesService < BaseService
     @removed_objects = []
 
     @status.reference_objects.where(target_status: @removed_items.keys).destroy_all
+    @status.update!(quote_of_id: nil) if @status.quote_of_id.present? && @removed_items.key?(@status.quote_of_id)
 
     statuses = Status.where(id: @added_items.keys).to_a
     @removed_items.each_key do |status_id|
@@ -204,7 +207,7 @@ class ProcessReferencesService < BaseService
 
     @status.reference_objects.where(target_status: @changed_items.keys).find_each do |ref|
       attribute_type = @changed_items[ref.target_status_id]
-      quote = quote_attribute?(attribute_type) && quotable?(ref.target_status)
+      quote = quote_attribute?(attribute_type)
       quote_change = ref.quote != quote
 
       ref.update!(attribute_type: attribute_type, quote: quote)
