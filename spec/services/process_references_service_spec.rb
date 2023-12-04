@@ -370,7 +370,7 @@ RSpec.describe ProcessReferencesService, type: :service do
       end
     end
 
-    context 'when change quote to reference', pending: 'Will fix later' do
+    context 'when change quote to reference' do
       let(:text) { "QT #{target_status_uri}" }
       let(:new_text) { "RT #{target_status_uri}" }
 
@@ -382,7 +382,7 @@ RSpec.describe ProcessReferencesService, type: :service do
       end
     end
 
-    context 'when change reference to quote', pending: 'Will fix later' do
+    context 'when change reference to quote' do
       let(:text) { "RT #{target_status_uri}" }
       let(:new_text) { "QT #{target_status_uri}" }
 
