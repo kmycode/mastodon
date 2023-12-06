@@ -1555,6 +1555,9 @@ en:
       '3600': 1 hour
       '43200': 12 hours
       '604800': 1 week
+      '1209600': 2 weeks
+      '2629746': 1 month
+      '7889238': 3 months
       '86400': 1 day
     expires_in_prompt: Never
     generate: Generate invite link
