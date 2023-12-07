@@ -13,8 +13,8 @@ class AddMasterSettingsToAccounts < ActiveRecord::Migration[7.1]
     safety_assured do
       add_column :accounts, :master_settings, :jsonb
 
-      ActiveRecord::Base.connection.execute("UPDATE accounts SET master_settings = { subscription_policy: 'block' } WHERE accounts.dissubscribable IS TRUE")
-      ActiveRecord::Base.connection.execute("UPDATE accounts SET master_settings = { subscription_policy: 'allow' } WHERE accounts.dissubscribable IS FALSE")
+      ActiveRecord::Base.connection.execute("UPDATE accounts SET master_settings = json_build_object('subscription_policy', 'block') WHERE accounts.dissubscribable IS TRUE")
+      ActiveRecord::Base.connection.execute("UPDATE accounts SET master_settings = json_build_object('subscription_policy', 'allow') WHERE accounts.dissubscribable IS FALSE")
 
       remove_column :accounts, :dissubscribable
     end
