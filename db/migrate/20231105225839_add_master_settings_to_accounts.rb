@@ -13,8 +13,8 @@ class AddMasterSettingsToAccounts < ActiveRecord::Migration[7.1]
     safety_assured do
       add_column :accounts, :master_settings, :jsonb
 
-      Account.where(dissubscribable: true).update_all(master_settings: "{ subscription_policy: 'block' }") # rubocop:disable Rails/SkipsModelValidations
-      Account.where(dissubscribable: false).update_all(master_settings: "{ subscription_policy: 'allow' }") # rubocop:disable Rails/SkipsModelValidations
+      ActiveRecord::Base.connection.execute("UPDATE accounts SET master_settings = { subscription_policy: 'block' } WHERE accounts.dissubscribable IS TRUE")
+      ActiveRecord::Base.connection.execute("UPDATE accounts SET master_settings = { subscription_policy: 'allow' } WHERE accounts.dissubscribable IS FALSE")
 
       remove_column :accounts, :dissubscribable
     end
@@ -24,8 +24,8 @@ class AddMasterSettingsToAccounts < ActiveRecord::Migration[7.1]
     safety_assured do
       add_column_with_default :accounts, :dissubscribable, :boolean, default: false, allow_null: false
 
-      Account.where(master_settings: "{ subscription_policy: 'block' }").update_all(dissubscribable: true) # rubocop:disable Rails/SkipsModelValidations
-      Account.where(master_settings: "{ subscription_policy: 'allow' }").update_all(dissubscribable: false) # rubocop:disable Rails/SkipsModelValidations
+      ActiveRecord::Base.connection.execute("UPDATE accounts SET dissubscribable = TRUE WHERE master_settings ->> 'subscription_policy' = 'block'")
+      ActiveRecord::Base.connection.execute("UPDATE accounts SET dissubscribable = FALSE WHERE master_settings ->> 'subscription_policy' = 'allow'")
 
       remove_column :accounts, :master_settings
     end
