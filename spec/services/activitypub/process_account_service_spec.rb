@@ -252,6 +252,32 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
     end
   end
 
+  context 'with other settings' do
+    let(:payload) do
+      {
+        id: 'https://foo.test',
+        type: 'Actor',
+        inbox: 'https://foo.test/inbox',
+        otherSetting: [
+          { type: 'PropertyValue', name: 'Pronouns', value: 'They/them' },
+          { type: 'PropertyValue', name: 'Occupation', value: 'Unit test' },
+        ],
+      }.with_indifferent_access
+    end
+
+    before do
+      stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(body: '{}')
+    end
+
+    it 'parses out of attachment' do
+      account = subject.call('alice', 'example.com', payload)
+      expect(account.settings).to be_a Hash
+      expect(account.settings.size).to eq 2
+      expect(account.settings['Pronouns']).to eq 'They/them'
+      expect(account.settings['Occupation']).to eq 'Unit test'
+    end
+  end
+
   context 'when account is not suspended' do
     subject { described_class.new.call('alice', 'example.com', payload) }
 
