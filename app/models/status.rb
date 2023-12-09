@@ -83,7 +83,7 @@ class Status < ApplicationRecord
   has_many :replies, foreign_key: 'in_reply_to_id', class_name: 'Status', inverse_of: :thread, dependent: nil
   has_many :mentions, dependent: :destroy, inverse_of: :status
   has_many :mentioned_accounts, through: :mentions, source: :account, class_name: 'Account'
-  has_many :media_attachments, dependent: :nullify
+  has_many :media_attachments, -> { order('id asc') }, dependent: :nullify, inverse_of: false
   has_many :reference_objects, class_name: 'StatusReference', inverse_of: :status, dependent: :destroy
   has_many :references, through: :reference_objects, class_name: 'Status', source: :target_status
   has_many :referenced_by_status_objects, foreign_key: 'target_status_id', class_name: 'StatusReference', inverse_of: :target_status, dependent: :destroy
@@ -345,7 +345,7 @@ class Status < ApplicationRecord
 
   def ordered_media_attachments
     if ordered_media_attachment_ids.nil?
-      media_attachments.order(id: :asc)
+      media_attachments
     else
       map = media_attachments.index_by(&:id)
       ordered_media_attachment_ids.filter_map { |media_attachment_id| map[media_attachment_id] }
