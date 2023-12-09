@@ -345,7 +345,7 @@ class Status < ApplicationRecord
 
   def ordered_media_attachments
     if ordered_media_attachment_ids.nil?
-      media_attachments
+      media_attachments.order(id: :asc)
     else
       map = media_attachments.index_by(&:id)
       ordered_media_attachment_ids.filter_map { |media_attachment_id| map[media_attachment_id] }
