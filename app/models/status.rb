@@ -302,7 +302,7 @@ class Status < ApplicationRecord
   alias sign? distributable?
 
   def with_media?
-    ordered_media_attachments.any?
+    media_attachments.any?
   end
 
   def expired?
