@@ -463,7 +463,7 @@ RSpec.describe Status do
   describe '.emoji_reaction_availables_map' do
     subject { described_class.emoji_reaction_availables_map(domains) }
 
-    let(:domains) { %w(features_available.com features_unavailable.com features_invalid.com features_nil.com no_info.com mastodon.com misskey.com) }
+    let(:domains) { %w(features_available.com features_unavailable.com features_invalid.com features_nil.com no_info.com mastodon.com misskey.com old_mastodon.com) }
 
     before do
       Fabricate(:instance_info, domain: 'features_available.com', software: 'mastodon', data: { metadata: { features: ['emoji_reaction'] } })
@@ -472,6 +472,7 @@ RSpec.describe Status do
       Fabricate(:instance_info, domain: 'features_nil.com', software: 'mastodon', data: { metadata: { features: nil } })
       Fabricate(:instance_info, domain: 'mastodon.com', software: 'mastodon')
       Fabricate(:instance_info, domain: 'misskey.com', software: 'misskey')
+      Fabricate(:instance_info, domain: 'old_mastodon.com', software: 'mastodon', data: { metadata: [] })
     end
 
     it 'availables if features contains emoji_reaction' do
@@ -496,6 +497,10 @@ RSpec.describe Status do
 
     it 'availables if misskey server' do
       expect(subject['misskey.com']).to be true
+    end
+
+    it 'unavailables if old mastodon server' do
+      expect(subject['old_mastodon.com']).to be false
     end
   end
 
