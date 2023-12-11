@@ -21,6 +21,7 @@ class InstanceInfo < ApplicationRecord
     calckey
     cherrypick
     meisskey
+    sharkey
     firefish
     renedon
     fedibird

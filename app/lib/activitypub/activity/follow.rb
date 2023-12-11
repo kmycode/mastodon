@@ -103,7 +103,7 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
     info = instance_info
     return false if info.nil?
 
-    %w(misskey calckey firefish meisskey cherrypick).include?(info.software)
+    %w(misskey calckey firefish meisskey cherrypick sharkey).include?(info.software)
   end
 
   def instance_info
