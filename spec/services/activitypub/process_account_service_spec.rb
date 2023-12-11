@@ -5,6 +5,10 @@ require 'rails_helper'
 RSpec.describe ActivityPub::ProcessAccountService, type: :service do
   subject { described_class.new }
 
+  before do
+    stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(status: 404)
+  end
+
   context 'with searchability' do
     subject { described_class.new.call('alice', 'example.com', payload) }
 
