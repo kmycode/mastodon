@@ -18,11 +18,13 @@ class ActivityPub::FetchInstanceInfoWorker
     @instance = Instance.find_by(domain: domain)
     return if !@instance || @instance.unavailable_domain.present?
 
-    with_redis_lock("instance_info:#{domain}") do
+    Rails.cache.fetch("fetch_instance_info:#{@instance.domain}", expires_in: 1.day, race_condition_ttl: 1.hour) do
       link = nodeinfo_link
       return if link.nil?
 
       update_info!(link)
+
+      true
     end
   rescue ActivityPub::FetchInstanceInfoWorker::DeadError
     true

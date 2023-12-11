@@ -210,7 +210,7 @@ class ActivityPub::ProcessAccountService < BaseService
   end
 
   def fetch_instance_info
-    ActivityPub::FetchInstanceInfoWorker.perform_async(@account.domain) unless InstanceInfo.exists?(domain: @account.domain)
+    ActivityPub::FetchInstanceInfoWorker.perform_async(@account.domain) unless Rails.cache.exist?("fetch_instance_info:#{@account.domain}", expires_in: 1.day)
   end
 
   def actor_type
