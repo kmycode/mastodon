@@ -106,5 +106,12 @@ describe ActivityPub::FetchInstanceInfoWorker do
       info = InstanceInfo.find_by(domain: 'example.com')
       expect(info).to be_nil
     end
+
+    it 'does not fetch again immediately' do
+      expect(subject.perform('example.com')).to be true
+      expect(subject.perform('example.com')).to be true
+
+      expect(a_request(:get, 'https://example.com/.well-known/nodeinfo')).to have_been_made.once
+    end
   end
 end

@@ -19,18 +19,22 @@ class ActivityPub::FetchInstanceInfoWorker
     return if !@instance || @instance.unavailable_domain.present?
 
     Rails.cache.fetch("fetch_instance_info:#{@instance.domain}", expires_in: 1.day, race_condition_ttl: 1.hour) do
-      link = nodeinfo_link
-      return if link.nil?
-
-      update_info!(link)
-
-      true
+      fetch!
     end
-  rescue ActivityPub::FetchInstanceInfoWorker::DeadError
-    true
   end
 
   private
+
+  def fetch!
+    link = nodeinfo_link
+    return if link.nil?
+
+    update_info!(link)
+
+    true
+  rescue ActivityPub::FetchInstanceInfoWorker::DeadError
+    true
+  end
 
   def nodeinfo_link
     nodeinfo = fetch_json("https://#{@instance.domain}/.well-known/nodeinfo")
