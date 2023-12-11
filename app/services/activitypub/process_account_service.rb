@@ -46,7 +46,6 @@ class ActivityPub::ProcessAccountService < BaseService
         end
 
         create_account
-        fetch_instance_info
       end
 
       update_account
@@ -65,6 +64,8 @@ class ActivityPub::ProcessAccountService < BaseService
       check_featured_tags_collection! if @json['featuredTags'].present?
       check_links! if @account.fields.any?(&:requires_verification?)
     end
+
+    fetch_instance_info
 
     @account
   rescue Oj::ParseError
