@@ -8,9 +8,6 @@ class ActivityPub::FetchInstanceInfoWorker
 
   sidekiq_options queue: 'push', retry: 2
 
-  class Error < StandardError; end
-  class DeadError < Error; end
-
   SUPPORTED_NOTEINFO_RELS = ['http://nodeinfo.diaspora.software/ns/schema/2.0', 'http://nodeinfo.diaspora.software/ns/schema/2.1'].freeze
 
   def perform(domain)
@@ -20,6 +17,8 @@ class ActivityPub::FetchInstanceInfoWorker
     Rails.cache.fetch("fetch_instance_info:#{@instance.domain}", expires_in: 1.day, race_condition_ttl: 1.hour) do
       fetch!
     end
+
+    true
   end
 
   private
@@ -31,7 +30,7 @@ class ActivityPub::FetchInstanceInfoWorker
     update_info!(link)
 
     true
-  rescue ActivityPub::FetchInstanceInfoWorker::DeadError
+  rescue Mastodon::UnexpectedResponseError
     true
   end
 
@@ -68,7 +67,6 @@ class ActivityPub::FetchInstanceInfoWorker
 
   def fetch_json(url)
     build_request(url).perform do |response|
-      raise ActivityPub::FetchInstanceInfoWorker::DeadError, "Request for #{@instance.domain} returned HTTP #{response.code}" unless [200, 203].include?(response.code)
       raise Mastodon::UnexpectedResponseError, response unless response_successful?(response) || response_error_unsalvageable?(response)
 
       body_to_json(response.body_with_limit)
