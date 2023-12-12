@@ -130,6 +130,7 @@ Naming/VariableNumber:
     - 'db/migrate/20190820003045_update_statuses_index.rb'
     - 'db/migrate/20190823221802_add_local_index_to_statuses.rb'
     - 'db/migrate/20200119112504_add_public_index_to_statuses.rb'
+    - 'db/migrate/20231212225737_improve_index_for_public_timeline_speed.rb'
     - 'spec/models/account_spec.rb'
     - 'spec/models/domain_block_spec.rb'
     - 'spec/models/user_spec.rb'
