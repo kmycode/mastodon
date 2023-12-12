@@ -289,6 +289,7 @@ en:
         setting_show_quote_in_public: Show quotes in public timelines
         setting_simple_timeline_menu: Reduce post menu on timeline
         setting_single_ref_to_quote: Deliver single reference to other server as quote
+        setting_slip_local_emoji_reaction: Allow bypassing emoji reaction from local users
         setting_stay_privacy: Not change privacy after post
         setting_stop_emoji_reaction_streaming: Disable stamp streamings
         setting_system_font_ui: Use system's default font

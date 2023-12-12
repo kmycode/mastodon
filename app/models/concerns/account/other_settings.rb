@@ -61,6 +61,7 @@ module Account::OtherSettings
 
     def show_emoji_reaction?(account)
       return false unless Setting.enable_emoji_reaction
+      return true if local? && account&.local? && user.setting_slip_local_emoji_reaction
 
       case emoji_reaction_policy
       when :block
@@ -104,7 +105,9 @@ module Account::OtherSettings
     end
 
     def public_settings_for_local
-      public_settings.merge(public_master_settings)
+      s = public_settings
+      s = s.merge({ 'emoji_reaction_policy' => 'allow' }) if local? && user&.setting_slip_local_emoji_reaction
+      s.merge(public_master_settings)
     end
   end
 end

@@ -91,6 +91,10 @@ module User::HasSettings
     settings['emoji_reaction_policy']
   end
 
+  def setting_slip_local_emoji_reaction
+    settings['slip_local_emoji_reaction']
+  end
+
   def setting_unfollow_modal
     settings['web.unfollow_modal']
   end

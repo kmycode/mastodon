@@ -37,6 +37,7 @@ class UserSettings
   setting :stop_emoji_reaction_streaming, default: false
   setting :emoji_reaction_streaming_notify_impl2, default: false
   setting :emoji_reaction_policy, default: :allow, in: %w(allow outside_only followers_only following_only mutuals_only block)
+  setting :slip_local_emoji_reaction, default: false
   setting :unsafe_limited_distribution, default: false
   setting :dtl_force_visibility, default: :unchange, in: %w(unchange public public_unlisted unlisted)
   setting :dtl_force_searchability, default: :unchange, in: %w(unchange public public_unlisted)

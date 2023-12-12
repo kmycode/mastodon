@@ -301,6 +301,7 @@ ja:
         setting_show_emoji_reaction_on_timeline: タイムライン上に他の人のつけたスタンプを表示する
         setting_simple_timeline_menu: タイムライン上でメニューの項目を減らす
         setting_single_ref_to_quote: 参照が１つしかない投稿は、他のサーバーには引用として配信する
+        setting_slip_local_emoji_reaction: ローカルユーザーに限って上記設定を無視してスタンプを許可する
         setting_stay_privacy: 投稿時に公開範囲を保存する
         setting_stop_emoji_reaction_streaming: スタンプのストリーミングを停止する
         setting_system_font_ui: システムのデフォルトフォントを使う

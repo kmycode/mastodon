@@ -256,7 +256,8 @@ RSpec.describe Account do
 
   describe '#allow_emoji_reaction?' do
     let(:policy) { :allow }
-    let(:reactioned) { Fabricate(:user, settings: { emoji_reaction_policy: policy }).account }
+    let(:allow_local) { false }
+    let(:reactioned) { Fabricate(:user, settings: { emoji_reaction_policy: policy, slip_local_emoji_reaction: allow_local }).account }
     let(:followee) { Fabricate(:account) }
     let(:follower) { Fabricate(:account) }
     let(:mutual) { Fabricate(:account) }
@@ -408,6 +409,21 @@ RSpec.describe Account do
 
       it 'allows self' do
         expect(reactioned.allow_emoji_reaction?(reactioned)).to be false
+      end
+    end
+
+    context 'when policy is block but allow local only' do
+      let(:policy) { :block }
+      let(:allow_local) { true }
+      let(:local) { Fabricate(:user).account }
+      let(:remote) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
+
+      it 'does not allow remote' do
+        expect(reactioned.allow_emoji_reaction?(remote)).to be false
+      end
+
+      it 'allows local' do
+        expect(reactioned.allow_emoji_reaction?(local)).to be true
       end
     end
 
