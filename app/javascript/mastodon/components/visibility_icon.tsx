@@ -8,6 +8,7 @@ import { ReactComponent as LoginIcon } from '@material-symbols/svg-600/outlined/
 import { ReactComponent as LockIcon } from '@material-symbols/svg-600/outlined/lock.svg';
 import { ReactComponent as LockOpenIcon } from '@material-symbols/svg-600/outlined/no_encryption.svg';
 import { ReactComponent as PublicIcon } from '@material-symbols/svg-600/outlined/public.svg';
+import { ReactComponent as ReplyIcon } from '@material-symbols/svg-600/outlined/reply.svg';
 import { ReactComponent as LimitedIcon } from '@material-symbols/svg-600/outlined/shield.svg';
 import { ReactComponent as PersonalIcon } from '@material-symbols/svg-600/outlined/sticky_note.svg';
 
@@ -23,6 +24,7 @@ type Visibility =
   | 'mutual'
   | 'circle'
   | 'personal'
+  | 'reply'
   | 'limited';
 
 const messages = defineMessages({
@@ -48,6 +50,10 @@ const messages = defineMessages({
   circle_short: {
     id: 'privacy.circle.short',
     defaultMessage: 'Circle members only',
+  },
+  reply_short: {
+    id: 'privacy.reply.short',
+    defaultMessage: 'Reply',
   },
   personal_short: {
     id: 'privacy.personal.short',
@@ -104,6 +110,11 @@ export const VisibilityIcon: React.FC<{ visibility: Visibility }> = ({
       icon: 'user-circle',
       iconComponent: CircleIcon,
       text: intl.formatMessage(messages.circle_short),
+    },
+    reply: {
+      icon: 'reply',
+      iconComponent: ReplyIcon,
+      text: intl.formatMessage(messages.reply_short),
     },
     personal: {
       icon: 'sticky-note-o',

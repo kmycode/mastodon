@@ -106,15 +106,23 @@ class RemoveStatusService < BaseService
     # the author and wouldn't normally receive the delete
     # notification - so here, we explicitly send it to them
 
+    return remove_from_conversation if @status.limited_visibility? && @status.conversation.present? && !@status.conversation.local?
+
     status_reach_finder = StatusReachFinder.new(@status, unsafe: true)
 
-    ActivityPub::DeliveryWorker.push_bulk(status_reach_finder.inboxes + status_reach_finder.inboxes_for_misskey, limit: 1_000) do |inbox_url|
+    ActivityPub::DeliveryWorker.push_bulk(status_reach_finder.all_inboxes, limit: 1_000) do |inbox_url|
       [signed_activity_json, @account.id, inbox_url]
     end
   end
 
+  def remove_from_conversation
+    return if @status.conversation.nil? || @status.conversation.inbox_url.blank?
+
+    ActivityPub::DeliveryWorker.perform_async(signed_activity_json, @account.id, @status.conversation.inbox_url)
+  end
+
   def signed_activity_json
-    @signed_activity_json ||= Oj.dump(serialize_payload(@status, @status.reblog? ? ActivityPub::UndoAnnounceSerializer : ActivityPub::DeleteSerializer, signer: @account, always_sign: true))
+    @signed_activity_json ||= Oj.dump(serialize_payload(@status, @status.reblog? ? ActivityPub::UndoAnnounceSerializer : ActivityPub::DeleteSerializer, signer: @account, always_sign_unsafe: @status.limited_visibility?))
   end
 
   def remove_reblogs
@@ -128,7 +136,7 @@ class RemoveStatusService < BaseService
   end
 
   def decrement_references
-    @status.references.each do |ref|
+    @status.references.reorder(nil).find_each do |ref|
       ref.decrement_count!(:status_referred_by_count)
     end
   end

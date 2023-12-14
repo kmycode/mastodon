@@ -44,7 +44,9 @@ class AccountStatusesFilter
   private
 
   def initial_scope
-    if (suspended? || (domain_block&.reject_send_dissubscribable && @account.dissubscribable)) || domain_block&.reject_send_media || blocked?
+    return Status.none if account.unavailable?
+
+    if (domain_block&.reject_send_dissubscribable && !@account.all_subscribable?) || domain_block&.reject_send_media || blocked?
       Status.none
     elsif anonymous?
       account.statuses.where(visibility: %i(public unlisted public_unlisted))
@@ -80,7 +82,7 @@ class AccountStatusesFilter
   end
 
   def only_media_scope
-    Status.joins(:media_attachments).merge(account.media_attachments.reorder(nil)).group(Status.arel_table[:id])
+    Status.joins(:media_attachments).merge(account.media_attachments).group(Status.arel_table[:id])
   end
 
   def no_replies_scope
@@ -103,10 +105,6 @@ class AccountStatusesFilter
     else
       Status.none
     end
-  end
-
-  def suspended?
-    account.suspended?
   end
 
   def anonymous?

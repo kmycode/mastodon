@@ -330,14 +330,14 @@ class AntennaSetting extends PureComponent {
       columnSettings = (
         <>
           <div className='setting-toggle'>
-            <Toggle id={`antenna-${id}-mediaonly`} defaultChecked={isMediaOnly} onChange={this.onMediaOnlyToggle} />
+            <Toggle id={`antenna-${id}-mediaonly`} checked={isMediaOnly} onChange={this.onMediaOnlyToggle} />
             <label htmlFor={`antenna-${id}-mediaonly`} className='setting-toggle__label'>
               <FormattedMessage id='antennas.media_only' defaultMessage='Media only' />
             </label>
           </div>
 
           <div className='setting-toggle'>
-            <Toggle id={`antenna-${id}-ignorereblog`} defaultChecked={isIgnoreReblog} onChange={this.onIgnoreReblogToggle} />
+            <Toggle id={`antenna-${id}-ignorereblog`} checked={isIgnoreReblog} onChange={this.onIgnoreReblogToggle} />
             <label htmlFor={`antenna-${id}-ignorereblog`} className='setting-toggle__label'>
               <FormattedMessage id='antennas.ignore_reblog' defaultMessage='Exclude boosts' />
             </label>
@@ -407,7 +407,7 @@ class AntennaSetting extends PureComponent {
 
           {!isLtl && (enableLocalTimeline || isStl) && (
             <div className='setting-toggle'>
-              <Toggle id={`antenna-${id}-stl`} defaultChecked={isStl} onChange={this.onStlToggle} />
+              <Toggle id={`antenna-${id}-stl`} checked={isStl} onChange={this.onStlToggle} />
               <label htmlFor={`antenna-${id}-stl`} className='setting-toggle__label'>
                 <FormattedMessage id='antennas.stl' defaultMessage='STL mode' />
               </label>
@@ -416,7 +416,7 @@ class AntennaSetting extends PureComponent {
 
           {!isStl && (enableLocalTimeline || isLtl) && (
             <div className='setting-toggle'>
-              <Toggle id={`antenna-${id}-ltl`} defaultChecked={isLtl} onChange={this.onLtlToggle} />
+              <Toggle id={`antenna-${id}-ltl`} checked={isLtl} onChange={this.onLtlToggle} />
               <label htmlFor={`antenna-${id}-ltl`} className='setting-toggle__label'>
                 <FormattedMessage id='antennas.ltl' defaultMessage='LTL mode' />
               </label>
@@ -424,7 +424,7 @@ class AntennaSetting extends PureComponent {
           )}
 
           <div className='setting-toggle'>
-            <Toggle id={`antenna-${id}-noinsertfeeds`} defaultChecked={isInsertFeeds} onChange={this.onNoInsertFeedsToggle} />
+            <Toggle id={`antenna-${id}-noinsertfeeds`} checked={isInsertFeeds} onChange={this.onNoInsertFeedsToggle} />
             <label htmlFor={`antenna-${id}-noinsertfeeds`} className='setting-toggle__label'>
               <FormattedMessage id='antennas.insert_feeds' defaultMessage='Insert to feeds' />
             </label>

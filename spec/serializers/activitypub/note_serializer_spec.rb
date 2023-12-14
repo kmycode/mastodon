@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe ActivityPub::NoteSerializer do
-  subject { JSON.parse(@serialization.to_json) }
+  subject { serialized_record_json(parent, described_class, adapter: ActivityPub::Adapter) }
 
   let(:visibility) { :public }
   let(:searchability) { :public }
@@ -18,10 +18,9 @@ describe ActivityPub::NoteSerializer do
   let!(:referred) { nil }
   let!(:referred2) { nil }
 
-  before(:each) do
+  before do
     parent.references << referred if referred.present?
     parent.references << referred2 if referred2.present?
-    @serialization = ActiveModelSerializers::SerializableResource.new(parent, serializer: described_class, adapter: ActivityPub::Adapter)
   end
 
   it 'has the expected shape' do

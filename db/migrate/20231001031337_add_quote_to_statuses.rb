@@ -17,7 +17,7 @@ class AddQuoteToStatuses < ActiveRecord::Migration[7.0]
       add_column_with_default :statuses, :quote_of_id, :bigint, default: nil, allow_null: true
 
       StatusReference.transaction do
-        StatusReference.where(quote: true).includes(:status).each do |ref|
+        StatusReference.where(quote: true).includes(:status).find_each do |ref|
           ref.status.update(quote_of_id: ref.target_status_id)
         end
       end

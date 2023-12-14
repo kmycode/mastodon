@@ -21,6 +21,7 @@ class InstanceInfo < ApplicationRecord
     calckey
     cherrypick
     meisskey
+    sharkey
     firefish
     renedon
     fedibird
@@ -39,6 +40,7 @@ class InstanceInfo < ApplicationRecord
     return false if info.nil?
 
     return true if EMOJI_REACTION_AVAILABLE_SOFTWARES.include?(info['software'])
+    return false if info.data['metadata'].nil? || !info.data['metadata'].is_a?(Hash)
 
     features = info.data.dig('metadata', 'features')
     return false if features.nil? || !features.is_a?(Array)

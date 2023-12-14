@@ -6,12 +6,19 @@ RSpec.describe DeleteAccountService, type: :service do
   shared_examples 'common behavior' do
     subject { described_class.new.call(account) }
 
+    before do
+      account.follow!(list_target_account)
+      circle_target_account.follow!(account)
+    end
+
     let!(:status) { Fabricate(:status, account: account) }
     let!(:mention) { Fabricate(:mention, account: local_follower) }
     let!(:status_with_mention) { Fabricate(:status, account: account, mentions: [mention]) }
     let!(:media_attachment) { Fabricate(:media_attachment, account: account) }
     let!(:notification) { Fabricate(:notification, account: account) }
     let!(:favourite) { Fabricate(:favourite, account: account, status: Fabricate(:status, account: local_follower)) }
+    let!(:emoji_reaction) { Fabricate(:emoji_reaction, account: account, status: Fabricate(:status, account: local_follower)) }
+    let!(:bookmark) { Fabricate(:bookmark, account: account) }
     let!(:poll) { Fabricate(:poll, account: account) }
     let!(:poll_vote) { Fabricate(:poll_vote, account: local_follower, poll: poll) }
 
@@ -23,39 +30,79 @@ RSpec.describe DeleteAccountService, type: :service do
     let!(:status_notification) { Fabricate(:notification, account: local_follower, activity: status, type: :status) }
     let!(:poll_notification) { Fabricate(:notification, account: local_follower, activity: poll, type: :poll) }
     let!(:favourite_notification) { Fabricate(:notification, account: local_follower, activity: favourite, type: :favourite) }
+    let!(:emoji_reaction_notification) { Fabricate(:notification, account: local_follower, activity: emoji_reaction, type: :emoji_reaction) }
     let!(:follow_notification) { Fabricate(:notification, account: local_follower, activity: active_relationship, type: :follow) }
+
+    let!(:list) { Fabricate(:list, account: account) }
+    let!(:list_account) { Fabricate(:list_account, list: list, account: list_target_account) }
+    let!(:list_target_account) { Fabricate(:account) }
+    let!(:antenna) { Fabricate(:antenna, account: account) }
+    let!(:antenna_account) { Fabricate(:antenna_account, antenna: antenna, account: list_target_account) }
+    let!(:circle) { Fabricate(:circle, account: account) }
+    let!(:circle_account) { Fabricate(:circle_account, circle: circle, account: circle_target_account) }
+    let!(:circle_target_account) { Fabricate(:account) }
+    let!(:circle_status) { Fabricate(:circle_status, circle: circle, status: Fabricate(:status, account: account, visibility: :limited)) }
+    let!(:bookmark_category) { Fabricate(:bookmark_category, account: account) }
+    let!(:bookmark_category_status) { Fabricate(:bookmark_category_status, bookmark_category: bookmark_category, status: bookmark.status) }
 
     let!(:account_note) { Fabricate(:account_note, account: account) }
 
-    it 'deletes associated owned records' do
-      expect { subject }.to change {
+    it 'deletes associated owned and target records and target notifications' do
+      expect { subject }
+        .to delete_associated_owned_records
+        .and delete_associated_target_records
+        .and delete_associated_target_notifications
+    end
+
+    def delete_associated_owned_records
+      change do
         [
           account.statuses,
           account.media_attachments,
           account.notifications,
           account.favourites,
+          account.emoji_reactions,
+          account.bookmarks,
           account.active_relationships,
           account.passive_relationships,
           account.polls,
           account.account_notes,
         ].map(&:count)
-      }.from([2, 1, 1, 1, 1, 1, 1, 1]).to([0, 0, 0, 0, 0, 0, 0, 0])
+      end.from([3, 1, 1, 1, 1, 1, 2, 2, 1, 1]).to([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     end
 
-    it 'deletes associated target records' do
+    it 'deletes associated owned record groups' do
       expect { subject }.to change {
+        [
+          account.owned_lists,
+          account.antennas,
+          account.circles,
+          account.bookmark_categories,
+        ].map(&:count)
+      }.from([1, 1, 1, 1]).to([0, 0, 0, 0])
+      expect { bookmark_category_status.status.reload }.to_not raise_error
+      expect { antenna_account.account.reload }.to_not raise_error
+      expect { circle_account.account.reload }.to_not raise_error
+      expect { antenna_account.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { circle_account.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { circle_status.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { bookmark_category_status.reload }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    def delete_associated_target_records
+      change do
         [
           AccountPin.where(target_account: account),
         ].map(&:count)
-      }.from([1]).to([0])
+      end.from([1]).to([0])
     end
 
-    it 'deletes associated target notifications' do
-      expect { subject }.to change {
+    def delete_associated_target_notifications
+      change do
         %w(
-          poll favourite status mention follow
+          poll favourite emoji_reaction status mention follow
         ).map { |type| Notification.where(type: type).count }
-      }.from([1, 1, 1, 1, 1]).to([0, 0, 0, 0, 0])
+      end.from([1, 1, 1, 1, 1, 1]).to([0, 0, 0, 0, 0, 0])
     end
   end
 

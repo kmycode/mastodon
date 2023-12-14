@@ -13,7 +13,7 @@ class CircleSelect extends PureComponent {
   static propTypes = {
     unavailable: PropTypes.bool,
     intl: PropTypes.object.isRequired,
-    circles: ImmutablePropTypes.list,
+    circles: ImmutablePropTypes.map,
     circleId: PropTypes.string,
     onChange: PropTypes.func.isRequired,
   };

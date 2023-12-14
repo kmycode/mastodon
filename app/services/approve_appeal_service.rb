@@ -62,7 +62,7 @@ class ApproveAppealService < BaseService
 
   def undo_force_cw!
     representative_account = Account.representative
-    @strike.statuses.includes(:media_attachments).each do |status|
+    @strike.statuses.includes(:media_attachments).find_each do |status|
       UpdateStatusService.new.call(status, representative_account.id, spoiler_text: '')
     end
   end

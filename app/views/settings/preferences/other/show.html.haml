@@ -24,9 +24,14 @@
       = ff.input :default_sensitive, wrapper: :with_label, label: I18n.t('simple_form.labels.defaults.setting_default_sensitive'), hint: I18n.t('simple_form.hints.defaults.setting_default_sensitive')
 
     - if Setting.enable_emoji_reaction
+      %h4= t 'preferences.emoji_reaction_permitting'
+
       .fields-row
         .fields-group.fields-row__column.fields-row__column-12
           = ff.input :emoji_reaction_policy, kmyblue: true, collection: %w(allow outside_only followers_only following_only mutuals_only block), label_method: ->(item) { safe_join([t("simple_form.labels.defaults.setting_emoji_reaction_policy_items.#{item}")]) }, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', include_blank: false, wrapper: :with_label, label: I18n.t('simple_form.labels.defaults.setting_emoji_reaction_policy'), hint: false, warning_hint: I18n.t('simple_form.hints.defaults.setting_emoji_reaction_policy')
+
+      .fields-group
+        = ff.input :slip_local_emoji_reaction, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_slip_local_emoji_reaction')
 
     - if @dtl_enabled
 

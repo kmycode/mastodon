@@ -21,7 +21,7 @@ import { ReactComponent as AntennaIcon } from '@material-symbols/svg-600/outline
 
 import { WordmarkLogo } from 'mastodon/components/logo';
 import { NavigationPortal } from 'mastodon/components/navigation_portal';
-import { enableDtlMenu, timelinePreview, trendsEnabled, dtlTag, enableLocalTimeline } from 'mastodon/initial_state';
+import { enableDtlMenu, timelinePreview, trendsEnabled, dtlTag, enableLocalTimeline, isHideItem } from 'mastodon/initial_state';
 import { transientSingleColumn } from 'mastodon/is_mobile';
 
 import ColumnLink from './column_link';
@@ -99,7 +99,7 @@ class NavigationPanel extends Component {
         </div>
 
         {banner &&
-          <div class='navigation-panel__banner'>
+          <div className='navigation-panel__banner'>
             {banner}
           </div>
         }
@@ -151,7 +151,7 @@ class NavigationPanel extends Component {
         {signedIn && (
           <>
             <ColumnLink transparent to='/bookmark_categories' icon='bookmarks' iconComponent={BookmarksIcon} text={intl.formatMessage(messages.bookmarks)} />
-            <ColumnLink transparent to='/favourites' icon='star' iconComponent={StarIcon} text={intl.formatMessage(messages.favourites)} />
+            { !isHideItem('favourite_menu') && <ColumnLink transparent to='/favourites' icon='star' iconComponent={StarIcon} text={intl.formatMessage(messages.favourites)} /> }
             <hr />
 
             <ColumnLink transparent href='/settings/preferences' icon='cog' iconComponent={SettingsIcon} text={intl.formatMessage(messages.preferences)} />

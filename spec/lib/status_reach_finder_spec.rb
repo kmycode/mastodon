@@ -381,7 +381,7 @@ describe StatusReachFinder do
       let(:dissubscribable) { false }
       let(:spoiler_text) { '' }
       let(:status) { Fabricate(:status, account: alice, visibility: visibility, searchability: searchability, spoiler_text: spoiler_text) }
-      let(:alice) { Fabricate(:account, username: 'alice', dissubscribable: dissubscribable) }
+      let(:alice) { Fabricate(:account, username: 'alice', master_settings: { subscription_policy: dissubscribable ? 'block' : 'allow' }) }
       let(:bob) { Fabricate(:account, username: 'bob', domain: 'example.com', protocol: :activitypub, uri: 'https://example.com/', inbox_url: 'https://example.com/inbox') }
       let(:tom) { Fabricate(:account, username: 'tom', domain: 'tom.com', protocol: :activitypub, uri: 'https://tom.com/', inbox_url: 'https://tom.com/inbox') }
 

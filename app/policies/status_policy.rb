@@ -11,7 +11,7 @@ class StatusPolicy < ApplicationPolicy
   delegate :reply?, :expired?, to: :record
 
   def show?
-    return false if author.suspended?
+    return false if author.unavailable?
 
     if requires_mention?
       owned? || mention_exists?
@@ -25,7 +25,7 @@ class StatusPolicy < ApplicationPolicy
   end
 
   def show_mentioned_users?
-    owned?
+    record.limited_visibility? ? owned_conversation? : owned?
   end
 
   def show_activity?
@@ -69,6 +69,11 @@ class StatusPolicy < ApplicationPolicy
 
   def owned?
     author.id == current_account&.id
+  end
+
+  def owned_conversation?
+    record.conversation&.local? &&
+      (record.conversation.ancestor_status.nil? ? owned? : record.conversation.ancestor_status.account_id == current_account&.id)
   end
 
   def private?
@@ -138,7 +143,7 @@ class StatusPolicy < ApplicationPolicy
       else
         (@domain_block.reject_send_not_public_searchability && status.compute_searchability != 'public') ||
           (@domain_block.reject_send_public_unlisted && status.public_unlisted_visibility?) ||
-          (@domain_block.reject_send_dissubscribable && status.account.dissubscribable) ||
+          (@domain_block.reject_send_dissubscribable && !status.account.all_subscribable?) ||
           (@domain_block.detect_invalid_subscription && status.public_unlisted_visibility? && status.account.user&.setting_reject_public_unlisted_subscription) ||
           (@domain_block.detect_invalid_subscription && status.public_visibility? && status.account.user&.setting_reject_unlisted_subscription) ||
           (@domain_block.reject_send_media && status.with_media?) ||

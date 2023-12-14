@@ -54,7 +54,7 @@ class CustomFilter < ApplicationRecord
     return @expires_in if defined?(@expires_in)
     return nil if expires_at.nil?
 
-    [30.minutes, 1.hour, 6.hours, 12.hours, 1.day, 1.week].find { |expires_in| expires_in.from_now >= expires_at }
+    [30.minutes, 1.hour, 6.hours, 12.hours, 1.day, 1.week, 2.weeks, 1.month, 3.months].find { |expires_in| expires_in.from_now >= expires_at }
   end
 
   def irreversible=(value)
@@ -97,7 +97,7 @@ class CustomFilter < ApplicationRecord
     active_filters.select { |custom_filter, _| !custom_filter.expired? }
   end
 
-  def self.apply_cached_filters(cached_filters, status, following = false) # rubocop:disable Style/OptionalBooleanParameter
+  def self.apply_cached_filters(cached_filters, status, following: false)
     cached_filters.filter_map do |filter, rules|
       next if filter.exclude_follows && following
       next if filter.exclude_localusers && status.account.local?

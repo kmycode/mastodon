@@ -75,11 +75,10 @@ class PostStatusService < BaseService
                      end) || @options[:spoiler_text].present?
     @text         = @options.delete(:spoiler_text) if @text.blank? && @options[:spoiler_text].present?
     @visibility   = @options[:visibility]&.to_sym || @account.user&.setting_default_privacy&.to_sym
-    @visibility   = :direct if @in_reply_to&.limited_visibility?
-    @visibility   = :limited if %w(mutual circle).include?(@options[:visibility])
-    @visibility   = :unlisted if (@visibility&.to_sym == :public || @visibility&.to_sym == :public_unlisted || @visibility&.to_sym == :login) && @account.silenced?
-    @visibility   = :public_unlisted if @visibility&.to_sym == :public && !@options[:force_visibility] && !@options[:application]&.superapp && @account.user&.setting_public_post_to_unlisted && Setting.enable_public_unlisted_visibility
-    @limited_scope = @options[:visibility]&.to_sym if @visibility == :limited
+    @visibility   = :limited if %w(mutual circle reply).include?(@options[:visibility])
+    @visibility   = :unlisted if (@visibility == :public || @visibility == :public_unlisted || @visibility == :login) && @account.silenced?
+    @visibility   = :public_unlisted if @visibility == :public && !@options[:force_visibility] && !@options[:application]&.superapp && @account.user&.setting_public_post_to_unlisted && Setting.enable_public_unlisted_visibility
+    @limited_scope = @options[:visibility]&.to_sym if @visibility == :limited && @options[:visibility] != 'limited'
     @searchability = searchability
     @searchability = :private if @account.silenced? && %i(public public_unlisted).include?(@searchability&.to_sym)
     @markdown     = @options[:markdown] || false
@@ -87,6 +86,11 @@ class PostStatusService < BaseService
     @scheduled_at = nil if scheduled_in_the_past?
     @reference_ids = (@options[:status_reference_ids] || []).map(&:to_i).filter(&:positive?)
     raise ArgumentError if !Setting.enable_public_unlisted_visibility && @visibility == :public_unlisted
+
+    if @in_reply_to.present? && ((@options[:visibility] == 'limited' && @options[:circle_id].nil?) || @limited_scope == :reply)
+      @visibility = :limited
+      @limited_scope = :reply
+    end
 
     load_circle
     overwrite_dtl_post
@@ -96,8 +100,9 @@ class PostStatusService < BaseService
   end
 
   def load_circle
-    raise ArgumentError if @options[:visibility] == 'limited' && @options[:circle_id].nil?
-    return unless @options[:visibility] == 'circle' || (@options[:visibility] == 'limited' && @options[:circle_id].present?)
+    return if @visibility == :limited && @limited_scope == :reply && @in_reply_to.present?
+    return unless %w(circle limited reply).include?(@options[:visibility])
+    raise ArgumentError if @options[:circle_id].nil?
 
     @circle = @options[:circle_id].present? && Circle.find(@options[:circle_id])
     @limited_scope = :circle
@@ -105,10 +110,10 @@ class PostStatusService < BaseService
   end
 
   def overwrite_dtl_post
-    return unless DTL_ENABLED
+    return unless dtl_enabled?
 
     raw_tags = Extractor.extract_hashtags(@text)
-    return if raw_tags.exclude?(DTL_TAG)
+    return if raw_tags.exclude?(dtl_tag_name)
     return unless %i(public public_unlisted unlisted).include?(@visibility)
 
     @visibility = @account.user&.setting_dtl_force_visibility if %i(public public_unlisted unlisted).include?(@account.user&.setting_dtl_force_visibility)
@@ -148,7 +153,7 @@ class PostStatusService < BaseService
     safeguard_mentions!(@status)
     validate_status_mentions!
 
-    @status.limited_scope = :personal if @status.limited_visibility? && !process_mentions_service.mentions?
+    @status.limited_scope = :personal if @status.limited_visibility? && !@status.reply_limited? && !process_mentions_service.mentions?
 
     UpdateStatusExpirationService.new.call(@status)
 
@@ -196,6 +201,7 @@ class PostStatusService < BaseService
 
     process_hashtags_service.call(@status)
     Trends.tags.register(@status)
+    ProcessConversationService.new.call(@status) if @status.limited_visibility? && @status.reply_limited?
     ProcessReferencesService.call_service(@status, @reference_ids, [])
     LinkCrawlWorker.perform_async(@status.id)
     DistributionWorker.perform_async(@status.id)

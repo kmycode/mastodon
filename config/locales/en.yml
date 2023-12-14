@@ -687,6 +687,7 @@ en:
       action_taken_by: Action taken by
       actions:
         delete_description_html: The reported posts will be deleted and a strike will be recorded to help you escalate on future infractions by the same account.
+        force_cw_description_html: The sensitive message in the reported posts will be added content warning and a strike will be recorded to help you escalate on future infractions by the same account.
         mark_as_sensitive_description_html: The media in the reported posts will be marked as sensitive and a strike will be recorded to help you escalate on future infractions by the same account.
         other_description_html: See more options for controlling the account's behaviour and customize communication to the reported account.
         resolve_description_html: No action will be taken against the reported account, no strike recorded, and the report will be closed.
@@ -709,7 +710,9 @@ en:
       confirm_action: Confirm moderation action against @%{acct}
       created_at: Reported
       delete_and_resolve: Delete posts
+      force_cw: Add warning
       forwarded: Forwarded
+      forwarded_replies_explanation: This report is from a remote user and about remote content. It has been forwarded to you because the reported content is in reply to one of your users.
       forwarded_to: Forwarded to %{domain}
       mark_as_resolved: Mark as resolved
       mark_as_sensitive: Mark as sensitive
@@ -739,11 +742,13 @@ en:
       summary:
         action_preambles:
           delete_html: 'You are about to <strong>remove</strong> some of <strong>@%{acct}</strong>''s posts. This will:'
+          force_cw_html: 'You are about to <strong>add</strong> some of <strong>@%{acct}</strong>''s posts <strong>warning message</strong>. This will:'
           mark_as_sensitive_html: 'You are about to <strong>mark</strong> some of <strong>@%{acct}</strong>''s posts as <strong>sensitive</strong>. This will:'
           silence_html: 'You are about to <strong>limit</strong> <strong>@%{acct}</strong>''s account. This will:'
           suspend_html: 'You are about to <strong>suspend</strong> <strong>@%{acct}</strong>''s account. This will:'
         actions:
           delete_html: Remove the offending posts
+          force_cw_html: Add the offending posts warning message
           mark_as_sensitive_html: Mark the offending posts' media as sensitive
           silence_html: Severely limit <strong>@%{acct}</strong>'s reach by making their profile and contents only visible to people already following them or manually looking it profile up
           suspend_html: Suspend <strong>@%{acct}</strong>, making their profile and contents inaccessible and impossible to interact with
@@ -1122,8 +1127,6 @@ en:
       new_trending_statuses:
         title: Trending posts
       new_trending_tags:
-        no_approved_tags: There are currently no approved trending hashtags.
-        requirements: 'Any of these candidates could surpass the #%{rank} approved trending hashtag, which is currently #%{lowest_tag_name} with a score of %{lowest_tag_score}.'
         title: Trending hashtags
       subject: New trends up for review on %{instance}
   aliases:
@@ -1194,12 +1197,16 @@ en:
     advanced_web_interface_hint: 'If you want to make use of your entire screen width, the advanced web interface allows you to configure many different columns to see as much information at the same time as you want: Home, notifications, federated timeline, any number of lists and hashtags.'
     animations_and_accessibility: Animations and accessibility
     confirmation_dialogs: Confirmation dialogs
+    custom_emoji_and_emoji_reactions: Custom emoji and stamps
     discovery: Discovery
     localization:
       body: Mastodon is translated by volunteers.
       guide_link: https://crowdin.com/project/mastodon
       guide_link_text: Everyone can contribute.
+    quotes: Quotes
+    saved_posts: Saving posts
     sensitive_content: Sensitive content
+    timelines: Timelines
   application_mailer:
     notification_preferences: Change e-mail preferences
     salutation: "%{name},"
@@ -1548,9 +1555,13 @@ en:
       '3600': 1 hour
       '43200': 12 hours
       '604800': 1 week
+      '1209600': 2 weeks
+      '2629746': 1 month
+      '7889238': 3 months
       '86400': 1 day
     expires_in_prompt: Never
     generate: Generate invite link
+    invalid: This invite is not valid
     invited_by: 'You were invited by:'
     max_uses:
       one: 1 use
@@ -1717,6 +1728,7 @@ en:
   preferences:
     dtl: Deep timeline
     dtl_hint: "You can join deep timeline with #%{tag} tag. Following settings make convenient to use deep timeline."
+    emoji_reaction_permitting: Receiving stamps
     other: Other
     posting_defaults: Posting defaults
     public_timelines: Public timelines

@@ -95,7 +95,7 @@ const makeMapStateToProps = () => {
   const getPictureInPicture = makeGetPictureInPicture();
 
   const getReferenceIds = createSelector([
-    (state, { id }) => state.getIn(['contexts', 'references', id]),
+    (state, { id }) => state.getIn(['contexts', 'references', id]) || Immutable.List(),
   ], (references) => {
     return references;
   });
@@ -285,10 +285,13 @@ class Status extends ImmutablePureComponent {
     if (signedIn) {
       dispatch(emojiReact(status, emoji));
     } else {
-      dispatch(openModal('INTERACTION', {
-        type: 'favourite',
-        accountId: status.getIn(['account', 'id']),
-        url: status.get('url'),
+      dispatch(openModal({
+        modalType: 'INTERACTION',
+        modalProps: {
+          type: 'favourite',
+          accountId: status.getIn(['account', 'id']),
+          url: status.get('uri'),
+        },
       }));
     }
   };

@@ -23,8 +23,10 @@ class DeliveryAntennaService
   private
 
   def delivery!
-    must_dtl_tag = @account.dissubscribable
-    return if must_dtl_tag && !DTL_ENABLED
+    subscription_policy = @account.subscription_policy
+
+    dtl_post = @status.dtl? && dtl_enabled?
+    return if subscription_policy == :block && (!dtl_post || !@account.user&.setting_dtl_force_subscribable)
 
     tag_ids = @status.tags.pluck(:id)
     domain = @account.domain
@@ -38,8 +40,8 @@ class DeliveryAntennaService
     antennas = antennas.left_joins(:antenna_accounts).where(any_accounts: true).or(Antenna.left_joins(:antenna_accounts).where(antenna_accounts: { account: @account }))
 
     antennas = Antenna.where(id: antennas.select(:id))
-    if must_dtl_tag
-      dtl_tag = Tag.find_or_create_by_names(DTL_TAG).first
+    if subscription_policy == :block
+      dtl_tag = Tag.find_or_create_by_names(dtl_tag_name).first
       return if !dtl_tag || tag_ids.exclude?(dtl_tag.id)
 
       antennas = antennas.left_joins(:antenna_tags).where(antenna_tags: { tag_id: dtl_tag.id })
@@ -54,7 +56,7 @@ class DeliveryAntennaService
     antennas = antennas.where(ignore_reblog: false) if @status.reblog?
     antennas = antennas.where(stl: false, ltl: false)
 
-    collection = AntennaCollection.new(@status, @update, false)
+    collection = AntennaCollection.new(@status, @update)
     content = extract_status_plain_text_with_spoiler_text(@status)
 
     antennas.in_batches do |ans|
@@ -87,7 +89,7 @@ class DeliveryAntennaService
     antennas = antennas.where(account: @account.followers).or(antennas.where(account: @account)).where('insert_feeds IS FALSE OR list_id > 0') if home_post && !@status.limited_visibility?
     antennas = antennas.where(account: @status.mentioned_accounts).or(antennas.where(account: @account)).where('insert_feeds IS FALSE OR list_id > 0') if @status.limited_visibility?
 
-    collection = AntennaCollection.new(@status, @update, home_post)
+    collection = AntennaCollection.new(@status, @update, stl_home: home_post)
 
     antennas.in_batches do |ans|
       ans.each do |antenna|
@@ -109,7 +111,7 @@ class DeliveryAntennaService
     antennas = Antenna.available_ltls
     antennas = antennas.where(account_id: Account.without_suspended.joins(:user).select('accounts.id').where('users.current_sign_in_at > ?', User::ACTIVE_DURATION.ago))
 
-    collection = AntennaCollection.new(@status, @update, false)
+    collection = AntennaCollection.new(@status, @update)
 
     antennas.in_batches do |ans|
       ans.each do |antenna|
@@ -125,9 +127,9 @@ class DeliveryAntennaService
   def followers_only?
     case @status.visibility.to_sym
     when :public, :public_unlisted, :login, :limited
-      false
+      @status.account.subscription_policy == :followers_only
     when :unlisted
-      @status.compute_searchability != 'public'
+      @status.compute_searchability != 'public' || @status.account.subscription_policy == :followers_only
     else
       true
     end
@@ -138,7 +140,7 @@ class DeliveryAntennaService
   end
 
   class AntennaCollection
-    def initialize(status, update, stl_home = false) # rubocop:disable Style/OptionalBooleanParameter
+    def initialize(status, update, stl_home: false)
       @status = status
       @update = update
       @stl_home = stl_home

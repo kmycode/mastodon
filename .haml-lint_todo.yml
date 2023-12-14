@@ -26,6 +26,7 @@ linters:
       - 'app/views/settings/preferences/other/show.html.haml'
       - 'app/views/settings/preferences/reaching/show.html.haml'
       - 'app/views/settings/profiles/show.html.haml'
+      - 'app/views/settings/privacy_extra/show.html.haml'
 
   # Offense count: 9
   RuboCop:
@@ -34,7 +35,6 @@ linters:
       - 'app/views/admin/accounts/_local_account.html.haml'
       - 'app/views/admin/roles/_form.html.haml'
       - 'app/views/home/index.html.haml'
-      - 'app/views/layouts/application.html.haml'
 
   ViewLength:
     exclude:

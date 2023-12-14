@@ -27,7 +27,7 @@ const Account = connect(state => ({
 
 const messages = defineMessages({
   search: { id: 'navigation_bar.search', defaultMessage: 'Search' },
-  reload: { id: 'navigation_bar.reload', defaultMessage: 'Reload' },
+  reload: { id: 'navigation_bar.refresh', defaultMessage: 'Refresh' },
 });
 
 const mapStateToProps = (state) => ({

@@ -37,6 +37,7 @@ class UserSettings
   setting :stop_emoji_reaction_streaming, default: false
   setting :emoji_reaction_streaming_notify_impl2, default: false
   setting :emoji_reaction_policy, default: :allow, in: %w(allow outside_only followers_only following_only mutuals_only block)
+  setting :slip_local_emoji_reaction, default: false
   setting :unsafe_limited_distribution, default: false
   setting :dtl_force_visibility, default: :unchange, in: %w(unchange public public_unlisted unlisted)
   setting :dtl_force_searchability, default: :unchange, in: %w(unchange public public_unlisted)
@@ -72,6 +73,7 @@ class UserSettings
     setting :show_quote_in_public, default: false
     setting :hide_blocking_quote, default: true
     setting :hide_emoji_reaction_unavailable_server, default: false
+    setting :hide_favourite_menu, default: false
   end
 
   namespace :notification_emails do

@@ -59,6 +59,7 @@ const AccountOtherSettingsFactory = ImmutableRecord<AccountOtherSettingsShape>({
   link_preview: true,
   allow_quote: true,
   emoji_reaction_policy: 'allow',
+  subscription_policy: 'allow',
 });
 
 // Account
@@ -85,6 +86,7 @@ export const accountDefaultValues: AccountShape = {
   bot: false,
   created_at: '',
   discoverable: false,
+  indexable: false,
   display_name: '',
   display_name_html: '',
   emojis: List<CustomEmoji>(),
@@ -111,6 +113,7 @@ export const accountDefaultValues: AccountShape = {
   memorial: false,
   limited: false,
   moved: null,
+  hide_collections: false,
   other_settings: AccountOtherSettingsFactory(),
   subscribable: true,
 };

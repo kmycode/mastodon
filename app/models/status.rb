@@ -36,14 +36,14 @@
 require 'ostruct'
 
 class Status < ApplicationRecord
+  include Cacheable
   include Discard::Model
   include Paginable
-  include Cacheable
-  include StatusThreadingConcern
-  include StatusSnapshotConcern
   include RateLimitable
-  include StatusSafeReblogInsert
-  include StatusSearchConcern
+  include Status::SafeReblogInsert
+  include Status::SearchConcern
+  include Status::SnapshotConcern
+  include Status::ThreadingConcern
   include DtlHelper
 
   rate_limit by: :account, family: :statuses
@@ -59,13 +59,14 @@ class Status < ApplicationRecord
 
   enum visibility: { public: 0, unlisted: 1, private: 2, direct: 3, limited: 4, public_unlisted: 10, login: 11 }, _suffix: :visibility
   enum searchability: { public: 0, private: 1, direct: 2, limited: 3, unsupported: 4, public_unlisted: 10 }, _suffix: :searchability
-  enum limited_scope: { none: 0, mutual: 1, circle: 2, personal: 3 }, _suffix: :limited
+  enum limited_scope: { none: 0, mutual: 1, circle: 2, personal: 3, reply: 4 }, _suffix: :limited
 
   belongs_to :application, class_name: 'Doorkeeper::Application', optional: true
 
   belongs_to :account, inverse_of: :statuses
   belongs_to :in_reply_to_account, class_name: 'Account', optional: true
   belongs_to :conversation, optional: true
+  has_one :owned_conversation, class_name: 'Conversation', foreign_key: 'ancestor_status_id', dependent: :nullify, inverse_of: false
   belongs_to :preloadable_poll, class_name: 'Poll', foreign_key: 'poll_id', optional: true, inverse_of: false
 
   belongs_to :thread, foreign_key: 'in_reply_to_id', class_name: 'Status', inverse_of: :replies, optional: true
@@ -77,13 +78,12 @@ class Status < ApplicationRecord
   has_many :bookmarks, inverse_of: :status, dependent: :destroy
   has_many :reblogs, foreign_key: 'reblog_of_id', class_name: 'Status', inverse_of: :reblog, dependent: :destroy
   has_many :reblogged_by_accounts, through: :reblogs, class_name: 'Account', source: :account
-  has_many :quotes, foreign_key: 'quote_of_id', class_name: 'Status', inverse_of: :quote
+  has_many :quotes, foreign_key: 'quote_of_id', class_name: 'Status', inverse_of: :quote, dependent: nil
   has_many :quoted_by_accounts, through: :quotes, class_name: 'Account', source: :account
-  has_many :replies, foreign_key: 'in_reply_to_id', class_name: 'Status', inverse_of: :thread
+  has_many :replies, foreign_key: 'in_reply_to_id', class_name: 'Status', inverse_of: :thread, dependent: nil
   has_many :mentions, dependent: :destroy, inverse_of: :status
   has_many :mentioned_accounts, through: :mentions, source: :account, class_name: 'Account'
-  has_many :active_mentions, -> { active }, class_name: 'Mention', inverse_of: :status
-  has_many :media_attachments, dependent: :nullify
+  has_many :media_attachments, -> { order('id asc') }, dependent: :nullify, inverse_of: false
   has_many :reference_objects, class_name: 'StatusReference', inverse_of: :status, dependent: :destroy
   has_many :references, through: :reference_objects, class_name: 'Status', source: :target_status
   has_many :referenced_by_status_objects, foreign_key: 'target_status_id', class_name: 'StatusReference', inverse_of: :target_status, dependent: :destroy
@@ -92,6 +92,10 @@ class Status < ApplicationRecord
   has_many :bookmark_category_relationships, class_name: 'BookmarkCategoryStatus', inverse_of: :status, dependent: :destroy
   has_many :bookmark_categories, class_name: 'BookmarkCategory', through: :bookmark_category_relationships, source: :bookmark_category
   has_many :joined_bookmark_categories, class_name: 'BookmarkCategory', through: :bookmark_category_relationships, source: :bookmark_category
+
+  # The `dependent` option is enabled by the initial `mentions` association declaration
+  has_many :active_mentions, -> { active }, class_name: 'Mention', inverse_of: :status # rubocop:disable Rails/HasManyOrHasOneDependent
+  has_many :silent_mentions, -> { silent }, class_name: 'Mention', inverse_of: :status # rubocop:disable Rails/HasManyOrHasOneDependent
 
   # Those associations are used for the private search index
   has_many :local_mentioned, -> { merge(Account.local) }, through: :active_mentions, source: :account
@@ -103,12 +107,13 @@ class Status < ApplicationRecord
   has_many :local_referenced, -> { merge(Account.local) }, through: :referenced_by_statuses, source: :account
 
   has_and_belongs_to_many :tags
-  has_and_belongs_to_many :preview_cards
+
+  has_one :preview_cards_status, inverse_of: :status, dependent: :delete
 
   has_one :notification, as: :activity, dependent: :destroy
-  has_one :status_stat, inverse_of: :status
+  has_one :status_stat, inverse_of: :status, dependent: nil
   has_one :poll, inverse_of: :status, dependent: :destroy
-  has_one :trend, class_name: 'StatusTrend', inverse_of: :status
+  has_one :trend, class_name: 'StatusTrend', inverse_of: :status, dependent: nil
   has_one :scheduled_expiration_status, inverse_of: :status, dependent: :destroy
   has_one :circle_status, inverse_of: :status, dependent: :destroy
   has_many :list_status, inverse_of: :status, dependent: :destroy
@@ -178,35 +183,35 @@ class Status < ApplicationRecord
                    :conversation,
                    :status_stat,
                    :tags,
-                   :preview_cards,
                    :preloadable_poll,
                    :reference_objects,
                    :scheduled_expiration_status,
+                   preview_cards_status: [:preview_card],
                    account: [:account_stat, user: :role],
                    active_mentions: { account: :account_stat },
                    reblog: [
                      :application,
                      :tags,
-                     :preview_cards,
                      :media_attachments,
                      :conversation,
                      :status_stat,
                      :preloadable_poll,
                      :reference_objects,
                      :scheduled_expiration_status,
+                     preview_cards_status: [:preview_card],
                      account: [:account_stat, user: :role],
                      active_mentions: { account: :account_stat },
                    ],
                    quote: [
                      :application,
                      :tags,
-                     :preview_cards,
                      :media_attachments,
                      :conversation,
                      :status_stat,
                      :preloadable_poll,
                      :reference_objects,
                      :scheduled_expiration_status,
+                     preview_cards_status: [:preview_card],
                      account: [:account_stat, user: :role],
                      active_mentions: { account: :account_stat },
                    ],
@@ -245,7 +250,7 @@ class Status < ApplicationRecord
   end
 
   def quote?
-    !quote_of_id.nil?
+    !quote_of_id.nil? && !quote.nil?
   end
 
   def within_realtime_window?
@@ -277,7 +282,11 @@ class Status < ApplicationRecord
   end
 
   def preview_card
-    preview_cards.first
+    preview_cards_status&.preview_card&.tap { |x| x.original_url = preview_cards_status.url }
+  end
+
+  def reset_preview_card!
+    PreviewCardsStatus.where(status_id: id).delete_all
   end
 
   def hidden?
@@ -291,7 +300,7 @@ class Status < ApplicationRecord
   alias sign? distributable?
 
   def with_media?
-    ordered_media_attachments.any?
+    media_attachments.any?
   end
 
   def expired?
@@ -300,7 +309,7 @@ class Status < ApplicationRecord
   end
 
   def with_preview_card?
-    preview_cards.any?
+    preview_cards_status.present?
   end
 
   def with_poll?
@@ -320,7 +329,7 @@ class Status < ApplicationRecord
   end
 
   def dtl?
-    tags.where(name: DTL_TAG).exists?
+    (%w(public public_unlisted login).include?(visibility) || (unlisted_visibility? && public_searchability?)) && tags.where(name: dtl_tag_name).exists?
   end
 
   def emojis
@@ -405,6 +414,8 @@ class Status < ApplicationRecord
         end
 
         public_emoji_reactions
+      else
+        emoji_reactions
       end
     end
   end
@@ -651,11 +662,16 @@ class Status < ApplicationRecord
 
     self.reply = !(in_reply_to_id.nil? && thread.nil?) unless reply
 
-    if reply? && !thread.nil?
+    if reply? && !thread.nil? && (!limited_visibility? || none_limited? || reply_limited?)
       self.in_reply_to_account_id = carried_over_reply_to_account_id
       self.conversation_id        = thread.conversation_id if conversation_id.nil?
     elsif conversation_id.nil?
-      self.conversation = Conversation.new
+      if local?
+        self.owned_conversation = Conversation.new
+        self.conversation = owned_conversation
+      else
+        self.conversation = Conversation.new
+      end
     end
   end
 

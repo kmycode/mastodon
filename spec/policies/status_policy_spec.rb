@@ -115,6 +115,58 @@ RSpec.describe StatusPolicy, type: :model do
     end
   end
 
+  context 'with the permission of show_mentioned_users?' do
+    permissions :show_mentioned_users? do
+      it 'grants access when public and account is viewer' do
+        status.visibility = :public
+
+        expect(subject).to permit(status.account, status)
+      end
+
+      it 'grants access when public and account is not viewer' do
+        status.visibility = :public
+
+        expect(subject).to_not permit(bob, status)
+      end
+
+      it 'grants access when limited and no conversation ancestor_status and account is viewer' do
+        status.visibility = :limited
+        status.conversation = Fabricate(:conversation)
+
+        expect(subject).to permit(status.account, status)
+      end
+
+      it 'grants access when limited and my conversation and account is viewer' do
+        status.visibility = :limited
+        status.conversation = Fabricate(:conversation, ancestor_status: status)
+
+        expect(subject).to permit(status.account, status)
+      end
+
+      it 'grants access when limited and another conversation and account is viewer' do
+        status.visibility = :limited
+        status.conversation = Fabricate(:conversation, ancestor_status: Fabricate(:status, account: bob))
+
+        expect(subject).to_not permit(status.account, status)
+      end
+
+      it 'grants access when limited and viewer is mentioned' do
+        status.visibility = :limited
+        status.mentions = [Fabricate(:mention, account: bob)]
+
+        expect(subject).to_not permit(bob, status)
+      end
+
+      it 'grants access when limited and non-owner viewer is mentioned and mentions are loaded' do
+        status.visibility = :limited
+        status.mentions = [Fabricate(:mention, account: bob)]
+        status.mentions.load
+
+        expect(subject).to_not permit(bob, status)
+      end
+    end
+  end
+
   context 'with the permission of reblog?' do
     permissions :reblog? do
       it 'denies access when private' do

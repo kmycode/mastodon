@@ -3,7 +3,7 @@
 class Admin::SensitiveWord
   class << self
     def sensitive?(text, spoiler_text)
-      exposure_text = (spoiler_text.presence || text)
+      exposure_text = spoiler_text.presence || text
       (spoiler_text.blank? && sensitive_words.any? { |word| include?(text, word) }) ||
         sensitive_words_for_full.any? { |word| include?(exposure_text, word) }
     end

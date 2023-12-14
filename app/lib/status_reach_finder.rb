@@ -25,6 +25,12 @@ class StatusReachFinder
     (reached_account_inboxes_for_friend + followers_inboxes_for_friend + friend_inboxes).uniq
   end
 
+  def inboxes_for_limited
+    DeliveryFailureTracker.without_unavailable(
+      @status.mentioned_accounts.where.not(domain: nil).pluck(:inbox_url).compact.uniq
+    )
+  end
+
   def all_inboxes
     (inboxes + inboxes_for_misskey + inboxes_for_friend).uniq
   end
@@ -45,22 +51,18 @@ class StatusReachFinder
   end
 
   def reached_account_inboxes_for_misskey
-    if @status.reblog?
+    if @status.reblog? || @status.limited_visibility?
       []
-    elsif @status.limited_visibility?
-      Account.where(id: mentioned_account_ids).where(domain: banned_domains_for_misskey).inboxes
     else
-      Account.where(id: reached_account_ids).where(domain: banned_domains_for_misskey - friend_domains).inboxes
+      Account.where(id: reached_account_ids, domain: banned_domains_for_misskey - friend_domains).inboxes
     end
   end
 
   def reached_account_inboxes_for_friend
-    if @status.reblog?
+    if @status.reblog? || @status.limited_visibility?
       []
-    elsif @status.limited_visibility?
-      Account.where(id: mentioned_account_ids).where.not(domain: banned_domains).inboxes
     else
-      Account.where(id: reached_account_ids, domain: friend_domains).where.not(domain: banned_domains - friend_domains).inboxes
+      Account.where(id: reached_account_ids, domain: friend_domains).inboxes
     end
   end
 
@@ -195,7 +197,7 @@ class StatusReachFinder
       blocks = DomainBlock.where(domain: nil)
       blocks = blocks.or(DomainBlock.where(reject_send_not_public_searchability: true)) if status.compute_searchability != 'public'
       blocks = blocks.or(DomainBlock.where(reject_send_public_unlisted: true)) if status.public_unlisted_visibility?
-      blocks = blocks.or(DomainBlock.where(reject_send_dissubscribable: true)) if status.account.dissubscribable
+      blocks = blocks.or(DomainBlock.where(reject_send_dissubscribable: true)) unless status.account.all_subscribable?
       blocks = blocks.or(DomainBlock.where(reject_send_media: true)) if status.with_media?
       blocks = blocks.or(DomainBlock.where(reject_send_sensitive: true)) if (status.with_media? && status.sensitive) || status.spoiler_text?
       blocks.pluck(:domain).uniq
@@ -216,7 +218,7 @@ class StatusReachFinder
     return [] if status.public_searchability?
     return [] unless (status.public_unlisted_visibility? && status.account.user&.setting_reject_public_unlisted_subscription) || (status.unlisted_visibility? && status.account.user&.setting_reject_unlisted_subscription)
 
-    from_info = InstanceInfo.where(software: %w(misskey calckey cherrypick)).pluck(:domain)
+    from_info = InstanceInfo.where(software: %w(misskey calckey cherrypick sharkey)).pluck(:domain)
     from_domain_block = DomainBlock.where(detect_invalid_subscription: true).pluck(:domain)
     (from_info + from_domain_block).uniq
   end

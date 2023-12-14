@@ -94,7 +94,7 @@ jobs:
       DB_HOST: localhost
       DB_USER: postgres
       DB_PASS: postgres
-      DISABLE_SIMPLECOV: true
+      DISABLE_SIMPLECOV: ${{ matrix.ruby-version != '.ruby-version' }}
       RAILS_ENV: test
       ALLOW_NOPAM: true
       PAM_ENABLED: true
@@ -137,6 +137,12 @@ jobs:
         run: './bin/rails db:create db:schema:load db:seed'
 
       - run: bin/rspec
+
+      - name: Upload coverage reports to Codecov
+        if: matrix.ruby-version == '.ruby-version'
+        uses: codecov/codecov-action@v3
+        with:
+          files: coverage/lcov/mastodon.lcov
 
   test-e2e:
     name: End to End testing
@@ -223,7 +229,7 @@ jobs:
           path: tmp/screenshots/
 
   test-search:
-    name: Testing search
+    name: Elastic Search integration testing
     runs-on: ubuntu-latest
 
     needs:
@@ -252,19 +258,6 @@ jobs:
           --health-retries 5
         ports:
           - 6379:6379
-
-      search:
-        image: ${{ matrix.search-image }}
-        env:
-          discovery.type: single-node
-          xpack.security.enabled: false
-        options: >-
-          --health-cmd "curl http://localhost:9200/_cluster/health"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-        ports:
-          - 9200:9200
 
     env:
       DB_HOST: localhost
@@ -307,10 +300,40 @@ jobs:
       - name: Set up Javascript environment
         uses: ./.github/actions/setup-javascript
 
+      - name: Configure sysctl limits
+        run: |
+          sudo swapoff -a
+          sudo sysctl -w vm.swappiness=1
+          sudo sysctl -w fs.file-max=262144
+          sudo sysctl -w vm.max_map_count=262144
+
+      - name: Install Elasticsearch
+        run: |
+          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.10-amd64.deb
+          wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.10-amd64.deb.sha512
+          shasum -a 512 -c elasticsearch-7.17.10-amd64.deb.sha512
+          sudo dpkg -i elasticsearch-7.17.10-amd64.deb
+          sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install https://github.com/WorksApplications/elasticsearch-sudachi/releases/download/v3.1.0/elasticsearch-7.17.10-analysis-sudachi-3.1.0.zip
+
+      - name: Install dictionary
+        run: |
+          wget http://sudachi.s3-website-ap-northeast-1.amazonaws.com/sudachidict/sudachi-dictionary-latest-core.zip
+          unzip sudachi-dictionary-latest-core.zip
+          sudo mkdir /etc/elasticsearch/sudachi -p
+          sudo cp sudachi-dictionary-*/system_core.dic /etc/elasticsearch/sudachi
+
+      - name: Set security settings
+        run: |
+          sudo cp .github/workflows/elasticsearch-settings/elasticsearch.yml /etc/elasticsearch
+
+      - name: Running Elasticsearch
+        run: |
+          sudo systemctl start elasticsearch
+
       - name: Load database schema
         run: './bin/rails db:create db:schema:load db:seed'
 
-      - run: bundle exec rake spec:search
+      - run: bin/rspec --tag search
 
       - name: Archive logs
         uses: actions/upload-artifact@v3

@@ -31,5 +31,15 @@ class ActivityPub::Activity::Update < ActivityPub::Activity
     return if @status.nil?
 
     ActivityPub::ProcessStatusUpdateService.new.call(@status, @json, @object, request_id: @options[:request_id])
+
+    forward_for_conversation
+
+    @status
+  end
+
+  def forward_for_conversation
+    return unless @status.conversation.present? && @status.conversation.local? && @json['signature'].present?
+
+    ActivityPub::ForwardConversationWorker.perform_async(Oj.dump(@json), @status.id, true)
   end
 end

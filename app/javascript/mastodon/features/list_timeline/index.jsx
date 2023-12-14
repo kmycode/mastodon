@@ -219,14 +219,14 @@ class ListTimeline extends PureComponent {
           </div>
 
           <div className='setting-toggle'>
-            <Toggle id={`list-${id}-exclusive`} defaultChecked={isExclusive} onChange={this.onExclusiveToggle} />
+            <Toggle id={`list-${id}-exclusive`} checked={isExclusive} onChange={this.onExclusiveToggle} />
             <label htmlFor={`list-${id}-exclusive`} className='setting-toggle__label'>
               <FormattedMessage id='lists.exclusive' defaultMessage='Hide these posts from home or STL' />
             </label>
           </div>
 
           <div className='setting-toggle'>
-            <Toggle id={`list-${id}-exclusive`} defaultChecked={isNotify} onChange={this.onNotifyToggle} />
+            <Toggle id={`list-${id}-exclusive`} checked={isNotify} onChange={this.onNotifyToggle} />
             <label htmlFor={`list-${id}-notify`} className='setting-toggle__label'>
               <FormattedMessage id='lists.notify' defaultMessage='Notify these posts' />
             </label>

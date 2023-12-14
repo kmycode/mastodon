@@ -28,7 +28,7 @@ import Card from '../features/status/components/card';
 // to use the progress bar to show download progress
 import Bundle from '../features/ui/components/bundle';
 import { MediaGallery, Video, Audio } from '../features/ui/util/async-components';
-import { displayMedia, enableEmojiReaction, showEmojiReactionOnTimeline, showQuoteInHome, showQuoteInPublic } from '../initial_state';
+import { displayMedia, enableEmojiReaction, isShowItem } from '../initial_state';
 
 import { Avatar } from './avatar';
 import { AvatarOverlay } from './avatar_overlay';
@@ -76,16 +76,6 @@ export const defaultMediaVisibility = (status) => {
 };
 
 const messages = defineMessages({
-  public_short: { id: 'privacy.public.short', defaultMessage: 'Public' },
-  unlisted_short: { id: 'privacy.unlisted.short', defaultMessage: 'Unlisted' },
-  public_unlisted_short: { id: 'privacy.public_unlisted.short', defaultMessage: 'Public unlisted' },
-  login_short: { id: 'privacy.login.short', defaultMessage: 'Login only' },
-  private_short: { id: 'privacy.private.short', defaultMessage: 'Followers only' },
-  limited_short: { id: 'privacy.limited.short', defaultMessage: 'Limited menbers only' },
-  mutual_short: { id: 'privacy.mutual.short', defaultMessage: 'Mutual followers only' },
-  circle_short: { id: 'privacy.circle.short', defaultMessage: 'Circle members only' },
-  personal_short: { id: 'privacy.personal.short', defaultMessage: 'Yourself only' },
-  direct_short: { id: 'privacy.direct.short', defaultMessage: 'Mentioned people only' },
   edited: { id: 'status.edited', defaultMessage: 'Edited {date}' },
 });
 
@@ -610,7 +600,7 @@ class Status extends ImmutablePureComponent {
     if (!this.props.withoutEmojiReactions && status.get('emoji_reactions')) {
       const emojiReactions = status.get('emoji_reactions');
       if (emojiReactions.size > 0 && enableEmojiReaction) {
-        emojiReactionsBar = <StatusEmojiReactionsBar emojiReactions={emojiReactions} myReactionOnly={!showEmojiReactionOnTimeline} status={status} onEmojiReact={this.props.onEmojiReact} onUnEmojiReact={this.props.onUnEmojiReact} />;
+        emojiReactionsBar = <StatusEmojiReactionsBar emojiReactions={emojiReactions} myReactionOnly={!isShowItem('emoji_reaction_on_timeline')} status={status} onEmojiReact={this.props.onEmojiReact} onUnEmojiReact={this.props.onUnEmojiReact} />;
       }
     }
 
@@ -622,7 +612,7 @@ class Status extends ImmutablePureComponent {
     const withReference = (!withQuote && status.get('status_references_count') > 0) ? <span className='status__visibility-icon'><Icon id='link' icon={ReferenceIcon} title='Reference' /></span> : null;
     const withExpiration = status.get('expires_at') ? <span className='status__visibility-icon'><Icon id='clock-o' icon={TimerIcon} title='Expiration' /></span> : null;
 
-    const quote = !muted && status.get('quote_id') && (['public', 'community'].includes(contextType) ? showQuoteInPublic : showQuoteInHome) && <CompactedStatusContainer id={status.get('quote_id')} history={this.props.history} />;
+    const quote = !muted && status.get('quote_id') && (['public', 'community'].includes(contextType) ? isShowItem('quote_in_public') : isShowItem('quote_in_home')) && <CompactedStatusContainer id={status.get('quote_id')} history={this.props.history} />;
 
     return (
       <HotKeys handlers={handlers}>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_28_005948) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_12_225737) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -200,9 +200,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_28_005948) do
     t.datetime "requested_review_at", precision: nil
     t.boolean "group_allow_private_message"
     t.integer "searchability", default: 2, null: false
-    t.boolean "dissubscribable", default: false, null: false
     t.jsonb "settings"
     t.boolean "indexable", default: false, null: false
+    t.jsonb "master_settings"
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), COALESCE(lower((domain)::text), ''::text)", name: "index_accounts_on_username_and_domain_lower", unique: true
     t.index ["domain", "id"], name: "index_accounts_on_domain_and_id"
@@ -475,6 +475,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_28_005948) do
     t.string "uri"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "inbox_url"
+    t.bigint "ancestor_status_id"
+    t.index ["ancestor_status_id"], name: "index_conversations_on_ancestor_status_id", where: "(ancestor_status_id IS NOT NULL)"
     t.index ["uri"], name: "index_conversations_on_uri", unique: true, opclass: :text_pattern_ops, where: "(uri IS NOT NULL)"
   end
 
@@ -1020,6 +1023,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_28_005948) do
   create_table "preview_cards_statuses", primary_key: ["status_id", "preview_card_id"], force: :cascade do |t|
     t.bigint "preview_card_id", null: false
     t.bigint "status_id", null: false
+    t.string "url"
   end
 
   create_table "relays", force: :cascade do |t|
@@ -1234,9 +1238,10 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_28_005948) do
     t.index ["account_id", "id", "visibility", "updated_at"], name: "index_statuses_20190820", order: { id: :desc }, where: "(deleted_at IS NULL)"
     t.index ["account_id", "reblog_of_id", "deleted_at", "searchability"], name: "index_statuses_for_get_following_accounts_to_search", where: "((deleted_at IS NULL) AND (reblog_of_id IS NULL) AND (searchability = ANY (ARRAY[0, 10, 1])))"
     t.index ["account_id"], name: "index_statuses_on_account_id"
+    t.index ["conversation_id"], name: "index_statuses_on_conversation_id"
     t.index ["deleted_at"], name: "index_statuses_on_deleted_at", where: "(deleted_at IS NOT NULL)"
-    t.index ["id", "account_id"], name: "index_statuses_local_20190824", order: { id: :desc }, where: "((local OR (uri IS NULL)) AND (deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))"
-    t.index ["id", "account_id"], name: "index_statuses_public_20200119", order: { id: :desc }, where: "((deleted_at IS NULL) AND (visibility = 0) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))"
+    t.index ["id", "account_id"], name: "index_statuses_local_20231213", order: { id: :desc }, where: "((local OR (uri IS NULL)) AND (deleted_at IS NULL) AND (visibility = ANY (ARRAY[0, 10, 11])) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))"
+    t.index ["id", "account_id"], name: "index_statuses_public_20231213", order: { id: :desc }, where: "((deleted_at IS NULL) AND (visibility = ANY (ARRAY[0, 10, 11])) AND (reblog_of_id IS NULL) AND ((NOT reply) OR (in_reply_to_account_id = account_id)))"
     t.index ["in_reply_to_account_id"], name: "index_statuses_on_in_reply_to_account_id", where: "(in_reply_to_account_id IS NOT NULL)"
     t.index ["in_reply_to_id"], name: "index_statuses_on_in_reply_to_id", where: "(in_reply_to_id IS NOT NULL)"
     t.index ["quote_of_id", "account_id"], name: "index_statuses_on_quote_of_id_and_account_id"

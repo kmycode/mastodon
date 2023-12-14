@@ -14,6 +14,7 @@ import { ReactComponent as LoginIcon } from '@material-symbols/svg-600/outlined/
 import { ReactComponent as LockIcon } from '@material-symbols/svg-600/outlined/lock.svg';
 import { ReactComponent as LockOpenIcon } from '@material-symbols/svg-600/outlined/no_encryption.svg';
 import { ReactComponent as PublicIcon } from '@material-symbols/svg-600/outlined/public.svg';
+import { ReactComponent as ReplyIcon } from '@material-symbols/svg-600/outlined/reply.svg';
 import { supportsPassiveEvents } from 'detect-passive-events';
 import Overlay from 'react-overlays/Overlay';
 
@@ -38,6 +39,8 @@ const messages = defineMessages({
   mutual_long: { id: 'privacy.mutual.long', defaultMessage: 'Mutual follows only' },
   circle_short: { id: 'privacy.circle.short', defaultMessage: 'Circle' },
   circle_long: { id: 'privacy.circle.long', defaultMessage: 'Circle members only' },
+  reply_short: { id: 'privacy.reply.short', defaultMessage: 'Reply' },
+  reply_long: { id: 'privacy.reply.long', defaultMessage: 'Reply to limited post' },
   direct_short: { id: 'privacy.direct.short', defaultMessage: 'Mentioned people only' },
   direct_long: { id: 'privacy.direct.long', defaultMessage: 'Visible for mentioned users only' },
   change_privacy: { id: 'privacy.change', defaultMessage: 'Adjust status privacy' },
@@ -166,6 +169,7 @@ class PrivacyDropdown extends PureComponent {
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     noDirect: PropTypes.bool,
+    replyToLimited: PropTypes.bool,
     container: PropTypes.func,
     disabled: PropTypes.bool,
     intl: PropTypes.object.isRequired,
@@ -280,10 +284,22 @@ class PrivacyDropdown extends PureComponent {
   };
 
   render () {
-    const { value, container, disabled, intl } = this.props;
+    const { value, container, disabled, intl, replyToLimited } = this.props;
     const { open, placement } = this.state;
 
-    const valueOption = this.options.find(item => item.value === value) || this.options[0];
+    if (replyToLimited) {
+      if (!this.selectableOptions.some((op) => op.value === 'reply')) {
+        this.selectableOptions.unshift(
+          { icon: 'reply', iconComponent: ReplyIcon, value: 'reply', text: intl.formatMessage(messages.reply_short), meta: intl.formatMessage(messages.reply_long) },
+        );
+      }
+    } else {
+      if (this.selectableOptions.some((op) => op.value === 'reply')) {
+        this.selectableOptions = this.selectableOptions.filter((op) => op.value !== 'reply');
+      }
+    }
+
+    const valueOption = this.selectableOptions.find(item => item.value === value) || this.selectableOptions[0];
 
     return (
       <div ref={this.setTargetRef} onKeyDown={this.handleKeyDown}>

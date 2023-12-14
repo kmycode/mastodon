@@ -37,12 +37,12 @@ class FeedManager
   # @param [Status] status
   # @param [Account|List] receiver
   # @return [Boolean]
-  def filter?(timeline_type, status, receiver, stl_home = false) # rubocop:disable Style/OptionalBooleanParameter
+  def filter?(timeline_type, status, receiver, stl_home: false)
     case timeline_type
     when :home
       filter_from_home?(status, receiver.id, build_crutches(receiver.id, [status]), :home)
     when :list
-      filter_from_list?(status, receiver) || filter_from_home?(status, receiver.account_id, build_crutches(receiver.account_id, [status]), :list, stl_home)
+      filter_from_list?(status, receiver) || filter_from_home?(status, receiver.account_id, build_crutches(receiver.account_id, [status]), :list, stl_home: stl_home)
     when :mentions
       filter_from_mentions?(status, receiver.id)
     when :tags
@@ -283,7 +283,7 @@ class FeedManager
   end
 
   def clear_from_antennas(account, target_account)
-    Antenna.where(account: account).each do |antenna|
+    Antenna.where(account: account).find_each do |antenna|
       clear_from_antenna(antenna, target_account)
     end
   end
@@ -409,9 +409,9 @@ class FeedManager
   # @param [Integer] receiver_id
   # @param [Hash] crutches
   # @return [Boolean]
-  def filter_from_home?(status, receiver_id, crutches, timeline_type = :home, stl_home = false) # rubocop:disable Style/OptionalBooleanParameter
+  def filter_from_home?(status, receiver_id, crutches, timeline_type = :home, stl_home: false) # rubocop:disable Metrics/PerceivedComplexity
     return false if receiver_id == status.account_id
-    return true  if status.reply? && (status.in_reply_to_id.nil? || status.in_reply_to_account_id.nil?)
+    return true  if status.reply? && (status.in_reply_to_id.nil? || status.in_reply_to_account_id.nil?) && !(timeline_type == :home && status.limited_visibility?)
     return true if (timeline_type != :list || stl_home) && (crutches[:exclusive_list_users][status.account_id].present? || crutches[:exclusive_antenna_users][status.account_id].present?)
     return true if crutches[:languages][status.account_id].present? && status.language.present? && !crutches[:languages][status.account_id].include?(status.language)
 
@@ -426,10 +426,11 @@ class FeedManager
     return true if check_for_blocks.any? { |target_account_id| crutches[:blocking][target_account_id] || crutches[:muting][target_account_id] }
     return true if crutches[:blocked_by][status.account_id]
 
-    if status.reply? && !status.in_reply_to_account_id.nil?                                                                      # Filter out if it's a reply
-      should_filter   = !crutches[:following][status.in_reply_to_account_id]                                                     # and I'm not following the person it's a reply to
-      should_filter &&= receiver_id != status.in_reply_to_account_id                                                             # and it's not a reply to me
-      should_filter &&= status.account_id != status.in_reply_to_account_id                                                       # and it's not a self-reply
+    if status.reply? && (!status.in_reply_to_account_id.nil? || (status.thread.present? && status.limited_visibility?)) # Filter out if it's a reply
+      account_id      = status.in_reply_to_account_id || status.thread.account_id
+      should_filter   = !crutches[:following][account_id]                                                     # and I'm not following the person it's a reply to
+      should_filter &&= receiver_id != account_id                                                             # and it's not a reply to me
+      should_filter &&= status.account_id != account_id                                                       # and it's not a self-reply
 
       return !!should_filter
     elsif status.reblog?                                                                                                         # Filter out a reblog
@@ -457,8 +458,8 @@ class FeedManager
     check_for_blocks = status.active_mentions.pluck(:account_id)
     check_for_blocks.push(status.in_reply_to_account) if status.reply? && !status.in_reply_to_account_id.nil?
 
-    should_filter   = blocks_or_mutes?(receiver_id, check_for_blocks, :mentions)                                                         # Filter if it's from someone I blocked, in reply to someone I blocked, or mentioning someone I blocked (or muted)
-    should_filter ||= (status.account.silenced? && !Follow.where(account_id: receiver_id, target_account_id: status.account_id).exists?) # of if the account is silenced and I'm not following them
+    should_filter   = blocks_or_mutes?(receiver_id, check_for_blocks, :mentions)                                                       # Filter if it's from someone I blocked, in reply to someone I blocked, or mentioning someone I blocked (or muted)
+    should_filter ||= status.account.silenced? && !Follow.where(account_id: receiver_id, target_account_id: status.account_id).exists? # of if the account is silenced and I'm not following them
 
     should_filter
   end
@@ -590,7 +591,7 @@ class FeedManager
   def build_crutches(receiver_id, statuses)
     crutches = {}
 
-    crutches[:active_mentions] = Mention.active.where(status_id: statuses.flat_map { |s| [s.id, s.reblog_of_id] }.compact).pluck(:status_id, :account_id).each_with_object({}) { |(id, account_id), mapping| (mapping[id] ||= []).push(account_id) }
+    crutches[:active_mentions] = crutches_active_mentions(statuses)
 
     check_for_blocks = statuses.flat_map do |s|
       arr = crutches[:active_mentions][s.id] || []
@@ -607,7 +608,10 @@ class FeedManager
     lists = List.where(account_id: receiver_id, exclusive: true)
     antennas = Antenna.where(list: lists, insert_feeds: true)
 
-    crutches[:following]            = Follow.where(account_id: receiver_id, target_account_id: statuses.filter_map(&:in_reply_to_account_id)).pluck(:target_account_id).index_with(true)
+    replied_accounts  = statuses.filter_map(&:in_reply_to_account_id)
+    replied_accounts += statuses.filter { |status| status.limited_visibility? && status.thread.present? }.map { |status| status.thread.account_id }
+
+    crutches[:following]            = Follow.where(account_id: receiver_id, target_account_id: replied_accounts).pluck(:target_account_id).index_with(true)
     crutches[:languages]            = Follow.where(account_id: receiver_id, target_account_id: statuses.map(&:account_id)).pluck(:target_account_id, :languages).to_h
     crutches[:hiding_reblogs]       = Follow.where(account_id: receiver_id, target_account_id: statuses.filter_map { |s| s.account_id if s.reblog? }, show_reblogs: false).pluck(:target_account_id).index_with(true)
     crutches[:blocking]             = Block.where(account_id: receiver_id, target_account_id: check_for_blocks).pluck(:target_account_id).index_with(true)
@@ -618,5 +622,13 @@ class FeedManager
     crutches[:exclusive_antenna_users] = AntennaAccount.where(antenna: antennas, account_id: statuses.map(&:account_id)).pluck(:account_id).index_with(true)
 
     crutches
+  end
+
+  def crutches_active_mentions(statuses)
+    Mention
+      .active
+      .where(status_id: statuses.flat_map { |status| [status.id, status.reblog_of_id] }.compact)
+      .pluck(:status_id, :account_id)
+      .each_with_object({}) { |(id, account_id), mapping| (mapping[id] ||= []).push(account_id) }
   end
 end

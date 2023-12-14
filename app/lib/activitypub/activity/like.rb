@@ -34,6 +34,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
 
   def process_emoji_reaction
     return if !@original_status.account.local? && !Setting.receive_other_servers_emoji_reaction
+    return if silence_domain? && (!@original_status.local? || !@original_status.account.following?(@account))
 
     # custom emoji
     emoji = nil
@@ -55,7 +56,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
     write_stream(reaction)
 
     NotifyService.new.call(@original_status.account, :emoji_reaction, reaction) if @original_status.account.local?
-  rescue Seahorse::Client::NetworkingError
+  rescue Seahorse::Client::NetworkingError, ActiveRecord::RecordInvalid
     nil
   end
 
@@ -125,11 +126,18 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
   end
 
   def skip_download?(domain)
-    DomainBlock.reject_media?(domain)
+    return true if DomainBlock.reject_media?(domain)
+    return false if @account.domain == domain
+
+    DomainBlock.blocked?(domain) || (DomainBlock.silence?(domain) && !@original_status.account.following?(@account))
   end
 
   def block_domain?
     DomainBlock.blocked?(@account.domain)
+  end
+
+  def silence_domain?
+    DomainBlock.silence?(@account.domain)
   end
 
   def misskey_favourite?

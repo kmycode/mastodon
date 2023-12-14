@@ -686,6 +686,7 @@ ja:
       action_taken_by: 通報処理者
       actions:
         delete_description_html: 報告された投稿は削除され、ストライクが記録されます。同じアカウントによる今後の違反行為のエスカレーションに役立てられます。
+        force_cw_description_html: 報告された投稿には強制的に警告文が追加され、ストライクが記録され、同じアカウントによる今後の違反行為のエスカレーションに役立てられます。
         mark_as_sensitive_description_html: 報告された投稿のメディアは閲覧注意となり、ストライクが記録され、同じアカウントによる今後の違反行為のエスカレーションに役立てられます。
         other_description_html: アカウントの動作を制御するためのオプションや、報告されたアカウントへの通信をカスタマイズするためのオプションを確認してください。
         resolve_description_html: 報告されたアカウントに対していかなる措置も取られず、ストライクも記録されず、報告は終了します。
@@ -708,8 +709,10 @@ ja:
       confirm_action: '@%{acct} さんに対するアクション'
       created_at: 通報日時
       delete_and_resolve: 投稿を削除
+      force_cw: 強制的にCWにする
       forwarded: 転送済み
-      forwarded_to: '%{domain}に転送されました'
+      forwarded_replies_explanation: この報告はリモートユーザーからのものであり、またリモートコンテンツに関するものです。報告されたコンテンツがあなたのユーザーの内の一人に対するリプライの中にあるため、あなたに転送されました。
+      forwarded_to: "%{domain}に転送されました"
       mark_as_resolved: 解決済みとしてマーク
       mark_as_sensitive: 閲覧注意にする
       mark_as_unresolved: 未解決に戻す
@@ -738,11 +741,13 @@ ja:
       summary:
         action_preambles:
           delete_html: "<strong>@%{acct}</strong>さんの投稿を<strong>削除</strong>します。この操作は:"
+          force_cw_html: "<strong>@%{acct}</strong>さんの投稿に<strong>警告文</strong>を<strong>追加</strong>します。この操作は:"
           mark_as_sensitive_html: "<strong>@%{acct}</strong>さんの投稿を<strong>閲覧注意</strong>として<strong>マーク</strong>します。この操作は:"
           silence_html: "<strong>@%{acct}</strong>さんのアカウントを<strong>制限 (サイレンス) </strong>します。この操作は:"
           suspend_html: "<strong>@%{acct}</strong>さんのアカウントを<strong>停止 (サスペンド) </strong>します。この操作は:"
         actions:
           delete_html: 当該の投稿を削除します
+          force_cw_html: 当該の投稿に警告文を強制的に追加します
           mark_as_sensitive_html: 当該の投稿に含まれるメディアを閲覧注意にします
           silence_html: "<strong>@%{acct}</strong>さんのプロフィールとコンテンツの表示範囲をフォロー中の人や意図的にプロフィールにアクセスした人のみに制限することで、アカウントを発見されにくくします"
           suspend_html: "<strong>@%{acct}</strong>さんのアカウントが凍結され、プロフィールとコンテンツへのアクセス、および投稿ができなくなります"
@@ -1116,8 +1121,6 @@ ja:
       new_trending_statuses:
         title: トレンド投稿
       new_trending_tags:
-        no_approved_tags: 承認されたトレンドハッシュタグはありません。
-        requirements: 'これらの候補はいずれも %{rank} 位の承認済みトレンドハッシュタグのスコアを上回ります。現在 #%{lowest_tag_name} のスコアは %{lowest_tag_score} です。'
         title: トレンドハッシュタグ
       subject: '%{instance}で新しいトレンドが審査待ちです'
   aliases:
@@ -1189,12 +1192,16 @@ ja:
     advanced_web_interface_hint: 'ディスプレイを幅いっぱいまで活用したい場合、上級者向け UI をおすすめします。ホーム、通知、連合タイムライン、更にはリストやハッシュタグなど、様々な異なるカラムから望む限りの情報を一度に受け取れるような設定が可能になります。'
     animations_and_accessibility: アニメーションとアクセシビリティー
     confirmation_dialogs: 確認ダイアログ
+    custom_emoji_and_emoji_reactions: カスタム絵文字とスタンプ
     discovery: 見つける
     localization:
       body: Mastodonは有志によって翻訳されています。
       guide_link: https://ja.crowdin.com/project/mastodon
       guide_link_text: 誰でも参加することができます。
+    quotes: 引用
+    saved_posts: 投稿の記録
     sensitive_content: 閲覧注意コンテンツ
+    timelines: タイムライン
   application_mailer:
     notification_preferences: メール設定の変更
     salutation: "%{name}さん"
@@ -1219,14 +1226,14 @@ ja:
       title: セキュリティチェック
     cloudflare_with_registering: 登録時にCloudflareの画面が表示されます。登録できないときは管理者へご連絡ください
     confirmations:
-      awaiting_review: メールアドレスは確認済みです。%{domain} のモデレーターによりアカウント登録の審査が完了すると、メールでお知らせします。
+      awaiting_review: メールアドレスが確認できました。%{domain} のスタッフが登録審査を行います。承認されたらメールでお知らせします！
       awaiting_review_title: 登録の審査待ちです
-      clicking_this_link: こちらのリンク
-      login_link: こちらのリンク
-      proceed_to_login_html: "%{login_link}から早速ログインしてみましょう。"
-      redirect_to_app_html: "<strong>%{app_name}</strong>に戻ります。自動で移動しない場合は%{clicking_this_link}を押すか、手動でアプリを切り替えてください。"
+      clicking_this_link: このリンクを押す
+      login_link: ログイン
+      proceed_to_login_html: それでは%{login_link}しましょう。
+      redirect_to_app_html: 自動的に<strong>%{app_name}</strong>に戻らなかった場合、%{clicking_this_link}か、手動でアプリを切り替えてください。
       registration_complete: "%{domain} へのアカウント登録が完了しました。"
-      welcome_title: Mastodonへようこそ、%{name}さん
+      welcome_title: ようこそ、%{name}さん！
       wrong_email_hint: メールアドレスが正しくない場合は、アカウント設定で変更できます。
     delete_account: アカウントの削除
     delete_account_html: アカウントを削除したい場合、<a href="%{path}">こちら</a>から手続きが行えます。削除する前に、確認画面があります。
@@ -1536,9 +1543,13 @@ ja:
       '3600': 1時間
       '43200': 12時間
       '604800': 1週間
+      '1209600': 2週間
+      '2629746': 1ヶ月
+      '7889238': 3ヶ月
       '86400': 1日
     expires_in_prompt: 無期限
     generate: 招待リンクを作成
+    invalid: この招待は無効です
     invited_by: '次の人に招待されました:'
     max_uses:
       other: "%{count}"
@@ -1703,6 +1714,7 @@ ja:
   preferences:
     dtl: ディープタイムライン
     dtl_hint: "#%{tag} ハッシュタグに参加することで、ディープタイムラインに投稿できます。ここではディープタイムラインを利用しやすくするための設定ができます。"
+    emoji_reaction_permitting: スタンプの受け入れ
     other: その他
     posting_defaults: デフォルトの投稿設定
     public_timelines: 公開タイムライン

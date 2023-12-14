@@ -241,6 +241,37 @@ RSpec.describe ProcessReferencesService, type: :service do
         end
       end
     end
+
+    context 'when already fetched remote post' do
+      let(:account) { Fabricate(:account, followers_url: 'http://example.com/followers', domain: 'example.com', uri: 'https://example.com/actor') }
+      let!(:remote_status) { Fabricate(:status, account: account, uri: 'https://example.com/test_post', url: 'https://example.com/test_post', text: 'Lorem ipsum') }
+      let(:object_json) do
+        {
+          id: 'https://example.com/test_post',
+          to: ActivityPub::TagManager::COLLECTIONS[:public],
+          '@context': ActivityPub::TagManager::CONTEXT,
+          type: 'Note',
+          actor: account.uri,
+          attributedTo: account.uri,
+          content: 'Lorem ipsum',
+        }
+      end
+      let(:text) { 'BT:https://example.com/test_post' }
+
+      before do
+        stub_request(:get, 'https://example.com/test_post').to_return(status: 200, body: Oj.dump(object_json), headers: { 'Content-Type' => 'application/activity+json' })
+      end
+
+      it 'reference it' do
+        expect(subject.size).to eq 1
+        expect(subject[0][1]).to eq 'BT'
+
+        status = Status.find_by(id: subject[0][0])
+        expect(status).to_not be_nil
+        expect(status.id).to eq remote_status.id
+        expect(status.url).to eq 'https://example.com/test_post'
+      end
+    end
   end
 
   describe 'editing new status' do
@@ -339,7 +370,7 @@ RSpec.describe ProcessReferencesService, type: :service do
       end
     end
 
-    context 'when change quote to reference', pending: 'Will fix later' do
+    context 'when change quote to reference' do
       let(:text) { "QT #{target_status_uri}" }
       let(:new_text) { "RT #{target_status_uri}" }
 
@@ -351,7 +382,7 @@ RSpec.describe ProcessReferencesService, type: :service do
       end
     end
 
-    context 'when change reference to quote', pending: 'Will fix later' do
+    context 'when change reference to quote' do
       let(:text) { "RT #{target_status_uri}" }
       let(:new_text) { "QT #{target_status_uri}" }
 

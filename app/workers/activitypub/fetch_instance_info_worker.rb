@@ -8,27 +8,31 @@ class ActivityPub::FetchInstanceInfoWorker
 
   sidekiq_options queue: 'push', retry: 2
 
-  class Error < StandardError; end
-  class RequestError < Error; end
-  class DeadError < Error; end
-
   SUPPORTED_NOTEINFO_RELS = ['http://nodeinfo.diaspora.software/ns/schema/2.0', 'http://nodeinfo.diaspora.software/ns/schema/2.1'].freeze
 
   def perform(domain)
     @instance = Instance.find_by(domain: domain)
     return if !@instance || @instance.unavailable_domain.present?
 
-    with_redis_lock("instance_info:#{domain}") do
-      link = nodeinfo_link
-      return if link.nil?
-
-      update_info!(link)
+    Rails.cache.fetch("fetch_instance_info:#{@instance.domain}", expires_in: 1.day, race_condition_ttl: 1.hour) do
+      fetch!
     end
-  rescue ActivityPub::FetchInstanceInfoWorker::DeadError
+
     true
   end
 
   private
+
+  def fetch!
+    link = nodeinfo_link
+    return if link.nil?
+
+    update_info!(link)
+
+    true
+  rescue Mastodon::UnexpectedResponseError
+    true
+  end
 
   def nodeinfo_link
     nodeinfo = fetch_json("https://#{@instance.domain}/.well-known/nodeinfo")
@@ -63,15 +67,9 @@ class ActivityPub::FetchInstanceInfoWorker
 
   def fetch_json(url)
     build_request(url).perform do |response|
-      if [200, 203].include?(response.code)
-        raise Mastodon::UnexpectedResponseError, response unless response_successful?(response) || response_error_unsalvageable?(response)
+      raise Mastodon::UnexpectedResponseError, response unless response_successful?(response) || response_error_unsalvageable?(response)
 
-        body_to_json(response.body_with_limit)
-      elsif [400, 401, 403, 404, 410].include?(response.code)
-        raise ActivityPub::FetchInstanceInfoWorker::DeadError, "Request for #{@instance.domain} returned HTTP #{response.code}"
-      else
-        raise ActivityPub::FetchInstanceInfoWorker::RequestError, "Request for #{@instance.domain} returned HTTP #{response.code}"
-      end
+      body_to_json(response.body_with_limit)
     end
   end
 

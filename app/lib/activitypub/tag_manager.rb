@@ -49,6 +49,8 @@ class ActivityPub::TagManager
       emoji_url(target)
     when :emoji_reaction
       emoji_reaction_url(target)
+    when :conversation
+      context_url(target)
     when :flag
       target.uri
     end
@@ -119,10 +121,8 @@ class ActivityPub::TagManager
         end.compact
       end
     when 'limited'
-      status.mentions.each_with_object([]) do |mention, result|
-        result << uri_for(mention.account)
-        result << followers_uri_for(mention.account) if mention.account.group?
-      end.compact
+      # do not empty array to avoid Fedibird personal visibility
+      status.conversation.nil? ? ['kmyblue:Limited'] : [context_url(status.conversation)]
     end
   end
 
@@ -228,15 +228,27 @@ class ActivityPub::TagManager
   end
 
   def limited_scope(status)
-    if status.mutual_limited?
+    case status.limited_scope
+    when 'mutual'
       'Mutual'
+    when 'circle'
+      'Circle'
+    when 'reply'
+      'Reply'
     else
-      status.circle_limited? ? 'Circle' : ''
+      ''
     end
   end
 
   def subscribable_by(account)
-    account.dissubscribable ? [] : [COLLECTIONS[:public]]
+    case account.subscription_policy
+    when :allow
+      [COLLECTIONS[:public]]
+    when :followers_only
+      [account_followers_url(account)]
+    else
+      []
+    end
   end
 
   def searchable_by(status)
@@ -246,8 +258,6 @@ class ActivityPub::TagManager
         [COLLECTIONS[:public]]
       when 'private'
         [account_followers_url(status.account)]
-      when 'direct'
-        status.conversation_id.present? ? [uri_for(status.conversation)] : []
       when 'limited'
         ['as:Limited', 'kmyblue:Limited']
       else
@@ -267,7 +277,7 @@ class ActivityPub::TagManager
     case account.compute_searchability_activitypub
     when 'public'
       [COLLECTIONS[:public]]
-    when 'private', 'direct'
+    when 'private'
       [account_followers_url(account)]
     when 'limited'
       ['as:Limited', 'kmyblue:Limited']

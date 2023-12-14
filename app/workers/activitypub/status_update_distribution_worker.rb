@@ -8,12 +8,20 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
     @status  = Status.find(status_id)
     @account = @status.account
 
-    distribute!
+    if @status.limited_visibility?
+      distribute_limited!
+    else
+      distribute!
+    end
   rescue ActiveRecord::RecordNotFound
     true
   end
 
   protected
+
+  def inboxes_for_limited
+    @inboxes_for_limited ||= @status.mentioned_accounts.inboxes
+  end
 
   def build_activity(for_misskey: false, for_friend: false)
     ActivityPub::ActivityPresenter.new(
@@ -37,5 +45,9 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
 
   def activity_for_friend
     build_activity(for_friend: true)
+  end
+
+  def always_sign
+    @status.limited_visibility?
   end
 end
