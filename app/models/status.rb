@@ -253,6 +253,10 @@ class Status < ApplicationRecord
     !quote_of_id.nil? && !quote.nil?
   end
 
+  def expires?
+    scheduled_expiration_status.present?
+  end
+
   def within_realtime_window?
     created_at >= REAL_TIME_WINDOW.ago
   end

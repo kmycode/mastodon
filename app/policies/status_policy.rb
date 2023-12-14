@@ -30,9 +30,9 @@ class StatusPolicy < ApplicationPolicy
 
   def show_activity?
     return false unless show?
-    return true if record.scheduled_expiration_status.blank?
+    return true unless record.expires?
 
-    following_author?
+    following_author_domain?
   end
 
   def reblog?
@@ -120,6 +120,12 @@ class StatusPolicy < ApplicationPolicy
     return false if current_account.nil?
 
     @preloaded_relations[:following] ? @preloaded_relations[:following][author.id] : current_account.following?(author)
+  end
+
+  def following_author_domain?
+    return false if current_account.nil?
+
+    author.followed_by_domain?(current_account.domain)
   end
 
   def author
