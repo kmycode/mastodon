@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_12_225737) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_14_225249) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1247,6 +1247,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_12_225737) do
     t.index ["quote_of_id", "account_id"], name: "index_statuses_on_quote_of_id_and_account_id"
     t.index ["reblog_of_id", "account_id"], name: "index_statuses_on_reblog_of_id_and_account_id"
     t.index ["uri"], name: "index_statuses_on_uri", unique: true, opclass: :text_pattern_ops, where: "(uri IS NOT NULL)"
+    t.index ["url"], name: "index_statuses_on_url", opclass: :text_pattern_ops, where: "((url IS NOT NULL) AND ((url)::text <> (uri)::text))"
   end
 
   create_table "statuses_tags", primary_key: ["tag_id", "status_id"], force: :cascade do |t|

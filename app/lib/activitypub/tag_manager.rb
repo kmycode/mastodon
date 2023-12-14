@@ -208,7 +208,7 @@ class ActivityPub::TagManager
     uri_to_resource(uri, Account)
   end
 
-  def uri_to_resource(uri, klass)
+  def uri_to_resource(uri, klass, url: false)
     return if uri.nil?
 
     if local_uri?(uri)
@@ -221,7 +221,9 @@ class ActivityPub::TagManager
     elsif OStatus::TagManager.instance.local_id?(uri)
       klass.find_by(id: OStatus::TagManager.instance.unique_tag_to_local_id(uri, klass.to_s))
     else
-      klass.find_by(uri: uri.split('#').first)
+      resource   = klass.find_by(uri: uri.split('#').first)
+      resource ||= klass.where('uri != url').find_by(url: uri.split('#').first) if url
+      resource
     end
   rescue ActiveRecord::RecordNotFound
     nil

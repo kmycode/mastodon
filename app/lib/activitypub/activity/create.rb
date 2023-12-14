@@ -544,7 +544,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     url = quote
 
     if url.present?
-      ResolveURLService.new.call(url, on_behalf_of: @account, local_only: true).present?
+      ActivityPub::TagManager.instance.uri_to_resource(url, Status)&.local?
     else
       false
     end

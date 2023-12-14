@@ -141,11 +141,20 @@ class ProcessReferencesService < BaseService
   end
 
   def url_to_status(url)
-    ResolveURLService.new.call(url, on_behalf_of: @status.account, fetch_remote: @fetch_remote && @no_fetch_urls.exclude?(url))
+    status   = ActivityPub::TagManager.instance.uri_to_resource(url, Status, url: true)
+    status ||= ResolveURLService.new.call(url, on_behalf_of: @status.account) if @fetch_remote && @no_fetch_urls.exclude?(url)
+    referrable?(status) ? status : nil
+  end
+
+  def referrable?(target_status)
+    return false if target_status.nil?
+    return @referrable if defined?(@referrable)
+
+    @referrable = StatusPolicy.new(@status.account, target_status).show?
   end
 
   def quotable?(target_status)
-    target_status.account.allow_quote? && (!@status.local? || StatusPolicy.new(@status.account, target_status).quote?)
+    target_status.account.allow_quote? && StatusPolicy.new(@status.account, target_status).quote?
   end
 
   def add_references
