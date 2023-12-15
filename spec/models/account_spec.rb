@@ -270,162 +270,62 @@ RSpec.describe Account do
       reactioned.follow!(mutual)
     end
 
-    context 'when policy is arrow' do
-      it 'allows anyone' do
-        expect(reactioned.allow_emoji_reaction?(anyone)).to be true
-      end
+    shared_examples 'with policy' do |override_policy, anyone_r, followee_r, follower_r, mutual_r, self_r| # rubocop:disable Metrics/ParameterLists
+      context "when policy is #{override_policy}" do
+        let(:policy) { override_policy }
 
-      it 'allows followee' do
-        expect(reactioned.allow_emoji_reaction?(followee)).to be true
-      end
+        it 'allows anyone' do
+          expect(reactioned.allow_emoji_reaction?(anyone)).to be anyone_r
+        end
 
-      it 'allows follower' do
-        expect(reactioned.allow_emoji_reaction?(follower)).to be true
-      end
+        it 'allows followee' do
+          expect(reactioned.allow_emoji_reaction?(followee)).to be followee_r
+        end
 
-      it 'allows mutual' do
-        expect(reactioned.allow_emoji_reaction?(mutual)).to be true
-      end
+        it 'allows follower' do
+          expect(reactioned.allow_emoji_reaction?(follower)).to be follower_r
+        end
 
-      it 'allows self' do
-        expect(reactioned.allow_emoji_reaction?(reactioned)).to be true
-      end
-    end
+        it 'allows mutual' do
+          expect(reactioned.allow_emoji_reaction?(mutual)).to be mutual_r
+        end
 
-    context 'when policy is following_only' do
-      let(:policy) { :following_only }
-
-      it 'allows anyone' do
-        expect(reactioned.allow_emoji_reaction?(anyone)).to be false
-      end
-
-      it 'allows followee' do
-        expect(reactioned.allow_emoji_reaction?(followee)).to be true
-      end
-
-      it 'allows follower' do
-        expect(reactioned.allow_emoji_reaction?(follower)).to be false
-      end
-
-      it 'allows mutual' do
-        expect(reactioned.allow_emoji_reaction?(mutual)).to be true
-      end
-
-      it 'allows self' do
-        expect(reactioned.allow_emoji_reaction?(reactioned)).to be true
+        it 'allows self' do
+          expect(reactioned.allow_emoji_reaction?(reactioned)).to be self_r
+        end
       end
     end
 
-    context 'when policy is followers_only' do
-      let(:policy) { :followers_only }
+    it_behaves_like 'with policy', :allow, true, true, true, true, true
+    it_behaves_like 'with policy', :outside_only, false, true, true, true, true
+    it_behaves_like 'with policy', :following_only, false, true, false, true, true
+    it_behaves_like 'with policy', :followers_only, false, false, true, true, true
+    it_behaves_like 'with policy', :mutuals_only, false, false, false, true, true
+    it_behaves_like 'with policy', :block, false, false, false, false, false
 
-      it 'allows anyone' do
-        expect(reactioned.allow_emoji_reaction?(anyone)).to be false
-      end
+    shared_examples 'allow local only' do |override_policy|
+      context "when policy is #{override_policy} but allow local only" do
+        let(:policy) { override_policy }
+        let(:allow_local) { true }
+        let(:local) { Fabricate(:user).account }
+        let(:remote) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
 
-      it 'allows followee' do
-        expect(reactioned.allow_emoji_reaction?(followee)).to be false
-      end
+        before do
+          local.follow!(remote) if override_policy == :following_only
+        end
 
-      it 'allows follower' do
-        expect(reactioned.allow_emoji_reaction?(follower)).to be true
-      end
+        it 'does not allow remote' do
+          expect(reactioned.allow_emoji_reaction?(remote)).to be false
+        end
 
-      it 'allows mutual' do
-        expect(reactioned.allow_emoji_reaction?(mutual)).to be true
-      end
-
-      it 'allows self' do
-        expect(reactioned.allow_emoji_reaction?(reactioned)).to be true
-      end
-    end
-
-    context 'when policy is mutuals_only' do
-      let(:policy) { :mutuals_only }
-
-      it 'allows anyone' do
-        expect(reactioned.allow_emoji_reaction?(anyone)).to be false
-      end
-
-      it 'allows followee' do
-        expect(reactioned.allow_emoji_reaction?(followee)).to be false
-      end
-
-      it 'allows follower' do
-        expect(reactioned.allow_emoji_reaction?(follower)).to be false
-      end
-
-      it 'allows mutual' do
-        expect(reactioned.allow_emoji_reaction?(mutual)).to be true
-      end
-
-      it 'allows self' do
-        expect(reactioned.allow_emoji_reaction?(reactioned)).to be true
+        it 'allows local' do
+          expect(reactioned.allow_emoji_reaction?(local)).to be true
+        end
       end
     end
 
-    context 'when policy is outside_only' do
-      let(:policy) { :outside_only }
-
-      it 'allows anyone' do
-        expect(reactioned.allow_emoji_reaction?(anyone)).to be false
-      end
-
-      it 'allows followee' do
-        expect(reactioned.allow_emoji_reaction?(followee)).to be true
-      end
-
-      it 'allows follower' do
-        expect(reactioned.allow_emoji_reaction?(follower)).to be true
-      end
-
-      it 'allows mutual' do
-        expect(reactioned.allow_emoji_reaction?(mutual)).to be true
-      end
-
-      it 'allows self' do
-        expect(reactioned.allow_emoji_reaction?(reactioned)).to be true
-      end
-    end
-
-    context 'when policy is block' do
-      let(:policy) { :block }
-
-      it 'allows anyone' do
-        expect(reactioned.allow_emoji_reaction?(anyone)).to be false
-      end
-
-      it 'allows followee' do
-        expect(reactioned.allow_emoji_reaction?(followee)).to be false
-      end
-
-      it 'allows follower' do
-        expect(reactioned.allow_emoji_reaction?(follower)).to be false
-      end
-
-      it 'allows mutual' do
-        expect(reactioned.allow_emoji_reaction?(mutual)).to be false
-      end
-
-      it 'allows self' do
-        expect(reactioned.allow_emoji_reaction?(reactioned)).to be false
-      end
-    end
-
-    context 'when policy is block but allow local only' do
-      let(:policy) { :block }
-      let(:allow_local) { true }
-      let(:local) { Fabricate(:user).account }
-      let(:remote) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
-
-      it 'does not allow remote' do
-        expect(reactioned.allow_emoji_reaction?(remote)).to be false
-      end
-
-      it 'allows local' do
-        expect(reactioned.allow_emoji_reaction?(local)).to be true
-      end
-    end
+    it_behaves_like 'allow local only', :following_only
+    it_behaves_like 'allow local only', :block
 
     context 'when reactioned is remote user' do
       let(:reactioned) { Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/actor', settings: { emoji_reaction_policy: :following_only }) }
