@@ -1,0 +1,14 @@
+- content_for :page_title do
+  = t('admin.special_instances.title')
+
+- content_for :header_tags do
+  = javascript_pack_tag 'admin', async: true, crossorigin: 'anonymous'
+
+= simple_form_for @admin_settings, url: admin_special_instances_path, html: { method: :post } do |f|
+  = render 'shared/error_messages', object: @admin_settings
+
+  .fields-group
+    = f.input :emoji_reaction_disallow_domains, wrapper: :with_label, as: :text, input_html: { rows: 6 }, label: t('admin.special_instances.emoji_reaction_disallow_domains'), hint: t('admin.special_instances.emoji_reaction_disallow_domains_hint')
+
+  .actions
+    = f.button :button, t('generic.save_changes'), type: :submit

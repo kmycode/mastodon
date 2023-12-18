@@ -46,6 +46,7 @@ defaults: &defaults
   unlocked_friend: false
   stranger_mention_from_local_ng: true
   enable_local_timeline: true
+  emoji_reaction_disallow_domains: []
 
 development:
   <<: *defaults

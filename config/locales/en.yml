@@ -911,6 +911,10 @@ en:
         minor: Minor release
         patch: Patch release — bugfixes and easy to apply changes
       version: Version
+    special_instances:
+      emoji_reaction_disallow_domains: Domains we are not permitted stamp
+      emoji_reaction_disallow_domains_hint: If you need to be considerate to your coalition partners, set the domain with a new line separator. It is not possible to put a stamp on a post from a set domain.
+      title: Special servers
     statuses:
       account: Author
       application: Application

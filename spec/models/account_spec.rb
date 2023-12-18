@@ -270,38 +270,38 @@ RSpec.describe Account do
       reactioned.follow!(mutual)
     end
 
-    shared_examples 'with policy' do |override_policy, anyone_r, followee_r, follower_r, mutual_r, self_r| # rubocop:disable Metrics/ParameterLists
+    shared_examples 'with policy' do |override_policy, permitted|
       context "when policy is #{override_policy}" do
         let(:policy) { override_policy }
 
         it 'allows anyone' do
-          expect(reactioned.allow_emoji_reaction?(anyone)).to be anyone_r
+          expect(reactioned.allow_emoji_reaction?(anyone)).to be permitted.include?(:anyone)
         end
 
         it 'allows followee' do
-          expect(reactioned.allow_emoji_reaction?(followee)).to be followee_r
+          expect(reactioned.allow_emoji_reaction?(followee)).to be permitted.include?(:following)
         end
 
         it 'allows follower' do
-          expect(reactioned.allow_emoji_reaction?(follower)).to be follower_r
+          expect(reactioned.allow_emoji_reaction?(follower)).to be permitted.include?(:followers)
         end
 
         it 'allows mutual' do
-          expect(reactioned.allow_emoji_reaction?(mutual)).to be mutual_r
+          expect(reactioned.allow_emoji_reaction?(mutual)).to be permitted.include?(:mutuals)
         end
 
         it 'allows self' do
-          expect(reactioned.allow_emoji_reaction?(reactioned)).to be self_r
+          expect(reactioned.allow_emoji_reaction?(reactioned)).to be permitted.include?(:self)
         end
       end
     end
 
-    it_behaves_like 'with policy', :allow, true, true, true, true, true
-    it_behaves_like 'with policy', :outside_only, false, true, true, true, true
-    it_behaves_like 'with policy', :following_only, false, true, false, true, true
-    it_behaves_like 'with policy', :followers_only, false, false, true, true, true
-    it_behaves_like 'with policy', :mutuals_only, false, false, false, true, true
-    it_behaves_like 'with policy', :block, false, false, false, false, false
+    it_behaves_like 'with policy', :allow, %i(anyone following followers mutuals self)
+    it_behaves_like 'with policy', :outside_only, %i(following followers mutuals self)
+    it_behaves_like 'with policy', :following_only, %i(following mutuals self)
+    it_behaves_like 'with policy', :followers_only, %i(followers mutuals self)
+    it_behaves_like 'with policy', :mutuals_only, %i(mutuals self)
+    it_behaves_like 'with policy', :block, %i()
 
     shared_examples 'allow local only' do |override_policy|
       context "when policy is #{override_policy} but allow local only" do
@@ -368,6 +368,71 @@ RSpec.describe Account do
           expect(reactioned.allow_emoji_reaction?(anyone)).to be true
         end
       end
+    end
+  end
+
+  describe '#emoji_reaction_policy' do
+    subject { account.emoji_reaction_policy }
+
+    let(:domains) { 'example.com' }
+    let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
+
+    before do
+      Form::AdminSettings.new(emoji_reaction_disallow_domains: domains).save
+    end
+
+    it 'blocked if target domain' do
+      expect(subject).to eq :block
+    end
+
+    context 'when other domain' do
+      let(:account) { Fabricate(:account, domain: 'allow.example.com', uri: 'https://allow.example.com/actor') }
+
+      it 'allowed if target domain' do
+        expect(subject).to_not eq :block
+      end
+    end
+  end
+
+  describe '#public_settings_for_local' do
+    subject { account.public_settings_for_local }
+
+    let(:account) { Fabricate(:user, settings: { link_preview: false, allow_quote: true, hide_statuses_count: true, emoji_reaction_policy: :followers_only }).account }
+
+    shared_examples 'some settings' do |permitted, emoji_reaction_policy|
+      it 'link_preview is disallowed' do
+        expect(subject['link_preview']).to be permitted.include?(:link_preview)
+      end
+
+      it 'allow_quote is allowed' do
+        expect(subject['allow_quote']).to be permitted.include?(:allow_quote)
+      end
+
+      it 'hide_statuses_count is allowed' do
+        expect(subject['hide_statuses_count']).to be permitted.include?(:hide_statuses_count)
+      end
+
+      it 'hide_following_count is disallowed' do
+        expect(subject['hide_following_count']).to be permitted.include?(:hide_following_count)
+      end
+
+      it 'emoji_reaction is allowed followers' do
+        expect(subject['emoji_reaction_policy']).to eq emoji_reaction_policy
+      end
+    end
+
+    it_behaves_like 'some settings', %i(allow_quote hide_statuses_count), 'followers_only'
+
+    context 'when remote user' do
+      let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor', settings: { 'link_preview' => false, 'allow_quote' => true, 'hide_statuses_count' => true, 'emoji_reaction_policy' => 'followers_only' }) }
+
+      it_behaves_like 'some settings', %i(allow_quote hide_statuses_count), 'followers_only'
+    end
+
+    context 'when remote user by server other_settings is not supported' do
+      let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
+
+      it_behaves_like 'some settings', %i(link_preview allow_quote), 'allow'
     end
   end
 
