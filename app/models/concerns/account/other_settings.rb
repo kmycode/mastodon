@@ -9,49 +9,49 @@ module Account::OtherSettings
     end
 
     def noai?
-      return user.setting_noai if local?
+      return user.setting_noai if local? && user.present?
       return settings['noai'] if settings.present? && settings.key?('noai')
 
       false
     end
 
     def translatable_private?
-      return user.setting_translatable_private if local?
+      return user.setting_translatable_private if local? && user.present?
       return settings['translatable_private'] if settings.present? && settings.key?('translatable_private')
 
       false
     end
 
     def link_preview?
-      return user.setting_link_preview if local?
+      return user.setting_link_preview if local? && user.present?
       return settings['link_preview'] if settings.present? && settings.key?('link_preview')
 
       true
     end
 
     def allow_quote?
-      return user.setting_allow_quote if local?
+      return user.setting_allow_quote if local? && user.present?
       return settings['allow_quote'] if settings.present? && settings.key?('allow_quote')
 
       true
     end
 
     def hide_statuses_count?
-      return user&.setting_hide_statuses_count if local?
+      return user&.setting_hide_statuses_count if local? && user.present?
       return settings['hide_statuses_count'] if settings.present? && settings.key?('hide_statuses_count')
 
       false
     end
 
     def hide_following_count?
-      return user&.setting_hide_following_count if local?
+      return user&.setting_hide_following_count if local? && user.present?
       return settings['hide_following_count'] if settings.present? && settings.key?('hide_following_count')
 
       false
     end
 
     def hide_followers_count?
-      return user&.setting_hide_followers_count if local?
+      return user&.setting_hide_followers_count if local? && user.present?
       return settings['hide_followers_count'] if settings.present? && settings.key?('hide_followers_count')
 
       false
@@ -61,7 +61,7 @@ module Account::OtherSettings
       return :block if !local? && Setting.emoji_reaction_disallow_domains&.include?(domain)
       return settings['emoji_reaction_policy']&.to_sym || :allow if settings.present? && !local?
       return :allow if user.nil?
-      return :block if local? && !Setting.enable_emoji_reaction
+      return :block if local? && !Setting.enable_emoji_reaction # for federation
 
       user.setting_emoji_reaction_policy&.to_sym
     end
