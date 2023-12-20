@@ -52,6 +52,7 @@ class Form::AdminSettings
     enable_public_unlisted_visibility
     unlocked_friend
     enable_local_timeline
+    emoji_reaction_disallow_domains
   ).freeze
 
   INTEGER_KEYS = %i(
@@ -99,6 +100,7 @@ class Form::AdminSettings
     ng_words_for_stranger_mention
     sensitive_words
     sensitive_words_for_full
+    emoji_reaction_disallow_domains
   ).freeze
 
   attr_accessor(*KEYS)

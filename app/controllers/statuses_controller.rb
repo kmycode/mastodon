@@ -29,15 +29,15 @@ class StatusesController < ApplicationController
       end
 
       format.json do
-        expires_in 3.minutes, public: true if @status.distributable? && public_fetch_mode?
-        render_with_cache json: @status, content_type: 'application/activity+json', serializer: ActivityPub::NoteSerializer, adapter: ActivityPub::Adapter
+        expires_in 3.minutes, public: true if @status.distributable? && public_fetch_mode? && !misskey_software?
+        render_with_cache json: @status, content_type: 'application/activity+json', serializer: status_activity_serializer, adapter: ActivityPub::Adapter, cancel_cache: misskey_software?
       end
     end
   end
 
   def activity
-    expires_in 3.minutes, public: @status.distributable? && public_fetch_mode?
-    render_with_cache json: ActivityPub::ActivityPresenter.from_status(@status), content_type: 'application/activity+json', serializer: ActivityPub::ActivitySerializer, adapter: ActivityPub::Adapter
+    expires_in 3.minutes, public: @status.distributable? && public_fetch_mode? && !misskey_software?
+    render_with_cache json: ActivityPub::ActivityPresenter.from_status(@status, for_misskey: misskey_software?), content_type: 'application/activity+json', serializer: ActivityPub::ActivitySerializer, adapter: ActivityPub::Adapter, cancel_cache: misskey_software?
   end
 
   def embed
@@ -71,6 +71,29 @@ class StatusesController < ApplicationController
     end
   rescue Mastodon::NotPermittedError
     not_found
+  end
+
+  def misskey_software?
+    return @misskey_software if defined?(@misskey_software)
+
+    @misskey_software = false
+
+    return false if !@status.local? || signed_request_account&.domain.blank?
+
+    info = InstanceInfo.find_by(domain: signed_request_account.domain)
+    return false if info.nil?
+
+    @misskey_software = %w(misskey calckey cherrypick sharkey).include?(info.software) &&
+                        ((@status.public_unlisted_visibility? && @status.account.user&.setting_reject_public_unlisted_subscription) ||
+                         (@status.unlisted_visibility? && @status.account.user&.setting_reject_unlisted_subscription))
+  end
+
+  def status_activity_serializer
+    if misskey_software?
+      ActivityPub::NoteForMisskeySerializer
+    else
+      ActivityPub::NoteSerializer
+    end
   end
 
   def redirect_to_original

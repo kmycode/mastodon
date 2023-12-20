@@ -9,11 +9,17 @@ module Account::OtherSettings
     end
 
     def noai?
-      user&.setting_noai || (settings.present? && settings['noai']) || false
+      return user.setting_noai if local? && user.present?
+      return settings['noai'] if settings.present? && settings.key?('noai')
+
+      false
     end
 
     def translatable_private?
-      user&.setting_translatable_private || (settings.present? && settings['translatable_private']) || false
+      return user.setting_translatable_private if local? && user.present?
+      return settings['translatable_private'] if settings.present? && settings.key?('translatable_private')
+
+      false
     end
 
     def link_preview?
@@ -31,30 +37,31 @@ module Account::OtherSettings
     end
 
     def hide_statuses_count?
-      return user&.setting_hide_statuses_count unless user&.setting_hide_statuses_count.nil?
-      return settings['hide_statuses_count'] if settings.present?
+      return user&.setting_hide_statuses_count if local? && user.present?
+      return settings['hide_statuses_count'] if settings.present? && settings.key?('hide_statuses_count')
 
       false
     end
 
     def hide_following_count?
-      return user&.setting_hide_following_count unless user&.setting_hide_following_count.nil?
-      return settings['hide_following_count'] if settings.present?
+      return user&.setting_hide_following_count if local? && user.present?
+      return settings['hide_following_count'] if settings.present? && settings.key?('hide_following_count')
 
       false
     end
 
     def hide_followers_count?
-      return user&.setting_hide_followers_count unless user&.setting_hide_followers_count.nil?
-      return settings['hide_followers_count'] if settings.present?
+      return user&.setting_hide_followers_count if local? && user.present?
+      return settings['hide_followers_count'] if settings.present? && settings.key?('hide_followers_count')
 
       false
     end
 
     def emoji_reaction_policy
-      return settings['emoji_reaction_policy']&.to_sym || :allow if settings.present? && user.nil?
+      return :block if !local? && Setting.emoji_reaction_disallow_domains&.include?(domain)
+      return settings['emoji_reaction_policy']&.to_sym || :allow if settings.present? && !local?
       return :allow if user.nil?
-      return :block if local? && !Setting.enable_emoji_reaction
+      return :block if local? && !Setting.enable_emoji_reaction # for federation
 
       user.setting_emoji_reaction_policy&.to_sym
     end
@@ -88,7 +95,7 @@ module Account::OtherSettings
 
     def public_settings
       # Please update `app/javascript/mastodon/api_types/accounts.ts` when making changes to the attributes
-      config = {
+      {
         'noindex' => noindex?,
         'noai' => noai?,
         'hide_network' => hide_collections,
@@ -98,10 +105,8 @@ module Account::OtherSettings
         'translatable_private' => translatable_private?,
         'link_preview' => link_preview?,
         'allow_quote' => allow_quote?,
-        'emoji_reaction_policy' => Setting.enable_emoji_reaction ? emoji_reaction_policy : :block,
+        'emoji_reaction_policy' => Setting.enable_emoji_reaction ? emoji_reaction_policy.to_s : 'block',
       }
-      config = config.merge(settings) if settings.present?
-      config
     end
 
     def public_settings_for_local

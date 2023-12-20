@@ -11,13 +11,14 @@ RSpec.describe FanOutOnWriteService, type: :service do
   let(:visibility) { 'public' }
   let(:searchability) { 'public' }
   let(:subscription_policy) { :allow }
-  let(:status) { Fabricate(:status, account: alice, visibility: visibility, searchability: searchability, text: 'Hello @bob #hoge') }
+  let(:status) { Fabricate(:status, account: alice, visibility: visibility, searchability: searchability, text: 'Hello @bob @eve #hoge') }
 
   let!(:alice) { Fabricate(:user, current_sign_in_at: last_active_at, account_attributes: { master_settings: { subscription_policy: subscription_policy } }).account }
   let!(:bob)   { Fabricate(:user, current_sign_in_at: last_active_at, account_attributes: { username: 'bob' }).account }
   let!(:tom)   { Fabricate(:user, current_sign_in_at: last_active_at).account }
   let!(:ohagi) { Fabricate(:user, current_sign_in_at: last_active_at).account }
   let!(:tagf)  { Fabricate(:user, current_sign_in_at: last_active_at).account }
+  let!(:eve)   { Fabricate(:user, current_sign_in_at: last_active_at, account_attributes: { username: 'eve' }).account }
 
   let!(:list)          { nil }
   let!(:empty_list)    { nil }
@@ -254,6 +255,25 @@ RSpec.describe FanOutOnWriteService, type: :service do
           expect(antenna_feed_of(antenna)).to_not include status.id
           expect(antenna_feed_of(empty_antenna)).to_not include status.id
         end
+      end
+    end
+
+    context 'when handling status updates', :sidekiq_fake do
+      before do
+        subject.call(status)
+
+        status.snapshot!(at_time: status.created_at, rate_limit: false)
+        status.update!(text: 'Hello @bob @eve #hoge (edited)')
+        status.snapshot!(account_id: status.account_id)
+
+        redis.set("subscribed:timeline:#{eve.id}:notifications", '1')
+
+        Sidekiq::Worker.clear_all
+      end
+
+      it 'pushes the update to mentioned users through the notifications streaming channel' do
+        subject.call(status, update: true)
+        expect(PushUpdateWorker).to have_enqueued_sidekiq_job(anything, status.id, "timeline:#{eve.id}:notifications", { 'update' => true })
       end
     end
   end

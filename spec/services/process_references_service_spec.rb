@@ -258,18 +258,57 @@ RSpec.describe ProcessReferencesService, type: :service do
       end
       let(:text) { 'BT:https://example.com/test_post' }
 
+      shared_examples 'reference once' do |uri, url|
+        it 'reference it' do
+          expect(subject.size).to eq 1
+          expect(subject[0][1]).to eq 'BT'
+
+          status = Status.find_by(id: subject[0][0])
+          expect(status).to_not be_nil
+          expect(status.id).to eq remote_status.id
+          expect(status.uri).to eq uri
+          expect(status.url).to eq url
+        end
+      end
+
       before do
         stub_request(:get, 'https://example.com/test_post').to_return(status: 200, body: Oj.dump(object_json), headers: { 'Content-Type' => 'application/activity+json' })
       end
 
-      it 'reference it' do
-        expect(subject.size).to eq 1
-        expect(subject[0][1]).to eq 'BT'
+      it_behaves_like 'reference once', 'https://example.com/test_post', 'https://example.com/test_post'
 
-        status = Status.find_by(id: subject[0][0])
-        expect(status).to_not be_nil
-        expect(status.id).to eq remote_status.id
-        expect(status.url).to eq 'https://example.com/test_post'
+      context 'when uri and url is difference and url is not accessable' do
+        let(:remote_status) { Fabricate(:status, account: account, uri: 'https://example.com/test_post', url: 'https://example.com/test_post_ohagi', text: 'Lorem ipsum') }
+        let(:text) { 'BT:https://example.com/test_post_ohagi' }
+        let(:object_json) do
+          {
+            id: 'https://example.com/test_post',
+            url: 'https://example.com/test_post_ohagi',
+            to: ActivityPub::TagManager::COLLECTIONS[:public],
+            '@context': ActivityPub::TagManager::CONTEXT,
+            type: 'Note',
+            actor: account.uri,
+            attributedTo: account.uri,
+            content: 'Lorem ipsum',
+          }
+        end
+
+        before do
+          stub_request(:get, 'https://example.com/test_post_ohagi').to_return(status: 404)
+        end
+
+        it_behaves_like 'reference once', 'https://example.com/test_post', 'https://example.com/test_post_ohagi'
+
+        it 'do not request to uri' do
+          subject
+          expect(a_request(:get, 'https://example.com/test_post_ohagi')).to_not have_been_made
+        end
+
+        context 'when url and uri is specified at the same time' do
+          let(:text) { 'BT:https://example.com/test_post_ohagi BT:https://example.com/test_post' }
+
+          it_behaves_like 'reference once', 'https://example.com/test_post', 'https://example.com/test_post_ohagi'
+        end
       end
     end
   end

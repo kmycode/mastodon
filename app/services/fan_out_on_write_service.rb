@@ -91,6 +91,15 @@ class FanOutOnWriteService < BaseService
       LocalNotificationWorker.push_bulk(mentions) do |mention|
         [mention.account_id, mention.id, 'Mention', 'mention']
       end
+
+      next unless update?
+
+      # This may result in duplicate update payloads, but this ensures clients
+      # are aware of edits to posts only appearing in mention notifications
+      # (e.g. private mentions or mentions by people they do not follow)
+      PushUpdateWorker.push_bulk(mentions.filter { |mention| subscribed_to_streaming_api?(mention.account_id) }) do |mention|
+        [mention.account_id, @status.id, "timeline:#{mention.account_id}:notifications", { 'update' => true }]
+      end
     end
   end
 
@@ -216,5 +225,9 @@ class FanOutOnWriteService < BaseService
 
   def broadcastable_unlisted_public?
     @status.unlisted_visibility? && @status.compute_searchability == 'public' && !@status.reblog? && !@account.silenced?
+  end
+
+  def subscribed_to_streaming_api?(account_id)
+    redis.exists?("subscribed:timeline:#{account_id}") || redis.exists?("subscribed:timeline:#{account_id}:notifications")
   end
 end
