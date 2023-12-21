@@ -22,7 +22,7 @@ class DeliveryAntennaService
 
   private
 
-  def delivery!
+  def delivery! # rubocop:disable Metrics/AbcSize
     subscription_policy = @account.subscription_policy
 
     dtl_post = @status.dtl? && dtl_enabled?

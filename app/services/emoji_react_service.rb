@@ -36,7 +36,7 @@ class EmojiReactService < BaseService
 
     create_notification
     notify_to_followers
-    bump_potential_friendship!
+    increment_statistics
     write_stream!
 
     @emoji_reaction
@@ -64,11 +64,8 @@ class EmojiReactService < BaseService
     DeliveryEmojiReactionWorker.perform_async(render_emoji_reaction(emoji_group), @emoji_reaction.status_id, @emoji_reaction.account_id)
   end
 
-  def bump_potential_friendship!
+  def increment_statistics
     ActivityTracker.increment('activity:interactions')
-    return if @emoji_reaction.account.following?(@emoji_reaction.status.account_id)
-
-    PotentialFriendshipTracker.record(@emoji_reaction.account.id, @emoji_reaction.status.account_id, :emoji_reaction)
   end
 
   def payload

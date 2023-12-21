@@ -12,7 +12,7 @@ class RemoveRemoteUriFromLocalCustomEmojis < ActiveRecord::Migration[7.0]
   def up
     safety_assured do
       CustomEmoji.transaction do
-        CustomEmoji.where(domain: nil).update_all(image_remote_url: nil, uri: nil) # rubocop:disable Rails/SkipsModelValidations
+        CustomEmoji.where(domain: nil).update_all(image_remote_url: nil, uri: nil)
       end
     end
   end

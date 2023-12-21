@@ -12,7 +12,7 @@ class AddQuoteToStatusReferences < ActiveRecord::Migration[7.0]
   def up
     safety_assured do
       add_column_with_default :status_references, :quote, :boolean, default: false, allow_null: false
-      StatusReference.where(attribute_type: 'QT').update_all(quote: true) # rubocop:disable Rails/SkipsModelValidations
+      StatusReference.where(attribute_type: 'QT').update_all(quote: true)
     end
   end
 

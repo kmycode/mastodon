@@ -648,6 +648,15 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_14_225249) do
     t.index ["tag_id"], name: "index_featured_tags_on_tag_id"
   end
 
+  create_table "follow_recommendation_mutes", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "target_account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "target_account_id"], name: "idx_on_account_id_target_account_id_a8c8ddf44e", unique: true
+    t.index ["target_account_id"], name: "index_follow_recommendation_mutes_on_target_account_id"
+  end
+
   create_table "follow_recommendation_suppressions", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.datetime "created_at", null: false
@@ -1485,6 +1494,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_14_225249) do
   add_foreign_key "favourites", "statuses", name: "fk_b0e856845e", on_delete: :cascade
   add_foreign_key "featured_tags", "accounts", on_delete: :cascade
   add_foreign_key "featured_tags", "tags", on_delete: :cascade
+  add_foreign_key "follow_recommendation_mutes", "accounts", column: "target_account_id", on_delete: :cascade
+  add_foreign_key "follow_recommendation_mutes", "accounts", on_delete: :cascade
   add_foreign_key "follow_recommendation_suppressions", "accounts", on_delete: :cascade
   add_foreign_key "follow_requests", "accounts", column: "target_account_id", name: "fk_9291ec025d", on_delete: :cascade
   add_foreign_key "follow_requests", "accounts", name: "fk_76d644b0e7", on_delete: :cascade
@@ -1624,6 +1635,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_14_225249) do
     WHERE ((accounts.suspended_at IS NULL) AND (accounts.silenced_at IS NULL) AND (accounts.moved_to_account_id IS NULL) AND (accounts.discoverable = true) AND (accounts.locked = false))
     GROUP BY accounts.id;
   SQL
+  add_index "account_summaries", ["account_id", "language", "sensitive"], name: "idx_on_account_id_language_sensitive_250461e1eb"
   add_index "account_summaries", ["account_id"], name: "index_account_summaries_on_account_id", unique: true
 
   create_view "global_follow_recommendations", materialized: true, sql_definition: <<-SQL

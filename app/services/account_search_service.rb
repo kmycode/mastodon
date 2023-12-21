@@ -23,6 +23,7 @@ class AccountSearchService < BaseService
               query: {
                 bool: {
                   must: must_clauses,
+                  must_not: must_not_clauses,
                 },
               },
 
@@ -49,6 +50,10 @@ class AccountSearchService < BaseService
       else
         [core_query]
       end
+    end
+
+    def must_not_clauses
+      []
     end
 
     def should_clauses

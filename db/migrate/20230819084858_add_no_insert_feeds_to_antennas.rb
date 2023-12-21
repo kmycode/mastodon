@@ -13,7 +13,7 @@ class AddNoInsertFeedsToAntennas < ActiveRecord::Migration[7.0]
   def up
     safety_assured do
       add_column_with_default :antennas, :insert_feeds, :boolean, default: false, allow_null: false
-      Antenna.where(insert_feeds: false).update_all(insert_feeds: true) # rubocop:disable Rails/SkipsModelValidations
+      Antenna.where(insert_feeds: false).update_all(insert_feeds: true)
     end
   end
 
