@@ -125,7 +125,7 @@ class StatusPolicy < ApplicationPolicy
   def following_author_domain?
     return false if current_account.nil?
 
-    author.followed_by_domain?(current_account.domain)
+    author.followed_by_domain?(current_account.domain, record.created_at)
   end
 
   def author

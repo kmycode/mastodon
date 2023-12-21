@@ -29,7 +29,7 @@ class StatusesController < ApplicationController
       end
 
       format.json do
-        expires_in 3.minutes, public: true if @status.distributable? && public_fetch_mode? && !misskey_software?
+        expires_in 3.minutes, public: true if @status.distributable? && public_fetch_mode? && !misskey_software? && !@status.expires?
         render_with_cache json: @status, content_type: 'application/activity+json', serializer: status_activity_serializer, adapter: ActivityPub::Adapter, cancel_cache: misskey_software?
       end
     end
@@ -65,7 +65,7 @@ class StatusesController < ApplicationController
     if request.authorization.present? && request.authorization.match(/^Bearer /i)
       raise Mastodon::NotPermittedError unless @status.capability_tokens.find_by(token: request.authorization.gsub(/^Bearer /i, ''))
     elsif request.format == :json && @status.expires?
-      raise Mastodon::NotPermittedError unless StatusPolicy.new(signed_request_account, status).show_activity?
+      raise Mastodon::NotPermittedError unless StatusPolicy.new(signed_request_account, @status).show_activity?
     else
       authorize @status, :show?
     end

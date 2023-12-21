@@ -381,6 +381,43 @@ describe Account::Interactions do
     end
   end
 
+  describe '#followed_by_domain?' do
+    subject { account.followed_by_domain?('example.com') }
+
+    let(:target_account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
+
+    context 'when followed by target_account' do
+      it 'returns true' do
+        account.passive_relationships.create(account: target_account)
+        expect(subject).to be true
+      end
+    end
+
+    context 'when not followed by target_account' do
+      it 'returns false' do
+        expect(subject).to be false
+      end
+    end
+
+    context 'with status' do
+      subject { account.followed_by_domain?('example.com', '2022/12/24 10:00:00') }
+
+      context 'when followed by target_account since the time' do
+        it 'returns true' do
+          account.passive_relationships.create(account: target_account, created_at: '2022/12/22 10:00:00')
+          expect(subject).to be true
+        end
+      end
+
+      context 'when followed by target_account after the time' do
+        it 'returns false' do
+          account.passive_relationships.create(account: target_account, created_at: '2022/12/26 10:00:00')
+          expect(subject).to be false
+        end
+      end
+    end
+  end
+
   describe '#blocking?' do
     subject { account.blocking?(target_account) }
 
