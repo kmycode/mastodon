@@ -216,7 +216,7 @@ module Account::Interactions
     return false unless local?
 
     scope = followers
-    scope = scope.where("follows.created_at < '#{since}'") if since.present?
+    scope = scope.where('follows.created_at < ?', since) if since.present?
     scope.exists?(domain: other_domain)
   end
 
