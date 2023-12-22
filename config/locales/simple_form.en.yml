@@ -345,7 +345,7 @@ en:
         custom_css: Custom CSS
         enable_emoji_reaction: Enable stamp function
         enable_local_timeline: Enable local timeline
-        enable_public_unlisted_visibility: Enable public-unlisted visibility
+        enable_public_unlisted_visibility: Enable public-unlisted visibility / public-unlisted searchability
         mascot: Custom mascot (legacy)
         media_cache_retention_period: Media cache retention period
         peers_api_enabled: Publish list of discovered servers in the API

@@ -153,7 +153,11 @@ function clearAll(state) {
     map.set('limited_scope', null);
     map.set('id', null);
     map.set('in_reply_to', null);
-    map.set('searchability', state.get('default_searchability'));
+    if (state.get('default_searchability') === 'public_unlisted' && !enableLocalPrivacy) {
+      map.set('searchability', 'public');
+    } else {
+      map.set('searchability', state.get('default_searchability'));
+    }
     map.set('sensitive', state.get('default_sensitive'));
     map.set('language', state.get('default_language'));
     map.update('media_attachments', list => list.clear());

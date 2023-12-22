@@ -85,7 +85,7 @@ class PostStatusService < BaseService
     @scheduled_at = @options[:scheduled_at]&.to_datetime
     @scheduled_at = nil if scheduled_in_the_past?
     @reference_ids = (@options[:status_reference_ids] || []).map(&:to_i).filter(&:positive?)
-    raise ArgumentError if !Setting.enable_public_unlisted_visibility && @visibility == :public_unlisted
+    raise ArgumentError if !Setting.enable_public_unlisted_visibility && (@visibility == :public_unlisted || @searchability == :public_unlisted)
 
     if @in_reply_to.present? && ((@options[:visibility] == 'limited' && @options[:circle_id].nil?) || @limited_scope == :reply)
       @visibility = :limited

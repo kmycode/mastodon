@@ -500,7 +500,9 @@ class Status < ApplicationRecord
     end
 
     def selectable_searchabilities
-      searchabilities.keys - %w(unsupported)
+      ss = searchabilities.keys - %w(unsupported)
+      ss -= %w(public_unlisted) unless Setting.enable_public_unlisted_visibility
+      ss
     end
 
     def selectable_searchabilities_for_search

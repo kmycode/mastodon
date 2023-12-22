@@ -17,7 +17,6 @@ module KmyblueCapabilitiesHelper
       kmyblue_bookmark_category
       kmyblue_quote
       kmyblue_searchability_limited
-      kmyblue_searchability_public_unlisted
       kmyblue_circle_history
       kmyblue_list_notification
     )
@@ -28,6 +27,7 @@ module KmyblueCapabilitiesHelper
       capabilities << :enable_wide_emoji_reaction
     end
     capabilities << :kmyblue_visibility_public_unlisted if Setting.enable_public_unlisted_visibility
+    capabilities << :kmyblue_searchability_public_unlisted if Setting.enable_public_unlisted_visibility
     capabilities << :timeline_no_local unless Setting.enable_local_timeline
 
     capabilities

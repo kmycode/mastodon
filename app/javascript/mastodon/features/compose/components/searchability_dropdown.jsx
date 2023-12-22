@@ -15,6 +15,7 @@ import { supportsPassiveEvents } from 'detect-passive-events';
 import Overlay from 'react-overlays/Overlay';
 
 import { Icon }  from 'mastodon/components/icon';
+import { enableLocalPrivacy } from 'mastodon/initial_state';
 
 import { IconButton } from '../../../components/icon_button';
 
@@ -237,6 +238,10 @@ class SearchabilityDropdown extends PureComponent {
       { icon: 'lock', iconComponent: LockIcon, value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
       { icon: 'at', iconComponent: AlternateEmailIcon, value: 'limited', text: formatMessage(messages.limited_short), meta: formatMessage(messages.limited_long) },
     ];
+
+    if (!enableLocalPrivacy) {
+      this.options = this.options.filter((opt) => opt.value !== 'public_unlisted');
+    }
   }
 
   setTargetRef = c => {

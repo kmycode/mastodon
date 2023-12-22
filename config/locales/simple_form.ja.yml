@@ -357,7 +357,7 @@ ja:
         custom_css: カスタムCSS
         enable_emoji_reaction: スタンプ機能を有効にする
         enable_local_timeline: ローカルタイムラインを有効にする
-        enable_public_unlisted_visibility: 公開範囲「ローカル公開」を有効にする
+        enable_public_unlisted_visibility: 公開範囲「ローカル公開」と検索許可「ローカルとフォロワー」を有効にする
         mascot: カスタムマスコット（レガシー）
         media_cache_retention_period: メディアキャッシュの保持期間
         peers_api_enabled: 発見したサーバーのリストをAPIで公開する
