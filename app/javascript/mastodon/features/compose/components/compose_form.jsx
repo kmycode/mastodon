@@ -9,6 +9,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 
 import { ReactComponent as LockIcon } from '@material-symbols/svg-600/outlined/lock.svg';
+import { ReactComponent as LimitedIcon } from '@material-symbols/svg-600/outlined/shield.svg';
 import { length } from 'stringz';
 
 import { Icon }  from 'mastodon/components/icon';
@@ -246,8 +247,10 @@ class ComposeForm extends ImmutablePureComponent {
       publishText = intl.formatMessage(messages.saveChanges);
     } else if (this.props.privacy === 'private' || this.props.privacy === 'direct') {
       publishText = <><Icon id='lock' icon={LockIcon} /> {intl.formatMessage(messages.publish)}</>;
+    } else if (['circle', 'mutual', 'limited', 'reply'].includes(this.props.privacy)) {
+      publishText = <><Icon id='get-pocket' icon={LimitedIcon} /> {intl.formatMessage(messages.publish)}</>;
     } else {
-      publishText = (this.props.privacy !== 'unlisted' && this.props.privacy !== 'public_unlisted' && this.props.privacy !== 'login') ? intl.formatMessage(messages.publishLoud, { publish: intl.formatMessage(messages.publish) }) : intl.formatMessage(messages.publish);
+      publishText = this.props.privacy === 'public' ? intl.formatMessage(messages.publishLoud, { publish: intl.formatMessage(messages.publish) }) : intl.formatMessage(messages.publish);
     }
 
     return (
