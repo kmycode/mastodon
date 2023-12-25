@@ -20,7 +20,7 @@ class ActivityPub::ActivityPresenter < ActiveModelSerializers::Model
             else
               ActivityPub::TagManager.instance.uri_for(status.proper)
             end
-          elsif status.limited_visibility? && use_bearcap && !status.account.user&.setting_unsafe_limited_distribution
+          elsif status.limited_visibility? && use_bearcap
             "bear:?#{{ u: ActivityPub::TagManager.instance.uri_for(status.proper), t: status.capability_tokens.first.token }.to_query}"
           else
             status.proper

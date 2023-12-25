@@ -297,7 +297,6 @@ en:
         setting_translatable_private: Allow other users translation of your private posts
         setting_trends: Show today's trends
         setting_unfollow_modal: Show confirmation dialog before unfollowing someone
-        setting_unsafe_limited_distribution: Send limit posts with unsafe way to other servers
         setting_use_blurhash: Show colorful gradients for hidden media
         setting_use_pending_items: Slow mode
         setting_use_public_index: Include permitted accounts post to results of search

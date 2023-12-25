@@ -86,7 +86,6 @@ ja:
         setting_show_application: 投稿するのに使用したアプリが投稿の詳細ビューに表示されるようになります
         setting_single_ref_to_quote: 当サーバーがまだ対象投稿を取り込んでいない場合、引用が相手に正常に認識されない場合があります
         setting_stop_emoji_reaction_streaming: 通信容量の節約に役立ちます
-        setting_unsafe_limited_distribution: Mastodon 3.5、4.0、4.1のサーバーにも限定投稿（相互のみ）が届くようになりますが、安全でない方法で送信します
         setting_use_blurhash: ぼかしはメディアの色を元に生成されますが、細部は見えにくくなっています
         setting_use_pending_items: 新着があってもタイムラインを自動的にスクロールしないようにします
         subscription_policy: あなたの投稿はこの設定の範囲外にあるアカウントのアンテナに掲載されなくなります。Misskeyのアンテナを拒否することはできません。Mastodonの一部のサーバーもこの設定に対応しますが、挙動が一部kmyblueと異なる場合があります
@@ -309,7 +308,6 @@ ja:
         setting_translatable_private: 非公開投稿の翻訳を許可する
         setting_trends: 本日のトレンドタグを表示する
         setting_unfollow_modal: フォローを解除する前に確認ダイアログを表示する
-        setting_unsafe_limited_distribution: 安全でない方法で限定投稿を他サーバーに配信する (非推奨)
         setting_use_blurhash: 非表示のメディアを色付きのぼかしで表示する
         setting_use_pending_items: 手動更新モード
         setting_use_public_index: Mastodonの標準設定によって検索が許可されたアカウントの公開投稿を検索結果に含める
