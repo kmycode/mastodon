@@ -376,11 +376,14 @@ class ActionBar extends PureComponent {
     const mutual = emojiReactionPolicy !== 'mutuals_only' || (relationship && relationship.get('following') && relationship.get('followed_by'));
     const outside = emojiReactionPolicy !== 'outside_only' || (relationship && (relationship.get('following') || relationship.get('followed_by')));
     const denyFromAll = emojiReactionPolicy !== 'block' && emojiReactionPolicy !== 'block';
-    const emojiPickerButton = (
-      <IconButton icon='smile-o' iconComponent={EmojiReactionIcon} onClick={this.handleEmojiPickInnerButton} title={intl.formatMessage(messages.pickEmoji)} />
-    );
-    const emojiPickerDropdown = enableEmojiReaction && emojiReactionAvailableServer && denyFromAll && (writtenByMe || (following && followed && mutual && outside)) && (
-      <div className='detailed-status__button'><EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} button={emojiPickerButton} /></div>
+    const emojiPickerDropdown = (enableEmojiReaction && emojiReactionAvailableServer && denyFromAll && (writtenByMe || (following && followed && mutual && outside)) && (
+      <div className='detailed-status__button'>
+        <EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} button={(
+          <IconButton title={intl.formatMessage(messages.pickEmoji)} icon='smile-o' iconComponent={EmojiReactionIcon} onClick={this.handleEmojiPickInnerButton} />
+        )} />
+      </div>
+    )) || (
+      <div className='detailed-status__button__blank' />
     );
 
     return (

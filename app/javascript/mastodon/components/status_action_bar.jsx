@@ -468,11 +468,12 @@ class StatusActionBar extends ImmutablePureComponent {
     const mutual = emojiReactionPolicy !== 'mutuals_only' || (relationship && relationship.get('following') && relationship.get('followed_by'));
     const outside = emojiReactionPolicy !== 'outside_only' || (relationship && (relationship.get('following') || relationship.get('followed_by')));
     const denyFromAll = emojiReactionPolicy !== 'block' && emojiReactionPolicy !== 'block';
-    const emojiPickerButton = (
-      <IconButton className='status__action-bar__button' title={intl.formatMessage(messages.emojiReaction)} icon='smile-o' iconComponent={EmojiReactionIcon} onClick={this.handleEmojiPickInnerButton} />
-    );
-    const emojiPickerDropdown = enableEmojiReaction && emojiReactionAvailableServer && denyFromAll && (writtenByMe || (following && followed && mutual && outside)) && (
-      <EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} button={emojiPickerButton} />
+    const emojiPickerDropdown = (enableEmojiReaction && emojiReactionAvailableServer && denyFromAll && (writtenByMe || (following && followed && mutual && outside)) && (
+      <EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} button={(
+        <IconButton className='status__action-bar__button' title={intl.formatMessage(messages.emojiReaction)} icon='smile-o' iconComponent={EmojiReactionIcon} onClick={this.handleEmojiPickInnerButton} />
+      )} />
+    )) || (
+      <div className='status__action-bar__button__blank' />
     );
 
     const isReply = status.get('in_reply_to_account_id') === status.getIn(['account', 'id']);
