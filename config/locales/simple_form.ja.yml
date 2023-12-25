@@ -256,7 +256,7 @@ ja:
         setting_default_sensitive: メディアを常に閲覧注意としてマークする
         setting_delete_modal: 投稿を削除する前に確認ダイアログを表示する
         setting_disable_swiping: スワイプでの切り替えを無効にする
-        setting_disallow_unlisted_public_searchability: 未収載投稿の検索許可が「誰でも」だった場合、「フォロワーのみ」に変更する
+        setting_disallow_unlisted_public_searchability: 非収載投稿の検索許可が「誰でも」「ローカルとフォロワー」だった場合、「フォロワーのみ」に変更する
         setting_display_media: メディアの表示
         setting_display_media_default: 標準
         setting_display_media_expand: 5個目以降のメディアも表示する (最大16)

@@ -129,7 +129,7 @@ class PostStatusService < BaseService
   end
 
   def searchability
-    return :private if @options[:searchability]&.to_sym == :public && @visibility&.to_sym == :unlisted && @account.user&.setting_disallow_unlisted_public_searchability
+    return :private if %i(public public_unlisted).include?(@options[:searchability]&.to_sym) && @visibility&.to_sym == :unlisted && @account.user&.setting_disallow_unlisted_public_searchability
 
     case @options[:searchability]&.to_sym
     when :public

@@ -246,7 +246,7 @@ en:
         setting_default_sensitive: Always mark media as sensitive
         setting_delete_modal: Show confirmation dialog before deleting a post
         setting_disable_swiping: Disable swiping motions
-        setting_disallow_unlisted_public_searchability: Disallow everyone searchability when unlisted visibility
+        setting_disallow_unlisted_public_searchability: Disallow everyone or local searchability when unlisted visibility
         setting_display_media: Media display
         setting_display_media_default: Default
         setting_display_media_expand: Show more medias
