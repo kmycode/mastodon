@@ -65,9 +65,9 @@ ja:
         setting_always_send_emails: 通常、Mastodon からメール通知は行われません。
         setting_bookmark_category_needed: すべてのカテゴリから削除したとき、ブックマークが自動で外れるようになります
         setting_boost_modal: ブーストの公開範囲が指定できるようになります
-        setting_default_searchability: kmyblue・Fedibirdでは検索許可設定に基づき検索されます。Misskeyでは当設定に関係なく、全ての公開・ローカル公開・未収載投稿が検索されます。Mastodon・Firefishでは検索許可の代わりにプロフィール設定の「公開投稿を他のサーバーで自由に検索できるようにする」設定が適用されます
+        setting_default_searchability: kmyblue・Fedibirdでは検索許可設定に基づき検索されます。Misskeyでは当設定に関係なく、全ての公開・ローカル公開・非収載投稿が検索されます。Mastodon・Firefishでは検索許可の代わりにプロフィール設定の「公開投稿を他のサーバーで自由に検索できるようにする」設定が適用されます
         setting_default_sensitive: 閲覧注意状態のメディアはデフォルトでは内容が伏せられ、クリックして初めて閲覧できるようになります
-        setting_disallow_unlisted_public_searchability: この設定を有効にすると、未収載投稿と検索範囲「誰でも」は両立できず不特定多数からの検索が不可になります。Fedibirdと同じ挙動になります
+        setting_disallow_unlisted_public_searchability: この設定を有効にすると、非収載投稿と検索範囲「誰でも」は両立できず不特定多数からの検索が不可になります。Fedibirdと同じ挙動になります
         setting_display_media_default: 閲覧注意としてマークされたメディアは隠す
         setting_display_media_expand: Misskeyなどは4個を超えて投稿可能です。その追加分を最大16個まで表示します。kmyblueからアップロードはできません
         setting_display_media_hide_all: メディアを常に隠す
@@ -82,7 +82,7 @@ ja:
         setting_link_preview: プレビュー生成を停止することは、センシティブなサイトへのリンクを頻繁に投稿する人にも有効かもしれません
         setting_noai: AI学習への利用を禁止するメタタグをプロフィールページに追加します。ただし実効性があるとは限りません
         setting_public_post_to_unlisted: 未対応のサードパーティアプリからもローカル公開で投稿できますが、公開投稿はWeb以外できなくなります
-        setting_reject_unlisted_subscription: Misskeyやそのフォークは、フォローしていないアカウントの「未収載」投稿を **購読・検索** することができます。これはkmyblueの挙動と異なります。そのようなサーバーに、指定した公開範囲の投稿を「フォロワーのみ」として配送します。ただし構造上、完璧な対応は困難でたまに未収載として配信されること、ご理解ください
+        setting_reject_unlisted_subscription: Misskeyやそのフォークは、フォローしていないアカウントの「非収載」投稿を **購読・検索** することができます。これはkmyblueの挙動と異なります。そのようなサーバーに、指定した公開範囲の投稿を「フォロワーのみ」として配送します。ただし構造上、完璧な対応は困難でたまに非収載として配信されること、ご理解ください
         setting_show_application: 投稿するのに使用したアプリが投稿の詳細ビューに表示されるようになります
         setting_single_ref_to_quote: 当サーバーがまだ対象投稿を取り込んでいない場合、引用が相手に正常に認識されない場合があります
         setting_stop_emoji_reaction_streaming: 通信容量の節約に役立ちます
@@ -295,7 +295,7 @@ ja:
         setting_public_post_to_unlisted: サードパーティから公開範囲「公開」で投稿した場合、「ローカル公開」に変更する
         setting_reduce_motion: アニメーションの動きを減らす
         setting_reject_public_unlisted_subscription: Misskey系サーバーに「ローカル公開」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
-        setting_reject_unlisted_subscription: Misskey系サーバーに「未収載」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
+        setting_reject_unlisted_subscription: Misskey系サーバーに「非収載」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
         setting_send_without_domain_blocks: 管理人の設定した配送停止設定を拒否する (非推奨)
         setting_show_application: 送信したアプリを開示する
         setting_show_emoji_reaction_on_timeline: タイムライン上に他の人のつけたスタンプを表示する
