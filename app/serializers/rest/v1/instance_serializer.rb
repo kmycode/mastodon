@@ -100,6 +100,11 @@ class REST::V1::InstanceSerializer < ActiveModel::Serializer
       reactions: {
         max_reactions: EmojiReaction::EMOJI_REACTION_PER_ACCOUNT_LIMIT,
       },
+
+      # https://github.com/mastodon/mastodon/pull/27009
+      search: {
+        enabled: Chewy.enabled?,
+      },
     }
   end
 
