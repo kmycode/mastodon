@@ -21,7 +21,7 @@ module KmyblueCapabilitiesHelper
       kmyblue_list_notification
     )
 
-    capabilities << :profile_search unless Chewy.enabled?
+    capabilities << :full_text_search if Chewy.enabled?
     if Setting.enable_emoji_reaction
       capabilities << :emoji_reaction
       capabilities << :enable_wide_emoji_reaction

@@ -160,7 +160,8 @@ class About extends PureComponent {
     const isPublicUnlistedVisibility = fedibirdCapabilities.includes('kmyblue_visibility_public_unlisted');
     const isEmojiReaction = fedibirdCapabilities.includes('emoji_reaction');
     const isLocalTimeline = !fedibirdCapabilities.includes('timeline_no_local');
-    const isFullTextSearch = !fedibirdCapabilities.includes('profile_search');
+
+    const isFullTextSearch = server.getIn(['configuration', 'search', 'enabled']);
 
     return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
