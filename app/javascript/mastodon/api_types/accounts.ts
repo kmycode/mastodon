@@ -14,7 +14,6 @@ export interface ApiAccountRoleJSON {
 
 export interface ApiAccountOtherSettingsJSON {
   noindex: boolean;
-  noai: boolean;
   hide_network: boolean;
   hide_statuses_count: boolean;
   hide_following_count: boolean;

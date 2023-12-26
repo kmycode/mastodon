@@ -50,7 +50,6 @@ export type AccountOtherSettings = RecordOf<AccountOtherSettingsShape>;
 
 const AccountOtherSettingsFactory = ImmutableRecord<AccountOtherSettingsShape>({
   noindex: false,
-  noai: true,
   hide_network: false,
   hide_followers_count: false,
   hide_following_count: false,

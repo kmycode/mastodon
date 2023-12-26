@@ -5,7 +5,7 @@
   - if @account.noindex?
     %meta{ name: 'robots', content: 'noindex, noarchive, noai, noimageai' }/
     %meta{ name: 'CCBot', content: 'nofollow' }/
-  - elsif @account.noai?
+  - else
     %meta{ name: 'robots', content: 'noai, noimageai' }/
     %meta{ name: 'CCBot', content: 'nofollow' }/
 

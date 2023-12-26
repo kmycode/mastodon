@@ -8,13 +8,6 @@ module Account::OtherSettings
       user_prefers_noindex? || (settings.present? && settings['noindex']) || false
     end
 
-    def noai?
-      return user.setting_noai if local? && user.present?
-      return settings['noai'] if settings.present? && settings.key?('noai')
-
-      false
-    end
-
     def translatable_private?
       return user.setting_translatable_private if local? && user.present?
       return settings['translatable_private'] if settings.present? && settings.key?('translatable_private')
@@ -97,7 +90,6 @@ module Account::OtherSettings
       # Please update `app/javascript/mastodon/api_types/accounts.ts` when making changes to the attributes
       {
         'noindex' => noindex?,
-        'noai' => noai?,
         'hide_network' => hide_collections,
         'hide_statuses_count' => hide_statuses_count?,
         'hide_following_count' => hide_following_count?,

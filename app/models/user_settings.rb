@@ -11,7 +11,6 @@ class UserSettings
   setting :aggregate_reblogs, default: true
   setting :theme, default: -> { ::Setting.theme }
   setting :noindex, default: -> { ::Setting.noindex }
-  setting :noai, default: true
   setting :translatable_private, default: false
   setting :link_preview, default: true
   setting :bio_markdown, default: false

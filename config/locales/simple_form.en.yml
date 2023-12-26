@@ -277,7 +277,6 @@ en:
         setting_hide_statuses_count: Hide statuses count
         setting_link_preview: Generate post link preview card
         setting_lock_follow_from_bot: Request approval about bot follow
-        setting_noai: Set noai meta tags
         setting_public_post_to_unlisted: Convert public post to public unlisted if not using Web app
         setting_reduce_motion: Reduce motion in animations
         setting_reject_public_unlisted_subscription: Reject sending public unlisted visibility/non-public searchability posts to Misskey, Calckey

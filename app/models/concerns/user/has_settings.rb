@@ -131,10 +131,6 @@ module User::HasSettings
     settings['noindex']
   end
 
-  def setting_noai
-    settings['noai']
-  end
-
   def setting_translatable_private
     settings['translatable_private']
   end
