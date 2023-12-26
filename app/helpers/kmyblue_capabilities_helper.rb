@@ -35,32 +35,17 @@ module KmyblueCapabilitiesHelper
 
   def capabilities_for_nodeinfo
     capabilities = %i(
-      wide_emoji
+      enable_wide_emoji
       status_reference
       quote
-      kmyblue_quote
-      kmyblue_subscribable
-      kmyblue_translation
-      kmyblue_link_preview
-      kmyblue_emoji_reaction_policy
-      searchability
-      kmyblue_searchability
-      visibility_mutual
-      visibility_limited
-      kmyblue_antenna
-      kmyblue_bookmark_category
-      kmyblue_searchability_limited
-      kmyblue_circle_history
-      kmyblue_emoji_license
       emoji_keywords
+      circle
     )
 
-    capabilities << :full_text_search if Chewy.enabled?
     if Setting.enable_emoji_reaction
       capabilities << :emoji_reaction
       capabilities << :enable_wide_emoji_reaction
     end
-    capabilities << :timeline_no_local unless Setting.enable_local_timeline
 
     capabilities
   end
