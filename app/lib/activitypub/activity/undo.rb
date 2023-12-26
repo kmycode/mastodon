@@ -163,7 +163,7 @@ class ActivityPub::Activity::Undo < ActivityPub::Activity
       emoji_group = { 'name' => emoji_reaction.name, 'count' => 0, 'account_ids' => [], 'status_id' => @original_status.id.to_s }
       emoji_group['domain'] = emoji_reaction.custom_emoji.domain if emoji_reaction.custom_emoji
     end
-    DeliveryEmojiReactionWorker.perform_async(render_emoji_reaction(emoji_group), @original_status.id, emoji_reaction.account_id) if @original_status.local? || Setting.streaming_other_servers_emoji_reaction
+    DeliveryEmojiReactionWorker.perform_async(render_emoji_reaction(emoji_group), @original_status.id, emoji_reaction.account_id) if Setting.streaming_emoji_reaction && (@original_status.local? || Setting.streaming_other_servers_emoji_reaction)
   end
 
   def render_emoji_reaction(emoji_group)

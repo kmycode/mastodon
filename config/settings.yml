@@ -40,6 +40,7 @@ defaults: &defaults
   captcha_enabled: false
   receive_other_servers_emoji_reaction: false
   streaming_other_servers_emoji_reaction: false
+  streaming_emoji_reaction: true
   enable_emoji_reaction: true
   check_lts_version_only: true
   enable_public_unlisted_visibility: true

@@ -47,6 +47,7 @@ class Form::AdminSettings
     authorized_fetch
     receive_other_servers_emoji_reaction
     streaming_other_servers_emoji_reaction
+    streaming_emoji_reaction
     enable_emoji_reaction
     check_lts_version_only
     enable_public_unlisted_visibility
@@ -78,6 +79,7 @@ class Form::AdminSettings
     authorized_fetch
     receive_other_servers_emoji_reaction
     streaming_other_servers_emoji_reaction
+    streaming_emoji_reaction
     enable_emoji_reaction
     check_lts_version_only
     enable_public_unlisted_visibility
