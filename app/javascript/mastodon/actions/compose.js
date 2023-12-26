@@ -177,6 +177,7 @@ export function submitCompose(routerHistory) {
     const media    = getState().getIn(['compose', 'media_attachments']);
     const statusId = getState().getIn(['compose', 'id'], null);
     const circleId = getState().getIn(['compose', 'circle_id'], null);
+    const privacy  = getState().getIn(['compose', 'privacy']);
 
     if ((!status || !status.length) && media.size === 0) {
       return;
@@ -256,7 +257,7 @@ export function submitCompose(routerHistory) {
         insertIfOnline(`account:${response.data.account.id}`);
       }
 
-      if (statusId === null && circleId !== null && circleId !== 0) {
+      if (statusId === null && privacy === 'circle' && circleId !== null && circleId !== 0) {
         dispatch(submitComposeWithCircleSuccess({ ...response.data }, circleId));
       }
 
