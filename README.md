@@ -1,4 +1,4 @@
-# ![kmyblue icon](https://raw.githubusercontent.com/kmycode/mastodon/kb_development/app/javascript/icons/favicon-48x48.png) kmyblue
+# ![kmyblue icon](https://raw.githubusercontent.com/kmycode/mastodon/kb_development/app/javascript/icons/favicon-32x32.png) kmyblue
 
 [![Ruby Testing](https://github.com/kmycode/mastodon/actions/workflows/test-ruby.yml/badge.svg)](https://github.com/kmycode/mastodon/actions/workflows/test-ruby.yml)
 
