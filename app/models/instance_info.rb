@@ -23,6 +23,7 @@ class InstanceInfo < ApplicationRecord
     meisskey
     sharkey
     firefish
+    catodon
     renedon
     fedibird
     pleroma
