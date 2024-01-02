@@ -12,14 +12,4 @@ class REST::FilterSerializer < ActiveModel::Serializer
   def rules_requested?
     instance_options[:rules_requested]
   end
-
-  # FIRST AID
-  # After the upstream is corrected, delete the following.
-  def title
-    object.phrase
-  end
-
-  def filter_action
-    object.action
-  end
 end
