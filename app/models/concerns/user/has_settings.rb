@@ -259,6 +259,10 @@ module User::HasSettings
     settings['web.hide_emoji_reaction_unavailable_server']
   end
 
+  def setting_hide_emoji_reaction_count
+    settings['web.hide_emoji_reaction_count']
+  end
+
   def setting_hide_favourite_menu
     settings['web.hide_favourite_menu']
   end

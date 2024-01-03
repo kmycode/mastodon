@@ -7,6 +7,8 @@ import classNames from 'classnames';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
+import { isHideItem } from 'mastodon/initial_state';
+
 import EmojiView from './emoji_view';
 
 class EmojiReactionButton extends PureComponent {
@@ -41,12 +43,14 @@ class EmojiReactionButton extends PureComponent {
       'toggled': me,
     };
 
+    const countView = count !== undefined && <span className='count'>{count}</span>;
+
     return (
       <button className={classNames(classList)} type='button' onClick={this.onClick}>
         <span className='emoji'>
           <EmojiView name={name} url={url} staticUrl={staticUrl} />
         </span>
-        <span className='count'>{count}</span>
+        {countView}
       </button>
     );
   }
@@ -76,6 +80,8 @@ class StatusEmojiReactionsBar extends PureComponent {
   render () {
     const { emojiReactions, myReactionOnly } = this.props;
 
+    const isShowCount = !isHideItem('emoji_reaction_count');
+
     const emojiButtons = Array.from(emojiReactions)
       .filter(emoji => emoji.get('count') !== 0)
       .filter(emoji => !myReactionOnly || emoji.get('me'))
@@ -83,7 +89,7 @@ class StatusEmojiReactionsBar extends PureComponent {
         <EmojiReactionButton
           key={index}
           name={emoji.get('name')}
-          count={myReactionOnly ? 1 : emoji.get('count')}
+          count={isShowCount ? (myReactionOnly ? 1 : emoji.get('count')) : undefined}
           me={emoji.get('me')}
           url={emoji.get('url')}
           staticUrl={emoji.get('static_url')}

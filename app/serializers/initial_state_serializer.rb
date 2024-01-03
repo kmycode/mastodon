@@ -41,6 +41,7 @@ class InitialStateSerializer < ActiveModel::Serializer
         object_account_user.setting_hide_recent_emojis ? 'recent_emojis' : nil,
         object_account_user.setting_hide_blocking_quote ? 'blocking_quote' : nil,
         object_account_user.setting_hide_emoji_reaction_unavailable_server ? 'emoji_reaction_unavailable_server' : nil,
+        object_account_user.setting_hide_emoji_reaction_count ? 'emoji_reaction_count' : nil,
         object_account_user.setting_show_emoji_reaction_on_timeline ? nil : 'emoji_reaction_on_timeline',
         object_account_user.setting_show_quote_in_home ? nil : 'quote_in_home',
         object_account_user.setting_show_quote_in_public ? nil : 'quote_in_public',
