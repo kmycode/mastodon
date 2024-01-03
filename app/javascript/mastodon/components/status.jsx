@@ -452,7 +452,7 @@ class Status extends ImmutablePureComponent {
         moveDown: this.handleHotkeyMoveDown,
       };
 
-      if (status.get('filter_action') === 'half_warn') {
+      if (status.get('filter_action_ex') === 'half_warn') {
         return (
           <HotKeys handlers={minHandlers}>
             <div className='status__wrapper status__wrapper--filtered focusable' tabIndex={0} ref={this.handleRef}>

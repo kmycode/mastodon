@@ -56,13 +56,13 @@ export const makeGetStatus = () => {
           }
         }
 
-        if (filterResults.some((result) => filters.getIn([result.get('filter'), 'filter_action']) === 'hide')) {
+        if (filterResults.some((result) => filters.getIn([result.get('filter'), 'filter_action_ex']) === 'hide')) {
           return null;
         }
         filterResults = filterResults.filter(result => filters.has(result.get('filter')));
         if (!filterResults.isEmpty()) {
           filtered = filterResults.map(result => filters.getIn([result.get('filter'), 'title']));
-          filterAction = filterResults.some((result) => filters.getIn([result.get('filter'), 'filter_action']) === 'warn') ? 'warn' : 'half_warn';
+          filterAction = filterResults.some((result) => filters.getIn([result.get('filter'), 'filter_action_ex']) === 'warn') ? 'warn' : 'half_warn';
         }
       }
 
@@ -72,6 +72,7 @@ export const makeGetStatus = () => {
         map.set('account', accountBase);
         map.set('matched_filters', filtered);
         map.set('filter_action', filterAction);
+        map.set('filter_action_ex', filterAction);
       });
     },
   );

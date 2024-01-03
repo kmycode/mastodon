@@ -9,6 +9,7 @@ const normalizeFilter = (state, filter) => {
     title: filter.title,
     context: filter.context,
     filter_action: filter.filter_action,
+    filter_action_ex: filter.filter_action_ex,
     keywords: filter.keywords,
     expires_at: filter.expires_at ? Date.parse(filter.expires_at) : null,
     with_quote: filter.with_quote,
