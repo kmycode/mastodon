@@ -37,7 +37,7 @@ class EmojiReactService < BaseService
     create_notification
     notify_to_followers
     increment_statistics
-    write_stream! if Setting.streaming_emoji_reaction
+    write_stream! if Setting.streaming_local_emoji_reaction
 
     @emoji_reaction
   end

@@ -125,8 +125,7 @@ ja:
         site_terms: 独自のプライバシーポリシーを使用するか空白にしてデフォルトのプライバシーポリシーを使用します。Markdownが使えます。
         site_title: ドメイン名以外でサーバーを参照する方法
         status_page_url: 障害発生時などにユーザーがサーバーの状態を確認できるページのURL
-        streaming_emoji_reaction: サーバーの負荷が高い場合は一時的にチェックを外してみてください。
-        streaming_other_servers_emoji_reaction: 大量のデータが配信されるため、ネットワークの回線やサーバーの負荷をチェックしてください。
+        streaming_other_servers_emoji_reaction: 大量のデータが配信されるため、ネットワークの回線やサーバーの負荷をチェックしてください。サーバーの負荷が高い場合は一時的にチェックを外してみてください。
         theme: ログインしていない人と新規ユーザーに表示されるテーマ。
         thumbnail: サーバー情報と共に表示される、アスペクト比が約 2:1 の画像。
         timeline_preview: ログインしていないユーザーがサーバー上の最新の公開投稿を閲覧できるようにします。
@@ -372,7 +371,7 @@ ja:
         site_terms: プライバシーポリシー
         site_title: サーバーの名前
         status_page_url: サーバーの状態ページのURL
-        streaming_emoji_reaction: スタンプのストリーミングを有効にする
+        streaming_local_emoji_reaction: ローカルユーザーがつけた、またはローカル投稿についたスタンプをストリーミングする
         streaming_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけたスタンプをストリーミングする
         theme: デフォルトテーマ
         thumbnail: サーバーのサムネイル

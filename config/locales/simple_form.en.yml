@@ -113,8 +113,7 @@ en:
         site_terms: Use your own privacy policy or leave blank to use the default. Can be structured with Markdown syntax.
         site_title: How people may refer to your server besides its domain name.
         status_page_url: URL of a page where people can see the status of this server during an outage
-        streaming_emoji_reaction: If the server load is high, try unchecking the box temporarily.
-        streaming_other_servers_emoji_reaction: Check network lines and server load as large amounts of data are delivered.
+        streaming_other_servers_emoji_reaction: Check network lines and server load as large amounts of data are delivered. If the server load is high, try unchecking the box temporarily.
         theme: Theme that logged out visitors and new users see.
         thumbnail: A roughly 2:1 image displayed alongside your server information.
         timeline_preview: Logged out visitors will be able to browse the most recent public posts available on the server.
@@ -362,7 +361,7 @@ en:
         site_terms: Privacy Policy
         site_title: Server name
         status_page_url: Status page URL
-        streaming_emoji_reaction: Enable stamp streaming
+        streaming_local_emoji_reaction: Streaming stamp related to local users
         streaming_other_servers_emoji_reaction: Streaming stamp between other server users
         theme: Default theme
         thumbnail: Server thumbnail
