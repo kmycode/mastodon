@@ -45,7 +45,7 @@ const messages = defineMessages({
   },
   mutual_short: {
     id: 'privacy.mutual.short',
-    defaultMessage: 'Mutual followers only',
+    defaultMessage: 'Mutual only',
   },
   circle_short: {
     id: 'privacy.circle.short',
