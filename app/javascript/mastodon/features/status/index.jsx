@@ -580,35 +580,45 @@ class Status extends ImmutablePureComponent {
   };
 
   handleMoveUp = id => {
-    const { status, ancestorsIds, descendantsIds } = this.props;
+    const { status, ancestorsIds, descendantsIds, referenceIds } = this.props;
 
     if (id === status.get('id')) {
-      this._selectChild(ancestorsIds.size - 1, true);
+      this._selectChild(ancestorsIds.size + referenceIds.size - 1, true);
     } else {
       let index = ancestorsIds.indexOf(id);
 
       if (index === -1) {
         index = descendantsIds.indexOf(id);
-        this._selectChild(ancestorsIds.size + index, true);
+        if (index === -1) {
+          index = referenceIds.indexOf(id);
+          this._selectChild(index - 1, true);
+        } else {
+          this._selectChild(ancestorsIds.size + referenceIds.size + index, true);
+        }
       } else {
-        this._selectChild(index - 1, true);
+        this._selectChild(referenceIds.size + index - 1, true);
       }
     }
   };
 
   handleMoveDown = id => {
-    const { status, ancestorsIds, descendantsIds } = this.props;
+    const { status, ancestorsIds, descendantsIds, referenceIds } = this.props;
 
     if (id === status.get('id')) {
-      this._selectChild(ancestorsIds.size + 1, false);
+      this._selectChild(ancestorsIds.size + referenceIds.size + 1, false);
     } else {
       let index = ancestorsIds.indexOf(id);
 
       if (index === -1) {
         index = descendantsIds.indexOf(id);
-        this._selectChild(ancestorsIds.size + index + 2, false);
+        if (index === -1) {
+          index = referenceIds.indexOf(id);
+          this._selectChild(index + 1, false);
+        } else {
+          this._selectChild(ancestorsIds.size + referenceIds.size + index + 2, false);
+        }
       } else {
-        this._selectChild(index + 1, false);
+        this._selectChild(referenceIds.size + index + 1, false);
       }
     }
   };
@@ -669,9 +679,9 @@ class Status extends ImmutablePureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    const { status, ancestorsIds } = this.props;
+    const { status, ancestorsIds, referenceIds } = this.props;
 
-    if (status && (ancestorsIds.size > prevProps.ancestorsIds.size || prevProps.status?.get('id') !== status.get('id'))) {
+    if (status && (ancestorsIds.size + referenceIds.size > prevProps.ancestorsIds.size + prevProps.referenceIds.size || prevProps.status?.get('id') !== status.get('id'))) {
       this._scrollStatusIntoView();
     }
   }
