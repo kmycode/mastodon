@@ -382,9 +382,9 @@ class ActionBar extends PureComponent {
           <IconButton title={intl.formatMessage(messages.pickEmoji)} icon='smile-o' iconComponent={EmojiReactionIcon} onClick={this.handleEmojiPickInnerButton} />
         )} />
       </div>
-    )) || (
+    )) || (enableEmojiReaction && (
       <div className='detailed-status__button__blank' />
-    );
+    )) || null;
 
     return (
       <div className='detailed-status__action-bar'>
