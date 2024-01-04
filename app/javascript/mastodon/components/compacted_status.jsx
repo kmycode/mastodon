@@ -310,7 +310,7 @@ class CompactedStatus extends ImmutablePureComponent {
     if (hidden) {
       return (
         <HotKeys handlers={handlers}>
-          <div ref={this.handleRef} className={classNames('status__wrapper', { focusable: !this.props.muted })} tabIndex={0}>
+          <div ref={this.handleRef} className='status__wrapper'>
             <span>{status.getIn(['account', 'display_name']) || status.getIn(['account', 'username'])}</span>
             <span>{status.get('content')}</span>
           </div>
@@ -342,7 +342,7 @@ class CompactedStatus extends ImmutablePureComponent {
       return (
         <HotKeys handlers={minHandlers}>
           {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-          <div className='status__wrapper status__wrapper__compact status__wrapper--filtered focusable' tabIndex={0} ref={this.handleRef} onClick={this.handleClick}>
+          <div className='status__wrapper status__wrapper__compact status__wrapper--filtered' ref={this.handleRef} onClick={this.handleClick}>
             <FormattedMessage id='status.quote_filtered' defaultMessage='This quote is filtered because of muting, blocking or domain blocking' />
           </div>
         </HotKeys>
@@ -448,7 +448,7 @@ class CompactedStatus extends ImmutablePureComponent {
 
     return (
       <HotKeys handlers={handlers}>
-        <div className={classNames('status__wrapper', 'status__wrapper__compact', `status__wrapper-${status.get('visibility_ex')}`, { 'status__wrapper-reply': !!status.get('in_reply_to_id'), unread, focusable: !this.props.muted })} tabIndex={this.props.muted ? null : 0} data-featured={featured ? 'true' : null} aria-label={textForScreenReader(intl, status, rebloggedByText)} ref={this.handleRef} data-nosnippet={status.getIn(['account', 'noindex'], true) || undefined}>
+        <div className={classNames('status__wrapper', 'status__wrapper__compact', `status__wrapper-${status.get('visibility_ex')}`, { 'status__wrapper-reply': !!status.get('in_reply_to_id'), unread })} data-featured={featured ? 'true' : null} aria-label={textForScreenReader(intl, status, rebloggedByText)} ref={this.handleRef} data-nosnippet={status.getIn(['account', 'noindex'], true) || undefined}>
           {prepend}
 
           <div className={classNames('status', `status-${status.get('visibility_ex')}`, { 'status-reply': !!status.get('in_reply_to_id'), 'status--in-thread': !!rootId, 'status--first-in-thread': previousId && (!connectUp || connectToRoot), muted: this.props.muted })} data-id={status.get('id')}>
