@@ -11,7 +11,7 @@ textarea {
   }
 
   &::placeholder {
-    color: lighten($dark-text-color, 36%) !important;
+    color: $dark-text-color !important;
   }
 }
 
