@@ -27,6 +27,8 @@ class FeedInsertWorker
     with_read_replica do
       check_and_insert
     end
+
+    perform_notify_for_list if !feed_filtered? && notify_for_list?
   rescue ActiveRecord::RecordNotFound
     true
   end
@@ -39,7 +41,6 @@ class FeedInsertWorker
     else
       perform_push
       perform_notify if notify?
-      perform_notify_for_list if notify_for_list?
     end
   end
 
