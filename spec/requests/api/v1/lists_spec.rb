@@ -19,7 +19,7 @@ RSpec.describe 'Lists' do
         Fabricate(:list, account: user.account, title: 'second list', replies_policy: :list),
         Fabricate(:list, account: user.account, title: 'third list', replies_policy: :none),
         Fabricate(:list, account: user.account, title: 'fourth list', exclusive: true),
-        Fabricate(:list, account: user.account, title: 'fourth list', notify: true),
+        Fabricate(:list, account: user.account, title: 'fifth list', notify: true),
       ]
     end
 

@@ -55,10 +55,14 @@ class Antenna < ApplicationRecord
   scope :available_stls, -> { where(available: true, stl: true) }
   scope :available_ltls, -> { where(available: true, stl: false, ltl: true) }
 
+  validates :title, presence: true
+
   validate :list_owner
   validate :validate_limit
   validate :validate_stl_limit
   validate :validate_ltl_limit
+
+  before_destroy :clean_feed_manager
 
   def list_owner
     raise Mastodon::ValidationError, I18n.t('antennas.errors.invalid_list_owner') if !list_id.zero? && list.present? && list.account != account
@@ -120,5 +124,9 @@ class Antenna < ApplicationRecord
                                                                              else
                                                                                ltls.any? { |tl| !tl.insert_feeds }
                                                                              end
+  end
+
+  def clean_feed_manager
+    FeedManager.instance.clean_feeds!(:antenna, [id])
   end
 end
