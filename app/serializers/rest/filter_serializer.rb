@@ -14,7 +14,7 @@ class REST::FilterSerializer < ActiveModel::Serializer
   end
 
   def filter_action
-    return :hide if object.half_warn_action?
+    return :warn if object.half_warn_action?
 
     object.filter_action
   end
