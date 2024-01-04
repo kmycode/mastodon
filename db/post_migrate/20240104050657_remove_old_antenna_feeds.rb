@@ -11,6 +11,8 @@ class RemoveOldAntennaFeeds < ActiveRecord::Migration[7.1]
   end
 
   def up
+    return if Rails.env.test?
+
     current_id = 1
 
     Antenna.reorder(:id).select(:id).find_in_batches do |antennas|
