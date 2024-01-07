@@ -44,7 +44,7 @@ class DomainBlock < ApplicationRecord
   delegate :count, to: :accounts, prefix: true
 
   scope :matches_domain, ->(value) { where(arel_table[:domain].matches("%#{value}%")) }
-  scope :with_user_facing_limitations, -> { where(hidden: false) }
+  scope :with_user_facing_limitations, -> { where(hidden: false, hidden_anonymous: false) }
   scope :with_limitations, lambda {
     where(severity: [:silence, :suspend])
       .or(where(reject_media: true))

@@ -36,7 +36,6 @@ class Api::V1::Instances::DomainBlocksController < Api::V1::Instances::BaseContr
 
   def set_domain_blocks
     @domain_blocks = DomainBlock.with_user_facing_limitations.by_severity
-    @domain_blocks = @domain_blocks.filter { |block| !block.hidden_anonymous } unless user_signed_in?
   end
 
   def show_rationale_in_response?

@@ -31,10 +31,7 @@
     = f.input :public_comment, wrapper: :with_label, label: I18n.t('admin.domain_blocks.public_comment'), hint: t('admin.domain_blocks.public_comment_hint'), as: :string
 
   .fields-group
-    = f.input :hidden, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.hidden'), hint: I18n.t('admin.domain_blocks.hidden_hint')
-
-  .fields-group
-    = f.input :hidden_anonymous, kmyblue: true, as: :boolean, wrapper: :with_label, label: I18n.t('admin.domain_blocks.hidden_anonymous'), hint: I18n.t('admin.domain_blocks.hidden_anonymous_hint')
+    = f.input :hidden, as: :boolean, kmyblue: true, wrapper: :with_label, label: I18n.t('admin.domain_blocks.hidden'), hint: I18n.t('admin.domain_blocks.hidden_hint')
 
   .actions
     = f.button :button, t('.create'), type: :submit

@@ -415,8 +415,6 @@ ja:
         mastodon_default: 本家Mastodonの設定項目
       hidden: 非公開にする
       hidden_hint: 公開することで当サーバーの安全が脅かされる場合、このドメインブロックを非公開にすることができます。
-      hidden_anonymous: 未ログインユーザーに非公開にする
-      hidden_anonymous_hint: 公開することで当サーバーの安全が脅かされる場合、非ログインユーザーに限りこのドメインブロックを非公開にすることができます。
       import: インポート
       new:
         create: ブロックを作成
