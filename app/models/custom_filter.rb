@@ -113,20 +113,25 @@ class CustomFilter < ApplicationRecord
   end
 
   def self.apply_cached_filters(cached_filters, status, following: false)
+    references_text_cache = nil
+    references_spoiler_text_cache = nil
+
     cached_filters.filter_map do |filter, rules|
       next if filter.exclude_follows && following
       next if filter.exclude_localusers && status.account.local?
 
       if rules[:keywords].present?
         match = rules[:keywords].match(status.proper.searchable_text)
-        if match.nil? && filter.with_quote && status.proper.references.exists?
-          match = rules[:keywords].match(status.proper.references.pluck(:text).join("\n\n"))
-          match = rules[:keywords].match(status.proper.references.pluck(:spoiler_text).join("\n\n")) if match.nil?
+        if match.nil? && filter.with_quote && status.proper.reference_objects.exists?
+          references_text_cache = status.proper.references.pluck(:text).join("\n\n") if references_text_cache.nil?
+          references_spoiler_text_cache = status.proper.references.pluck(:spoiler_text).join("\n\n") if references_spoiler_text_cache.nil?
+          match = rules[:keywords].match(references_text_cache)
+          match = rules[:keywords].match(references_spoiler_text_cache) if match.nil?
         end
       end
       keyword_matches = [match.to_s] unless match.nil?
 
-      reference_ids = filter.with_quote ? status.proper.references.pluck(:id) : []
+      reference_ids = filter.with_quote ? status.proper.reference_objects.pluck(:target_status_id) : []
       status_matches = ([status.id, status.reblog_of_id] + reference_ids).compact & rules[:status_ids] if rules[:status_ids].present?
 
       next if keyword_matches.blank? && status_matches.blank?

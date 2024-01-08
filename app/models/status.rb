@@ -185,6 +185,7 @@ class Status < ApplicationRecord
                    :tags,
                    :preloadable_poll,
                    :reference_objects,
+                   :references,
                    :scheduled_expiration_status,
                    preview_cards_status: [:preview_card],
                    account: [:account_stat, user: :role],
