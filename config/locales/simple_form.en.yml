@@ -170,6 +170,8 @@ en:
           name: Label
           value: Content
         indexable: Include public posts in search results
+        indexable_kmyblue: Enable indexable
+        searchability_kmyblue: Default searchability
         show_collections: Show follows and followers on profile
         unlocked: Automatically accept new followers
       account_alias:

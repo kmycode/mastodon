@@ -20,6 +20,7 @@ linters:
       - 'app/views/settings/preferences/notifications/show.html.haml'
       - 'app/views/settings/preferences/other/show.html.haml'
       - 'app/views/settings/preferences/reaching/show.html.haml'
+      - 'app/views/settings/privacy/show.html.haml'
       - 'app/views/settings/privacy_extra/show.html.haml'
       - 'app/views/settings/profiles/show.html.haml'
 

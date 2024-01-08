@@ -1748,8 +1748,8 @@ en:
     reach: Reach
     reach_hint_html: Control whether you want to be discovered and followed by new people. Do you want your posts to appear on the Explore screen? Do you want other people to see you in their follow recommendations? Do you want to accept all new followers automatically, or have granular control over each one?
     search: Search
+    search_kmyblue_hint_html: "There are two types of post search settings in kmyblue: 'Indexable' and 'Searchability'. indexable allows all public posts of an account to be searchable by other standard Mastodon, and changes to the setting are retroactive to past posts. Searchability can be specified on a per-post basis, and on kmyblue and Fedibird, this setting takes precedence over Indexable. Past posts cannot be changed."
     search_hint_html: Control how you want to be found. Do you want people to find you by what you've publicly posted about? Do you want people outside Mastodon to find your profile when searching the web? Please mind that total exclusion from all search engines cannot be guaranteed for public information.
-    stop_deliver: Stop delivering
     title: Privacy and reach
   privacy_extra:
     hint_html: These settings are kmyblue original. You will receive additional privacy benefits by doing this setting.

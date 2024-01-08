@@ -28,12 +28,19 @@
 
   %p.lead= t('privacy.search_hint_html')
 
-  .fields-group
-    = f.input :indexable, as: :boolean, wrapper: :with_label
-
   = f.simple_fields_for :settings, current_user.settings do |ff|
     .fields-group
       = ff.input :indexable, wrapper: :with_label
+
+  %p.lead= t('privacy.search_kmyblue_hint_html')
+
+  .fields-group
+    = f.input :indexable, as: :boolean, wrapper: :with_label, label: I18n.t('simple_form.labels.account.indexable_kmyblue')
+
+  = f.simple_fields_for :settings, current_user.settings do |ff|
+    .fields-row
+      .fields-group.fields-row__column.fields-row__column-12
+        = ff.input :default_searchability, collection: Status.selectable_searchabilities, wrapper: :with_label, kmyblue: true, include_blank: false, label_method: ->(searchability) { safe_join([I18n.t("statuses.searchabilities.#{searchability}"), I18n.t("statuses.searchabilities.#{searchability}_long")], ' - ') }, required: false, label: I18n.t('simple_form.labels.account.searchability_kmyblue')
 
   %h4= t('privacy.privacy')
 
