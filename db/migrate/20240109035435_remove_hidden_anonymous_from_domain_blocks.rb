@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RemoveHiddenAnonymousFromDomainBlocks < ActiveRecord::Migration[7.1]
+class RemoveHiddenAnonymousFromDomainBlocks < ActiveRecord::Migration[7.0]
   class DomainBlock < ApplicationRecord; end
 
   def up
