@@ -37,16 +37,6 @@ RSpec.describe 'Domain Blocks' do
           expect(body_as_json.pluck(:domain)).to_not include('hello.com')
         end
       end
-
-      context 'with hidden domain block from anonymous' do
-        before { Fabricate(:domain_block, domain: 'hello.com', hidden_anonymous: true) }
-
-        it 'returns http success and dont include hidden record' do
-          get api_v1_instance_domain_blocks_path
-
-          expect(body_as_json.pluck(:domain)).to_not include('hello.com')
-        end
-      end
     end
 
     context 'with domain blocks set to users' do
@@ -77,16 +67,6 @@ RSpec.describe 'Domain Blocks' do
 
       context 'with hidden domain block' do
         before { Fabricate(:domain_block, domain: 'hello.com', hidden: true) }
-
-        it 'returns http success and dont include hidden record' do
-          get api_v1_instance_domain_blocks_path, headers: headers
-
-          expect(body_as_json.pluck(:domain)).to_not include('hello.com')
-        end
-      end
-
-      context 'with hidden domain block from anonymous' do
-        before { Fabricate(:domain_block, domain: 'hello.com', hidden_anonymous: true) }
 
         it 'returns http success and dont include hidden record' do
           get api_v1_instance_domain_blocks_path, headers: headers
