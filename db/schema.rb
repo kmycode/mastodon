@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_22_100226) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_09_035435) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -584,7 +584,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_22_100226) do
     t.boolean "reject_straight_follow", default: false, null: false
     t.boolean "reject_new_follow", default: false, null: false
     t.boolean "hidden", default: false, null: false
-    t.boolean "hidden_anonymous", default: false, null: false
     t.boolean "detect_invalid_subscription", default: false, null: false
     t.boolean "reject_reply_exclude_followers", default: false, null: false
     t.boolean "reject_friend", default: false, null: false
