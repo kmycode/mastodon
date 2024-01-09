@@ -51,6 +51,14 @@ module JsonLdHelper
     end
   end
 
+  def as_array_ex(value)
+    if value.is_a?(Hash)
+      []
+    else
+      as_array(value)
+    end
+  end
+
   def value_or_id(value)
     value.is_a?(String) || value.nil? ? value : value['id']
   end

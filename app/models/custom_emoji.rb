@@ -74,7 +74,7 @@ class CustomEmoji < ApplicationRecord
       domain: nil,
       shortcode: shortcode,
       license: license,
-      aliases: aliases,
+      aliases: (aliases || []).compact_blank,
       is_sensitive: is_sensitive
     )
     copy.image = image

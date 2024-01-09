@@ -16,7 +16,7 @@ class ActivityPub::Parser::CustomEmojiParser
   end
 
   def aliases
-    as_array(@json['keywords'])
+    as_array_ex(@json['keywords'])
   end
 
   def image_remote_url
