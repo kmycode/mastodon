@@ -88,6 +88,7 @@ export const accountDefaultValues: AccountShape = {
   indexable: false,
   display_name: '',
   display_name_html: '',
+  emoji_reaction_available_server: false,
   emojis: List<CustomEmoji>(),
   fields: List<AccountField>(),
   group: false,

@@ -369,7 +369,7 @@ class ActionBar extends PureComponent {
       reblogIconComponent = RepeatDisabledIcon;
     }
 
-    const emojiReactionAvailableServer = !isHideItem('emoji_reaction_unavailable_server') || status.get('emoji_reaction_available_server');
+    const emojiReactionAvailableServer = !isHideItem('emoji_reaction_unavailable_server') || account.get('emoji_reaction_available_server');
     const emojiReactionPolicy = account.getIn(['other_settings', 'emoji_reaction_policy']) || 'allow';
     const following = emojiReactionPolicy !== 'following_only' || (relationship && relationship.get('following'));
     const followed = emojiReactionPolicy !== 'followers_only' || (relationship && relationship.get('followed_by'));
