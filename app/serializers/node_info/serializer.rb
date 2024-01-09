@@ -43,6 +43,10 @@ class NodeInfo::Serializer < ActiveModel::Serializer
       nodeName: Setting.site_title,
       nodeDescription: Setting.site_short_description,
       features: capabilities_for_nodeinfo,
+      upstream: {
+        name: 'Mastodon',
+        version: Mastodon::Version.to_s_of_mastodon,
+      },
     }
   end
 
