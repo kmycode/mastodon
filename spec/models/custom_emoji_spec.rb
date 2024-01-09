@@ -49,6 +49,52 @@ RSpec.describe CustomEmoji do
     end
   end
 
+  describe '#copy!' do
+    subject do
+      custom_emoji.copy!
+      described_class.where.not(id: custom_emoji.id).find_by(domain: nil, shortcode: custom_emoji.shortcode)
+    end
+
+    context 'when a simple case' do
+      let(:custom_emoji) { Fabricate(:custom_emoji, license: 'Ohagi', aliases: %w(aaa bbb), domain: 'example.com', uri: 'https://example.com/emoji') }
+
+      it 'makes a copy ot the emoji' do
+        emoji = subject
+        expect(emoji).to_not be_nil
+        expect(emoji.license).to eq 'Ohagi'
+        expect(emoji.aliases).to eq %w(aaa bbb)
+      end
+    end
+
+    context 'when local has already same emoji' do
+      let(:custom_emoji) { Fabricate(:custom_emoji, domain: nil) }
+
+      it 'does not make a copy of the emoji' do
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when aliases is null' do
+      let(:custom_emoji) { Fabricate(:custom_emoji, aliases: nil, domain: 'example.com', uri: 'https://example.com/emoji') }
+
+      it 'makes a copy of the emoji but aliases property is normalized' do
+        emoji = subject
+        expect(emoji).to_not be_nil
+        expect(emoji.aliases).to eq []
+      end
+    end
+
+    context 'when aliases contains null' do
+      let(:custom_emoji) { Fabricate(:custom_emoji, aliases: [nil], domain: 'example.com', uri: 'https://example.com/emoji') }
+
+      it 'makes a copy of the emoji but aliases property is normalized' do
+        emoji = subject
+        expect(emoji).to_not be_nil
+        expect(emoji.aliases).to eq []
+      end
+    end
+  end
+
   describe '#object_type' do
     it 'returns :emoji' do
       custom_emoji = Fabricate(:custom_emoji)

@@ -95,12 +95,12 @@ describe Form::CustomEmojiBatch do
     end
 
     describe 'the copy action' do
-      let(:custom_emoji) { Fabricate(:custom_emoji) }
+      let(:custom_emoji) { Fabricate(:custom_emoji, domain: 'example.com', uri: 'https://example.com/emoji') }
       let(:options) { { action: 'copy', custom_emoji_ids: [custom_emoji.id] } }
 
       it 'makes a copy of the emoji' do
         expect { subject.save }
-          .to change(CustomEmoji, :count).by(1)
+          .to change(CustomEmoji, :count).by(2)
       end
     end
 
