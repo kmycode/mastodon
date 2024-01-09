@@ -12,7 +12,7 @@ const buildSearch = (data) => {
     }
 
     (Array.isArray(strings) ? strings : [strings]).forEach((string) => {
-      (split ? string.split(/[-|_|\s]+/) : [string]).forEach((s) => {
+      (split ? string.split(/[-|_|\s]+/) : [string]).filter((s) => s).forEach((s) => {
         s = s.toLowerCase();
 
         if (search.indexOf(s) === -1) {
