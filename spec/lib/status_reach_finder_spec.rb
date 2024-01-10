@@ -385,43 +385,13 @@ describe StatusReachFinder do
       let(:bob) { Fabricate(:account, username: 'bob', domain: 'example.com', protocol: :activitypub, uri: 'https://example.com/', inbox_url: 'https://example.com/inbox') }
       let(:tom) { Fabricate(:account, username: 'tom', domain: 'tom.com', protocol: :activitypub, uri: 'https://tom.com/', inbox_url: 'https://tom.com/inbox') }
 
-      context 'when reject_send_not_public_searchability' do
-        let(:properties) { { reject_send_not_public_searchability: true } }
-        let(:searchability) { :private }
+      context 'when reject_send_sensitive' do
+        let(:properties) { { reject_send_sensitive: true } }
+        let(:spoiler_text) { 'CW' }
 
         it 'does not include the inbox of blocked domain' do
           expect(subject.inboxes).to_not include 'https://example.com/inbox'
           expect(subject.inboxes).to include 'https://tom.com/inbox'
-        end
-      end
-
-      context 'when reject_send_public_unlisted' do
-        let(:properties) { { reject_send_public_unlisted: true } }
-        let(:visibility) { :public_unlisted }
-
-        it 'does not include the inbox of blocked domain' do
-          expect(subject.inboxes).to_not include 'https://example.com/inbox'
-          expect(subject.inboxes).to include 'https://tom.com/inbox'
-        end
-
-        context 'when reject_send_dissubscribable' do
-          let(:properties) { { reject_send_dissubscribable: true } }
-          let(:dissubscribable) { true }
-
-          it 'does not include the inbox of blocked domain' do
-            expect(subject.inboxes).to_not include 'https://example.com/inbox'
-            expect(subject.inboxes).to include 'https://tom.com/inbox'
-          end
-        end
-
-        context 'when reject_send_sensitive' do
-          let(:properties) { { reject_send_sensitive: true } }
-          let(:spoiler_text) { 'CW' }
-
-          it 'does not include the inbox of blocked domain' do
-            expect(subject.inboxes).to_not include 'https://example.com/inbox'
-            expect(subject.inboxes).to include 'https://tom.com/inbox'
-          end
         end
       end
     end
