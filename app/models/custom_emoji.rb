@@ -96,7 +96,7 @@ class CustomEmoji < ApplicationRecord
   end
 
   def aliases_raw=(raw)
-    aliases = raw.split(',').filter(&:present?).uniq
+    aliases = raw.split(',').compact_blank.uniq
     self[:aliases] = aliases
   end
 
