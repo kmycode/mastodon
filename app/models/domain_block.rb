@@ -69,7 +69,6 @@ class DomainBlock < ApplicationRecord
        reject_favourite? ? :reject_favourite : nil,
        reject_reply? ? :reject_reply : nil,
        reject_reply_exclude_followers? ? :reject_reply_exclude_followers : nil,
-       reject_send_media? ? :reject_send_media : nil,
        reject_send_sensitive? ? :reject_send_sensitive : nil,
        reject_hashtag? ? :reject_hashtag : nil,
        reject_straight_follow? ? :reject_straight_follow : nil,

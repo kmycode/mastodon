@@ -149,7 +149,6 @@ class StatusPolicy < ApplicationPolicy
       else
         (@domain_block.detect_invalid_subscription && status.public_unlisted_visibility? && status.account.user&.setting_reject_public_unlisted_subscription) ||
           (@domain_block.detect_invalid_subscription && status.public_visibility? && status.account.user&.setting_reject_unlisted_subscription) ||
-          (@domain_block.reject_send_media && status.with_media?) ||
           (@domain_block.reject_send_sensitive && ((status.with_media? && status.sensitive) || status.spoiler_text?))
       end
     else

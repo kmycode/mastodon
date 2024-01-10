@@ -88,17 +88,17 @@ module Admin
     end
 
     def update_params
-      params.require(:domain_block).permit(:severity, :reject_media, :reject_favourite, :reject_reply, :reject_reply_exclude_followers, :reject_send_media, :reject_send_sensitive, :reject_hashtag,
+      params.require(:domain_block).permit(:severity, :reject_media, :reject_favourite, :reject_reply, :reject_reply_exclude_followers, :reject_send_sensitive, :reject_hashtag,
                                            :reject_straight_follow, :reject_new_follow, :reject_friend, :detect_invalid_subscription, :reject_reports, :private_comment, :public_comment, :obfuscate, :hidden)
     end
 
     def resource_params
-      params.require(:domain_block).permit(:domain, :severity, :reject_media, :reject_favourite, :reject_reply, :reject_reply_exclude_followers, :reject_send_media, :reject_send_sensitive, :reject_hashtag,
+      params.require(:domain_block).permit(:domain, :severity, :reject_media, :reject_favourite, :reject_reply, :reject_reply_exclude_followers, :reject_send_sensitive, :reject_hashtag,
                                            :reject_straight_follow, :reject_new_follow, :reject_friend, :detect_invalid_subscription, :reject_reports, :private_comment, :public_comment, :obfuscate, :hidden)
     end
 
     def form_domain_block_batch_params
-      params.require(:form_domain_block_batch).permit(domain_blocks_attributes: [:enabled, :domain, :severity, :reject_media, :reject_favourite, :reject_reply, :reject_reply_exclude_followers, :reject_send_media,
+      params.require(:form_domain_block_batch).permit(domain_blocks_attributes: [:enabled, :domain, :severity, :reject_media, :reject_favourite, :reject_reply, :reject_reply_exclude_followers,
                                                                                  :reject_send_sensitive, :reject_hashtag, :reject_straight_follow, :reject_new_follow, :reject_friend, :detect_invalid_subscription, :reject_reports, :private_comment, :public_comment, :obfuscate, :hidden])
     end
 

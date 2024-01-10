@@ -195,7 +195,6 @@ class StatusReachFinder
       []
     else
       blocks = DomainBlock.where(domain: nil)
-      blocks = blocks.or(DomainBlock.where(reject_send_media: true)) if status.with_media?
       blocks = blocks.or(DomainBlock.where(reject_send_sensitive: true)) if (status.with_media? && status.sensitive) || status.spoiler_text?
       blocks.pluck(:domain).uniq
     end

@@ -29,7 +29,4 @@
 %h4= I18n.t('admin.domain_blocks.headers.disagreement')
 
 .fields-group
-  = f.input :reject_send_media, as: :boolean, kmyblue: true, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_send_media'), hint: I18n.t('admin.domain_blocks.reject_send_media_hint')
-
-.fields-group
   = f.input :reject_send_sensitive, as: :boolean, kmyblue: true, wrapper: :with_label, label: I18n.t('admin.domain_blocks.reject_send_sensitive'), hint: I18n.t('admin.domain_blocks.reject_send_sensitive_hint')

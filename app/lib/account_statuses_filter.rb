@@ -45,7 +45,7 @@ class AccountStatusesFilter
   def initial_scope
     return Status.none if account.unavailable?
 
-    if domain_block&.reject_send_media || blocked?
+    if blocked?
       Status.none
     elsif anonymous?
       account.statuses.where(visibility: %i(public unlisted public_unlisted))
