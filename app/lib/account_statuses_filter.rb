@@ -29,9 +29,8 @@ class AccountStatusesFilter
     available_searchabilities = [:public, :public_unlisted, :unlisted, :private, :direct, :limited, nil]
     available_visibilities = [:public, :public_unlisted, :login, :unlisted, :private, :direct, :limited]
 
-    available_searchabilities = [:public] if domain_block&.reject_send_not_public_searchability
-    available_visibilities -= [:public_unlisted] if domain_block&.reject_send_public_unlisted || (domain_block&.detect_invalid_subscription && @account.user&.setting_reject_public_unlisted_subscription)
-    available_visibilities -= [:unlisted] if domain_block&.detect_invalid_subscription && @account.user&.setting_reject_unlisted_subscription
+    available_visibilities -= [:public_unlisted] if (domain_block&.detect_invalid_subscription || misskey_software?) && @account.user&.setting_reject_public_unlisted_subscription
+    available_visibilities -= [:unlisted] if (domain_block&.detect_invalid_subscription || misskey_software?) && @account.user&.setting_reject_unlisted_subscription
     available_visibilities -= [:login] if current_account.nil?
 
     scope.merge!(scope.where(spoiler_text: ['', nil])) if domain_block&.reject_send_sensitive
@@ -46,7 +45,7 @@ class AccountStatusesFilter
   def initial_scope
     return Status.none if account.unavailable?
 
-    if (domain_block&.reject_send_dissubscribable && !@account.all_subscribable?) || domain_block&.reject_send_media || blocked?
+    if domain_block&.reject_send_media || blocked?
       Status.none
     elsif anonymous?
       account.statuses.where(visibility: %i(public unlisted public_unlisted))
@@ -154,6 +153,21 @@ class AccountStatusesFilter
   end
 
   def domain_block
-    @domain_block = DomainBlock.find_by(domain: @account&.domain)
+    return nil if @account.nil? || @account.local?
+
+    @domain_block = DomainBlock.find_by(domain: @account.domain)
+  end
+
+  def misskey_software?
+    return false if @account.nil? || @account.local?
+    return false if instance_info.nil?
+
+    %w(misskey cherrypick).include?(instance_info.software)
+  end
+
+  def instance_info
+    return @instance_info if defined?(@instance_info)
+
+    @instance_info = InstanceInfo.find_by(domain: @account.domain)
   end
 end

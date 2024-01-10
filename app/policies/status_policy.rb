@@ -147,10 +147,7 @@ class StatusPolicy < ApplicationPolicy
         (@domain_block.detect_invalid_subscription && status.public_unlisted_visibility? && status.account.user&.setting_reject_public_unlisted_subscription) ||
           (@domain_block.detect_invalid_subscription && status.public_visibility? && status.account.user&.setting_reject_unlisted_subscription)
       else
-        (@domain_block.reject_send_not_public_searchability && status.compute_searchability != 'public') ||
-          (@domain_block.reject_send_public_unlisted && status.public_unlisted_visibility?) ||
-          (@domain_block.reject_send_dissubscribable && !status.account.all_subscribable?) ||
-          (@domain_block.detect_invalid_subscription && status.public_unlisted_visibility? && status.account.user&.setting_reject_public_unlisted_subscription) ||
+        (@domain_block.detect_invalid_subscription && status.public_unlisted_visibility? && status.account.user&.setting_reject_public_unlisted_subscription) ||
           (@domain_block.detect_invalid_subscription && status.public_visibility? && status.account.user&.setting_reject_unlisted_subscription) ||
           (@domain_block.reject_send_media && status.with_media?) ||
           (@domain_block.reject_send_sensitive && ((status.with_media? && status.sensitive) || status.spoiler_text?))

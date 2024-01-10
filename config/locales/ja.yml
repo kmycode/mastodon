@@ -449,14 +449,8 @@ ja:
       reject_reply_exclude_followers_hint: 今後のリプライを拒否します。停止とは無関係です
       reject_reports: 通報を拒否
       reject_reports_hint: このドメインからの通報をすべて無視します。停止とは無関係です
-      reject_send_dissubscribable: 購読拒否アカウントの投稿を配送しない
-      reject_send_dissubscribable_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
       reject_send_media: 画像付き投稿を配送しない
       reject_send_media_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
-      reject_send_not_public_searchability: 検索許可が「誰でも」でない投稿を配送しない
-      reject_send_not_public_searchability_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
-      reject_send_public_unlisted: ローカル公開投稿を配送しない
-      reject_send_public_unlisted_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
       reject_send_sensitive: センシティブな投稿を配送しない
       reject_send_sensitive_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
       reject_send_unlisted_dissubscribable: 購読拒否アカウントの未収載投稿を配送しない
@@ -568,10 +562,7 @@ ja:
           reject_reply: リプライを拒否
           reject_reply_exclude_followers: フォロー相手以外からのリプライを拒否
           reject_reports: 通報を拒否
-          reject_send_dissubscribable: 購読拒否投稿配送なし
           reject_send_media: メディア付き投稿配送なし
-          reject_send_not_public_searchability: 検索許可全て投稿配送なし
-          reject_send_public_unlisted: ローカル公開投稿配送なし
           reject_send_sensitive: センシティブ投稿配送なし
           reject_send_unlisted_dissubscribable: 購読拒否未収載投稿配送なし
           reject_straight_follow: フォローを制限
