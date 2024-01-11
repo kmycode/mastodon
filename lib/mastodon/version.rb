@@ -5,7 +5,7 @@ module Mastodon
     module_function
 
     def kmyblue_major
-      10
+      11
     end
 
     def kmyblue_minor
@@ -13,7 +13,9 @@ module Mastodon
     end
 
     def kmyblue_flag
-      nil # 'LTS'
+      # 'LTS'
+      'dev'
+      # nil
     end
 
     def major
@@ -78,6 +80,14 @@ module Mastodon
                        else
                          Gem::Version.new(to_s.split('+')[0])
                        end
+    end
+
+    def lts?
+      kmyblue_flag == 'LTS'
+    end
+
+    def dev?
+      kmyblue_flag == 'dev'
     end
 
     def repository

@@ -34,6 +34,7 @@ class SoftwareUpdateCheckService < BaseService
     if ENV.fetch('UPDATE_CHECK_SOURCE', 'kmyblue') == 'kmyblue'
       @version = "#{Mastodon::Version.kmyblue_major}.#{Mastodon::Version.kmyblue_minor}"
       @version += '-lts' if Setting.check_lts_version_only
+      @version += '-dev' if Mastodon::Version.dev?
     else
       @version = Mastodon::Version.to_s.split('+')[0]
     end
