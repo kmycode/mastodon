@@ -227,67 +227,39 @@ describe StatusesSearchService do
     let!(:status) { Fabricate(:status, text: status_text, account: alice, searchability: :public) }
 
     before do
+      alice.update!(username: 'alice')
       StatusesIndex.import!
     end
 
-    context 'when search with word' do
-      let(:search_keyword) { 'りんご' }
+    shared_examples 'hit status' do |name, keyword|
+      context name do
+        let(:search_keyword) { keyword }
 
-      it 'a status hits' do
-        expect(subject.count).to eq 1
-        expect(subject).to include status.id
+        it 'a status hits' do
+          expect(subject.count).to eq 1
+          expect(subject).to include status.id
+        end
       end
     end
 
-    context 'when search with multiple words' do
-      let(:search_keyword) { 'りんご 食べる' }
+    shared_examples 'does not hit status' do |name, keyword|
+      context name do
+        let(:search_keyword) { keyword }
 
-      it 'a status hits' do
-        expect(subject.count).to eq 1
-        expect(subject).to include status.id
+        it 'no statuses hit' do
+          expect(subject.count).to eq 0
+        end
       end
     end
 
-    context 'when search with multiple words but does not hit half' do
-      let(:search_keyword) { 'りんご 茹でる' }
-
-      it 'no statuses hit' do
-        expect(subject.count).to eq 0
-      end
-    end
-
-    context 'when search with letter in word' do
-      let(:search_keyword) { 'ご' }
-
-      it 'no statuses hit' do
-        expect(subject.count).to eq 0
-      end
-    end
-
-    context 'when double quote search with letter in word' do
-      let(:search_keyword) { '"ご"' }
-
-      it 'a status hits' do
-        expect(subject.count).to eq 1
-        expect(subject).to include status.id
-      end
-    end
-
-    context 'when double quote search with multiple letter in word' do
-      let(:search_keyword) { '"り" "ご"' }
-
-      it 'a status hits' do
-        expect(subject.count).to eq 1
-        expect(subject).to include status.id
-      end
-    end
-
-    context 'when double quote search with multiple letter in word but does not contain half' do
-      let(:search_keyword) { '"ず" "ご"' }
-
-      it 'no statuses hit' do
-        expect(subject.count).to eq 0
-      end
-    end
+    it_behaves_like 'hit status', 'when search with word', 'りんご'
+    it_behaves_like 'hit status', 'when search with multiple words', 'りんご 食べる'
+    it_behaves_like 'does not hit status', 'when search with multiple words but does not hit half', 'りんご 茹でる'
+    it_behaves_like 'does not hit status', 'when search with letter in word', 'ご'
+    it_behaves_like 'hit status', 'when double quote search with letter in word', '"ご"'
+    it_behaves_like 'hit status', 'when double quote search with multiple letter in word', '"り" "ご"'
+    it_behaves_like 'does not hit status', 'when double quote search with multiple letter in word but does not contain half', '"ず" "ご"'
+    it_behaves_like 'hit status', 'when specify user name', 'りんご from:alice'
+    it_behaves_like 'does not hit status', 'when specify not existing user name', 'りんご from:ohagi'
   end
 end
