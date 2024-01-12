@@ -17,17 +17,17 @@ class InstanceInfo < ApplicationRecord
   after_commit :reset_cache
 
   EMOJI_REACTION_AVAILABLE_SOFTWARES = %w(
-    misskey
-    calckey
-    cherrypick
-    meisskey
-    sharkey
-    firefish
-    catodon
-    renedon
-    fedibird
-    pleroma
     akkoma
+    calckey
+    catodon
+    cherrypick
+    fedibird
+    firefish
+    iceshrimp
+    meisskey
+    misskey
+    pleroma
+    sharkey
   ).freeze
 
   def self.emoji_reaction_available?(domain)
