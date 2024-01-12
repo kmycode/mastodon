@@ -257,6 +257,7 @@ describe StatusesSearchService do
     it_behaves_like 'does not hit status', 'when search with multiple words but does not hit half', 'りんご 茹でる'
     it_behaves_like 'hit status', 'when search with letter in word', 'ご'
     it_behaves_like 'does not hit status', 'when double quote search with letter in word', '"ご"'
+    it_behaves_like 'hit status', 'when search with fixed word', '"りんご"'
     it_behaves_like 'hit status', 'when double quote search with multiple letter in word', 'り ご'
     it_behaves_like 'does not hit status', 'when double quote search with multiple letter in word but does not contain half', 'ず ご'
     it_behaves_like 'hit status', 'when specify user name', 'りんご from:alice'
