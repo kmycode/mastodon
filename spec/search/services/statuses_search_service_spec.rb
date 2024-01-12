@@ -239,6 +239,23 @@ describe StatusesSearchService do
       end
     end
 
+    context 'when search with multiple words' do
+      let(:search_keyword) { 'りんご 食べる' }
+
+      it 'a status hits' do
+        expect(subject.count).to eq 1
+        expect(subject).to include status.id
+      end
+    end
+
+    context 'when search with multiple words but does not hit half' do
+      let(:search_keyword) { 'りんご 茹でる' }
+
+      it 'no statuses hit' do
+        expect(subject.count).to eq 0
+      end
+    end
+
     context 'when search with letter in word' do
       let(:search_keyword) { 'ご' }
 
@@ -253,6 +270,23 @@ describe StatusesSearchService do
       it 'a status hits' do
         expect(subject.count).to eq 1
         expect(subject).to include status.id
+      end
+    end
+
+    context 'when double quote search with multiple letter in word' do
+      let(:search_keyword) { '"り" "ご"' }
+
+      it 'a status hits' do
+        expect(subject.count).to eq 1
+        expect(subject).to include status.id
+      end
+    end
+
+    context 'when double quote search with multiple letter in word but does not contain half' do
+      let(:search_keyword) { '"ず" "ご"' }
+
+      it 'no statuses hit' do
+        expect(subject.count).to eq 0
       end
     end
   end
