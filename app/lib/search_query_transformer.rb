@@ -237,7 +237,7 @@ class SearchQueryTransformer < Parslet::Transform
       else
         # Memo for checking when manually merge
         # { multi_match: { type: 'most_fields', query: @term, fields: ['text', 'text.stemmed'], operator: 'and' } }
-        { match_phrase: { text: { query: @term } } }
+        { multi_match: { type: 'most_fields', query: @term, fields: ['text', 'text.stemmed'], operator: 'and' } }
       end
     end
   end
@@ -253,7 +253,7 @@ class SearchQueryTransformer < Parslet::Transform
     def to_query
       # Memo for checking when manually merge
       # { match_phrase: { text: { query: @phrase } } }
-      { multi_match: { type: 'most_fields', query: @phrase, fields: ['text', 'text.stemmed'], operator: 'and' } }
+      { match_phrase: { text: { query: @phrase } } }
     end
   end
 
