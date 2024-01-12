@@ -213,4 +213,47 @@ describe StatusesSearchService do
       end
     end
   end
+
+  describe 'a local user posts with search keyword' do
+    subject do
+      described_class.new.call(search_keyword, account, limit: 10).map(&:id)
+    end
+
+    let(:search_keyword) { 'ohagi' }
+    let(:status_text) { 'りんごを食べました' }
+
+    let(:alice) { Fabricate(:user).account }
+    let(:account) { alice }
+    let!(:status) { Fabricate(:status, text: status_text, account: alice, searchability: :public) }
+
+    before do
+      StatusesIndex.import!
+    end
+
+    context 'when search with word' do
+      let(:search_keyword) { 'りんご' }
+
+      it 'a status hits' do
+        expect(subject.count).to eq 1
+        expect(subject).to include status.id
+      end
+    end
+
+    context 'when search with letter in word' do
+      let(:search_keyword) { 'ご' }
+
+      it 'no statuses hit' do
+        expect(subject.count).to eq 0
+      end
+    end
+
+    context 'when double quote search with letter in word' do
+      let(:search_keyword) { '"ご"' }
+
+      it 'a status hits' do
+        expect(subject.count).to eq 1
+        expect(subject).to include status.id
+      end
+    end
+  end
 end

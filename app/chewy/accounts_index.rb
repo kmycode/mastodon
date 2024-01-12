@@ -92,6 +92,6 @@ class AccountsIndex < Chewy::Index
     field(:domain, type: 'keyword', value: ->(account) { account.domain || '' })
     field(:display_name, type: 'text', analyzer: 'verbatim') { field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'verbatim' }
     field(:username, type: 'text', analyzer: 'verbatim', value: ->(account) { [account.username, account.domain].compact.join('@') }) { field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'verbatim' }
-    field(:text, type: 'text', analyzer: 'sudachi_analyzer', value: ->(account) { account.searchable_text })
+    field(:text, type: 'text', analyzer: 'sudachi_analyzer', value: ->(account) { account.searchable_text }) { field(:stemmed, type: 'text', analyzer: 'natural') }
   end
 end

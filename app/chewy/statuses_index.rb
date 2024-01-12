@@ -107,7 +107,7 @@ class StatusesIndex < Chewy::Index
   root date_detection: false do
     field(:id, type: 'long')
     field(:account_id, type: 'long')
-    field(:text, type: 'text', analyzer: 'sudachi_analyzer', value: ->(status) { status.searchable_text })
+    field(:text, type: 'text', analyzer: 'sudachi_analyzer', value: ->(status) { status.searchable_text }) { field(:stemmed, type: 'text', analyzer: 'content') }
     field(:tags, type: 'text', analyzer: 'hashtag', value: ->(status) { status.tags.map(&:display_name) })
     field(:searchable_by, type: 'long', value: ->(status) { status.searchable_by })
     field(:mentioned_by, type: 'long', value: ->(status) { status.mentioned_by })

@@ -251,7 +251,9 @@ class SearchQueryTransformer < Parslet::Transform
     end
 
     def to_query
-      { match_phrase: { text: { query: @phrase } } }
+      # Memo for checking when manually merge
+      # { match_phrase: { text: { query: @phrase } } }
+      { multi_match: { type: 'most_fields', query: @phrase, fields: ['text', 'text.stemmed'], operator: 'and' } }
     end
   end
 
