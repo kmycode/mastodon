@@ -263,7 +263,6 @@ en:
         setting_hide_network: Hide your social graph
         setting_hide_recent_emojis: Hide recent emojis
         setting_hide_statuses_count: Hide statuses count
-        setting_link_preview: Generate post link preview card
         setting_lock_follow_from_bot: Request approval about bot follow
         setting_noai: Set noai meta tags
         setting_public_post_to_unlisted: Convert public post to public unlisted if not using Web app

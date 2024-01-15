@@ -13,7 +13,6 @@ class UserSettings
   setting :noindex, default: -> { ::Setting.noindex }
   setting :noai, default: true
   setting :translatable_private, default: false
-  setting :link_preview, default: true
   setting :bio_markdown, default: false
   setting :discoverable_local, default: false
   setting :hide_statuses_count, default: false

@@ -323,13 +323,6 @@ class Account < ApplicationRecord
     user&.setting_translatable_private || (settings.present? && settings['translatable_private']) || false
   end
 
-  def link_preview?
-    return user.setting_link_preview if local? && user.present?
-    return settings['link_preview'] if settings.present? && settings.key?('link_preview')
-
-    true
-  end
-
   def public_statuses_count
     hide_statuses_count? ? 0 : statuses_count
   end
@@ -406,7 +399,6 @@ class Account < ApplicationRecord
       'hide_following_count' => hide_following_count?,
       'hide_followers_count' => hide_followers_count?,
       'translatable_private' => translatable_private?,
-      'link_preview' => link_preview?,
     }
     if Setting.enable_emoji_reaction
       config = config.merge({

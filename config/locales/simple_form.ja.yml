@@ -78,7 +78,6 @@ ja:
         setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、スタンプ機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
         setting_enable_emoji_reaction: この機能を無効にしても、他の人はあなたの投稿にスタンプをつけられます
         setting_hide_network: フォローとフォロワーの情報がプロフィールページで見られないようにします
-        setting_link_preview: プレビュー生成を停止することは、センシティブなサイトへのリンクを頻繁に投稿する人にも有効かもしれません
         setting_noai: AI学習への利用を禁止するメタタグをプロフィールページに追加します。ただし実効性があるとは限りません
         setting_public_post_to_unlisted: 未対応のサードパーティアプリからもローカル公開で投稿できますが、公開投稿はWeb以外できなくなります
         setting_reject_unlisted_subscription: Misskeyやそのフォーク(Calckeyなど)は、フォローしていないアカウントの「未収載」投稿を **購読・検索** することができます。これはkmyblueの挙動と異なります。そのようなサーバーに、指定した公開範囲の投稿を「フォロワーのみ」として配送します。ただし構造上、完璧な対応は困難でたまに未収載として配信されること、ご理解ください
@@ -277,7 +276,6 @@ ja:
         setting_hide_network: 繋がりを隠す
         setting_hide_recent_emojis: 絵文字ピッカーで最近使用した絵文字を隠す（リアクションデッキのみを表示する）
         setting_hide_statuses_count: 投稿数を隠す
-        setting_link_preview: リンクのプレビューを生成する
         setting_lock_follow_from_bot: botからのフォローを承認制にする
         setting_stay_privacy: 投稿時に公開範囲を保存する
         setting_noai: 自分のコンテンツのAI学習利用に対して不快感を表明する

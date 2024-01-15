@@ -19,9 +19,6 @@
       = ff.input :translatable_private, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_translatable_private')
 
     .fields-group
-      = ff.input :link_preview, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_link_preview'), hint: I18n.t('simple_form.hints.defaults.setting_link_preview')
-
-    .fields-group
       = f.input :dissubscribable, as: :boolean, wrapper: :with_label, kmyblue: true, hint: t('simple_form.hints.defaults.dissubscribable')
 
   %h4= t 'privacy_extra.stop_deliver'

@@ -123,10 +123,6 @@ module HasUserSettings
     settings['translatable_private']
   end
 
-  def setting_link_preview
-    settings['link_preview']
-  end
-
   def setting_single_ref_to_quote
     settings['single_ref_to_quote']
   end
