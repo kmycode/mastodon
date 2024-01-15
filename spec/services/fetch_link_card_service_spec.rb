@@ -253,15 +253,6 @@ RSpec.describe FetchLinkCardService, type: :service do
         expect(status.preview_card.title).to eq 'Hello world'
       end
     end
-
-    context 'with URL but author is not allow preview card' do
-      let(:account) { Fabricate(:user, settings: { link_preview: false }).account }
-      let(:status) { Fabricate(:status, text: 'http://example.com/html', account: account) }
-
-      it 'not create preview card' do
-        expect(status.preview_card).to be_nil
-      end
-    end
   end
 
   context 'with a remote status' do
@@ -281,14 +272,6 @@ RSpec.describe FetchLinkCardService, type: :service do
 
     it 'ignores URLs to hashtags' do
       expect(a_request(:get, 'https://quitter.se/tag/wannacry')).to_not have_been_made
-    end
-
-    context 'with URL but author is not allow preview card' do
-      let(:account) { Fabricate(:account, domain: 'example.com', settings: { link_preview: false }) }
-
-      it 'not create link preview' do
-        expect(status.preview_card).to be_nil
-      end
     end
   end
 

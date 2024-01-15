@@ -135,10 +135,6 @@ module User::HasSettings
     settings['translatable_private']
   end
 
-  def setting_link_preview
-    settings['link_preview']
-  end
-
   def setting_dtl_force_visibility
     settings['dtl_force_visibility']&.to_sym || :unchange
   end
