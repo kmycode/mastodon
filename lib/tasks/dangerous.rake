@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 # rubocop:disable all
 
-require './config/environment'
-
 namespace :dangerous do
   task :back_upstream do
+    require './config/environment'
+
     prompt = TTY::Prompt.new
 
     confirm1 = prompt.yes?('[1/3] Do you really want to go back to the original Mastodon?', default: false)
