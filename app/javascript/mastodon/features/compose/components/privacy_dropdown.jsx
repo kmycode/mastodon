@@ -169,6 +169,7 @@ class PrivacyDropdown extends PureComponent {
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     noDirect: PropTypes.bool,
+    noLimited: PropTypes.bool,
     replyToLimited: PropTypes.bool,
     container: PropTypes.func,
     disabled: PropTypes.bool,
@@ -258,6 +259,10 @@ class PrivacyDropdown extends PureComponent {
       this.options.push(
         { icon: 'at', iconComponent: AlternateEmailIcon, value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
       );
+    }
+
+    if (this.props.noLimited) {
+      this.options = this.options.filter((opt) => !['mutual', 'circle'].includes(opt.value));
     }
 
     this.selectableOptions = [...this.options];

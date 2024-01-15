@@ -110,6 +110,7 @@ class BoostModal extends ImmutablePureComponent {
           {status.get('visibility') !== 'private' && !status.get('reblogged') && (
             <PrivacyDropdown
               noDirect
+              noLimited
               value={privacy}
               container={this._findContainer}
               onChange={this.props.onChangeBoostPrivacy}
