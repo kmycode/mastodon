@@ -7,12 +7,9 @@ namespace :dangerous do
 
     prompt = TTY::Prompt.new
 
-    confirm1 = prompt.yes?('[1/3] Do you really want to go back to the original Mastodon?', default: false)
-    exit(0) unless confirm1
-    confirm2 = prompt.yes?('[2/3] All proprietary data of kmyblue will be deleted and cannot be restored. Are you sure?', default: false)
-    exit(0) unless confirm2
-    confirm3 = prompt.yes?('[3/3] This operation is irreversible. You have backups in case this operation causes a system malfunction, do you not?', default: false)
-    exit(0) unless confirm3
+    exit(0) unless prompt.yes?('[1/3] Do you really want to go back to the original Mastodon?', default: false)
+    exit(0) unless prompt.yes?('[2/3] All proprietary data of kmyblue will be deleted and cannot be restored. Are you sure?', default: false)
+    exit(0) unless prompt.yes?('[3/3] This operation is irreversible. You have backups in case this operation causes a system malfunction, do you not?', default: false)
 
     target_migrations = %w(
     )
