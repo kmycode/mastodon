@@ -24,6 +24,9 @@ namespace :dangerous do
     prompt.say 'Processing...'
     ActiveRecord::Base.connection.execute('UPDATE statuses SET visibility = 1 WHERE visibility IN (10, 11)')
     ActiveRecord::Base.connection.execute('UPDATE custom_filters SET action = 0 WHERE action = 2')
+    ActiveRecord::Base.connection.execute('UPDATE account_warning SET action = 1250 WHERE action = 1200')
+    # index_statuses_local
+    # index_statuses_public
     prompt.ok 'Proceed'
 
     prompt.say 'Removing migration histories...'
