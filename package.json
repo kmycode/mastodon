@@ -54,7 +54,6 @@
     "@gamestdio/websocket": "^0.3.2",
     "@github/webauthn-json": "^2.1.1",
     "@hello-pangea/dnd": "^16.3.0",
-    "@material-symbols/svg-600": "^0.14.0",
     "@rails/ujs": "^7.1.1",
     "@reduxjs/toolkit": "^2.0.1",
     "@svgr/webpack": "^5.5.0",
@@ -223,12 +222,5 @@
     "react-router-dom": {
       "optional": true
     }
-  },
-  "lint-staged": {
-    "*": "prettier --ignore-unknown --write",
-    "Capfile|Gemfile|*.{rb,ruby,ru,rake}": "bundle exec rubocop --force-exclusion -a",
-    "*.{haml}": "bundle exec haml-lint",
-    "*.{js,jsx,ts,tsx}": "eslint --fix",
-    "*.{css,scss}": "stylelint --fix"
   }
 }

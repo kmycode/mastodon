@@ -6,8 +6,7 @@ import { injectIntl } from 'react-intl';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 
-import { ReactComponent as DeleteIcon } from '@material-symbols/svg-600/outlined/delete.svg';
-
+import DeleteIcon from 'mastodon/../material-icons/400-24px/delete.svg?react';
 import { Button } from 'mastodon/components/button';
 import { Icon } from 'mastodon/components/icon';
 import { IconButton } from 'mastodon/components/icon_button';
@@ -16,7 +15,7 @@ class TextListItem extends PureComponent {
 
   static propTypes = {
     icon: PropTypes.string.isRequired,
-    iconComponent: PropTypes.object.isRequired,
+    iconComponent: PropTypes.func.isRequired,
     value: PropTypes.string.isRequired,
     onRemove: PropTypes.func.isRequired,
   };
@@ -47,7 +46,7 @@ class TextList extends PureComponent {
     disabled: PropTypes.bool,
     intl: PropTypes.object.isRequired,
     icon: PropTypes.string.isRequired,
-    iconComponent: PropTypes.object.isRequired,
+    iconComponent: PropTypes.func.isRequired,
     label: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,

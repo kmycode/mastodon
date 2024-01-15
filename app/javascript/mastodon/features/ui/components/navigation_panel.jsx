@@ -5,20 +5,19 @@ import { defineMessages, injectIntl } from 'react-intl';
 
 import { Link } from 'react-router-dom';
 
-import { ReactComponent as CirclesIcon } from '@material-symbols/svg-600/outlined/account_circle-fill.svg';
-import { ReactComponent as AlternateEmailIcon } from '@material-symbols/svg-600/outlined/alternate_email.svg';
-import { ReactComponent as BookmarksIcon } from '@material-symbols/svg-600/outlined/bookmarks-fill.svg';
-import { ReactComponent as PeopleIcon } from '@material-symbols/svg-600/outlined/group.svg';
-import { ReactComponent as HomeIcon } from '@material-symbols/svg-600/outlined/home-fill.svg';
-import { ReactComponent as ListAltIcon } from '@material-symbols/svg-600/outlined/list_alt.svg';
-import { ReactComponent as MoreHorizIcon } from '@material-symbols/svg-600/outlined/more_horiz.svg';
-import { ReactComponent as PublicIcon } from '@material-symbols/svg-600/outlined/public.svg';
-import { ReactComponent as SearchIcon } from '@material-symbols/svg-600/outlined/search.svg';
-import { ReactComponent as SettingsIcon } from '@material-symbols/svg-600/outlined/settings-fill.svg';
-import { ReactComponent as StarIcon } from '@material-symbols/svg-600/outlined/star-fill.svg';
-import { ReactComponent as TagIcon } from '@material-symbols/svg-600/outlined/tag.svg';
-import { ReactComponent as AntennaIcon } from '@material-symbols/svg-600/outlined/wifi.svg';
-
+import CirclesIcon from 'mastodon/../material-icons/400-24px/account_circle-fill.svg?react';
+import AlternateEmailIcon from 'mastodon/../material-icons/400-24px/alternate_email.svg?react';
+import BookmarksIcon from 'mastodon/../material-icons/400-24px/bookmarks-fill.svg?react';
+import PeopleIcon from 'mastodon/../material-icons/400-24px/group.svg?react';
+import HomeIcon from 'mastodon/../material-icons/400-24px/home-fill.svg?react';
+import ListAltIcon from 'mastodon/../material-icons/400-24px/list_alt.svg?react';
+import MoreHorizIcon from 'mastodon/../material-icons/400-24px/more_horiz.svg?react';
+import PublicIcon from 'mastodon/../material-icons/400-24px/public.svg?react';
+import SearchIcon from 'mastodon/../material-icons/400-24px/search.svg?react';
+import SettingsIcon from 'mastodon/../material-icons/400-24px/settings-fill.svg?react';
+import StarIcon from 'mastodon/../material-icons/400-24px/star-fill.svg?react';
+import TagIcon from 'mastodon/../material-icons/400-24px/tag.svg?react';
+import AntennaIcon from 'mastodon/../material-icons/400-24px/wifi.svg?react';
 import { WordmarkLogo } from 'mastodon/components/logo';
 import { NavigationPortal } from 'mastodon/components/navigation_portal';
 import { enableDtlMenu, timelinePreview, trendsEnabled, dtlTag, enableLocalTimeline, isHideItem } from 'mastodon/initial_state';

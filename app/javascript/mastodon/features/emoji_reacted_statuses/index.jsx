@@ -8,9 +8,9 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
-import { ReactComponent as EmojiReactionIcon } from '@material-symbols/svg-600/outlined/mood.svg';
 import { debounce } from 'lodash';
 
+import EmojiReactionIcon from 'mastodon/../material-icons/400-24px/mood.svg?react';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { fetchEmojiReactedStatuses, expandEmojiReactedStatuses } from 'mastodon/actions/emoji_reactions';
 import Column from 'mastodon/components/column';

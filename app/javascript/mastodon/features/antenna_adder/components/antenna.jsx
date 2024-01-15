@@ -6,10 +6,9 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
-import { ReactComponent as AddIcon } from '@material-symbols/svg-600/outlined/add.svg';
-import { ReactComponent as CloseIcon } from '@material-symbols/svg-600/outlined/close.svg';
-import { ReactComponent as AntennaIcon } from '@material-symbols/svg-600/outlined/wifi.svg';
-
+import AddIcon from 'mastodon/../material-icons/400-24px/add.svg?react';
+import CloseIcon from 'mastodon/../material-icons/400-24px/close.svg?react';
+import AntennaIcon from 'mastodon/../material-icons/400-24px/wifi.svg?react';
 import { Icon }  from 'mastodon/components/icon';
 
 import { removeFromAntennaAdder, addToAntennaAdder, removeExcludeFromAntennaAdder, addExcludeToAntennaAdder } from '../../../actions/antennas';

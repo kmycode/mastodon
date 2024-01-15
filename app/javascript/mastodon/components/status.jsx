@@ -7,16 +7,16 @@ import classNames from 'classnames';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 
-import { ReactComponent as AlternateEmailIcon } from '@material-symbols/svg-600/outlined/alternate_email.svg';
-import { ReactComponent as QuoteIcon } from '@material-symbols/svg-600/outlined/format_quote.svg';
-import { ReactComponent as ReferenceIcon } from '@material-symbols/svg-600/outlined/link.svg';
-import { ReactComponent as PushPinIcon } from '@material-symbols/svg-600/outlined/push_pin.svg';
-import { ReactComponent as RepeatIcon } from '@material-symbols/svg-600/outlined/repeat.svg';
-import { ReactComponent as ReplyIcon } from '@material-symbols/svg-600/outlined/reply.svg';
-import { ReactComponent as LimitedIcon } from '@material-symbols/svg-600/outlined/shield.svg';
-import { ReactComponent as TimerIcon } from '@material-symbols/svg-600/outlined/timer.svg';
 import { HotKeys } from 'react-hotkeys';
 
+import AlternateEmailIcon from 'mastodon/../material-icons/400-24px/alternate_email.svg?react';
+import QuoteIcon from 'mastodon/../material-icons/400-24px/format_quote.svg?react';
+import ReferenceIcon from 'mastodon/../material-icons/400-24px/link.svg?react';
+import PushPinIcon from 'mastodon/../material-icons/400-24px/push_pin.svg?react';
+import RepeatIcon from 'mastodon/../material-icons/400-24px/repeat.svg?react';
+import ReplyIcon from 'mastodon/../material-icons/400-24px/reply.svg?react';
+import LimitedIcon from 'mastodon/../material-icons/400-24px/shield.svg?react';
+import TimerIcon from 'mastodon/../material-icons/400-24px/timer.svg?react';
 import AttachmentList from 'mastodon/components/attachment_list';
 import { Icon }  from 'mastodon/components/icon';
 import PictureInPicturePlaceholder from 'mastodon/components/picture_in_picture_placeholder';

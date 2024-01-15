@@ -11,15 +11,15 @@ import { List as ImmutableList, Map as ImmutableMap } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 
-import { ReactComponent as DeleteIcon } from '@material-symbols/svg-600/outlined/delete.svg';
-import { ReactComponent as DomainIcon } from '@material-symbols/svg-600/outlined/dns.svg';
-import { ReactComponent as EditIcon } from '@material-symbols/svg-600/outlined/edit.svg';
-import { ReactComponent as HashtagIcon } from '@material-symbols/svg-600/outlined/tag.svg';
-import { ReactComponent as KeywordIcon } from '@material-symbols/svg-600/outlined/title.svg';
-import { ReactComponent as AntennaIcon } from '@material-symbols/svg-600/outlined/wifi.svg';
 import Select, { NonceProvider } from 'react-select';
 import Toggle from 'react-toggle';
 
+import DeleteIcon from 'mastodon/../material-icons/400-24px/delete.svg?react';
+import DomainIcon from 'mastodon/../material-icons/400-24px/dns.svg?react';
+import EditIcon from 'mastodon/../material-icons/400-24px/edit.svg?react';
+import HashtagIcon from 'mastodon/../material-icons/400-24px/tag.svg?react';
+import KeywordIcon from 'mastodon/../material-icons/400-24px/title.svg?react';
+import AntennaIcon from 'mastodon/../material-icons/400-24px/wifi.svg?react';
 import {
   fetchAntenna,
   deleteAntenna,

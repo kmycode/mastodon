@@ -11,11 +11,11 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
 
-import { ReactComponent as BookmarkIcon } from '@material-symbols/svg-600/outlined/bookmark-fill.svg';
-import { ReactComponent as DeleteIcon } from '@material-symbols/svg-600/outlined/delete.svg';
-import { ReactComponent as EditIcon } from '@material-symbols/svg-600/outlined/edit.svg';
 import { debounce } from 'lodash';
 
+import BookmarkIcon from 'mastodon/../material-icons/400-24px/bookmark-fill.svg';
+import DeleteIcon from 'mastodon/../material-icons/400-24px/delete.svg?react';
+import EditIcon from 'mastodon/../material-icons/400-24px/edit.svg?react';
 import { deleteBookmarkCategory, expandBookmarkCategoryStatuses, fetchBookmarkCategory, fetchBookmarkCategoryStatuses , setupBookmarkCategoryEditor } from 'mastodon/actions/bookmark_categories';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { openModal } from 'mastodon/actions/modal';

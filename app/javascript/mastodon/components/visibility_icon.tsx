@@ -1,16 +1,16 @@
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ReactComponent as CircleIcon } from '@material-symbols/svg-600/outlined/account_circle.svg';
-import { ReactComponent as AlternateEmailIcon } from '@material-symbols/svg-600/outlined/alternate_email.svg';
-import { ReactComponent as PublicUnlistedIcon } from '@material-symbols/svg-600/outlined/cloud.svg';
-import { ReactComponent as MutualIcon } from '@material-symbols/svg-600/outlined/compare_arrows.svg';
-import { ReactComponent as LoginIcon } from '@material-symbols/svg-600/outlined/key.svg';
-import { ReactComponent as LockIcon } from '@material-symbols/svg-600/outlined/lock.svg';
-import { ReactComponent as LockOpenIcon } from '@material-symbols/svg-600/outlined/no_encryption.svg';
-import { ReactComponent as PublicIcon } from '@material-symbols/svg-600/outlined/public.svg';
-import { ReactComponent as ReplyIcon } from '@material-symbols/svg-600/outlined/reply.svg';
-import { ReactComponent as LimitedIcon } from '@material-symbols/svg-600/outlined/shield.svg';
-import { ReactComponent as PersonalIcon } from '@material-symbols/svg-600/outlined/sticky_note.svg';
+import CircleIcon from 'mastodon/../material-icons/400-24px/account_circle.svg?react';
+import AlternateEmailIcon from 'mastodon/../material-icons/400-24px/alternate_email.svg?react';
+import PublicUnlistedIcon from 'mastodon/../material-icons/400-24px/cloud.svg?react';
+import MutualIcon from 'mastodon/../material-icons/400-24px/compare_arrows.svg?react';
+import LoginIcon from 'mastodon/../material-icons/400-24px/key.svg?react';
+import LockIcon from 'mastodon/../material-icons/400-24px/lock.svg?react';
+import LockOpenIcon from 'mastodon/../material-icons/400-24px/no_encryption.svg?react';
+import PublicIcon from 'mastodon/../material-icons/400-24px/public.svg?react';
+import ReplyIcon from 'mastodon/../material-icons/400-24px/reply.svg?react';
+import LimitedIcon from 'mastodon/../material-icons/400-24px/shield.svg?react';
+import PersonalIcon from 'mastodon/../material-icons/400-24px/sticky_note.svg?react';
 
 import { Icon } from './icon';
 

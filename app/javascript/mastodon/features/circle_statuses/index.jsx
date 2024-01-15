@@ -11,11 +11,11 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
 
-import { ReactComponent as CircleIcon } from '@material-symbols/svg-600/outlined/account_circle.svg';
-import { ReactComponent as DeleteIcon } from '@material-symbols/svg-600/outlined/delete.svg';
-import { ReactComponent as EditIcon } from '@material-symbols/svg-600/outlined/edit.svg';
 import { debounce } from 'lodash';
 
+import CircleIcon from 'mastodon/../material-icons/400-24px/account_circle.svg?react';
+import DeleteIcon from 'mastodon/../material-icons/400-24px/delete.svg?react';
+import EditIcon from 'mastodon/../material-icons/400-24px/edit.svg?react';
 import { deleteCircle, expandCircleStatuses, fetchCircle, fetchCircleStatuses } from 'mastodon/actions/circles';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { openModal } from 'mastodon/actions/modal';

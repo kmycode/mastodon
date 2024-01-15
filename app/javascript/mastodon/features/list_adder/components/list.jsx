@@ -8,11 +8,10 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
-import { ReactComponent as AddIcon } from '@material-symbols/svg-600/outlined/add.svg';
-import { ReactComponent as CloseIcon } from '@material-symbols/svg-600/outlined/close.svg';
-import { ReactComponent as ListAltIcon } from '@material-symbols/svg-600/outlined/list_alt.svg';
-import { ReactComponent as VisibilityOffIcon } from '@material-symbols/svg-600/outlined/visibility_off.svg';
-
+import AddIcon from 'mastodon/../material-icons/400-24px/add.svg?react';
+import CloseIcon from 'mastodon/../material-icons/400-24px/close.svg?react';
+import ListAltIcon from 'mastodon/../material-icons/400-24px/list_alt.svg?react';
+import VisibilityOffIcon from 'mastodon/../material-icons/400-24px/visibility_off.svg?react';
 import { Icon }  from 'mastodon/components/icon';
 
 import { removeFromListAdder, addToListAdder } from '../../../actions/lists';

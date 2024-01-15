@@ -10,9 +10,8 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
 
-import { ReactComponent as CirclesIcon } from '@material-symbols/svg-600/outlined/account_circle-fill.svg';
-import { ReactComponent as CircleIcon } from '@material-symbols/svg-600/outlined/account_circle.svg';
-
+import CirclesIcon from 'mastodon/../material-icons/400-24px/account_circle-fill.svg?react';
+import CircleIcon from 'mastodon/../material-icons/400-24px/account_circle.svg?react';
 import { fetchCircles, deleteCircle } from 'mastodon/actions/circles';
 import { openModal } from 'mastodon/actions/modal';
 import Column from 'mastodon/components/column';

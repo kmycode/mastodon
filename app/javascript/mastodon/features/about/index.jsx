@@ -10,11 +10,10 @@ import { List as ImmutableList } from 'immutable';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 
-import { ReactComponent as ChevronRightIcon } from '@material-symbols/svg-600/outlined/chevron_right.svg';
-import { ReactComponent as DisabledIcon } from '@material-symbols/svg-600/outlined/close-fill.svg';
-import { ReactComponent as EnabledIcon } from '@material-symbols/svg-600/outlined/done-fill.svg';
-import { ReactComponent as ExpandMoreIcon } from '@material-symbols/svg-600/outlined/expand_more.svg';
-
+import ChevronRightIcon from 'mastodon/../material-icons/400-24px/chevron_right.svg?react';
+import DisabledIcon from 'mastodon/../material-icons/400-24px/close-fill.svg?react';
+import EnabledIcon from 'mastodon/../material-icons/400-24px/done-fill.svg?react';
+import ExpandMoreIcon from 'mastodon/../material-icons/400-24px/expand_more.svg?react';
 import { fetchServer, fetchExtendedDescription, fetchDomainBlocks  } from 'mastodon/actions/server';
 import Column from 'mastodon/components/column';
 import { Icon  }  from 'mastodon/components/icon';

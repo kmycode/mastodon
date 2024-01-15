@@ -5,9 +5,10 @@ import { injectIntl, defineMessages } from 'react-intl';
 
 import classNames from 'classnames';
 
-import { ReactComponent as TimerIcon } from '@material-symbols/svg-600/outlined/timer.svg';
 import { supportsPassiveEvents } from 'detect-passive-events';
 import Overlay from 'react-overlays/Overlay';
+
+import TimerIcon from 'mastodon/../material-icons/400-24px/timer.svg?react';
 
 import { IconButton } from '../../../components/icon_button';
 
