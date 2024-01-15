@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 # rubocop:disable all
 
-require './config/boot'
 require './config/environment'
 
 namespace :dangerous do
