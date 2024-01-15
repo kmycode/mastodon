@@ -156,6 +156,7 @@ class PrivacyDropdown extends PureComponent {
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     noDirect: PropTypes.bool,
+    noLimited: PropTypes.bool,
     container: PropTypes.func,
     disabled: PropTypes.bool,
     intl: PropTypes.object.isRequired,
@@ -248,6 +249,10 @@ class PrivacyDropdown extends PureComponent {
 
     if (this.props.noDirect) {
       this.selectableOptions = this.selectableOptions.filter((opt) => opt.value !== 'direct');
+    }
+
+    if (this.props.noLimited) {
+      this.selectableOptions = this.selectableOptions.filter((opt) => !['mutual', 'circle'].includes(opt.value));
     }
   }
 
