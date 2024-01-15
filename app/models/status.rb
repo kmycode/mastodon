@@ -616,7 +616,7 @@ class Status < ApplicationRecord
   end
 
   def distributable_friend?
-    public_visibility? || public_unlisted_visibility? || (unlisted_visibility? && (public_searchability? || public_unlisted_searchability?))
+    public_visibility? || public_unlisted_visibility? || login_visibility? || (unlisted_visibility? && (public_searchability? || public_unlisted_searchability?))
   end
 
   private
