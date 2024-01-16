@@ -79,6 +79,7 @@ namespace :dangerous do
       20230222232121
     )
     target_tables = %w(
+      account_groups
       antennas
       antenna_accounts
       antenna_domains
@@ -99,7 +100,7 @@ namespace :dangerous do
     target_table_columns = [
       # Removed: accounts dissubscribable
       %w(accounts group_allow_private_message),
-      %w(accounts group_message_following_only),
+      # Removed: accounts group_message_following_only
       %w(accounts master_settings),
       %w(accounts searchability),
       %w(accounts settings),
@@ -143,12 +144,11 @@ namespace :dangerous do
       %w(status_stats emoji_reactions_count),
       %w(status_stats emoji_reaction_accounts_count),
       %w(status_stats status_referred_by_count),
+      %w(status_stats test),
     ]
     target_indices = %w(
       index_statuses_on_url
       index_statuses_on_conversation_id
-      index_conversations_on_ancestor_status_id
-      index_statuses_for_get_following_accounts_to_search
     )
 
     prompt.say 'Processing...'
