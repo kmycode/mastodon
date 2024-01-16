@@ -262,5 +262,32 @@ describe StatusesSearchService do
     it_behaves_like 'does not hit status', 'when double quote search with multiple letter in word but does not contain half', 'ず ご'
     it_behaves_like 'hit status', 'when specify user name', 'りんご from:alice'
     it_behaves_like 'does not hit status', 'when specify not existing user name', 'りんご from:ohagi'
+
+    context 'when in:following is specified' do
+      let(:following) { Fabricate(:user).account }
+      let(:other) { Fabricate(:user).account }
+
+      before do
+        following.follow!(alice)
+      end
+
+      context 'with myself' do
+        let(:account) { alice }
+
+        it_behaves_like 'does not hit status', 'when search with following', 'in:following りんご'
+      end
+
+      context 'with following' do
+        let(:account) { following }
+
+        it_behaves_like 'hit status', 'when search with following', 'in:following りんご'
+      end
+
+      context 'without following' do
+        let(:account) { other }
+
+        it_behaves_like 'does not hit status', 'when search with following', 'in:following りんご'
+      end
+    end
   end
 end

@@ -30,6 +30,8 @@ class SearchQueryTransformer < Parslet::Transform
     def request
       search = Chewy::Search::Request.new(*indexes).filter(default_filter)
 
+      search = search.filter(flag_following_only) if following_only?
+
       must_clauses.each { |clause| search = search.query.must(clause.to_query) }
       must_not_clauses.each { |clause| search = search.query.must_not(clause.to_query) }
       filter_clauses.each { |clause| search = search.filter(**clause.to_query) }
@@ -57,6 +59,10 @@ class SearchQueryTransformer < Parslet::Transform
 
     def flags_from_clauses!
       @flags = clauses_by_operator.fetch(:flag, []).to_h { |clause| [clause.prefix, clause.term] }
+    end
+
+    def following_only?
+      @flags['following']
     end
 
     def must_clauses
@@ -198,6 +204,16 @@ class SearchQueryTransformer < Parslet::Transform
       }
     end
 
+    def flag_following_only
+      {
+        bool: {
+          (@flags['following'] == 'following' ? :must : :must_not) => {
+            terms: { account_id: following_account_ids },
+          },
+        },
+      }
+    end
+
     def following_account_ids
       return @following_account_ids if defined?(@following_account_ids)
 
@@ -299,6 +315,10 @@ class SearchQueryTransformer < Parslet::Transform
       when 'in'
         @operator = :flag
         @term = term
+        if term == 'following'
+          @prefix = 'following'
+          @term = @negated ? 'not_following' : 'following'
+        end
       when 'my'
         @type = :term
         @term = @options[:current_account]&.id
