@@ -80,6 +80,8 @@ class StatusesController < ApplicationController
 
     return false if !@status.local? || signed_request_account&.domain.blank?
 
+    return @misskey_software = true if DomainBlock.detect_invalid_subscription?(signed_request_account.domain)
+
     info = InstanceInfo.find_by(domain: signed_request_account.domain)
     return false if info.nil?
 
