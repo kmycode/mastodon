@@ -456,8 +456,6 @@ en:
       reject_reports_hint: Ignore all reports coming from this domain. Irrelevant for suspensions
       reject_send_sensitive: センシティブな投稿を配送しない
       reject_send_sensitive_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
-      reject_send_unlisted_dissubscribable: 購読拒否アカウントの未収載投稿を配送しない
-      reject_send_unlisted_dissubscribable_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
       reject_straight_follow: Reject straight follow
       reject_straight_follow_hint: The server accounts must be authenticated when follow our accounts
       undo: Undo domain block

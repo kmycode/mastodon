@@ -451,8 +451,6 @@ ja:
       reject_reports_hint: このドメインからの通報をすべて無視します。停止とは無関係です
       reject_send_sensitive: センシティブな投稿を配送しない
       reject_send_sensitive_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
-      reject_send_unlisted_dissubscribable: 購読拒否アカウントの未収載投稿を配送しない
-      reject_send_unlisted_dissubscribable_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
       reject_straight_follow: フォローを強制的に審査制にする
       reject_straight_follow_hint: 相手からのフォローは当サーバーのアカウントの承認が必須になります
       undo: ドメインブロックを戻す
@@ -562,7 +560,6 @@ ja:
           reject_reply_exclude_followers: フォロー相手以外からのリプライを拒否
           reject_reports: 通報を拒否
           reject_send_sensitive: センシティブ投稿配送なし
-          reject_send_unlisted_dissubscribable: 購読拒否未収載投稿配送なし
           reject_straight_follow: フォローを制限
           silence: 制限
           suspend: サスペンド
