@@ -243,6 +243,10 @@ module User::HasSettings
     settings['use_public_index']
   end
 
+  def setting_reverse_search_quote
+    settings['reverse_search_quote']
+  end
+
   def setting_disallow_unlisted_public_searchability
     settings['disallow_unlisted_public_searchability']
   end

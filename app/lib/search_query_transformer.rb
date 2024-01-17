@@ -242,17 +242,20 @@ class SearchQueryTransformer < Parslet::Transform
   class TermClause
     attr_reader :operator, :term
 
-    def initialize(operator, term)
+    def initialize(operator, term, current_account: nil)
       @operator = Operator.symbol(operator)
       @term = term
+      @account = current_account
     end
 
     def to_query
       if @term.start_with?('#')
         { match: { tags: { query: @term, operator: 'and' } } }
-      else
+      elsif @account&.user&.setting_reverse_search_quote
         # Memo for checking when manually merge
         # { multi_match: { type: 'most_fields', query: @term, fields: ['text', 'text.stemmed'], operator: 'and' } }
+        { match_phrase: { text: { query: @term } } }
+      else
         { multi_match: { type: 'most_fields', query: @term, fields: ['text', 'text.stemmed'], operator: 'and' } }
       end
     end
@@ -261,15 +264,20 @@ class SearchQueryTransformer < Parslet::Transform
   class PhraseClause
     attr_reader :operator, :phrase
 
-    def initialize(operator, phrase)
+    def initialize(operator, phrase, current_account: nil)
       @operator = Operator.symbol(operator)
       @phrase = phrase
+      @account = current_account
     end
 
     def to_query
       # Memo for checking when manually merge
       # { match_phrase: { text: { query: @phrase } } }
-      { match_phrase: { text: { query: @phrase } } }
+      if @account&.user&.setting_reverse_search_quote
+        { multi_match: { type: 'most_fields', query: @phrase, fields: ['text', 'text.stemmed'], operator: 'and' } }
+      else
+        { match_phrase: { text: { query: @phrase } } }
+      end
     end
   end
 
@@ -411,11 +419,11 @@ class SearchQueryTransformer < Parslet::Transform
     if clause[:prefix] && SUPPORTED_PREFIXES.include?(prefix)
       PrefixClause.new(prefix, operator, term, current_account: current_account)
     elsif clause[:prefix]
-      TermClause.new(operator, "#{prefix} #{term}")
+      TermClause.new(operator, "#{prefix} #{term}", current_account: current_account)
     elsif clause[:term]
-      TermClause.new(operator, term)
+      TermClause.new(operator, term, current_account: current_account)
     elsif clause[:phrase]
-      PhraseClause.new(operator, term)
+      PhraseClause.new(operator, term, current_account: current_account)
     else
       raise "Unexpected clause type: #{clause}"
     end
