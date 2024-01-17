@@ -403,8 +403,6 @@ jobs:
       fail-fast: false
       matrix:
         ruby-version:
-          - '3.0'
-          - '3.1'
           - '.ruby-version'
     steps:
       - uses: actions/checkout@v4
