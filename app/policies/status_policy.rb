@@ -143,9 +143,8 @@ class StatusPolicy < ApplicationPolicy
   def server_blocking_domain_of_status?(status)
     @domain_block ||= DomainBlock.find_by(domain: current_account&.domain)
     if @domain_block
-      (@domain_block.detect_invalid_subscription && status.public_unlisted_visibility? && status.account.user&.setting_reject_public_unlisted_subscription) ||
-        (@domain_block.detect_invalid_subscription && status.public_visibility? && status.account.user&.setting_reject_unlisted_subscription) ||
-        (@domain_block.reject_send_sensitive && ((status.with_media? && status.sensitive) || status.spoiler_text?))
+      (@domain_block.detect_invalid_subscription && status.sending_maybe_compromised_privacy?) ||
+        (@domain_block.reject_send_sensitive && status.sending_sensitive?)
     else
       false
     end

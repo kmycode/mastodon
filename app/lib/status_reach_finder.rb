@@ -200,7 +200,7 @@ class StatusReachFinder
   def banned_domains_for_misskey
     return @banned_domains_for_misskey if defined?(@banned_domains_for_misskey)
 
-    return @banned_domains_for_misskey = [] if (!@status.account.user&.setting_reject_public_unlisted_subscription && !@status.account.user&.setting_reject_unlisted_subscription) || (!@status.public_unlisted_visibility? && !@status.unlisted_visibility?)
+    return @banned_domains_for_misskey = [] unless @status.sending_maybe_compromised_privacy? || (@status.reblog? && @status.reblog.sending_maybe_compromised_privacy?)
 
     domains = banned_domains_for_misskey_of_status(@status)
     domains += banned_domains_for_misskey_of_status(@status.reblog) if @status.reblog? && @status.reblog.local?
@@ -209,7 +209,6 @@ class StatusReachFinder
 
   def banned_domains_for_misskey_of_status(status)
     return [] if status.public_searchability?
-    return [] unless (status.public_unlisted_visibility? && status.account.user&.setting_reject_public_unlisted_subscription) || (status.unlisted_visibility? && status.account.user&.setting_reject_unlisted_subscription)
 
     from_info = InstanceInfo.where(software: %w(misskey calckey cherrypick sharkey)).pluck(:domain)
     from_domain_block = DomainBlock.where(detect_invalid_subscription: true).pluck(:domain)
