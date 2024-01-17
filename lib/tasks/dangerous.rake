@@ -77,9 +77,10 @@ namespace :dangerous do
       20230308061833
       20230223102416
       20230222232121
+      20240117021025
     )
+    # Removed: account_groups
     target_tables = %w(
-      account_groups
       antennas
       antenna_accounts
       antenna_domains
@@ -144,7 +145,7 @@ namespace :dangerous do
       %w(status_stats emoji_reactions_count),
       %w(status_stats emoji_reaction_accounts_count),
       %w(status_stats status_referred_by_count),
-      %w(status_stats test),
+      # Removed: status_stats test
     ]
     target_indices = %w(
       index_statuses_on_url

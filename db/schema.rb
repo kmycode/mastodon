@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_09_103012) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_17_021025) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -48,15 +48,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_09_103012) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "account_id"
     t.index ["account_id", "domain"], name: "index_account_domain_blocks_on_account_id_and_domain", unique: true
-  end
-
-  create_table "account_groups", force: :cascade do |t|
-    t.bigint "account_id", null: false
-    t.bigint "group_account_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_account_groups_on_account_id"
-    t.index ["group_account_id"], name: "index_account_groups_on_group_account_id"
   end
 
   create_table "account_migrations", force: :cascade do |t|
@@ -1200,7 +1191,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_09_103012) do
     t.datetime "updated_at", precision: nil, null: false
     t.string "emoji_reactions"
     t.integer "emoji_reactions_count", default: 0, null: false
-    t.integer "test", default: 0, null: false
     t.integer "emoji_reaction_accounts_count", default: 0, null: false
     t.integer "status_referred_by_count", default: 0, null: false
     t.index ["status_id"], name: "index_status_stats_on_status_id", unique: true
@@ -1427,7 +1417,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_09_103012) do
   add_foreign_key "account_conversations", "conversations", on_delete: :cascade
   add_foreign_key "account_deletion_requests", "accounts", on_delete: :cascade
   add_foreign_key "account_domain_blocks", "accounts", name: "fk_206c6029bd", on_delete: :cascade
-  add_foreign_key "account_groups", "accounts", on_delete: :cascade
   add_foreign_key "account_migrations", "accounts", column: "target_account_id", on_delete: :nullify
   add_foreign_key "account_migrations", "accounts", on_delete: :cascade
   add_foreign_key "account_moderation_notes", "accounts"
