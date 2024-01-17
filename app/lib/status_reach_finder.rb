@@ -192,13 +192,9 @@ class StatusReachFinder
   end
 
   def banned_domains_of_status(status)
-    if status.account.user&.setting_send_without_domain_blocks
-      []
-    else
-      blocks = DomainBlock.where(domain: nil)
-      blocks = blocks.or(DomainBlock.where(reject_send_sensitive: true)) if (status.with_media? && status.sensitive) || status.spoiler_text?
-      blocks.pluck(:domain).uniq
-    end
+    blocks = DomainBlock.where(domain: nil)
+    blocks = blocks.or(DomainBlock.where(reject_send_sensitive: true)) if (status.with_media? && status.sensitive) || status.spoiler_text?
+    blocks.pluck(:domain).uniq
   end
 
   def banned_domains_for_misskey

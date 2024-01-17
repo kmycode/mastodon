@@ -283,7 +283,6 @@ en:
         setting_reduce_motion: Reduce motion in animations
         setting_reject_public_unlisted_subscription: Reject sending public unlisted visibility/non-public searchability posts to Misskey, Calckey
         setting_reject_unlisted_subscription: Reject sending unlisted visibility/non-public searchability posts to Misskey, Calckey
-        setting_send_without_domain_blocks: Send your post to all server with administrator set as rejecting-post-server for protect you [DEPRECATED]
         setting_show_application: Disclose application used to send posts
         setting_show_emoji_reaction_on_timeline: Show all stamps on timeline
         setting_show_quote_in_home: Show quotes in home, list or antenna timelines

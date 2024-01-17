@@ -60,7 +60,6 @@ ja:
         person: これは人が使用している通常のアカウントです
         phrase: 投稿内容の大文字小文字や閲覧注意に関係なく一致
         scopes: アプリの API に許可するアクセス権を選択してください。最上位のスコープを選択する場合、個々のスコープを選択する必要はありません。
-        setting_send_without_domain_blocks: 管理人が同人コンテンツの配送にふさわしくないと判断したサーバーに、制限に関係なく全ての投稿を配送します。ただし何が起きても自己責任になります
         setting_aggregate_reblogs: 最近ブーストされた投稿が新たにブーストされても表示しません (設定後受信したものにのみ影響)
         setting_always_send_emails: 通常、Mastodon からメール通知は行われません。
         setting_bookmark_category_needed: すべてのカテゴリから削除したとき、ブックマークが自動で外れるようになります
@@ -294,7 +293,6 @@ ja:
         setting_reduce_motion: アニメーションの動きを減らす
         setting_reject_public_unlisted_subscription: Misskey系サーバーに「ローカル公開」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
         setting_reject_unlisted_subscription: Misskey系サーバーに「非収載」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
-        setting_send_without_domain_blocks: 管理人の設定した配送停止設定を拒否する (非推奨)
         setting_show_application: 送信したアプリを開示する
         setting_show_emoji_reaction_on_timeline: タイムライン上に他の人のつけたスタンプを表示する
         setting_simple_timeline_menu: タイムライン上でメニューの項目を減らす

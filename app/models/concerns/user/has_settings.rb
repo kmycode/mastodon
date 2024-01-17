@@ -71,10 +71,6 @@ module User::HasSettings
     settings['reject_unlisted_subscription']
   end
 
-  def setting_send_without_domain_blocks
-    settings['send_without_domain_blocks']
-  end
-
   def setting_stop_emoji_reaction_streaming
     settings['stop_emoji_reaction_streaming']
   end
