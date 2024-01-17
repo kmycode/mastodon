@@ -1700,6 +1700,7 @@ ja:
       too_few_options: は複数必要です
       too_many_options: は%{max}個までです
   preferences:
+    does_not_search: このサーバーでは全文検索機能を利用できません。代わりに、他のkmyblueサーバーであなたの投稿がこの設定に従って検索されます。
     dtl: ディープタイムライン
     dtl_hint: "#%{tag} ハッシュタグに参加することで、ディープタイムラインに投稿できます。ここではディープタイムラインを利用しやすくするための設定ができます。"
     emoji_reaction_permitting: スタンプの受け入れ
