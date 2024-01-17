@@ -403,24 +403,26 @@ jobs:
       fail-fast: false
       matrix:
         ruby-version:
+          - '3.0'
+          - '3.1'
           - '.ruby-version'
-
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v3
         with:
-          path: './public'
+          path: './'
           name: ${{ github.sha }}
+
+      - name: Expand archived asset artifacts
+        run: |
+          tar xvzf artifacts.tar.gz
 
       - name: Set up Ruby environment
         uses: ./.github/actions/setup-ruby
         with:
           ruby-version: ${{ matrix.ruby-version}}
-          additional-system-dependencies: ffmpeg imagemagick
-
-      - name: Set up Javascript environment
-        uses: ./.github/actions/setup-javascript
+          additional-system-dependencies: ffmpeg imagemagick libpam-dev
 
       - name: Load database schema
         run: './bin/rails db:create db:schema:load db:seed'
@@ -433,9 +435,8 @@ jobs:
 
       - run: bin/rspec
 
-      - name: Archive logs
-        uses: actions/upload-artifact@v3
-        if: failure()
+      - name: Upload coverage reports to Codecov
+        if: matrix.ruby-version == '.ruby-version'
+        uses: codecov/codecov-action@v3
         with:
-          name: back-ret-logs-${{ matrix.ruby-version }}
-          path: log/
+          files: coverage/lcov/mastodon-back-ret.lcov
