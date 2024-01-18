@@ -4,30 +4,26 @@
 #
 # Table name: domain_blocks
 #
-#  id                                   :bigint(8)        not null, primary key
-#  domain                               :string           default(""), not null
-#  created_at                           :datetime         not null
-#  updated_at                           :datetime         not null
-#  severity                             :integer          default("silence")
-#  reject_media                         :boolean          default(FALSE), not null
-#  reject_reports                       :boolean          default(FALSE), not null
-#  private_comment                      :text
-#  public_comment                       :text
-#  obfuscate                            :boolean          default(FALSE), not null
-#  reject_favourite                     :boolean          default(FALSE), not null
-#  reject_reply                         :boolean          default(FALSE), not null
-#  reject_send_not_public_searchability :boolean          default(FALSE), not null
-#  reject_send_public_unlisted          :boolean          default(FALSE), not null
-#  reject_send_dissubscribable          :boolean          default(FALSE), not null
-#  reject_send_media                    :boolean          default(FALSE), not null
-#  reject_send_sensitive                :boolean          default(FALSE), not null
-#  reject_hashtag                       :boolean          default(FALSE), not null
-#  reject_straight_follow               :boolean          default(FALSE), not null
-#  reject_new_follow                    :boolean          default(FALSE), not null
-#  hidden                               :boolean          default(FALSE), not null
-#  detect_invalid_subscription          :boolean          default(FALSE), not null
-#  reject_reply_exclude_followers       :boolean          default(FALSE), not null
-#  reject_friend                        :boolean          default(FALSE), not null
+#  id                             :bigint(8)        not null, primary key
+#  domain                         :string           default(""), not null
+#  created_at                     :datetime         not null
+#  updated_at                     :datetime         not null
+#  severity                       :integer          default("silence")
+#  reject_media                   :boolean          default(FALSE), not null
+#  reject_reports                 :boolean          default(FALSE), not null
+#  private_comment                :text
+#  public_comment                 :text
+#  obfuscate                      :boolean          default(FALSE), not null
+#  reject_favourite               :boolean          default(FALSE), not null
+#  reject_reply                   :boolean          default(FALSE), not null
+#  reject_send_sensitive          :boolean          default(FALSE), not null
+#  reject_hashtag                 :boolean          default(FALSE), not null
+#  reject_straight_follow         :boolean          default(FALSE), not null
+#  reject_new_follow              :boolean          default(FALSE), not null
+#  hidden                         :boolean          default(FALSE), not null
+#  detect_invalid_subscription    :boolean          default(FALSE), not null
+#  reject_reply_exclude_followers :boolean          default(FALSE), not null
+#  reject_friend                  :boolean          default(FALSE), not null
 #
 
 class DomainBlock < ApplicationRecord

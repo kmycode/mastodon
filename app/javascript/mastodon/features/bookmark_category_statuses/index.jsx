@@ -13,9 +13,9 @@ import { connect } from 'react-redux';
 
 import { debounce } from 'lodash';
 
-import BookmarkIcon from 'mastodon/../material-icons/400-24px/bookmark-fill.svg';
-import DeleteIcon from 'mastodon/../material-icons/400-24px/delete.svg?react';
-import EditIcon from 'mastodon/../material-icons/400-24px/edit.svg?react';
+import BookmarkIcon from '@/material-icons/400-24px/bookmark-fill.svg';
+import DeleteIcon from '@/material-icons/400-24px/delete.svg?react';
+import EditIcon from '@/material-icons/400-24px/edit.svg?react';
 import { deleteBookmarkCategory, expandBookmarkCategoryStatuses, fetchBookmarkCategory, fetchBookmarkCategoryStatuses , setupBookmarkCategoryEditor } from 'mastodon/actions/bookmark_categories';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { openModal } from 'mastodon/actions/modal';

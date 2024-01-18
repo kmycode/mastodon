@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { supportsPassiveEvents } from 'detect-passive-events';
 import Overlay from 'react-overlays/Overlay';
 
-import TimerIcon from 'mastodon/../material-icons/400-24px/timer.svg?react';
+import TimerIcon from '@/material-icons/400-24px/timer.svg?react';
 
 import { IconButton } from '../../../components/icon_button';
 

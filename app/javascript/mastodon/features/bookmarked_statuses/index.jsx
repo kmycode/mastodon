@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 
 import { debounce } from 'lodash';
 
-import BookmarksIcon from 'mastodon/../material-icons/400-24px/bookmarks-fill.svg?react';
+import BookmarksIcon from '@/material-icons/400-24px/bookmarks-fill.svg?react';
 import { fetchBookmarkedStatuses, expandBookmarkedStatuses } from 'mastodon/actions/bookmarks';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import Column from 'mastodon/components/column';

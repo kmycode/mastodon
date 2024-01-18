@@ -456,8 +456,6 @@ en:
       reject_reports_hint: Ignore all reports coming from this domain. Irrelevant for suspensions
       reject_send_sensitive: センシティブな投稿を配送しない
       reject_send_sensitive_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
-      reject_send_unlisted_dissubscribable: 購読拒否アカウントの未収載投稿を配送しない
-      reject_send_unlisted_dissubscribable_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
       reject_straight_follow: Reject straight follow
       reject_straight_follow_hint: The server accounts must be authenticated when follow our accounts
       undo: Undo domain block
@@ -1723,6 +1721,7 @@ en:
       too_few_options: must have more than one item
       too_many_options: can't contain more than %{max} items
   preferences:
+    does_not_search: The full-text search feature is not available on this server. Instead, your posts will be searched according to this setting on other kmyblue servers.
     dtl: Deep timeline
     dtl_hint: "You can join deep timeline with #%{tag} tag. Following settings make convenient to use deep timeline."
     emoji_reaction_permitting: Receiving stamps
@@ -1821,6 +1820,7 @@ en:
       unknown_browser: Unknown Browser
       weibo: Weibo
     current_session: Current session
+    date: Date
     description: "%{browser} on %{platform}"
     explanation: These are the web browsers currently logged in to your Mastodon account.
     ip: IP
@@ -2007,16 +2007,19 @@ en:
     webauthn: Security keys
   user_mailer:
     appeal_approved:
-      action: Go to your account
+      action: Account Settings
       explanation: The appeal of the strike against your account on %{strike_date} that you submitted on %{appeal_date} has been approved. Your account is once again in good standing.
       subject: Your appeal from %{date} has been approved
+      subtitle: Your account is once again in good standing.
       title: Appeal approved
     appeal_rejected:
       explanation: The appeal of the strike against your account on %{strike_date} that you submitted on %{appeal_date} has been rejected.
       subject: Your appeal from %{date} has been rejected
+      subtitle: Your appeal has been rejected.
       title: Appeal rejected
     backup_ready:
-      explanation: You requested a full backup of your Mastodon account. It's now ready for download!
+      explanation: You requested a full backup of your Mastodon account.
+      extra: It's now ready for download!
       subject: Your archive is ready for download
       title: Archive takeout
     suspicious_sign_in:

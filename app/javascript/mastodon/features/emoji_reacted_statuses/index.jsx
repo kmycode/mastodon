@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 
 import { debounce } from 'lodash';
 
-import EmojiReactionIcon from 'mastodon/../material-icons/400-24px/mood.svg?react';
+import EmojiReactionIcon from '@/material-icons/400-24px/mood.svg?react';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { fetchEmojiReactedStatuses, expandEmojiReactedStatuses } from 'mastodon/actions/emoji_reactions';
 import Column from 'mastodon/components/column';

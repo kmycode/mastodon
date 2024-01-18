@@ -13,9 +13,9 @@ import { connect } from 'react-redux';
 
 import { debounce } from 'lodash';
 
-import CircleIcon from 'mastodon/../material-icons/400-24px/account_circle.svg?react';
-import DeleteIcon from 'mastodon/../material-icons/400-24px/delete.svg?react';
-import EditIcon from 'mastodon/../material-icons/400-24px/edit.svg?react';
+import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';
+import DeleteIcon from '@/material-icons/400-24px/delete.svg?react';
+import EditIcon from '@/material-icons/400-24px/edit.svg?react';
 import { deleteCircle, expandCircleStatuses, fetchCircle, fetchCircleStatuses } from 'mastodon/actions/circles';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { openModal } from 'mastodon/actions/modal';

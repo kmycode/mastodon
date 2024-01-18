@@ -10,8 +10,8 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 
 import { length } from 'stringz';
 
-import LockIcon from 'mastodon/../material-icons/400-24px/lock.svg?react';
-import LimitedIcon from 'mastodon/../material-icons/400-24px/shield.svg?react';
+import LockIcon from '@/material-icons/400-24px/lock.svg?react';
+import LimitedIcon from '@/material-icons/400-24px/shield.svg?react';
 import { Icon }  from 'mastodon/components/icon';
 import { WithOptionalRouterPropTypes, withOptionalRouter } from 'mastodon/utils/react_router';
 

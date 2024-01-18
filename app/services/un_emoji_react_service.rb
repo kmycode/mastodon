@@ -11,7 +11,7 @@ class UnEmojiReactService < BaseService
     if emoji_reaction
       emoji_reaction.destroy!
 
-      status.touch # rubocop:disable Rails/SkipsModelValidations
+      status.touch
 
       create_notification(emoji_reaction) if !@status.account.local? && @status.account.activitypub?
       notify_to_followers(emoji_reaction)

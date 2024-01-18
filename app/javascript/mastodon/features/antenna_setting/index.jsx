@@ -14,12 +14,12 @@ import { connect } from 'react-redux';
 import Select, { NonceProvider } from 'react-select';
 import Toggle from 'react-toggle';
 
-import DeleteIcon from 'mastodon/../material-icons/400-24px/delete.svg?react';
-import DomainIcon from 'mastodon/../material-icons/400-24px/dns.svg?react';
-import EditIcon from 'mastodon/../material-icons/400-24px/edit.svg?react';
-import HashtagIcon from 'mastodon/../material-icons/400-24px/tag.svg?react';
-import KeywordIcon from 'mastodon/../material-icons/400-24px/title.svg?react';
-import AntennaIcon from 'mastodon/../material-icons/400-24px/wifi.svg?react';
+import DeleteIcon from '@/material-icons/400-24px/delete.svg?react';
+import DomainIcon from '@/material-icons/400-24px/dns.svg?react';
+import EditIcon from '@/material-icons/400-24px/edit.svg?react';
+import HashtagIcon from '@/material-icons/400-24px/tag.svg?react';
+import KeywordIcon from '@/material-icons/400-24px/title.svg?react';
+import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import {
   fetchAntenna,
   deleteAntenna,

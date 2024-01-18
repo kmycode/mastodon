@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_17_021025) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -566,10 +566,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_021025) do
     t.boolean "obfuscate", default: false, null: false
     t.boolean "reject_favourite", default: false, null: false
     t.boolean "reject_reply", default: false, null: false
-    t.boolean "reject_send_not_public_searchability", default: false, null: false
-    t.boolean "reject_send_public_unlisted", default: false, null: false
-    t.boolean "reject_send_dissubscribable", default: false, null: false
-    t.boolean "reject_send_media", default: false, null: false
     t.boolean "reject_send_sensitive", default: false, null: false
     t.boolean "reject_hashtag", default: false, null: false
     t.boolean "reject_straight_follow", default: false, null: false

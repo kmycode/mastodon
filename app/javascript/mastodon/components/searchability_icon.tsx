@@ -1,10 +1,10 @@
 import { defineMessages, useIntl } from 'react-intl';
 
-import AlternateEmailIcon from 'mastodon/../material-icons/400-24px/alternate_email.svg?react';
-import PublicUnlistedIcon from 'mastodon/../material-icons/400-24px/cloud.svg?react';
-import LockIcon from 'mastodon/../material-icons/400-24px/lock.svg?react';
-import LockOpenIcon from 'mastodon/../material-icons/400-24px/no_encryption.svg?react';
-import PublicIcon from 'mastodon/../material-icons/400-24px/public.svg?react';
+import AlternateEmailIcon from '@/material-icons/400-24px/alternate_email.svg?react';
+import PublicUnlistedIcon from '@/material-icons/400-24px/cloud.svg?react';
+import LockIcon from '@/material-icons/400-24px/lock.svg?react';
+import LockOpenIcon from '@/material-icons/400-24px/no_encryption.svg?react';
+import PublicIcon from '@/material-icons/400-24px/public.svg?react';
 
 import { Icon } from './icon';
 

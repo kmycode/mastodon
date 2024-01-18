@@ -60,7 +60,6 @@ ja:
         person: これは人が使用している通常のアカウントです
         phrase: 投稿内容の大文字小文字や閲覧注意に関係なく一致
         scopes: アプリの API に許可するアクセス権を選択してください。最上位のスコープを選択する場合、個々のスコープを選択する必要はありません。
-        setting_send_without_domain_blocks: 管理人が同人コンテンツの配送にふさわしくないと判断したサーバーに、制限に関係なく全ての投稿を配送します。ただし何が起きても自己責任になります
         setting_aggregate_reblogs: 最近ブーストされた投稿が新たにブーストされても表示しません (設定後受信したものにのみ影響)
         setting_always_send_emails: 通常、Mastodon からメール通知は行われません。
         setting_bookmark_category_needed: すべてのカテゴリから削除したとき、ブックマークが自動で外れるようになります
@@ -81,6 +80,7 @@ ja:
         setting_hide_network: フォローとフォロワーの情報がプロフィールページで見られないようにします
         setting_public_post_to_unlisted: 未対応のサードパーティアプリからもローカル公開で投稿できますが、公開投稿はWeb以外できなくなります
         setting_reject_unlisted_subscription: Misskeyやそのフォークは、フォローしていないアカウントの「非収載」投稿を **購読・検索** することができます。これはkmyblueの挙動と異なります。そのようなサーバーに、指定した公開範囲の投稿を「フォロワーのみ」として配送します。ただし構造上、完璧な対応は困難でたまに非収載として配信されること、ご理解ください
+        setting_reverse_search_quote: 検索ワードをダブルクオートで囲って検索した場合、表記ゆれ多めの検索結果になります。Mastodon標準とは逆の挙動となります。
         setting_show_application: 投稿するのに使用したアプリが投稿の詳細ビューに表示されるようになります
         setting_single_ref_to_quote: 当サーバーがまだ対象投稿を取り込んでいない場合、引用が相手に正常に認識されない場合があります
         setting_stop_emoji_reaction_streaming: 通信容量の節約に役立ちます
@@ -294,7 +294,7 @@ ja:
         setting_reduce_motion: アニメーションの動きを減らす
         setting_reject_public_unlisted_subscription: Misskey系サーバーに「ローカル公開」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
         setting_reject_unlisted_subscription: Misskey系サーバーに「非収載」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
-        setting_send_without_domain_blocks: 管理人の設定した配送停止設定を拒否する (非推奨)
+        setting_reverse_search_quote: ダブルクオートで囲まず検索した時、単語単位で検索する
         setting_show_application: 送信したアプリを開示する
         setting_show_emoji_reaction_on_timeline: タイムライン上に他の人のつけたスタンプを表示する
         setting_simple_timeline_menu: タイムライン上でメニューの項目を減らす

@@ -27,7 +27,7 @@ class EmojiReactService < BaseService
 
       @emoji_reaction = EmojiReaction.create!(account: account, status: status, name: shortcode, custom_emoji: custom_emoji)
 
-      status.touch # rubocop:disable Rails/SkipsModelValidations
+      status.touch
     end
 
     raise Mastodon::ValidationError, I18n.t('reactions.errors.duplication') if @emoji_reaction.nil?

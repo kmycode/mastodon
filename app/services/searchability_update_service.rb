@@ -8,7 +8,6 @@ class SearchabilityUpdateService < BaseService
 
     ids = statuses.pluck(:id)
 
-    # rubocop:disable Rails/SkipsModelValidations
     if account.public_searchability?
       statuses.update_all('searchability = CASE visibility WHEN 0 THEN 0 WHEN 10 THEN 0 WHEN 1 THEN 2 WHEN 2 THEN 2 ELSE 3 END, updated_at = CURRENT_TIMESTAMP')
     elsif account.unlisted_searchability?
@@ -18,7 +17,6 @@ class SearchabilityUpdateService < BaseService
     else
       statuses.update_all('searchability = 3, updated_at = CURRENT_TIMESTAMP')
     end
-    # rubocop:enable Rails/SkipsModelValidations
 
     return unless Chewy.enabled?
 

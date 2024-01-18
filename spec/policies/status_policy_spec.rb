@@ -112,6 +112,21 @@ RSpec.describe StatusPolicy, type: :model do
 
         expect(subject).to_not permit(viewer, status)
       end
+
+      context 'with remote account' do
+        let(:viewer) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
+        let(:status) { Fabricate(:status, account: alice, spoiler_text: 'ohagi', sensitive: true) }
+
+        it 'grants access when viewer is not domain-blocked' do
+          expect(subject).to permit(viewer, status)
+        end
+
+        it 'denies access when viewer is domain-blocked' do
+          Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_send_sensitive: true)
+
+          expect(subject).to_not permit(viewer, status)
+        end
+      end
     end
   end
 

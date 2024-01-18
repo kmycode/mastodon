@@ -10,9 +10,9 @@ import { withRouter } from 'react-router-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 
-import DeleteIcon from 'mastodon/../material-icons/400-24px/delete.svg?react';
-import EditIcon from 'mastodon/../material-icons/400-24px/edit.svg?react';
-import AntennaIcon from 'mastodon/../material-icons/400-24px/wifi.svg?react';
+import DeleteIcon from '@/material-icons/400-24px/delete.svg?react';
+import EditIcon from '@/material-icons/400-24px/edit.svg?react';
+import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import { fetchAntenna, deleteAntenna } from 'mastodon/actions/antennas';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { openModal } from 'mastodon/actions/modal';

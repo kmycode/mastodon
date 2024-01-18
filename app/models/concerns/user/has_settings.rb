@@ -71,10 +71,6 @@ module User::HasSettings
     settings['reject_unlisted_subscription']
   end
 
-  def setting_send_without_domain_blocks
-    settings['send_without_domain_blocks']
-  end
-
   def setting_stop_emoji_reaction_streaming
     settings['stop_emoji_reaction_streaming']
   end
@@ -241,6 +237,10 @@ module User::HasSettings
 
   def setting_use_public_index
     settings['use_public_index']
+  end
+
+  def setting_reverse_search_quote
+    settings['reverse_search_quote']
   end
 
   def setting_disallow_unlisted_public_searchability

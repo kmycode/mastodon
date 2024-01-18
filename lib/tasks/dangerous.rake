@@ -7,9 +7,11 @@ namespace :dangerous do
 
     prompt = TTY::Prompt.new
 
-    exit(0) unless prompt.yes?('[1/3] Do you really want to go back to the original Mastodon?', default: false)
-    exit(0) unless prompt.yes?('[2/3] All proprietary data of kmyblue will be deleted and cannot be restored. Are you sure?', default: false)
-    exit(0) unless prompt.yes?('[3/3] This operation is irreversible. You have backups in case this operation causes a system malfunction, do you not?', default: false)
+    unless ENV['BACK_UPSTREAM_FORCE']
+      exit(0) unless prompt.yes?('[1/3] Do you really want to go back to the original Mastodon?', default: false)
+      exit(0) unless prompt.yes?('[2/3] All proprietary data of kmyblue will be deleted and cannot be restored. Are you sure?', default: false)
+      exit(0) unless prompt.yes?('[3/3] This operation is irreversible. You have backups in case this operation causes a system malfunction, do you not?', default: false)
+    end
 
     target_migrations = %w(
       20231022074913
@@ -78,6 +80,7 @@ namespace :dangerous do
       20230223102416
       20230222232121
       20240117021025
+      20240117022353
     )
     # Removed: account_groups
     target_tables = %w(
@@ -128,10 +131,10 @@ namespace :dangerous do
       %w(domain_blocks reject_new_follow),
       %w(domain_blocks reject_reply),
       %w(domain_blocks reject_reply_exclude_followers),
-      %w(domain_blocks reject_send_dissubscribable),
-      %w(domain_blocks reject_send_media),
-      %w(domain_blocks reject_send_not_public_searchability),
-      %w(domain_blocks reject_send_public_unlisted),
+      # Removed: domain_blocks reject_send_dissubscribable
+      # Removed: domain_blocks reject_send_media
+      # Removed: domain_blocks reject_send_not_public_searchability
+      # Removed: domain_blocks reject_send_public_unlisted
       # Removed: domain_blocks reject_send_unlisted_dissubscribable
       %w(domain_blocks reject_send_sensitive),
       %w(domain_blocks reject_straight_follow),

@@ -14,8 +14,8 @@ import { connect } from 'react-redux';
 
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
-import MenuIcon from 'mastodon/../material-icons/400-24px/menu.svg?react';
-import EmojiReactionIcon from 'mastodon/../material-icons/400-24px/mood.svg?react';
+import MenuIcon from '@/material-icons/400-24px/menu.svg?react';
+import EmojiReactionIcon from '@/material-icons/400-24px/mood.svg?react';
 import { updateReactionDeck } from 'mastodon/actions/reaction_deck';
 import { Button } from 'mastodon/components/button';
 import ColumnHeader from 'mastodon/components/column_header';

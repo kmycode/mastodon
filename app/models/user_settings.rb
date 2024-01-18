@@ -26,11 +26,11 @@ class UserSettings
   setting :default_searchability, default: :direct, in: %w(public private direct limited public_unlisted)
   setting :default_searchability_of_search, default: :public, in: %w(public private direct limited)
   setting :use_public_index, default: true
+  setting :reverse_search_quote, default: false
   setting :disallow_unlisted_public_searchability, default: false
   setting :public_post_to_unlisted, default: false
   setting :reject_public_unlisted_subscription, default: false
   setting :reject_unlisted_subscription, default: false
-  setting :send_without_domain_blocks, default: false
   setting :reaction_deck, default: nil
   setting :stop_emoji_reaction_streaming, default: false
   setting :emoji_reaction_streaming_notify_impl2, default: false

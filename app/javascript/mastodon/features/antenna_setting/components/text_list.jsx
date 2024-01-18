@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 
-import DeleteIcon from 'mastodon/../material-icons/400-24px/delete.svg?react';
+import DeleteIcon from '@/material-icons/400-24px/delete.svg?react';
 import { Button } from 'mastodon/components/button';
 import { Icon } from 'mastodon/components/icon';
 import { IconButton } from 'mastodon/components/icon_button';
