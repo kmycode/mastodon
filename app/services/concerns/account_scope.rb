@@ -7,6 +7,8 @@ module AccountScope
       scope_local
     when :private
       scope_account_local_followers(status.account)
+    when :limited
+      scope_status_all_mentioned(status)
     else
       scope_status_mentioned(status)
     end
@@ -22,6 +24,10 @@ module AccountScope
 
   def scope_status_mentioned(status)
     Account.local.where(id: status.active_mentions.select(:account_id)).reorder(nil)
+  end
+
+  def scope_status_all_mentioned(status)
+    Account.local.where(id: status.mentions.select(:account_id)).reorder(nil)
   end
 
   # TODO: not work
