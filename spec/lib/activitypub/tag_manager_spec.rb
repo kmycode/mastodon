@@ -158,18 +158,23 @@ RSpec.describe ActivityPub::TagManager do
     end
 
     it 'returns public collection for public status' do
-      status = Fabricate(:status, visibility: :public)
+      status = Fabricate(:status, account: user.account, visibility: :public)
       expect(subject.cc_for_misskey(status)).to eq [account_followers_url(status.account)]
     end
 
     it 'returns empty array for public_unlisted status' do
-      status = Fabricate(:status, account: user.account, visibility: :public_unlisted)
+      status = Fabricate(:status, account: user.account, visibility: :public_unlisted, searchability: :private)
       expect(subject.cc_for_misskey(status)).to eq []
     end
 
     it 'returns empty array for unlisted status' do
-      status = Fabricate(:status, account: user.account, visibility: :unlisted)
+      status = Fabricate(:status, account: user.account, visibility: :unlisted, searchability: :private)
       expect(subject.cc_for_misskey(status)).to eq []
+    end
+
+    it 'returns public collection for unlisted status but public searchability' do
+      status = Fabricate(:status, account: user.account, visibility: :unlisted, searchability: :public)
+      expect(subject.cc_for_misskey(status)).to eq ['https://www.w3.org/ns/activitystreams#Public']
     end
   end
 
