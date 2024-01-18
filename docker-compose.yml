@@ -76,7 +76,9 @@ services:
       - ./public/system:/mastodon/public/system
 
   streaming:
-    build: .
+    build:
+      context: .
+      dockerfile: streaming/Dockerfile
     image: ghcr.io/mastodon/mastodon:v4.2.1
     restart: always
     env_file: .env.production
