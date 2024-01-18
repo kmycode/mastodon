@@ -72,6 +72,7 @@ en:
         setting_dtl_menu: Show DTL menu on web
         setting_emoji_reaction_policy: Even with this setting, users on other servers are free to put their stamp on the post and share it within the same server. If you simply want to remove the stamp from your own screen, you can disable it from the appearance settings
         setting_enable_emoji_reaction: If turn off, other users still can react your posts
+        setting_reverse_search_quote: Double-quotes will result in a search with a wider range of notation, which is the opposite of Mastodon's default behavior.
         setting_single_ref_to_quote: If this server does not have target post, target server maybe cannot read your quote
         setting_use_blurhash: Gradients are based on the colors of the hidden visuals but obfuscate any details
         setting_use_pending_items: Hide timeline updates behind a click instead of automatically scrolling the feed
@@ -283,6 +284,7 @@ en:
         setting_reduce_motion: Reduce motion in animations
         setting_reject_public_unlisted_subscription: Reject sending public unlisted visibility/non-public searchability posts to Misskey, Calckey
         setting_reject_unlisted_subscription: Reject sending unlisted visibility/non-public searchability posts to Misskey, Calckey
+        setting_reverse_search_quote: Perform word-by-word search when search keywords are not enclosed in double quotes
         setting_show_application: Disclose application used to send posts
         setting_show_emoji_reaction_on_timeline: Show all stamps on timeline
         setting_show_quote_in_home: Show quotes in home, list or antenna timelines

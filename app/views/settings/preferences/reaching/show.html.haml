@@ -72,6 +72,8 @@
                    label_method: ->(searchability) { safe_join([I18n.t("statuses.searchabilities.#{searchability}"), I18n.t("statuses.searchabilities.#{searchability}_search_long")], ' - ') },
                    required: false,
                    wrapper: :with_label
+    .fields-group
+      = ff.input :reverse_search_quote, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_reverse_search_quote'), hint: I18n.t('simple_form.hints.defaults.setting_reverse_search_quote')
 
     .fields-group
       = ff.input :use_public_index, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_use_public_index')

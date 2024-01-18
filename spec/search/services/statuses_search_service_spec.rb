@@ -289,5 +289,15 @@ describe StatusesSearchService do
         it_behaves_like 'does not hit status', 'when search with following', 'in:following りんご'
       end
     end
+
+    context 'when reverse_search_quote is enabled' do
+      before do
+        alice.user.update!(settings: { reverse_search_quote: true })
+      end
+
+      it_behaves_like 'does not hit status', 'when search with letter in word', 'ご'
+      it_behaves_like 'hit status', 'when double quote search with letter in word', '"ご"'
+      it_behaves_like 'hit status', 'when search with word', 'りんご'
+    end
   end
 end
