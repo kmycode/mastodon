@@ -397,6 +397,8 @@ en:
       undo: Disallow federation with domain
     domain_blocks:
       add_new: Add new domain block
+      block_trends: Reject trends
+      block_trends_hint: Reject trends in the future
       confirm_suspension:
         cancel: Cancel
         confirm: Suspend
@@ -416,7 +418,7 @@ en:
       existing_domain_block_html: You have already imposed stricter limits on %{name}, you need to <a href="%{unblock_url}">unblock it</a> first.
       export: Export
       headers:
-        disagreement: Protect sensitive posts from political disagreement
+        disagreement: Political disagreement
         harassment: Harassment or spam
         invalid_privacy: Privacy is not protected
         mastodon_default: Original Mastodon supports
@@ -558,6 +560,7 @@ en:
         description_html: You can define content policies that will be applied to all accounts from this domain and any of its subdomains.
         limited_federation_mode_description_html: You can chose whether to allow federation with this domain.
         policies:
+          block_trends: Reject trends
           reject_favourite: Reject favorite
           reject_friend: Reject friend server application
           reject_hashtag: Reject hashtags

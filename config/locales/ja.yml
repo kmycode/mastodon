@@ -390,6 +390,8 @@ ja:
       undo: 連合許可を外す
     domain_blocks:
       add_new: ドメインブロックを追加
+      block_trends: トレンド掲載を拒否
+      block_trends_hint: 今後の投稿のトレンド掲載を拒否します。反映には時間がかかります。停止とは無関係です
       confirm_suspension:
         cancel: キャンセル
         confirm: 停止
@@ -409,7 +411,7 @@ ja:
       existing_domain_block_html: 既に%{name}に対して、より厳しい制限を課しています。先に<a href="%{unblock_url}">その制限を解除</a>する必要があります。
       export: エクスポート
       headers:
-        disagreement: 政治的な意見の相違からの敏感な投稿の保護
+        disagreement: 意見の相違
         harassment: 嫌がらせまたはスパム
         invalid_privacy: プライバシーが守られていない
         mastodon_default: 本家Mastodonの設定項目
@@ -550,6 +552,7 @@ ja:
         description_html: このドメインとそのサブドメインのすべてのアカウントに適用されるコンテンツポリシーを定義できます。
         limited_federation_mode_description_html: このドメインとの連合を許可するかどうかを選択できます。
         policies:
+          block_trends: トレンドへの掲載を拒否
           detect_invalid_subscription: 購読のプライバシーなし
           reject_favourite: お気に入りを拒否
           reject_friend: フレンドサーバー申請を拒否

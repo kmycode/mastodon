@@ -81,6 +81,7 @@ namespace :dangerous do
       20230222232121
       20240117021025
       20240117022353
+      20240121231131
     )
     # Removed: account_groups
     target_tables = %w(
@@ -122,6 +123,7 @@ namespace :dangerous do
       %w(custom_filters exclude_follows),
       %w(custom_filters exclude_localusers),
       %w(custom_filters with_quote),
+      %w(domain_blocks block_trends),
       %w(domain_blocks detect_invalid_subscription),
       %w(domain_blocks hidden),
       # Removed: domain_blocks hidden_anonymous

@@ -110,7 +110,13 @@ class Trends::Statuses < Trends::Base
       (status.public_visibility? || status.public_unlisted_visibility?) &&
       status.account.discoverable? && !status.account.silenced? && !status.account.sensitized? &&
       status.spoiler_text.blank? && (!status.sensitive? || status.media_attachments.none?) &&
-      !status.reply? && valid_locale?(status.language)
+      !status.reply? && valid_locale?(status.language) && !domain_blocked?(status)
+  end
+
+  def domain_blocked?(status)
+    return false if status.account.local?
+
+    DomainBlock.block_trends?(status.account.domain)
   end
 
   def calculate_scores(statuses, at_time)

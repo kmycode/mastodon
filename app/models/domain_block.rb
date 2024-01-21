@@ -24,6 +24,7 @@
 #  detect_invalid_subscription    :boolean          default(FALSE), not null
 #  reject_reply_exclude_followers :boolean          default(FALSE), not null
 #  reject_friend                  :boolean          default(FALSE), not null
+#  block_trends                   :boolean          default(FALSE), not null
 #
 
 class DomainBlock < ApplicationRecord
@@ -49,6 +50,7 @@ class DomainBlock < ApplicationRecord
       .or(where(reject_new_follow: true))
       .or(where(reject_straight_follow: true))
       .or(where(reject_friend: true))
+      .or(where(block_trends: true))
   }
   scope :by_severity, -> { in_order_of(:severity, %w(noop silence suspend)).order(:domain) }
 
@@ -70,6 +72,7 @@ class DomainBlock < ApplicationRecord
        reject_straight_follow? ? :reject_straight_follow : nil,
        reject_new_follow? ? :reject_new_follow : nil,
        reject_friend? ? :reject_friend : nil,
+       block_trends? ? :block_trends : nil,
        detect_invalid_subscription? ? :detect_invalid_subscription : nil,
        reject_reports? ? :reject_reports : nil].reject { |policy| policy == :noop || policy.nil? }
     end
@@ -114,6 +117,10 @@ class DomainBlock < ApplicationRecord
 
     def reject_friend?(domain)
       !!rule_for(domain)&.reject_friend?
+    end
+
+    def block_trends?(domain)
+      !!rule_for(domain)&.block_trends?
     end
 
     def detect_invalid_subscription?(domain)

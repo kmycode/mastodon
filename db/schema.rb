@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_21_231131) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -574,6 +574,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
     t.boolean "detect_invalid_subscription", default: false, null: false
     t.boolean "reject_reply_exclude_followers", default: false, null: false
     t.boolean "reject_friend", default: false, null: false
+    t.boolean "block_trends", default: false, null: false
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
   end
 
