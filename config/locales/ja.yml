@@ -435,8 +435,8 @@ ja:
       private_comment_hint: このコメントは同じサーバーのモデレーターも閲覧できます。
       public_comment: コメント (公開)
       public_comment_hint: ドメインブロックの公開を有効にしている場合、このコメントも公開されます。
-      reject_favourite: お気に入り、スタンプを拒否
-      reject_favourite_hint: 今後のお気に入り、スタンプを拒否します。停止とは無関係です
+      reject_favourite: お気に入り、絵文字リアクションを拒否
+      reject_favourite_hint: 今後のお気に入り、絵文字リアクションを拒否します。停止とは無関係です
       reject_friend: フレンドサーバー申請を拒否
       reject_friend_hint: 今後のフレンドサーバー申請を全て拒否します。停止とは無関係です
       reject_hashtag: ハッシュタグを拒否
@@ -852,7 +852,7 @@ ja:
         desc_html: この設定を自分で変更していない全ユーザーに影響します
         title: デフォルトで検索エンジンによるインデックスを拒否する
       discovery:
-        emoji_reactions: スタンプ
+        emoji_reactions: 絵文字リアクション
         follow_recommendations: おすすめフォロー
         friend_servers: フレンドサーバー
         preamble: Mastodon を知らないユーザーを取り込むには、興味深いコンテンツを浮上させることが重要です。サーバー上で様々なディスカバリー機能がどのように機能するかを制御します。
@@ -897,8 +897,8 @@ ja:
         patch: パッチ (バグ修正のみ)
       version: バージョン
     special_instances:
-      emoji_reaction_disallow_domains: 自分がスタンプをつけることを許可しないドメイン
-      emoji_reaction_disallow_domains_hint: 連合先に配慮する必要がある場合、ドメインを改行区切りで設定します。設定されたドメインの投稿にスタンプを付けることはできません。
+      emoji_reaction_disallow_domains: 自分のサーバーが絵文字リアクションをすることを許可しないドメイン
+      emoji_reaction_disallow_domains_hint: 連合先に配慮する必要がある場合、ドメインを改行区切りで設定します。設定されたドメインの投稿に絵文字リアクションを付けることはできません。
       title: 特殊なサーバー
     statuses:
       account: 作成者
@@ -1183,7 +1183,7 @@ ja:
     advanced_web_interface_hint: 'ディスプレイを幅いっぱいまで活用したい場合、上級者向け UI をおすすめします。ホーム、通知、連合タイムライン、更にはリストやハッシュタグなど、様々な異なるカラムから望む限りの情報を一度に受け取れるような設定が可能になります。'
     animations_and_accessibility: アニメーションとアクセシビリティー
     confirmation_dialogs: 確認ダイアログ
-    custom_emoji_and_emoji_reactions: カスタム絵文字とスタンプ
+    custom_emoji_and_emoji_reactions: カスタム絵文字と絵文字リアクション
     discovery: 見つける
     localization:
       body: Mastodonは有志によって翻訳されています。
@@ -1634,9 +1634,9 @@ ja:
       subject: "%{name}さんにお気に入りに登録されました"
       title: 新たなお気に入り登録
     emoji_reaction:
-      body: "%{name}さんにスタンプをつけられた、あなたの投稿があります:"
-      subject: "%{name}さんにスタンプをつけられました"
-      title: 新たなスタンプ
+      body: "%{name}さんに絵文字をつけられた、あなたの投稿があります:"
+      subject: "%{name}さんに絵文字をつけられました"
+      title: 新たな絵文字リアクション
     follow:
       body: "%{name}さんにフォローされています！"
       subject: "%{name}さんにフォローされています"
@@ -1706,7 +1706,7 @@ ja:
     does_not_search: このサーバーでは全文検索機能を利用できません。代わりに、他のkmyblueサーバーであなたの投稿がこの設定に従って検索されます。
     dtl: ディープタイムライン
     dtl_hint: "#%{tag} ハッシュタグに参加することで、ディープタイムラインに投稿できます。ここではディープタイムラインを利用しやすくするための設定ができます。"
-    emoji_reaction_permitting: スタンプの受け入れ
+    emoji_reaction_permitting: 絵文字リアクションの受け入れ
     other: その他
     posting_defaults: デフォルトの投稿設定
     public_timelines: 公開タイムライン
@@ -1736,7 +1736,7 @@ ja:
   reactions:
     errors:
       banned: 指定ユーザーからのリアクションは禁止されています
-      disabled: このサーバーではスタンプ機能は無効になっています
+      disabled: このサーバーでは絵文字リアクション機能は無効になっています
       duplication: 同じリアクションを複数行おうとしました
       limit_reached: リアクションの種類が上限に達しました
       unrecognized_emoji: は絵文字として認識されていません
@@ -1931,8 +1931,8 @@ ja:
     keep_polls_hint: アンケート付きの投稿を削除せずに残します
     keep_self_bookmark: ブックマークした投稿を保持
     keep_self_bookmark_hint: 自分自身でブックマークした投稿を削除せずに残します
-    keep_self_emoji: スタンプをつけた投稿を保持
-    keep_self_emoji_hint: 自分自身でスタンプをつけた投稿を削除せずに残します
+    keep_self_emoji: 絵文字をつけた投稿を保持
+    keep_self_emoji_hint: 自分自身で絵文字をつけた投稿を削除せずに残します
     keep_self_fav: お気に入りに登録した投稿を保持
     keep_self_fav_hint: 自分自身でお気に入りに登録した投稿を削除せずに残します
     min_age:
@@ -1945,8 +1945,8 @@ ja:
       '63113904': 2年
       '7889238': 3ヶ月
     min_age_label: 投稿を保持する期間
-    min_emojis: スタンプの基準値
-    min_emojis_hint: この数以上、スタンプをつけられた投稿を削除せずに残します。空白にしておくと、数に関わらず投稿を削除します。
+    min_emojis: 絵文字リアクションの基準値
+    min_emojis_hint: この数以上、絵文字をつけられた投稿を削除せずに残します。空白にしておくと、数に関わらず投稿を削除します。
     min_favs: お気に入りの基準値
     min_favs_hint: この数以上、お気に入り登録された投稿を削除せずに残します。空白にしておくと、お気に入りの数に関わらず投稿を削除します。
     min_reblogs: ブーストの基準値

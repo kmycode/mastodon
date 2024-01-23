@@ -340,7 +340,7 @@ class SearchQueryTransformer < Parslet::Transform
           @filter = :mentioned_by
         when 'referenced', 'ref'
           @filter = :referenced_by
-        when 'emoji_reacted', 'stamped', 'stamp'
+        when 'emoji_reacted', 'stamped', 'stamp', 'emoji'
           @filter = :emoji_reacted_by
         when 'bookmarked', 'bm'
           @filter = :bookmarked_by

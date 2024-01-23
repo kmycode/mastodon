@@ -51,7 +51,7 @@ const messages = defineMessages({
   cancel_reblog_private: { id: 'status.cancel_reblog_private', defaultMessage: 'Unboost' },
   cannot_reblog: { id: 'status.cannot_reblog', defaultMessage: 'This post cannot be boosted' },
   favourite: { id: 'status.favourite', defaultMessage: 'Favorite' },
-  emojiReaction: { id: 'status.emoji_reaction', defaultMessage: 'Stamp' },
+  emojiReaction: { id: 'status.emoji_reaction', defaultMessage: 'Emoji reaction' },
   bookmark: { id: 'status.bookmark', defaultMessage: 'Bookmark' },
   bookmarkCategory: { id: 'status.bookmark_category', defaultMessage: 'Bookmark category' },
   removeBookmark: { id: 'status.remove_bookmark', defaultMessage: 'Remove bookmark' },
@@ -469,7 +469,7 @@ class StatusActionBar extends ImmutablePureComponent {
     const denyFromAll = emojiReactionPolicy !== 'block' && emojiReactionPolicy !== 'block';
     const emojiPickerDropdown = (enableEmojiReaction && emojiReactionAvailableServer && denyFromAll && (writtenByMe || (following && followed && mutual && outside)) && (
       <EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} button={(
-        <IconButton className='status__action-bar__button' title={intl.formatMessage(messages.emojiReaction)} icon='smile-o' iconComponent={EmojiReactionIcon} onClick={this.handleEmojiPickInnerButton} />
+        <IconButton className='status__action-bar__button' icon='smile-o' iconComponent={EmojiReactionIcon} onClick={this.handleEmojiPickInnerButton} />
       )} />
     )) || (enableEmojiReaction && (
       <div className='status__action-bar__button__blank' />

@@ -861,7 +861,7 @@ en:
         desc_html: Affects all users who have not changed this setting themselves
         title: Opt users out of search engine indexing by default
       discovery:
-        emoji_reactions: Stamp
+        emoji_reactions: Emoji reaction
         follow_recommendations: Follow recommendations
         friend_servers: Friend servers
         preamble: Surfacing interesting content is instrumental in onboarding new users who may not know anyone Mastodon. Control how various discovery features work on your server.
@@ -906,8 +906,8 @@ en:
         patch: Patch release — bugfixes and easy to apply changes
       version: Version
     special_instances:
-      emoji_reaction_disallow_domains: Domains we are not permitted stamp
-      emoji_reaction_disallow_domains_hint: If you need to be considerate to your coalition partners, set the domain with a new line separator. It is not possible to put a stamp on a post from a set domain.
+      emoji_reaction_disallow_domains: Domains we are not permitted emoji reaction
+      emoji_reaction_disallow_domains_hint: If you need to be considerate to your coalition partners, set the domain with a new line separator. It is not possible to put an emoji reaction on a post from a set domain.
       title: Special servers
     statuses:
       account: Author
@@ -1195,7 +1195,7 @@ en:
     advanced_web_interface_hint: 'If you want to make use of your entire screen width, the advanced web interface allows you to configure many different columns to see as much information at the same time as you want: Home, notifications, federated timeline, any number of lists and hashtags.'
     animations_and_accessibility: Animations and accessibility
     confirmation_dialogs: Confirmation dialogs
-    custom_emoji_and_emoji_reactions: Custom emoji and stamps
+    custom_emoji_and_emoji_reactions: Custom emoji and emoji reactions
     discovery: Discovery
     localization:
       body: Mastodon is translated by volunteers.
@@ -1654,9 +1654,9 @@ en:
       subject: "%{name} favorited your post"
       title: New favorite
     emoji_reaction:
-      body: 'Your post was stamped by %{name}:'
-      subject: "%{name} stamped your post"
-      title: New stamp
+      body: 'Your post was reacted with emoji by %{name}:'
+      subject: "%{name} reacted your post with emoji"
+      title: New emoji reaction
     follow:
       body: "%{name} is now following you!"
       subject: "%{name} is now following you"
@@ -1727,7 +1727,7 @@ en:
     does_not_search: The full-text search feature is not available on this server. Instead, your posts will be searched according to this setting on other kmyblue servers.
     dtl: Deep timeline
     dtl_hint: "You can join deep timeline with #%{tag} tag. Following settings make convenient to use deep timeline."
-    emoji_reaction_permitting: Receiving stamps
+    emoji_reaction_permitting: Receiving emoji reactions
     other: Other
     posting_defaults: Posting defaults
     public_timelines: Public timelines
@@ -1757,7 +1757,7 @@ en:
   reactions:
     errors:
       banned: Banned reaction from the user
-      disabled: Stamp is disabled on this server
+      disabled: Emoji reaction is disabled on this server
       duplication: Cannot react same things
       limit_reached: Limit of different reactions reached
       unrecognized_emoji: is not a recognized emoji
@@ -1939,7 +1939,7 @@ en:
     enabled_hint: Automatically deletes your posts once they reach a specified age threshold, unless they match one of the exceptions below
     exceptions: Exceptions
     explanation: Because deleting posts is an expensive operation, this is done slowly over time when the server is not otherwise busy. For this reason, your posts may be deleted a while after they reach the age threshold.
-    ignore_emojis: Ignore stamps
+    ignore_emojis: Ignore emoji reactions
     ignore_favs: Ignore favorites
     ignore_reblogs: Ignore boosts
     interaction_exceptions: Exceptions based on interactions
@@ -1966,8 +1966,8 @@ en:
       '63113904': 2 years
       '7889238': 3 months
     min_age_label: Age threshold
-    min_emojis: Keep posts stamped at least
-    min_emojis_hint: Doesn't delete any of your posts that has received at least this number of stamps. Leave blank to delete posts regardless of their number of emojis
+    min_emojis: Keep posts reacted with emoji at least
+    min_emojis_hint: Doesn't delete any of your posts that has received at least this number of emoji reactions. Leave blank to delete posts regardless of their number of emojis
     min_favs: Keep posts favorited at least
     min_favs_hint: Doesn't delete any of your posts that has received at least this number of favorites. Leave blank to delete posts regardless of their number of favorites
     min_reblogs: Keep posts boosted at least

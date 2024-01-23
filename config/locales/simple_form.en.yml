@@ -70,7 +70,7 @@ en:
         setting_dtl_force_searchability: "With using #%{tag} tag, your post settings will be changed forcibly"
         setting_dtl_force_visibility: "With using #%{tag} tag, your post settings will be changed forcibly"
         setting_dtl_menu: Show DTL menu on web
-        setting_emoji_reaction_policy: Even with this setting, users on other servers are free to put their stamp on the post and share it within the same server. If you simply want to remove the stamp from your own screen, you can disable it from the appearance settings
+        setting_emoji_reaction_policy: Even with this setting, users on other servers are free to put their emoji reaction on the post and share it within the same server. If you simply want to remove the emoji reaction from your own screen, you can disable it from the appearance settings
         setting_enable_emoji_reaction: If turn off, other users still can react your posts
         setting_reverse_search_quote: Double-quotes will result in a search with a wider range of notation, which is the opposite of Mastodon's default behavior.
         setting_single_ref_to_quote: If this server does not have target post, target server maybe cannot read your quote
@@ -258,10 +258,10 @@ en:
         setting_dtl_force_subscribable: Ignore your subscribability setting when using the DTL tag
         setting_dtl_force_searchability: Post searchability
         setting_dtl_force_visibility: Post visibility
-        setting_emoji_reaction_streaming_notify_impl2: Enable stamp notification compat with Nyastodon, Catstodon, glitch-soc
-        setting_enable_emoji_reaction: Use stamp function
+        setting_emoji_reaction_streaming_notify_impl2: Enable emoji reaction notification compat with Nyastodon, Catstodon, glitch-soc
+        setting_enable_emoji_reaction: Use emoji reaction function
         setting_enable_login_privacy: Enable login visibility
-        setting_emoji_reaction_policy: Stamp receive/display policy
+        setting_emoji_reaction_policy: Emoji reaction receive/display policy
         setting_emoji_reaction_policy_items:
           allow: Allow all
           block: Block
@@ -271,8 +271,8 @@ en:
           outside_only: Followings or followers only
         setting_expand_spoilers: Always expand posts marked with content warnings
         setting_hide_blocking_quote: Hide posts which have a quote written by the user you are blocking
-        setting_hide_emoji_reaction_count: Hide stamp count
-        setting_hide_emoji_reaction_unavailable_server: Hide stamp button from unavailable server
+        setting_hide_emoji_reaction_count: Hide emoji reaction count
+        setting_hide_emoji_reaction_unavailable_server: Hide emoji reaction button from unavailable server
         setting_hide_favourite_menu: Hide favourite menu
         setting_hide_followers_count: Hide followers count
         setting_hide_following_count: Hide following count
@@ -286,14 +286,14 @@ en:
         setting_reject_unlisted_subscription: Reject sending unlisted visibility/non-public searchability posts to Misskey, Calckey
         setting_reverse_search_quote: Perform word-by-word search when search keywords are not enclosed in double quotes
         setting_show_application: Disclose application used to send posts
-        setting_show_emoji_reaction_on_timeline: Show all stamps on timeline
+        setting_show_emoji_reaction_on_timeline: Show all emoji reactions on timeline
         setting_show_quote_in_home: Show quotes in home, list or antenna timelines
         setting_show_quote_in_public: Show quotes in public timelines
         setting_simple_timeline_menu: Reduce post menu on timeline
         setting_single_ref_to_quote: Deliver single reference to other server as quote
         setting_slip_local_emoji_reaction: Allow bypassing emoji reaction from local users
         setting_stay_privacy: Not change privacy after post
-        setting_stop_emoji_reaction_streaming: Disable stamp streamings
+        setting_stop_emoji_reaction_streaming: Disable emoji reaction streamings
         setting_system_font_ui: Use system's default font
         setting_theme: Site theme
         setting_translatable_private: Allow other users translation of your private posts
@@ -322,9 +322,9 @@ en:
       email_domain_block:
         with_dns_records: Include MX records and IPs of the domain
       emoji_reactions:
-        deny_from_all: Block all stamps
-        must_be_follower: Block stamps from non-followers
-        must_be_following: Block stamps from people you don't follow
+        deny_from_all: Block all emoji reactions
+        must_be_follower: Block emoji reactions from non-followers
+        must_be_following: Block emoji reactions from people you don't follow
       featured_tag:
         name: Hashtag
       filters:
@@ -344,14 +344,14 @@ en:
         closed_registrations_message: Custom message when sign-ups are not available
         content_cache_retention_period: Content cache retention period
         custom_css: Custom CSS
-        enable_emoji_reaction: Enable stamp function
+        enable_emoji_reaction: Enable emoji reaction function
         enable_local_timeline: Enable local timeline
         enable_public_unlisted_visibility: Enable public-unlisted visibility / public-unlisted searchability
         mascot: Custom mascot (legacy)
         media_cache_retention_period: Media cache retention period
         peers_api_enabled: Publish list of discovered servers in the API
         profile_directory: Enable profile directory
-        receive_other_servers_emoji_reaction: Receive stamp between other server users
+        receive_other_servers_emoji_reaction: Receive emoji reaction between other server users
         registration_button_message: Register button message
         registrations_mode: Who can sign-up
         require_invite_text: Require a reason to join
@@ -364,8 +364,8 @@ en:
         site_terms: Privacy Policy
         site_title: Server name
         status_page_url: Status page URL
-        streaming_local_emoji_reaction: Streaming stamp related to local users
-        streaming_other_servers_emoji_reaction: Streaming stamp between other server users
+        streaming_local_emoji_reaction: Streaming emoji reactions related to local users
+        streaming_other_servers_emoji_reaction: Streaming emoji reactions between other server users
         theme: Default theme
         thumbnail: Server thumbnail
         timeline_preview: Allow unauthenticated access to public timelines

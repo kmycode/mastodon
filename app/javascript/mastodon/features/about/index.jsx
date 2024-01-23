@@ -35,7 +35,7 @@ const messages = defineMessages({
   suspended: { id: 'about.domain_blocks.suspended.title', defaultMessage: 'Suspended' },
   suspendedExplanation: { id: 'about.domain_blocks.suspended.explanation', defaultMessage: 'No data from this server will be processed, stored or exchanged, making any interaction or communication with users from this server impossible.' },
   publicUnlistedVisibility: { id: 'privacy.public_unlisted.short', defaultMessage: 'Public unlisted' },
-  emojiReaction: { id: 'status.emoji_reaction', defaultMessage: 'Stamp' },
+  emojiReaction: { id: 'status.emoji_reaction', defaultMessage: 'Emoji reaction' },
   enabled: { id: 'about.enabled', defaultMessage: 'Enabled' },
   disabled: { id: 'about.disabled', defaultMessage: 'Disabled' },
   capabilities: { id: 'about.kmyblue_capabilities', defaultMessage: 'kmyblue capabilities' },

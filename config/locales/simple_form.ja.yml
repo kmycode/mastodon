@@ -74,9 +74,9 @@ ja:
         setting_dtl_force_subscribable: 購読拒否設定に関係なく、ディープタイムラインに向けた投稿はアンテナに掲載されます。ディープタイムラインをアンテナ経由で閲覧している人にあなたの発言が届きます
         setting_dtl_force_searchability: "ハッシュタグ #%{tag} をつけて投稿するとき、検索許可を強制的に置き換えるかを設定します"
         setting_dtl_force_visibility: "ハッシュタグ #%{tag} をつけて投稿するとき、公開範囲を強制的に置き換えるかを設定します"
-        setting_emoji_reaction_policy: この設定をしても他のサーバーのユーザーはその投稿に自由にスタンプをつけ、同じサーバーの中で共有できます。単にあなた自身の画面からスタンプを除去したいだけなら、外観設定からスタンプを無効にすることができます
-        setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、スタンプ機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
-        setting_enable_emoji_reaction: この機能を無効にしても、他の人はあなたの投稿にスタンプをつけられます
+        setting_emoji_reaction_policy: この設定をしても他のサーバーのユーザーはその投稿に自由に絵文字をつけ、同じサーバーの中で共有できます。単にあなた自身の画面から絵文字リアクションを除去したいだけなら、外観設定から絵文字リアクションを無効にすることができます
+        setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、絵文字リアクション機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
+        setting_enable_emoji_reaction: この機能を無効にしても、他の人はあなたの投稿に絵文字をつけられます
         setting_hide_network: フォローとフォロワーの情報がプロフィールページで見られないようにします
         setting_public_post_to_unlisted: 未対応のサードパーティアプリからもローカル公開で投稿できますが、公開投稿はWeb以外できなくなります
         setting_reject_unlisted_subscription: Misskeyやそのフォークは、フォローしていないアカウントの「非収載」投稿を **購読・検索** することができます。これはkmyblueの挙動と異なります。そのようなサーバーに、指定した公開範囲の投稿を「フォロワーのみ」として配送します。ただし構造上、完璧な対応は困難でたまに非収載として配信されること、ご理解ください
@@ -266,7 +266,7 @@ ja:
         setting_dtl_force_visibility: DTL投稿の公開範囲
         setting_dtl_menu: Webクライアントのメニューにディープタイムラインを追加する
         setting_enable_login_privacy: 公開範囲「ログインユーザーのみ」をWeb UIで選択可能にする
-        setting_emoji_reaction_policy: スタンプ受け入れと表示設定
+        setting_emoji_reaction_policy: 絵文字リアクション受け入れと表示設定
         setting_emoji_reaction_policy_items:
           allow: 全員に許可
           block: 全員禁止
@@ -274,12 +274,12 @@ ja:
           following_only: フォロー中の相手のみ許可
           mutuals_only: 相互のみ許可
           outside_only: フォロー中、またはフォロワーのみに許可
-        setting_emoji_reaction_streaming_notify_impl2: Nyastodon, Catstodon, glitch-soc互換のスタンプ機能を有効にする
-        setting_enable_emoji_reaction: スタンプ機能を使用する
+        setting_emoji_reaction_streaming_notify_impl2: Nyastodon, Catstodon, glitch-soc互換の絵文字リアクション機能を有効にする
+        setting_enable_emoji_reaction: 絵文字リアクション機能を使用する
         setting_expand_spoilers: 閲覧注意としてマークされた投稿を常に展開する
         setting_hide_blocking_quote: ブロックしたユーザーの投稿を引用した投稿を隠す
-        setting_hide_emoji_reaction_count: 各スタンプの数を隠す
-        setting_hide_emoji_reaction_unavailable_server: スタンプに対応していないと思われるサーバーの投稿からスタンプボタンを隠す
+        setting_hide_emoji_reaction_count: 投稿につけられた各絵文字の数を隠す
+        setting_hide_emoji_reaction_unavailable_server: 絵文字リアクションに対応していないと思われるサーバーの投稿から絵文字リアクション機能を隠す
         setting_hide_favourite_menu: 右サイドメニューから「お気に入り」を隠す
         setting_hide_followers_count: フォロワー数を隠す
         setting_hide_following_count: フォロー数を隠す
@@ -296,12 +296,12 @@ ja:
         setting_reject_unlisted_subscription: Misskey系サーバーに「非収載」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
         setting_reverse_search_quote: ダブルクオートで囲まず検索した時、単語単位で検索する
         setting_show_application: 送信したアプリを開示する
-        setting_show_emoji_reaction_on_timeline: タイムライン上に他の人のつけたスタンプを表示する
+        setting_show_emoji_reaction_on_timeline: タイムライン上の投稿に他の人のつけた絵文字を表示する
         setting_simple_timeline_menu: タイムライン上でメニューの項目を減らす
         setting_single_ref_to_quote: 参照が１つしかない投稿は、他のサーバーには引用として配信する
-        setting_slip_local_emoji_reaction: ローカルユーザーに限って上記設定を無視してスタンプを許可する
+        setting_slip_local_emoji_reaction: ローカルユーザーに限って上記設定を無視して絵文字リアクションを許可する
         setting_stay_privacy: 投稿時に公開範囲を保存する
-        setting_stop_emoji_reaction_streaming: スタンプのストリーミングを停止する
+        setting_stop_emoji_reaction_streaming: 絵文字リアクションのストリーミングを停止する
         setting_system_font_ui: システムのデフォルトフォントを使う
         setting_theme: サイトテーマ
         setting_translatable_private: 非公開投稿の翻訳を許可する
@@ -330,9 +330,9 @@ ja:
       email_domain_block:
         with_dns_records: ドメインのMXレコードとIPアドレスを含む
       emoji_reactions:
-        deny_from_all: 自分以外すべてのスタンプをブロック
-        must_be_follower: フォロワー以外からのスタンプをブロック
-        must_be_following: フォローしていないユーザーからのスタンプをブロック
+        deny_from_all: 自分以外すべての絵文字リアクションをブロック
+        must_be_follower: フォロワー以外からの絵文字リアクションをブロック
+        must_be_following: フォローしていないユーザーからの絵文字リアクションをブロック
       featured_tag:
         name: ハッシュタグ
       filters:
@@ -352,14 +352,14 @@ ja:
         closed_registrations_message: アカウント作成を停止している時のカスタムメッセージ
         content_cache_retention_period: コンテンツキャッシュの保持期間
         custom_css: カスタムCSS
-        enable_emoji_reaction: スタンプ機能を有効にする
+        enable_emoji_reaction: 絵文字リアクション機能を有効にする
         enable_local_timeline: ローカルタイムラインを有効にする
         enable_public_unlisted_visibility: 公開範囲「ローカル公開」と検索許可「ローカルとフォロワー」を有効にする
         mascot: カスタムマスコット（レガシー）
         media_cache_retention_period: メディアキャッシュの保持期間
         peers_api_enabled: 発見したサーバーのリストをAPIで公開する
         profile_directory: プロフィール一覧を有効にする
-        receive_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけたスタンプを受け入れる
+        receive_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけた絵文字リアクションを受け入れる
         registration_button_message: 新規登録ボタンの直上に表示するメッセージ
         registrations_mode: 新規登録が可能な人
         require_invite_text: 申請事由の入力を必須にする
@@ -372,8 +372,8 @@ ja:
         site_terms: プライバシーポリシー
         site_title: サーバーの名前
         status_page_url: サーバーの状態ページのURL
-        streaming_local_emoji_reaction: ローカルユーザーがつけた、またはローカル投稿についたスタンプをストリーミングする
-        streaming_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけたスタンプをストリーミングする
+        streaming_local_emoji_reaction: ローカルユーザーがつけた、またはローカル投稿についた絵文字リアクションをストリーミングする
+        streaming_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけた絵文字リアクションをストリーミングする
         theme: デフォルトテーマ
         thumbnail: サーバーのサムネイル
         timeline_preview: 公開タイムラインへの未認証のアクセスを許可する
