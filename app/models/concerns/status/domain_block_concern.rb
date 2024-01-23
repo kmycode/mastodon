@@ -6,7 +6,7 @@ module Status::DomainBlockConcern
   def sending_sensitive?
     return false unless local?
 
-    (with_media? && sensitive) || spoiler_text?
+    sensitive
   end
 
   def sending_maybe_compromised_privacy?

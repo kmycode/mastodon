@@ -12,12 +12,24 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
       distribute_limited!
     else
       distribute!
+      distribute_delete_activity!
     end
   rescue ActiveRecord::RecordNotFound
     true
   end
 
   protected
+
+  def inboxes
+    return super if @status.limited_visibility?
+    return super unless sensitive?
+
+    super - inboxes_diff_for_sending_domain_block
+  end
+
+  def inboxes_diff_for_sending_domain_block
+    status_reach_finder.inboxes_diff_for_sending_domain_block
+  end
 
   def inboxes_for_limited
     @inboxes_for_limited ||= @status.mentioned_accounts.inboxes
@@ -47,7 +59,30 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
     build_activity(for_friend: true)
   end
 
+  def delete_activity
+    @delete_activity ||= Oj.dump(serialize_payload(@status, ActivityPub::DeleteSerializer, signer: @account))
+  end
+
+  def distribute_delete_activity!
+    return unless sensitive_changed?
+
+    target_inboxes = inboxes_diff_for_sending_domain_block
+    return if target_inboxes.empty?
+
+    ActivityPub::DeliveryWorker.push_bulk(target_inboxes, limit: 1_000) do |inbox_url|
+      [delete_activity, @account.id, inbox_url, {}]
+    end
+  end
+
   def always_sign
     @status.limited_visibility?
+  end
+
+  def sensitive?
+    @options[:sensitive]
+  end
+
+  def sensitive_changed?
+    @options[:sensitive_changed]
   end
 end

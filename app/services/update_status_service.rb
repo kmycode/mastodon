@@ -24,6 +24,7 @@ class UpdateStatusService < BaseService
     @account_id                = account_id
     @media_attachments_changed = false
     @poll_changed              = false
+    @old_sensitive             = sensitive?
 
     clear_histories! if @options[:no_history]
 
@@ -189,7 +190,7 @@ class UpdateStatusService < BaseService
 
   def broadcast_updates!
     DistributionWorker.perform_async(@status.id, { 'update' => true })
-    ActivityPub::StatusUpdateDistributionWorker.perform_async(@status.id)
+    ActivityPub::StatusUpdateDistributionWorker.perform_async(@status.id, { 'sensitive' => sensitive?, 'sensitive_changed' => @old_sensitive != sensitive? && sensitive? })
   end
 
   def queue_poll_notifications!
@@ -226,5 +227,9 @@ class UpdateStatusService < BaseService
     @status.edits.destroy_all
     @status.edited_at = nil
     @status.save!
+  end
+
+  def sensitive?
+    @status.sensitive
   end
 end

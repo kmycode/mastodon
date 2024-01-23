@@ -31,6 +31,10 @@ class StatusReachFinder
     )
   end
 
+  def inboxes_diff_for_sending_domain_block
+    (reached_account_inboxes_for_sending_domain_block + followers_inboxes_for_sending_domain_block).uniq
+  end
+
   def all_inboxes
     (inboxes + inboxes_for_misskey + inboxes_for_friend).uniq
   end
@@ -55,6 +59,14 @@ class StatusReachFinder
       []
     else
       Account.where(id: reached_account_ids, domain: friend_domains).inboxes
+    end
+  end
+
+  def reached_account_inboxes_for_sending_domain_block
+    if @status.reblog? || @status.limited_visibility?
+      []
+    else
+      Account.where(id: reached_account_ids, domain: banned_domains_of_status(@status)).inboxes
     end
   end
 
@@ -144,6 +156,10 @@ class StatusReachFinder
     end
   end
 
+  def followers_inboxes_for_sending_domain_block
+    @status.account.followers.where(domain: banned_domains_of_status(@status)).inboxes
+  end
+
   def relay_inboxes
     if @status.public_visibility?
       Relay.enabled.pluck(:inbox_url)
@@ -192,9 +208,15 @@ class StatusReachFinder
   end
 
   def banned_domains_of_status(status)
+    return [] unless status.sending_sensitive?
+    return @banned_domains_of_status if defined?(@banned_domains_of_status) && status.id == @status.id
+
     blocks = DomainBlock.where(domain: nil)
-    blocks = blocks.or(DomainBlock.where(reject_send_sensitive: true)) if (status.with_media? && status.sensitive) || status.spoiler_text?
-    blocks.pluck(:domain).uniq
+    blocks = blocks.or(DomainBlock.where(reject_send_sensitive: true)) if status.sending_sensitive?
+    domains = blocks.pluck(:domain).uniq
+
+    @banned_domains_of_status = domains if status.id == @status.id
+    domains
   end
 
   def banned_domains_for_misskey

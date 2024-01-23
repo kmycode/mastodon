@@ -62,6 +62,55 @@ RSpec.describe UpdateStatusService, type: :service do
     end
   end
 
+  context 'when content warning changes and has remote user', :sidekiq_inline do
+    let(:remote_follower) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor', protocol: :activitypub, inbox_url: 'https://example.com/inbox') }
+    let(:status) { Fabricate(:status, text: 'Foo', spoiler_text: '', account: Fabricate(:user).account) }
+
+    before do
+      remote_follower.follow!(status.account)
+      stub_request(:post, 'https://example.com/inbox').to_return(status: 200)
+    end
+
+    def match_update_request(req, type)
+      json = JSON.parse(req.body)
+      actor_id = ActivityPub::TagManager.instance.uri_for(status.account)
+      status_id = ActivityPub::TagManager.instance.uri_for(status)
+      json['type'] == type && json['actor'] == actor_id && json['object']['id'] == status_id
+    end
+
+    it 'edit activity is sent' do
+      subject.call(status, status.account_id, text: 'Foo', spoiler_text: 'Bar')
+
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Update') }).to have_been_made.once
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Delete') }).to_not have_been_made
+    end
+
+    it 'edit activity is sent for target user' do
+      Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_send_sensitive: true)
+      subject.call(status, status.account_id, text: 'Ohagi')
+
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Update') }).to have_been_made.once
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Delete') }).to_not have_been_made
+    end
+
+    it 'delete activity is sent when follower is target user' do
+      Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_send_sensitive: true)
+      subject.call(status, status.account_id, text: 'Foo', spoiler_text: 'Bar')
+
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Delete') }).to have_been_made.once
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Update') }).to_not have_been_made
+    end
+
+    it 'delete activity is sent and update activity is not sent when follower is target user' do
+      Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_send_sensitive: true)
+      subject.call(status, status.account_id, text: 'Foo', spoiler_text: 'Bar')
+      subject.call(status, status.account_id, text: 'Ohagi', spoiler_text: 'Bar')
+
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Delete') }).to have_been_made.once
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Update') }).to_not have_been_made
+    end
+  end
+
   context 'when media attachments change' do
     let!(:status) { Fabricate(:status, text: 'Foo') }
     let!(:detached_media_attachment) { Fabricate(:media_attachment, account: status.account) }

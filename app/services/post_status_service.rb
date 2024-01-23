@@ -68,11 +68,7 @@ class PostStatusService < BaseService
   private
 
   def preprocess_attributes!
-    @sensitive    = (if @options[:sensitive].nil?
-                       @media.any? ? @account.user&.setting_default_sensitive : false
-                     else
-                       @options[:sensitive]
-                     end) || @options[:spoiler_text].present?
+    @sensitive    = (@options[:sensitive].nil? ? @account.user&.setting_default_sensitive : @options[:sensitive]) || @options[:spoiler_text].present?
     @text         = @options.delete(:spoiler_text) if @text.blank? && @options[:spoiler_text].present?
     @visibility   = @options[:visibility]&.to_sym || @account.user&.setting_default_privacy&.to_sym
     @visibility   = :limited if %w(mutual circle reply).include?(@options[:visibility])
