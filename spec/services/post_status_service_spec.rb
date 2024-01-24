@@ -192,21 +192,48 @@ RSpec.describe PostStatusService, type: :service do
     expect(mention_service).to have_received(:call).with(status, limited_type: '', circle: nil, save_records: false)
   end
 
-  it 'mutual visibility' do
-    account = Fabricate(:account)
-    mutual_account = Fabricate(:account)
-    other_account = Fabricate(:account)
-    text = 'This is an English text.'
+  context 'with mutual visibility' do
+    let(:sender) { Fabricate(:user).account }
+    let(:io_account) { Fabricate(:account, domain: 'misskey.io', uri: 'https://misskey.io/actor') }
+    let(:local_account) { Fabricate(:account) }
+    let(:remote_account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
+    let(:follower) { Fabricate(:account) }
+    let(:followee) { Fabricate(:account) }
 
-    mutual_account.follow!(account)
-    account.follow!(mutual_account)
-    other_account.follow!(account)
-    status = subject.call(account, text: text, visibility: 'mutual')
+    before do
+      Fabricate(:instance_info, domain: 'misskey.io', software: 'misskey')
+      io_account.follow!(sender)
+      local_account.follow!(sender)
+      remote_account.follow!(sender)
+      follower.follow!(sender)
+      sender.follow!(io_account)
+      sender.follow!(local_account)
+      sender.follow!(remote_account)
+      sender.follow!(followee)
+    end
 
-    expect(status.visibility).to eq 'limited'
-    expect(status.limited_scope).to eq 'mutual'
-    expect(status.mentioned_accounts.count).to eq 1
-    expect(status.mentioned_accounts.first.id).to eq mutual_account.id
+    it 'visibility is set' do
+      status = subject.call(sender, text: 'text', visibility: 'mutual')
+
+      expect(status.visibility).to eq 'limited'
+      expect(status.limited_scope).to eq 'mutual'
+    end
+
+    it 'sent to mutuals' do
+      status = subject.call(sender, text: 'text', visibility: 'mutual')
+
+      expect(status.mentioned_accounts.count).to eq 3
+      expect(status.mentioned_accounts.pluck(:id)).to contain_exactly(io_account.id, local_account.id, remote_account.id)
+    end
+
+    it 'sent to mutuals without misskey.io users' do
+      sender.user.update!(settings: { reject_send_limited_to_suspects: true })
+
+      status = subject.call(sender, text: 'text', visibility: 'mutual')
+
+      expect(status.mentioned_accounts.count).to eq 2
+      expect(status.mentioned_accounts.pluck(:id)).to contain_exactly(local_account.id, remote_account.id)
+    end
   end
 
   it 'limited visibility and direct searchability' do

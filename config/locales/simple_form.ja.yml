@@ -79,6 +79,7 @@ ja:
         setting_enable_emoji_reaction: この機能を無効にしても、他の人はあなたの投稿に絵文字をつけられます
         setting_hide_network: フォローとフォロワーの情報がプロフィールページで見られないようにします
         setting_public_post_to_unlisted: 未対応のサードパーティアプリからもローカル公開で投稿できますが、公開投稿はWeb以外できなくなります
+        setting_reject_send_limited_to_suspects: これは「相互のみ」投稿に適用されます。サークル投稿は例外なく配送されます。一部のMisskeyサーバーが独自に限定投稿へ対応しましたが、相互のみ投稿を行うたびに相手に通知されるなど複数の問題があるため、気になる人向けの設定です
         setting_reject_unlisted_subscription: Misskeyやそのフォークは、フォローしていないアカウントの「非収載」投稿を **購読・検索** することができます。これはkmyblueの挙動と異なります。そのようなサーバーに、指定した公開範囲の投稿を「フォロワーのみ」として配送します。ただし構造上、完璧な対応は困難でたまに非収載として配信されること、ご理解ください
         setting_reverse_search_quote: 検索ワードをダブルクオートで囲って検索した場合、表記ゆれ多めの検索結果になります。Mastodon標準とは逆の挙動となります。
         setting_show_application: 投稿するのに使用したアプリが投稿の詳細ビューに表示されるようになります
@@ -293,6 +294,7 @@ ja:
         setting_public_post_to_unlisted: サードパーティから公開範囲「公開」で投稿した場合、「ローカル公開」に変更する
         setting_reduce_motion: アニメーションの動きを減らす
         setting_reject_public_unlisted_subscription: Misskey系サーバーに「ローカル公開」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
+        setting_reject_send_limited_to_suspects: Misskey系サーバーに「相互のみ」投稿を配送しない
         setting_reject_unlisted_subscription: Misskey系サーバーに「非収載」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
         setting_reverse_search_quote: ダブルクオートで囲まず検索した時、単語単位で検索する
         setting_show_application: 送信したアプリを開示する

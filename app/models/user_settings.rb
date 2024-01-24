@@ -41,6 +41,7 @@ class UserSettings
   setting :dtl_force_subscribable, default: false
   setting :lock_follow_from_bot, default: false
   setting :allow_quote, default: true
+  setting :reject_send_limited_to_suspects, default: false
 
   setting_inverse_alias :indexable, :noindex
 
