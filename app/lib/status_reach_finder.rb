@@ -47,27 +47,15 @@ class StatusReachFinder
   end
 
   def reached_account_inboxes_for_misskey
-    if @status.reblog? || @status.limited_visibility?
-      []
-    else
-      Account.where(id: reached_account_ids, domain: banned_domains_for_misskey - friend_domains).inboxes
-    end
+    Account.where(id: reached_account_ids, domain: banned_domains_for_misskey - friend_domains).inboxes
   end
 
   def reached_account_inboxes_for_friend
-    if @status.reblog? || @status.limited_visibility?
-      []
-    else
-      Account.where(id: reached_account_ids, domain: friend_domains).inboxes
-    end
+    Account.where(id: reached_account_ids, domain: friend_domains).inboxes
   end
 
   def reached_account_inboxes_for_sending_domain_block
-    if @status.reblog? || @status.limited_visibility?
-      []
-    else
-      Account.where(id: reached_account_ids, domain: banned_domains_of_status(@status)).inboxes
-    end
+    Account.where(id: reached_account_ids, domain: banned_domains_of_status(@status)).inboxes
   end
 
   def reached_account_ids
