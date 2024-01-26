@@ -142,11 +142,21 @@ class ExpirationDropdown extends PureComponent {
   };
 
   handleToggle = () => {
-    if (this.state.open && this.activeElement) {
-      this.activeElement.focus({ preventScroll: true });
+    if (this.props.isUserTouching && this.props.isUserTouching()) {
+      if (this.state.open) {
+        this.props.onModalClose();
+      } else {
+        this.props.onModalOpen({
+          actions: this.options.map(option => ({ ...option, active: false })),
+          onClick: this.handleModalActionClick,
+        });
+      }
+    } else {
+      if (this.state.open && this.activeElement) {
+        this.activeElement.focus({ preventScroll: true });
+      }
+      this.setState({ open: !this.state.open });
     }
-
-    this.setState({ open: !this.state.open });
   };
 
   handleModalActionClick = (e) => {

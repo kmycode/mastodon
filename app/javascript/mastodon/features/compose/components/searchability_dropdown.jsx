@@ -165,11 +165,30 @@ class SearchabilityDropdown extends PureComponent {
   };
 
   handleToggle = () => {
-    if (this.state.open && this.activeElement) {
-      this.activeElement.focus({ preventScroll: true });
+    if (this.props.isUserTouching && this.props.isUserTouching()) {
+      if (this.state.open) {
+        this.props.onModalClose();
+      } else {
+        this.props.onModalOpen({
+          actions: this.options.map(option => ({ ...option, active: option.value === this.props.value })),
+          onClick: this.handleModalActionClick,
+        });
+      }
+    } else {
+      if (this.state.open && this.activeElement) {
+        this.activeElement.focus({ preventScroll: true });
+      }
+      this.setState({ open: !this.state.open });
     }
+  };
 
-    this.setState({ open: !this.state.open });
+  handleModalActionClick = (e) => {
+    e.preventDefault();
+
+    const { value } = this.options[e.currentTarget.getAttribute('data-index')];
+
+    this.props.onModalClose();
+    this.props.onChange(value);
   };
 
   handleKeyDown = e => {
