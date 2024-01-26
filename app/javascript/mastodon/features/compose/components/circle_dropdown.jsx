@@ -153,7 +153,7 @@ class CircleDropdown extends PureComponent {
         this.props.onModalClose();
       } else {
         this.props.onModalOpen({
-          actions: this.options.map(option => ({ ...option, active: option.value === this.props.circleId })),
+          actions: this.options && this.options.map(option => ({ ...option, active: option.value === this.props.circleId })),
           onClick: this.handleModalActionClick,
         });
       }
@@ -232,6 +232,7 @@ class CircleDropdown extends PureComponent {
       return circle[1] ? { value: circle[1].get('id'), text: circle[1].get('title') } : null;
     }).filter((opt) => opt !== null);
     const listOption = listOptions.find((opt) => opt.value === circleId) ?? { value: '0', text: 'Unselected' };
+    this.options = listOptions;
 
     return (
       <div ref={this.setTargetRef} onKeyDown={this.handleKeyDown}>
