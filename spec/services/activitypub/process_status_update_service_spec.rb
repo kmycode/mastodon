@@ -310,6 +310,19 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
       end
     end
 
+    context 'when reject tags by domain-block' do
+      let(:tags) { [Fabricate(:tag, name: 'hoge'), Fabricate(:tag, name: 'ohagi')] }
+
+      before do
+        Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_hashtag: true)
+        subject.call(status, json, json)
+      end
+
+      it 'updates tags' do
+        expect(status.tags.reload.map(&:name)).to eq []
+      end
+    end
+
     context 'when originally without mentions' do
       before do
         subject.call(status, json, json)

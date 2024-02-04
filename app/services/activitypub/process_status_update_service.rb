@@ -193,7 +193,7 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
 
     as_array(@json['tag']).each do |tag|
       if equals_or_includes?(tag['type'], 'Hashtag')
-        @raw_tags << tag['name'] if tag['name'].present?
+        @raw_tags << tag['name'] if !ignore_hashtags? && tag['name'].present?
       elsif equals_or_includes?(tag['type'], 'Mention')
         @raw_mentions << tag['href'] if tag['href'].present?
       elsif equals_or_includes?(tag['type'], 'Emoji')
@@ -296,6 +296,12 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
     return @skip_download if defined?(@skip_download)
 
     @skip_download ||= DomainBlock.reject_media?(@account.domain)
+  end
+
+  def ignore_hashtags?
+    return @ignore_hashtags if defined?(@ignore_hashtags)
+
+    @ignore_hashtags ||= DomainBlock.reject_hashtag?(@account.domain)
   end
 
   def unsupported_media_type?(mime_type)

@@ -1344,6 +1344,22 @@ RSpec.describe ActivityPub::Activity::Create do
           expect(status).to_not be_nil
           expect(status.tags.map(&:name)).to include('test')
         end
+
+        context 'with domain-block' do
+          let(:custom_before) { true }
+
+          before do
+            Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_hashtag: true)
+            subject.perform
+          end
+
+          it 'does not create status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.tags.map(&:name)).to eq []
+          end
+        end
       end
 
       context 'with hashtags missing name' do

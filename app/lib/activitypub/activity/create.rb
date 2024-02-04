@@ -484,6 +484,8 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def ignore_hashtags?
+    return @ignore_hashtags if defined?(@ignore_hashtags)
+
     @ignore_hashtags ||= DomainBlock.reject_hashtag?(@account.domain)
   end
 
