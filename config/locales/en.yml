@@ -1931,6 +1931,8 @@ en:
     too_many_hashtags: Too many hashtags
     visibilities:
       direct: Direct
+      login: Login only
+      login_long: Only logined users
       private: Followers-only
       private_long: Only show to followers
       public: Public

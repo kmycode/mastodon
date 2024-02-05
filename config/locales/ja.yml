@@ -1904,6 +1904,8 @@ ja:
     too_many_hashtags: ハッシュタグが多すぎます
     visibilities:
       direct: ダイレクト
+      login: ログインユーザーのみ
+      login_long: ログインしたユーザーのみが見ることができます
       private: フォロワー限定
       private_long: フォロワーにのみ表示されます
       public: 公開
