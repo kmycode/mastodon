@@ -34,7 +34,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
 
   def process_emoji_reaction
     return if !@original_status.account.local? && !Setting.receive_other_servers_emoji_reaction
-    return if silence_domain? && (!@original_status.local? || !@original_status.account.following?(@account))
+    return if (silence_domain? || @account.silenced?) && (!@original_status.local? || !@original_status.account.following?(@account))
 
     # custom emoji
     emoji = nil

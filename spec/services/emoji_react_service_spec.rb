@@ -52,6 +52,29 @@ RSpec.describe EmojiReactService, type: :service do
     end
   end
 
+  context 'when user is silenced' do
+    before do
+      sender.silence!
+    end
+
+    it 'emoji reaction is not allowed' do
+      expect { subject }.to raise_error Mastodon::ValidationError
+    end
+  end
+
+  context 'when user is silenced but following target' do
+    before do
+      author.follow!(sender)
+      sender.silence!
+    end
+
+    it 'emoji reaction is allowed' do
+      expect(subject.count).to eq 1
+      expect(subject.first.name).to eq '😀'
+      expect(subject.first.custom_emoji_id).to be_nil
+    end
+  end
+
   context 'when over limit' do
     let(:name) { '🚗' }
 

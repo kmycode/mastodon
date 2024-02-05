@@ -16,6 +16,8 @@ class EmojiReactService < BaseService
     authorize_with account, status, :emoji_reaction?
     @status = status
 
+    raise Mastodon::ValidationError, I18n.t('reactions.errors.banned') if account.silenced? && !status.account.following?(account)
+
     with_redis_lock("emoji_reaction:#{status.id}") do
       shortcode, domain = name.split('@')
       domain = nil if TagManager.instance.local_domain?(domain)

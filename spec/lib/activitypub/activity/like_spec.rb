@@ -363,6 +363,47 @@ RSpec.describe ActivityPub::Activity::Like do
       end
     end
 
+    context 'when sender is silenced' do
+      let(:content) { '😀' }
+
+      before do
+        sender.silence!
+      end
+
+      it 'does not create emoji reaction' do
+        expect(subject.count).to eq 0
+      end
+    end
+
+    context 'when sender is silenced but following recipient' do
+      let(:content) { '😀' }
+
+      before do
+        recipient.follow!(sender)
+        sender.silence!
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 1
+        expect(subject.first.name).to eq '😀'
+        expect(subject.first.account).to eq sender
+        expect(sender.favourited?(status)).to be false
+      end
+    end
+
+    context 'when sender is silenced but reacted to remote account' do
+      let(:content) { '😀' }
+      let(:recipient) { Fabricate(:account, domain: 'kirakira.com', uri: 'https://kirakira.com/actor') }
+
+      before do
+        sender.silence!
+      end
+
+      it 'does not create emoji reaction' do
+        expect(subject.count).to eq 0
+      end
+    end
+
     context 'when emoji reaction between other servers is disabled' do
       let(:recipient) { Fabricate(:account, domain: 'narrow.com', uri: 'https://narrow.com/') }
       let(:content) { '😀' }
@@ -465,6 +506,14 @@ RSpec.describe ActivityPub::Activity::Like do
             expect(subject.first.name).to eq '😀'
             expect(subject.first.account).to eq sender
             expect(sender.favourited?(status)).to be false
+          end
+        end
+
+        context 'when recipient is remote user' do
+          let(:recipient) { Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/actor') }
+
+          it 'does not create emoji reaction' do
+            expect(subject.count).to eq 0
           end
         end
       end
