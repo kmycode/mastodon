@@ -13,6 +13,13 @@ import { Icon }  from 'mastodon/components/icon';
 
 const messages = defineMessages({
   add_expiration: { id: 'status.expiration.add', defaultMessage: 'Set status expiration' },
+  expiration_5_minutes: { id: 'status.expiration.5_minutes', defaultMessage: 'Remove 5 minutes later' },
+  expiration_30_minutes: { id: 'status.expiration.30_minutes', defaultMessage: 'Remove 30 minutes later' },
+  expiration_1_hour: { id: 'status.expiration.1_hour', defaultMessage: 'Remove 1 hour later' },
+  expiration_3_hours: { id: 'status.expiration.3_hours', defaultMessage: 'Remove 3 hours later' },
+  expiration_12_hours: { id: 'status.expiration.12_hours', defaultMessage: 'Remove 12 hours later' },
+  expiration_1_day: { id: 'status.expiration.1_day', defaultMessage: 'Remove 1 day later' },
+  expiration_7_days: { id: 'status.expiration.7_days', defaultMessage: 'Remove 7 days later' },
 });
 
 const listenerOptions = supportsPassiveEvents ? { passive: true, capture: true } : true;
@@ -203,14 +210,16 @@ class ExpirationDropdown extends PureComponent {
   };
 
   componentWillMount () {
+    const { intl } = this.props;
+
     this.options = [
-      { value: '#exp5m', text: '#exp5m (5 minutes)' },
-      { value: '#exp30m', text: '#exp30m (30 minutes)' },
-      { value: '#exp1h', text: '#exp1h (1 hour)' },
-      { value: '#exp3h', text: '#exp3h (3 hours)' },
-      { value: '#exp12h', text: '#exp12h (12 hours)' },
-      { value: '#exp1d', text: '#exp1d (1 day)' },
-      { value: '#exp7d', text: '#exp7d (7 days)' },
+      { value: '#exp5m', text: intl.formatMessage(messages.expiration_5_minutes) },
+      { value: '#exp30m', text: intl.formatMessage(messages.expiration_30_minutes) },
+      { value: '#exp1h', text: intl.formatMessage(messages.expiration_1_hour) },
+      { value: '#exp3h', text: intl.formatMessage(messages.expiration_3_hours) },
+      { value: '#exp12h', text: intl.formatMessage(messages.expiration_12_hours) },
+      { value: '#exp1d', text: intl.formatMessage(messages.expiration_1_day) },
+      { value: '#exp7d', text: intl.formatMessage(messages.expiration_7_days) },
     ];
   }
 
