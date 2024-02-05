@@ -34,7 +34,9 @@ class Admin::Import
         field&.strip
       when '#severity'
         field&.strip&.to_sym
-      when '#reject_media', '#reject_favourite', '#reject_reply', '#reject_reports', '#obfuscate'
+      when '#reject_media', '#reject_reports', '#obfuscate', '#reject_favourite', '#reject_reply', '#reject_send_sensitive',
+        '#reject_hashtag', '#reject_straight_follow', '#reject_new_follow', '#hidden', '#detect_invalid_subscription',
+        '#reject_reply_exclude_followers', '#reject_friend', '#block_trends'
         ActiveModel::Type::Boolean.new.cast(field)
       else
         field

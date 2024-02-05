@@ -22,6 +22,7 @@ RSpec.describe Admin::ExportDomainBlocksController do
       Fabricate(:domain_block, domain: 'bad.domain', severity: 'silence', public_comment: 'bad server')
       Fabricate(:domain_block, domain: 'worse.domain', severity: 'suspend', reject_media: true, reject_reports: true, public_comment: 'worse server', obfuscate: true)
       Fabricate(:domain_block, domain: 'reject.media', severity: 'noop', reject_media: true, public_comment: 'reject media and test unicode characters ♥')
+      Fabricate(:domain_block, domain: 'little.spam', severity: 'noop', public_comment: 'has some spams', reject_favourite: true, reject_reply: true, reject_straight_follow: true)
       Fabricate(:domain_block, domain: 'no.op', severity: 'noop', public_comment: 'noop')
 
       get :export, params: { format: :csv }
@@ -43,7 +44,16 @@ RSpec.describe Admin::ExportDomainBlocksController do
       end
 
       it 'renders page with expected domain blocks' do
-        expect(assigns(:domain_blocks).map { |block| [block.domain, block.severity.to_sym] }).to contain_exactly(['bad.domain', :silence], ['worse.domain', :suspend], ['reject.media', :noop])
+        expect(assigns(:domain_blocks).map { |block| [block.domain, block.severity.to_sym] }).to contain_exactly(['bad.domain', :silence], ['worse.domain', :suspend], ['reject.media', :noop], ['little.spam', :noop])
+      end
+
+      it 'renders page with extended domain blocks' do
+        expect(assigns(:domain_blocks).map { |block| [block.domain, block.reject_favourite, block.reject_reply, block.reject_friend] }).to contain_exactly(
+          ['bad.domain', false, false, false],
+          ['worse.domain', false, false, false],
+          ['reject.media', false, false, false],
+          ['little.spam', true, true, false]
+        )
       end
 
       it 'returns http success' do

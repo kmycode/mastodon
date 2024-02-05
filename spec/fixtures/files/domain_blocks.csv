@@ -1,4 +1,5 @@
-#domain,#severity,#reject_media,#reject_reports,#public_comment,#obfuscate
-bad.domain,silence,false,false,bad server,false
-worse.domain,suspend,true,true,worse server,true
-reject.media,noop,true,false,reject media and test unicode characters ♥,false
+#domain,#severity,#reject_media,#reject_reports,#public_comment,#obfuscate,#reject_favourite,#reject_reply,#reject_send_sensitive,#reject_hashtag,#reject_straight_follow,#reject_new_follow,#hidden,#detect_invalid_subscription,#reject_reply_exclude_followers,#reject_friend,#block_trends
+bad.domain,silence,false,false,bad server,false,false,false,false,false,false,false,false,false,false,false,false
+worse.domain,suspend,true,true,worse server,true,false,false,false,false,false,false,false,false,false,false,false
+reject.media,noop,true,false,reject media and test unicode characters ♥,false,false,false,false,false,false,false,false,false,false,false,false
+little.spam,noop,false,false,has some spams,false,true,true,false,false,true,false,false,false,false,false,false

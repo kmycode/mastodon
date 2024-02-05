@@ -36,7 +36,18 @@ module Admin
                                        reject_reports: row.fetch('#reject_reports', false),
                                        private_comment: @global_private_comment,
                                        public_comment: row['#public_comment'],
-                                       obfuscate: row.fetch('#obfuscate', false))
+                                       obfuscate: row.fetch('#obfuscate', false),
+                                       reject_favourite: row.fetch('#reject_favourite', false),
+                                       reject_reply: row.fetch('#reject_reply', false),
+                                       reject_send_sensitive: row.fetch('#reject_send_sensitive', false),
+                                       reject_hashtag: row.fetch('#reject_hashtag', false),
+                                       reject_straight_follow: row.fetch('#reject_straight_follow', false),
+                                       reject_new_follow: row.fetch('#reject_new_follow', false),
+                                       hidden: row.fetch('#hidden', false),
+                                       detect_invalid_subscription: row.fetch('#detect_invalid_subscription', false),
+                                       reject_reply_exclude_followers: row.fetch('#reject_reply_exclude_followers', false),
+                                       reject_friend: row.fetch('#reject_friend', false),
+                                       block_trends: row.fetch('#block_trends', false))
 
         if domain_block.invalid?
           flash.now[:alert] = I18n.t('admin.export_domain_blocks.invalid_domain_block', error: domain_block.errors.full_messages.join(', '))
@@ -67,13 +78,49 @@ module Admin
     end
 
     def export_headers
-      %w(#domain #severity #reject_media #reject_reports #public_comment #obfuscate)
+      %w(
+        #domain
+        #severity
+        #reject_media
+        #reject_reports
+        #public_comment
+        #obfuscate
+        #reject_favourite
+        #reject_reply
+        #reject_send_sensitive
+        #reject_hashtag
+        #reject_straight_follow
+        #reject_new_follow
+        #hidden
+        #detect_invalid_subscription
+        #reject_reply_exclude_followers
+        #reject_friend
+        #block_trends
+      )
     end
 
     def export_data
       CSV.generate(headers: export_headers, write_headers: true) do |content|
         DomainBlock.with_limitations.order(id: :asc).each do |instance|
-          content << [instance.domain, instance.severity, instance.reject_media, instance.reject_reports, instance.public_comment, instance.obfuscate]
+          content << [
+            instance.domain,
+            instance.severity,
+            instance.reject_media,
+            instance.reject_reports,
+            instance.public_comment,
+            instance.obfuscate,
+            instance.reject_favourite,
+            instance.reject_reply,
+            instance.reject_send_sensitive,
+            instance.reject_hashtag,
+            instance.reject_straight_follow,
+            instance.reject_new_follow,
+            instance.hidden,
+            instance.detect_invalid_subscription,
+            instance.reject_reply_exclude_followers,
+            instance.reject_friend,
+            instance.block_trends,
+          ]
         end
       end
     end
