@@ -67,6 +67,7 @@ describe 'Public' do
 
         context 'when local timeline is disabled' do
           let(:ltl_enabled) { false }
+          let(:expected_statuses) { [local_status, remote_status, media_status] }
 
           it_behaves_like 'a successful request to the public timeline'
         end
