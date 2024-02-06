@@ -53,7 +53,7 @@ class PublicFeed
   end
 
   def remote_only?
-    options[:remote] && !options[:local]
+    options[:remote] && !options[:local] && Setting.enable_local_timeline
   end
 
   def hide_local_users?
