@@ -19,10 +19,12 @@ module RegistrationLimitationHelper
   end
 
   def registrations_in_time?
-    return true if (Setting.registrations_start_hour || 0).negative? || Setting.registrations_end_hour > 24 || Setting.registrations_start_hour >= Setting.registrations_end_hour
+    start_hour = Setting.registrations_start_hour || 0
+    end_hour = Setting.registrations_end_hour || 24
+    return true if start_hour.negative? || end_hour > 24 || start_hour >= end_hour
 
     current_hour = Time.now.utc.hour
-    Setting.registrations_start_hour <= current_hour && current_hour < Setting.registrations_end_hour
+    start_hour <= current_hour && current_hour < end_hour
   end
 
   def reset_registration_limit_caches!
