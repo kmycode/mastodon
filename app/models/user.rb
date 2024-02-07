@@ -55,6 +55,7 @@ class User < ApplicationRecord
 
   include LanguagesHelper
   include Redisable
+  include RegistrationLimitationHelper
   include User::HasSettings
   include User::LdapAuthenticable
   include User::Omniauthable
@@ -482,6 +483,7 @@ class User < ApplicationRecord
     ActivityTracker.record('activity:logins', id)
     UserMailer.welcome(self).deliver_later
     TriggerWebhookWorker.perform_async('account.approved', 'Account', account_id)
+    reset_registration_limit_caches!
   end
 
   def prepare_returning_user!

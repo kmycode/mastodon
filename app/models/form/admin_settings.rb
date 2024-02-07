@@ -15,6 +15,10 @@ class Form::AdminSettings
     registrations_mode
     closed_registrations_message
     registration_button_message
+    registrations_limit
+    registrations_limit_per_day
+    registrations_start_hour
+    registrations_end_hour
     timeline_preview
     bootstrap_timeline_accounts
     theme
@@ -61,6 +65,10 @@ class Form::AdminSettings
     content_cache_retention_period
     backups_retention_period
     post_hash_tags_max
+    registrations_limit
+    registrations_limit_per_day
+    registrations_start_hour
+    registrations_end_hour
   ).freeze
 
   BOOLEAN_KEYS = %i(
