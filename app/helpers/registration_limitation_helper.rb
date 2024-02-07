@@ -19,7 +19,7 @@ module RegistrationLimitationHelper
   end
 
   def registrations_in_time?
-    return true if Setting.registrations_start_hour.negative? || Setting.registrations_end_hour > 24 || Setting.registrations_start_hour >= Setting.registrations_end_hour
+    return true if (Setting.registrations_start_hour || 0).negative? || Setting.registrations_end_hour > 24 || Setting.registrations_start_hour >= Setting.registrations_end_hour
 
     current_hour = Time.now.utc.hour
     Setting.registrations_start_hour <= current_hour && current_hour < Setting.registrations_end_hour
