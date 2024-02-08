@@ -93,6 +93,7 @@ ja:
       updated_not_active: パスワードは正常に更新されました。
     registrations:
       destroyed: アカウントの作成はキャンセルされました。またのご利用をお待ちしています。
+      sign_up_failed_because_reach_limit: 制限に到達しているため、アカウントを作成できません。
       signed_up: アカウントの作成が完了しました。Mastodonへようこそ。
       signed_up_but_inactive: アカウントの作成が完了しました。しかし、アカウントが有効化されていないためログインできませんでした。
       signed_up_but_locked: アカウントの作成が完了しました。しかし、アカウントがロックされているためログインできませんでした。

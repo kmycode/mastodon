@@ -280,6 +280,153 @@ RSpec.describe Auth::RegistrationsController do
       end
     end
 
+    context 'when max user count is set' do
+      subject do
+        post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', agreement: 'true' } }
+      end
+
+      let(:users_max) { 3 }
+
+      before do
+        Fabricate(:user)
+        Fabricate(:user)
+        Setting.registrations_mode = 'open'
+        Setting.registrations_limit = users_max
+        request.headers['Accept-Language'] = accept_language
+      end
+
+      it 'redirects to setup' do
+        subject
+        expect(response).to redirect_to auth_setup_path
+      end
+
+      it 'creates user' do
+        subject
+        user = User.find_by(email: 'test@example.com')
+        expect(user).to_not be_nil
+        expect(user.locale).to eq(accept_language)
+      end
+
+      context 'when limit is reached' do
+        let(:users_max) { 2 }
+
+        it 'does not create user' do
+          subject
+          user = User.find_by(email: 'test@example.com')
+          expect(user).to be_nil
+        end
+      end
+    end
+
+    context 'when max user count per day is set' do
+      subject do
+        post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', agreement: 'true' } }
+      end
+
+      let(:users_max) { 2 }
+      let(:created_at) { Time.now.utc }
+      let(:precreate_users) { true }
+
+      before do
+        Fabricate(:user, created_at: created_at) if precreate_users
+        Setting.registrations_mode = 'open'
+        Setting.registrations_limit_per_day = users_max
+        request.headers['Accept-Language'] = accept_language
+      end
+
+      it 'creates user' do
+        subject
+        user = User.find_by(email: 'test@example.com')
+        expect(user).to_not be_nil
+        expect(user.locale).to eq(accept_language)
+      end
+
+      context 'when limit is reached' do
+        let(:users_max) { 2 }
+        let(:created_at) { Time.now.utc - 1.day }
+        let(:precreate_users) { false }
+
+        before do
+          travel_to Time.now.utc - 1.day
+          Fabricate(:user)
+          create_other_user
+        end
+
+        it 'does not create user yesterday' do
+          subject
+          user = User.find_by(email: 'test@example.com')
+          expect(user).to be_nil
+        end
+
+        it 'creates user' do
+          travel_to Time.now.utc + 1.day
+          subject
+          user = User.find_by(email: 'test@example.com')
+          expect(user).to_not be_nil
+          expect(user.locale).to eq(accept_language)
+        end
+      end
+
+      def create_other_user
+        post :create, params: { user: { account_attributes: { username: 'ohagi' }, email: 'test@ohagi.com', password: 'ohagi_must_be_tsubuan', password_confirmation: 'ohagi_must_be_tsubuan', agreement: 'true' } }
+      end
+    end
+
+    context 'when registration time range is set' do
+      subject do
+        post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', agreement: 'true' } }
+      end
+
+      let(:start_hour) { 9 }
+      let(:end_hour) { 12 }
+
+      before do
+        Setting.registrations_mode = 'open'
+        Setting.registrations_start_hour = start_hour
+        Setting.registrations_end_hour = end_hour
+        request.headers['Accept-Language'] = accept_language
+      end
+
+      it 'creates user' do
+        travel_to '2023-12-20T10:00:00Z'
+        subject
+        user = User.find_by(email: 'test@example.com')
+        expect(user).to_not be_nil
+        expect(user.locale).to eq(accept_language)
+      end
+
+      context 'when out of range' do
+        let(:start_hour) { 12 }
+        let(:end_hour) { 15 }
+
+        before do
+          travel_to '2023-12-20T10:00:00Z'
+        end
+
+        it 'does not create user' do
+          subject
+          user = User.find_by(email: 'test@example.com')
+          expect(user).to be_nil
+        end
+      end
+
+      context 'when invalid range' do
+        let(:start_hour) { 20 }
+        let(:end_hour) { 15 }
+
+        before do
+          travel_to '2023-12-20T10:00:00Z'
+        end
+
+        it 'creates user' do
+          subject
+          user = User.find_by(email: 'test@example.com')
+          expect(user).to_not be_nil
+          expect(user.locale).to eq(accept_language)
+        end
+      end
+    end
+
     include_examples 'checks for enabled registrations', :create
   end
 

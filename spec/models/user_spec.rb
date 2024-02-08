@@ -233,6 +233,30 @@ RSpec.describe User do
           expect(TriggerWebhookWorker).to_not have_received(:perform_async).with('account.approved', 'Account', user.account_id)
         end
       end
+
+      context 'when max user count is set' do
+        let(:users_max) { 3 }
+
+        before do
+          Fabricate(:user)
+          Fabricate(:user)
+          Setting.registrations_limit = users_max
+        end
+
+        it 'creates user' do
+          expect { subject }.to_not raise_error
+          expect(user.confirmed?).to be true
+        end
+
+        context 'with limit is reached' do
+          let(:users_max) { 2 }
+
+          it 'does not create user' do
+            expect { subject }.to raise_error Mastodon::ValidationError
+            expect(user.confirmed?).to be false
+          end
+        end
+      end
     end
   end
 

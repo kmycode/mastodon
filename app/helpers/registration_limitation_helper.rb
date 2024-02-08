@@ -13,9 +13,22 @@ module RegistrationLimitationHelper
   end
 
   def today_increase_user_count
-    Rails.cache.fetch('registrations:today_increase_user_count') do
-      User.confirmed.where('created_at > ?', Time.now.utc.beginning_of_day).joins(:account).merge(Account.without_suspended).count
+    today_date = Time.now.utc.beginning_of_day.to_i
+    count = 0
+
+    if Rails.cache.fetch('registrations:today_date') { today_date } == today_date
+      count = Rails.cache.fetch('registrations:today_increase_user_count') { today_increase_user_count_value }
+    else
+      count = today_increase_user_count_value
+      Rails.cache.write('registrations:today_date', today_date)
+      Rails.cache.write('registrations:today_increase_user_count', count)
     end
+
+    count
+  end
+
+  def today_increase_user_count_value
+    User.confirmed.where('users.created_at >= ?', Time.now.utc.beginning_of_day).joins(:account).merge(Account.without_suspended).count
   end
 
   def registrations_in_time?

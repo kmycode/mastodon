@@ -193,6 +193,8 @@ class User < ApplicationRecord
   end
 
   def confirm
+    raise Mastodon::ValidationError, I18n.t('devise.registrations.sign_up_failed_because_reach_limit') if reach_registrations_limit?
+
     wrap_email_confirmation do
       super
     end

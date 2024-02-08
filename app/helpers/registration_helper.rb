@@ -6,11 +6,11 @@ module RegistrationHelper
   include RegistrationLimitationHelper
 
   def allowed_registration?(remote_ip, invite)
-    !Rails.configuration.x.single_user_mode && !omniauth_only? && (registrations_open? || invite&.valid_for_use?) && !ip_blocked?(remote_ip)
+    !Rails.configuration.x.single_user_mode && !omniauth_only? && ((registrations_open? && !reach_registrations_limit?) || invite&.valid_for_use?) && !ip_blocked?(remote_ip)
   end
 
   def registrations_open?
-    Setting.registrations_mode != 'none' && !reach_registrations_limit?
+    Setting.registrations_mode != 'none'
   end
 
   def omniauth_only?
