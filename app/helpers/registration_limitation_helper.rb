@@ -2,7 +2,7 @@
 
 module RegistrationLimitationHelper
   def reach_registrations_limit?
-    return false unless registrations_in_time?
+    return true unless registrations_in_time?
 
     (Setting.registrations_limit && Setting.registrations_limit <= user_count_for_registration) ||
       (Setting.registrations_limit_per_day && Setting.registrations_limit_per_day <= today_increase_user_count)

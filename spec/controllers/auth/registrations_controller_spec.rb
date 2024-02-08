@@ -385,10 +385,11 @@ RSpec.describe Auth::RegistrationsController do
         Setting.registrations_start_hour = start_hour
         Setting.registrations_end_hour = end_hour
         request.headers['Accept-Language'] = accept_language
+
+        travel_to Time.now.utc.beginning_of_day + 10.hours
       end
 
       it 'creates user' do
-        travel_to '2023-12-20T10:00:00Z'
         subject
         user = User.find_by(email: 'test@example.com')
         expect(user).to_not be_nil
@@ -398,10 +399,6 @@ RSpec.describe Auth::RegistrationsController do
       context 'when out of range' do
         let(:start_hour) { 12 }
         let(:end_hour) { 15 }
-
-        before do
-          travel_to '2023-12-20T10:00:00Z'
-        end
 
         it 'does not create user' do
           subject
@@ -413,10 +410,6 @@ RSpec.describe Auth::RegistrationsController do
       context 'when invalid range' do
         let(:start_hour) { 20 }
         let(:end_hour) { 15 }
-
-        before do
-          travel_to '2023-12-20T10:00:00Z'
-        end
 
         it 'creates user' do
           subject
