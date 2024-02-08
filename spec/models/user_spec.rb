@@ -255,6 +255,14 @@ RSpec.describe User do
             expect { subject }.to raise_error Mastodon::ValidationError
             expect(user.confirmed?).to be false
           end
+
+          it 'but creates user when invited' do
+            invite = Fabricate(:invite, user: Fabricate(:user), max_uses: nil, expires_at: 1.hour.from_now)
+            user.update!(invite: invite)
+
+            expect { subject }.to_not raise_error
+            expect(user.confirmed?).to be true
+          end
         end
       end
     end

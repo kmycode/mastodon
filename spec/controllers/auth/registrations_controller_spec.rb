@@ -315,6 +315,21 @@ RSpec.describe Auth::RegistrationsController do
           user = User.find_by(email: 'test@example.com')
           expect(user).to be_nil
         end
+
+        context 'with invite' do
+          subject do
+            post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', invite_code: invite.code, agreement: 'true' } }
+          end
+
+          let(:invite) { Fabricate(:invite) }
+
+          it 'creates user' do
+            subject
+            user = User.find_by(email: 'test@example.com')
+            expect(user).to_not be_nil
+            expect(user.locale).to eq(accept_language)
+          end
+        end
       end
     end
 
