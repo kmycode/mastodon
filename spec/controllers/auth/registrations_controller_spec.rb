@@ -392,47 +392,50 @@ RSpec.describe Auth::RegistrationsController do
         post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', agreement: 'true' } }
       end
 
-      let(:start_hour) { 9 }
-      let(:end_hour) { 12 }
+      shared_examples 'registration with time' do |header, start_hour_val, end_hour_val, secondary_start_hour_val, secondary_end_hour_val, result| # rubocop:disable Metrics/ParameterLists
+        context header do
+          let(:start_hour) { start_hour_val }
+          let(:end_hour) { end_hour_val }
+          let(:secondary_start_hour) { secondary_start_hour_val }
+          let(:secondary_end_hour) { secondary_end_hour_val }
 
-      before do
-        Setting.registrations_mode = 'open'
-        Setting.registrations_start_hour = start_hour
-        Setting.registrations_end_hour = end_hour
-        request.headers['Accept-Language'] = accept_language
+          before do
+            Setting.registrations_mode = 'open'
+            Setting.registrations_start_hour = start_hour
+            Setting.registrations_end_hour = end_hour
+            Setting.registrations_secondary_start_hour = secondary_start_hour
+            Setting.registrations_secondary_end_hour = secondary_end_hour
+            request.headers['Accept-Language'] = accept_language
 
-        travel_to Time.now.utc.beginning_of_day + 10.hours
-      end
+            travel_to Time.now.utc.beginning_of_day + 10.hours
+          end
 
-      it 'creates user' do
-        subject
-        user = User.find_by(email: 'test@example.com')
-        expect(user).to_not be_nil
-        expect(user.locale).to eq(accept_language)
-      end
-
-      context 'when out of range' do
-        let(:start_hour) { 12 }
-        let(:end_hour) { 15 }
-
-        it 'does not create user' do
-          subject
-          user = User.find_by(email: 'test@example.com')
-          expect(user).to be_nil
+          if result
+            it 'creates user' do
+              subject
+              user = User.find_by(email: 'test@example.com')
+              expect(user).to_not be_nil
+              expect(user.locale).to eq(accept_language)
+            end
+          else
+            it 'does not create user' do
+              subject
+              user = User.find_by(email: 'test@example.com')
+              expect(user).to be_nil
+            end
+          end
         end
       end
 
-      context 'when invalid range' do
-        let(:start_hour) { 20 }
-        let(:end_hour) { 15 }
-
-        it 'creates user' do
-          subject
-          user = User.find_by(email: 'test@example.com')
-          expect(user).to_not be_nil
-          expect(user.locale).to eq(accept_language)
-        end
-      end
+      it_behaves_like 'registration with time', 'time range is not set', 0, 24, 0, 0, true
+      it_behaves_like 'registration with time', 'time range is set', 9, 12, 0, 0, true
+      it_behaves_like 'registration with time', 'time range is out of range', 12, 15, 0, 0, false
+      it_behaves_like 'registration with time', 'time range is invalid', 20, 15, 0, 0, true
+      it_behaves_like 'registration with time', 'secondary time range is set', 0, 4, 9, 12, true
+      it_behaves_like 'registration with time', 'secondary time range is out of range', 0, 4, 12, 15, false
+      it_behaves_like 'registration with time', 'secondary time range is invalid', 0, 4, 20, 15, false
+      it_behaves_like 'registration with time', 'both time range are invalid', 4, 0, 20, 15, true
+      it_behaves_like 'registration with time', 'only secondary time range is set', 0, 0, 9, 12, true
     end
 
     include_examples 'checks for enabled registrations', :create
