@@ -19,6 +19,8 @@ class Form::AdminSettings
     registrations_limit_per_day
     registrations_start_hour
     registrations_end_hour
+    registrations_secondary_start_hour
+    registrations_secondary_end_hour
     timeline_preview
     bootstrap_timeline_accounts
     theme
@@ -69,6 +71,8 @@ class Form::AdminSettings
     registrations_limit_per_day
     registrations_start_hour
     registrations_end_hour
+    registrations_secondary_start_hour
+    registrations_secondary_end_hour
   ).freeze
 
   BOOLEAN_KEYS = %i(

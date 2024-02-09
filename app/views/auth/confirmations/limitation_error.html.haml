@@ -1,0 +1,11 @@
+- content_for :page_title do
+  = t('auth.registration_limit.title')
+
+= form_tag root_url, method: 'GET', class: 'simple_form' do
+  = render 'auth/shared/progress', stage: 'confirm'
+
+  %h1.title= t('auth.registration_limit.title')
+  %p.lead= t('auth.registration_limit.hint_html')
+
+  .actions
+    = button_tag t('challenge.confirm'), class: 'button', type: :submit

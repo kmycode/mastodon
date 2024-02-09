@@ -4,12 +4,12 @@ module RegistrationLimitationHelper
   def reach_registrations_limit?
     return true unless registrations_in_time?
 
-    (Setting.registrations_limit && Setting.registrations_limit <= user_count_for_registration) ||
-      (Setting.registrations_limit_per_day && Setting.registrations_limit_per_day <= today_increase_user_count)
+    ((Setting.registrations_limit.presence || 0).positive? && Setting.registrations_limit <= user_count_for_registration) ||
+      ((Setting.registrations_limit_per_day.presence || 0).positive? && Setting.registrations_limit_per_day <= today_increase_user_count)
   end
 
   def user_count_for_registration
-    Rails.cache.fetch('registrations:user_count') { User.confirmed.joins(:account).merge(Account.without_suspended).count }
+    Rails.cache.fetch('registrations:user_count') { User.confirmed.enabled.joins(:account).merge(Account.without_suspended).count }
   end
 
   def today_increase_user_count
@@ -28,16 +28,22 @@ module RegistrationLimitationHelper
   end
 
   def today_increase_user_count_value
-    User.confirmed.where('users.created_at >= ?', Time.now.utc.beginning_of_day).joins(:account).merge(Account.without_suspended).count
+    User.confirmed.enabled.where('users.created_at >= ?', Time.now.utc.beginning_of_day).joins(:account).merge(Account.without_suspended).count
   end
 
   def registrations_in_time?
     start_hour = Setting.registrations_start_hour || 0
     end_hour = Setting.registrations_end_hour || 24
-    return true if start_hour.negative? || end_hour > 24 || start_hour >= end_hour
+    secondary_start_hour = Setting.registrations_secondary_start_hour || 0
+    secondary_end_hour = Setting.registrations_secondary_end_hour || 0
 
     current_hour = Time.now.utc.hour
-    start_hour <= current_hour && current_hour < end_hour
+    primary_permitted = false
+    primary_permitted = start_hour <= current_hour && current_hour < end_hour if start_hour < end_hour && end_hour.positive?
+    secondary_permitted = false
+    secondary_permitted = secondary_start_hour <= current_hour && current_hour < secondary_end_hour if secondary_start_hour < secondary_end_hour && secondary_end_hour.positive?
+
+    primary_permitted || secondary_permitted
   end
 
   def reset_registration_limit_caches!

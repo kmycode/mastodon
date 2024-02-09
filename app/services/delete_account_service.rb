@@ -2,6 +2,7 @@
 
 class DeleteAccountService < BaseService
   include Payloadable
+  include RegistrationLimitationHelper
 
   ASSOCIATIONS_ON_SUSPEND = %w(
     account_notes
@@ -143,6 +144,8 @@ class DeleteAccountService < BaseService
     else
       @account.user.destroy
     end
+
+    reset_registration_limit_caches!
   end
 
   def purge_content!

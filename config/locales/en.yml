@@ -1267,6 +1267,9 @@ en:
       saml: SAML
     register: Sign up
     registration_closed: "%{instance} is not accepting new members"
+    registration_limit:
+      hint_html: The maximum number of new registrations allowed, or the time of day, is restricted by the administrator. You will not be able to complete authentication while the restriction is in effect. Please contact the administrator or wait until the restriction is lifted. If you have reached the limit, you will need to register again.
+      title: New registrations are currently restricted
     resend_confirmation: Resend confirmation link
     reset_password: Reset password
     rules:

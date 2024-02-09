@@ -10,6 +10,12 @@ defaults: &defaults
   site_contact_username: ''
   site_contact_email: ''
   registrations_mode: 'open'
+  registrations_limit: 0
+  registrations_limit_per_day: 0
+  registrations_start_hour: 0
+  registrations_end_hour: 24
+  registrations_secondary_start_hour: 0
+  registrations_secondary_end_hour: 0
   profile_directory: true
   closed_registrations_message: ''
   timeline_preview: true

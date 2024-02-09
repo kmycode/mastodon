@@ -48,6 +48,7 @@
  * @property {string=} owner
  * @property {boolean} profile_directory
  * @property {boolean} registrations_open
+ * @property {boolean} registrations_reach_limit
  * @property {boolean} reduce_motion
  * @property {string} repository
  * @property {boolean} search_enabled
@@ -134,6 +135,7 @@ export const owner = getMeta('owner');
 export const profile_directory = getMeta('profile_directory');
 export const reduceMotion = getMeta('reduce_motion');
 export const registrationsOpen = getMeta('registrations_open');
+export const registrationsReachLimit = getMeta('registrations_reach_limit');
 export const repository = getMeta('repository');
 export const searchEnabled = getMeta('search_enabled');
 export const trendsEnabled = getMeta('trends_enabled');

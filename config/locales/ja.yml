@@ -1255,6 +1255,9 @@ ja:
       saml: SAML
     register: 登録する
     registration_closed: "%{instance}は現在、新規登録停止中です"
+    registration_limit:
+      hint_html: 新規登録可能な上限人数、もしくは時間帯は、管理者によって制限されています。制限中は認証を完了することができません。管理者に問い合わせるか、制限が解除されるまでお待ちください。なお認証期限に達した場合は、再度新規登録を行う必要があります。
+      title: 新規登録は現在制限中です
     resend_confirmation: 確認メールを再送
     reset_password: パスワードを再発行
     rules:

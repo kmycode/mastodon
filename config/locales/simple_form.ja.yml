@@ -117,6 +117,10 @@ ja:
         peers_api_enabled: このサーバーが Fediverse で遭遇したドメイン名のリストです。このサーバーが知っているだけで、特定のサーバーと連合しているかのデータは含まれません。これは一般的に Fediverse に関する統計情報を収集するサービスによって使用されます。
         profile_directory: ディレクトリには、掲載する設定をしたすべてのユーザーが一覧表示されます。
         receive_other_servers_emoji_reaction: 負荷の原因になります。人が少ない場合にのみ有効にすることをおすすめします。
+        registrations_limit: 現在のユーザー数がこれを超過すると、管理者がこの数値を増やさない限り新規登録できません。0を指定すると、この制限を無効化します。
+        registrations_limit_per_day: 本日登録されたユーザー数がこれを超過すると、UTC時刻で翌日0時にならない限り新規登録できません。0を指定すると、この制限を無効化します。
+        registrations_end_hour: 新規登録可能な時間帯の開始時間を指定します。これより前の時間に登録することはできません。終了時間より後にすることはできません。
+        registrations_start_hour: 新規登録可能な時間帯の終了時間を指定します。これより後の時間に登録することはできません。開始時間より前にすることはできません。
         require_invite_text: アカウント登録が承認制の場合、登録の際の申請事由の入力を必須にします
         site_contact_email: 法律またはサポートに関する問い合わせ先
         site_contact_username: マストドンでの連絡方法
@@ -363,7 +367,13 @@ ja:
         profile_directory: プロフィール一覧を有効にする
         receive_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけた絵文字リアクションを受け入れる
         registration_button_message: 新規登録ボタンの直上に表示するメッセージ
+        registrations_limit: 登録ユーザー数上限 (現在 %{count} 名)
+        registrations_limit_per_day: 1日あたり登録ユーザー数上限 (現在 %{count} 名)
         registrations_mode: 新規登録が可能な人
+        registrations_end_hour: 登録受付終了時間 A (UTC 0〜24)
+        registrations_start_hour: 登録受付開始時間 A (UTC 0〜24)
+        registrations_secondary_end_hour: 登録受付終了時間 B (UTC 0〜24) ここで0を指定した場合、時間Bの設定は無効化されます
+        registrations_secondary_start_hour: 登録受付開始時間 B (UTC 0〜24)
         require_invite_text: 申請事由の入力を必須にする
         show_domain_blocks: ドメインブロックを表示
         show_domain_blocks_rationale: ドメインがブロックされた理由を表示

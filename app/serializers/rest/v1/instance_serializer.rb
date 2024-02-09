@@ -3,6 +3,7 @@
 class REST::V1::InstanceSerializer < ActiveModel::Serializer
   include RoutingHelper
   include KmyblueCapabilitiesHelper
+  include RegistrationLimitationHelper
 
   attributes :uri, :title, :short_description, :description, :email,
              :version, :urls, :stats, :thumbnail,
@@ -109,7 +110,7 @@ class REST::V1::InstanceSerializer < ActiveModel::Serializer
   end
 
   def registrations
-    Setting.registrations_mode != 'none' && !Rails.configuration.x.single_user_mode
+    Setting.registrations_mode != 'none' && !reach_registrations_limit? && !Rails.configuration.x.single_user_mode
   end
 
   def approval_required

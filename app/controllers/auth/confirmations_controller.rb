@@ -2,6 +2,7 @@
 
 class Auth::ConfirmationsController < Devise::ConfirmationsController
   include Auth::CaptchaConcern
+  include RegistrationLimitationHelper
 
   layout 'auth'
 
@@ -16,6 +17,11 @@ class Auth::ConfirmationsController < Devise::ConfirmationsController
   skip_before_action :require_functional!
 
   def show
+    if reach_registrations_limit?
+      render :limitation_error
+      return
+    end
+
     old_session_values = session.to_hash
     reset_session
     session.update old_session_values.except('session_id')
