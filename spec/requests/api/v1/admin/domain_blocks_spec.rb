@@ -49,6 +49,7 @@ RSpec.describe 'Domain Blocks' do
           {
             id: domain_block.id.to_s,
             domain: domain_block.domain,
+            digest: domain_block.domain_digest,
             created_at: domain_block.created_at.strftime('%Y-%m-%dT%H:%M:%S.%LZ'),
             severity: domain_block.severity.to_s,
             reject_media: domain_block.reject_media,
@@ -123,7 +124,7 @@ RSpec.describe 'Domain Blocks' do
     it_behaves_like 'forbidden for wrong role', ''
     it_behaves_like 'forbidden for wrong role', 'Moderator'
 
-    it 'returns the expected domain block content', :aggregate_failures do # rubocop:disable RSpec/ExampleLength
+    it 'returns the expected domain block content', :aggregate_failures do
       subject
 
       expect(response).to have_http_status(200)
@@ -131,6 +132,7 @@ RSpec.describe 'Domain Blocks' do
         {
           id: domain_block.id.to_s,
           domain: domain_block.domain,
+          digest: domain_block.domain_digest,
           created_at: domain_block.created_at.strftime('%Y-%m-%dT%H:%M:%S.%LZ'),
           severity: domain_block.severity.to_s,
           reject_media: domain_block.reject_media,
@@ -232,6 +234,7 @@ RSpec.describe 'Domain Blocks' do
         {
           id: domain_block.id.to_s,
           domain: domain_block.domain,
+          digest: domain_block.domain_digest,
           severity: 'suspend',
         }
       )

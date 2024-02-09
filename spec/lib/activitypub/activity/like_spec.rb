@@ -295,7 +295,7 @@ RSpec.describe ActivityPub::Activity::Like do
         Fabricate(:custom_emoji, domain: nil, shortcode: 'tinking', license: 'Everyone but Ohagi')
       end
 
-      it 'create emoji reaction' do
+      it 'create emoji reaction' do # rubocop:disable RSpec/MultipleExpectations
         expect(subject.count).to eq 1
         expect(subject.first.name).to eq 'tinking'
         expect(subject.first.account).to eq sender
