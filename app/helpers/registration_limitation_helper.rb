@@ -37,6 +37,8 @@ module RegistrationLimitationHelper
     secondary_start_hour = Setting.registrations_secondary_start_hour || 0
     secondary_end_hour = Setting.registrations_secondary_end_hour || 0
 
+    return true if start_hour >= end_hour && secondary_start_hour >= secondary_end_hour
+
     current_hour = Time.now.utc.hour
     primary_permitted = false
     primary_permitted = start_hour <= current_hour && current_hour < end_hour if start_hour < end_hour && end_hour.positive?

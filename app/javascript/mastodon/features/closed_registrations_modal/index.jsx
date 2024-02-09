@@ -31,7 +31,7 @@ class ClosedRegistrationsModal extends ImmutablePureComponent {
       closedRegistrationsMessage = (
         <p className='prose'>
           <FormattedMessage
-            id='closed_registrations_modal.description.when_reaching_limit'
+            id='closed_registrations_modal.description_when_reaching_limit'
             defaultMessage='New registrations are currently temporarily restricted. Either the maximum number of registrations has been reached or it is outside the time frame available for registration. Please contact the administrator for more information or wait until the restriction is lifted.'
             values={{ domain: <strong>{domain}</strong> }}
           />
