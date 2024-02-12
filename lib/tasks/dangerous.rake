@@ -82,6 +82,8 @@ namespace :dangerous do
       20240117021025
       20240117022353
       20240121231131
+      20240212224800
+      20240212230358
     )
     # Removed: account_groups
     target_tables = %w(
@@ -140,6 +142,7 @@ namespace :dangerous do
       # Removed: domain_blocks reject_send_unlisted_dissubscribable
       %w(domain_blocks reject_send_sensitive),
       %w(domain_blocks reject_straight_follow),
+      %w(favourites uri),
       %w(lists notify),
       %w(statuses limited_scope),
       %w(statuses markdown),

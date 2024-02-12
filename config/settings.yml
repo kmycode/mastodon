@@ -43,6 +43,7 @@ defaults: &defaults
   show_domain_blocks_rationale: 'disabled'
   require_invite_text: false
   backups_retention_period: 7
+  delete_content_cache_without_reaction: false
   captcha_enabled: false
   receive_other_servers_emoji_reaction: false
   streaming_other_servers_emoji_reaction: false

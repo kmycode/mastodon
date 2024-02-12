@@ -22,6 +22,8 @@ class EmojiReaction < ApplicationRecord
 
   update_index('statuses', :status)
 
+  scope :local, -> { where(uri: nil) }
+
   belongs_to :account,       inverse_of: :emoji_reactions
   belongs_to :status,        inverse_of: :emoji_reactions
   belongs_to :custom_emoji,  optional: true

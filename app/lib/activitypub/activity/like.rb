@@ -26,7 +26,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
   def process_favourite
     return if @account.favourited?(@original_status)
 
-    favourite = @original_status.favourites.create!(account: @account)
+    favourite = @original_status.favourites.create!(account: @account, uri: @json['id'])
 
     LocalNotificationWorker.perform_async(@original_status.account_id, favourite.id, 'Favourite', 'favourite')
     Trends.statuses.register(@original_status)

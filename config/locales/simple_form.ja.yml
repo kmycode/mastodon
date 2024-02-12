@@ -358,6 +358,7 @@ ja:
         closed_registrations_message: アカウント作成を停止している時のカスタムメッセージ
         content_cache_retention_period: コンテンツキャッシュの保持期間
         custom_css: カスタムCSS
+        delete_content_cache_without_reaction: お気に入り・ブックマークされた投稿を削除対象から除外する
         enable_emoji_reaction: 絵文字リアクション機能を有効にする
         enable_local_timeline: ローカルタイムラインを有効にする
         enable_public_unlisted_visibility: 公開範囲「ローカル公開」と検索許可「ローカルとフォロワー」を有効にする

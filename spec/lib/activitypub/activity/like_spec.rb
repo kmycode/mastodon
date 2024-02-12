@@ -49,6 +49,10 @@ RSpec.describe ActivityPub::Activity::Like do
     it 'creates a favourite from sender to status' do
       expect(sender.favourited?(status)).to be true
     end
+
+    it 'creates a favourite and set uri' do
+      expect(status.favourites.first.uri).to eq 'foo'
+    end
   end
 
   describe '#perform when receive emoji reaction' do

@@ -345,6 +345,7 @@ en:
         closed_registrations_message: Custom message when sign-ups are not available
         content_cache_retention_period: Content cache retention period
         custom_css: Custom CSS
+        delete_content_cache_without_reaction: Exclude favorite/bookmarked posts from deletion
         enable_emoji_reaction: Enable emoji reaction function
         enable_local_timeline: Enable local timeline
         enable_public_unlisted_visibility: Enable public-unlisted visibility / public-unlisted searchability

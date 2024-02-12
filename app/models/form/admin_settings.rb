@@ -41,6 +41,7 @@ class Form::AdminSettings
     media_cache_retention_period
     content_cache_retention_period
     backups_retention_period
+    delete_content_cache_without_reaction
     status_page_url
     captcha_enabled
     ng_words
@@ -98,6 +99,7 @@ class Form::AdminSettings
     unlocked_friend
     stranger_mention_from_local_ng
     enable_local_timeline
+    delete_content_cache_without_reaction
   ).freeze
 
   UPLOAD_KEYS = %i(
