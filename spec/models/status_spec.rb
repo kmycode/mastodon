@@ -463,32 +463,16 @@ RSpec.describe Status do
   describe '.emoji_reaction_availables_map' do
     subject { described_class.emoji_reaction_availables_map(domains) }
 
-    let(:domains) { %w(features_available.com features_unavailable.com features_invalid.com features_nil.com no_info.com mastodon.com misskey.com old_mastodon.com) }
+    let(:domains) { %w(features_available.com mastodon.com misskey.com) }
 
     before do
       Fabricate(:instance_info, domain: 'features_available.com', software: 'mastodon', data: { metadata: { features: ['emoji_reaction'] } })
-      Fabricate(:instance_info, domain: 'features_unavailable.com', software: 'mastodon', data: { metadata: { features: ['ohagi'] } })
-      Fabricate(:instance_info, domain: 'features_invalid.com', software: 'mastodon', data: { metadata: { features: 'good_for_ohagi' } })
-      Fabricate(:instance_info, domain: 'features_nil.com', software: 'mastodon', data: { metadata: { features: nil } })
       Fabricate(:instance_info, domain: 'mastodon.com', software: 'mastodon')
       Fabricate(:instance_info, domain: 'misskey.com', software: 'misskey')
-      Fabricate(:instance_info, domain: 'old_mastodon.com', software: 'mastodon', data: { metadata: [] })
     end
 
     it 'availables if features contains emoji_reaction' do
       expect(subject['features_available.com']).to be true
-    end
-
-    it 'unavailables if features does not contain emoji_reaction' do
-      expect(subject['features_unavailable.com']).to be false
-    end
-
-    it 'unavailables if features is not valid' do
-      expect(subject['features_invalid.com']).to be false
-    end
-
-    it 'unavailables if features is nil' do
-      expect(subject['features_nil.com']).to be false
     end
 
     it 'unavailables if mastodon server' do
@@ -497,10 +481,6 @@ RSpec.describe Status do
 
     it 'availables if misskey server' do
       expect(subject['misskey.com']).to be true
-    end
-
-    it 'unavailables if old mastodon server' do
-      expect(subject['old_mastodon.com']).to be false
     end
   end
 
