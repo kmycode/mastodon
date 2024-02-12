@@ -407,7 +407,10 @@ RSpec.describe Auth::RegistrationsController do
             Setting.registrations_secondary_end_hour = secondary_end_hour
             request.headers['Accept-Language'] = accept_language
 
-            travel_to Time.now.utc.beginning_of_day + 10.hours
+            current = Time.now.utc
+            today = current.beginning_of_day
+            today += 1.day if current.hour > 10
+            travel_to today + 10.hours
           end
 
           if result
