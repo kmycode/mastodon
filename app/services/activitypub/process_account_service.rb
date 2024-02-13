@@ -131,8 +131,8 @@ class ActivityPub::ProcessAccountService < BaseService
   end
 
   def valid_account?
-    display_name = @json['name']
-    note = @json['summary']
+    display_name = @json['name'] || ''
+    note = @json['summary'] || ''
     !Admin::NgWord.reject?(display_name) && !Admin::NgWord.reject?(note)
   end
 
