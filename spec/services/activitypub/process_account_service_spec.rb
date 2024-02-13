@@ -290,6 +290,33 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
     end
   end
 
+  context 'when account is using note contains ng words' do
+    subject { described_class.new.call(account.username, account.domain, payload) }
+
+    let!(:account) { Fabricate(:account, username: 'alice', domain: 'example.com') }
+
+    let(:payload) do
+      {
+        id: 'https://foo.test',
+        type: 'Actor',
+        inbox: 'https://foo.test/inbox',
+        name: 'Ohagi',
+      }.with_indifferent_access
+    end
+
+    it 'creates account when ng word is not set' do
+      Setting.ng_words = ['Amazon']
+      subject
+      expect(account.reload.display_name).to eq 'Ohagi'
+    end
+
+    it 'does not create account when ng word is set' do
+      Setting.ng_words = ['Ohagi']
+      subject
+      expect(account.reload.display_name).to_not eq 'Ohagi'
+    end
+  end
+
   context 'when account is not suspended' do
     subject { described_class.new.call(account.username, account.domain, payload) }
 
