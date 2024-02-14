@@ -83,8 +83,8 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     process_audience
 
     return nil unless valid_status?
-    return nil if (reply_to_local? || reply_to_local_account? || reply_to_local_from_tags?) && reject_reply_to_local?
-    return nil if mention_to_local_but_not_followed? && reject_reply_exclude_followers?
+    return nil if (reply_to_local? || reply_to_local_account? || reply_to_local_from_tags? || reference_to_local_account?) && reject_reply_to_local?
+    return nil if (mention_to_local_but_not_followed? || reference_to_local_but_not_followed?) && reject_reply_exclude_followers?
 
     ApplicationRecord.transaction do
       @status = Status.create!(@params)
@@ -145,7 +145,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def valid_status?
     valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") && !Admin::NgWord.hashtag_reject?(@tags.size)
 
-    valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && mention_to_local_but_not_followed?
+    valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && (mention_to_local_but_not_followed? || reference_to_local_but_not_followed?)
 
     valid
   end
@@ -452,7 +452,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def reply_to_local_account_following?
-    !reply_to_local_account? || accounts_in_audience.none? { |account| account.local? && !account.following?(@account) }
+    accounts_in_audience.none? { |account| account.local? && !account.following?(@account) }
   end
 
   def reply_to_local_from_tags?
@@ -460,7 +460,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def reply_to_local_from_tags_following?
-    @mentions.nil? || @mentions.none? { |m| m.account.local? && !m.account.following?(@account) }
+    @mentions.none? { |m| m.account.local? && !m.account.following?(@account) }
   end
 
   def reply_to_local?
@@ -472,7 +472,19 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def mention_to_local_but_not_followed?
-    !reply_to_local_account_following? || !reply_to_local_status_following? || !reply_to_local_from_tags_following?
+    mention? && (!reply_to_local_account_following? || !reply_to_local_status_following? || !reply_to_local_from_tags_following?)
+  end
+
+  def mention?
+    accounts_in_audience.any? || replied_to_status.present? || @mentions.present?
+  end
+
+  def reference_to_local_account?
+    local_referred_accounts.any?
+  end
+
+  def reference_to_local_but_not_followed?
+    local_referred_accounts.any? { |account| !account.following?(@account) }
   end
 
   def reject_reply_to_local?
@@ -540,10 +552,25 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     retry
   end
 
-  def process_references!
-    references = @object['references'].nil? ? [] : ActivityPub::FetchReferencesService.new.call(@status, @object['references'])
+  def reference_uris
+    return @reference_uris if defined?(@reference_uris)
 
-    ProcessReferencesService.call_service_without_error(@status, [], references, [quote].compact)
+    @reference_uris = @object['references'].nil? ? [] : (ActivityPub::FetchReferencesService.new.call(@account, @object['references']) || []).uniq
+    @reference_uris += ProcessReferencesService.extract_uris(@object['content'] || '')
+  end
+
+  def local_referred_accounts
+    return @local_referred_accounts if defined?(@local_referred_accounts)
+
+    local_referred_statuses = reference_uris.filter_map do |uri|
+      ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Status)
+    end.compact
+
+    @local_referred_accounts = local_referred_statuses.map(&:account)
+  end
+
+  def process_references!
+    ProcessReferencesService.call_service_without_error(@status, [], reference_uris, [quote].compact)
   end
 
   def quote_local?

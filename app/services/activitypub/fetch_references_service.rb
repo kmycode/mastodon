@@ -3,8 +3,8 @@
 class ActivityPub::FetchReferencesService < BaseService
   include JsonLdHelper
 
-  def call(status, collection_or_uri)
-    @account = status.account
+  def call(account, collection_or_uri)
+    @account = account
 
     collection_items(collection_or_uri)&.take(8)&.map { |item| value_or_id(item) }
   end

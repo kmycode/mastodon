@@ -29,7 +29,8 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
       tag: json_tags,
     }
   end
-  let(:json) { Oj.load(Oj.dump(payload)) }
+  let(:payload_override) { {} }
+  let(:json) { Oj.load(Oj.dump(payload.merge(payload_override))) }
 
   let(:alice) { Fabricate(:account) }
   let(:bob) { Fabricate(:account) }
@@ -598,6 +599,49 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
           subject.call(status, json, json)
           expect(status.reload.text).to eq content
           expect(status.mentioned_accounts.pluck(:id)).to include alice.id
+        end
+      end
+
+      context 'when hit ng words for reference' do
+        let!(:target_status) { Fabricate(:status, account: alice) }
+        let(:payload_override) do
+          {
+            references: {
+              id: 'target_status',
+              type: 'Collection',
+              first: {
+                type: 'CollectionPage',
+                next: nil,
+                partOf: 'target_status',
+                items: [
+                  ActivityPub::TagManager.instance.uri_for(target_status),
+                ],
+              },
+            },
+          }
+        end
+        let(:content) { 'ng word test' }
+
+        it 'update status' do
+          Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to_not eq content
+          expect(status.references.pluck(:id)).to_not include target_status.id
+        end
+
+        context 'when alice follows sender' do
+          before do
+            alice.follow!(status.account)
+          end
+
+          it 'update status' do
+            Form::AdminSettings.new(ng_words_for_stranger_mention: 'test').save
+
+            subject.call(status, json, json)
+            expect(status.reload.text).to eq content
+            expect(status.references.pluck(:id)).to include target_status.id
+          end
         end
       end
 
