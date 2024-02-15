@@ -4,9 +4,9 @@
   - [default, 8]
   - [push, 6]
   - [ingress, 4]
+  - [perishable, 4]
   - [mailers, 2]
   - [pull]
-  - [perishable]
   - [scheduler]
 
 :scheduler:
