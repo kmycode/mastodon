@@ -6,7 +6,7 @@ class DeliveryEmojiReactionWorker
   include Lockable
   include AccountScope
 
-  sidekiq_options queue: 'push'
+  sidekiq_options queue: 'perishable'
 
   def perform(payload_json, status_id, reacted_account_id)
     return unless Setting.enable_emoji_reaction
