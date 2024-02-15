@@ -460,7 +460,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def reply_to_local_from_tags_following?
-    @mentions.none? { |m| m.account.local? && !m.account.following?(@account) }
+    @mentions.present? && @mentions.none? { |m| m.account.local? && !m.account.following?(@account) }
   end
 
   def reply_to_local?
@@ -468,7 +468,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def reply_to_local_status_following?
-    !reply_to_local? || replied_to_status.account.following?(@account)
+    reply_to_local? && replied_to_status.account.following?(@account)
   end
 
   def mention_to_local_but_not_followed?
