@@ -83,8 +83,8 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     process_audience
 
     return nil unless valid_status?
-    return nil if (reply_to_local? || reply_to_local_account? || reply_to_local_from_tags? || reference_to_local_account?) && reject_reply_to_local?
-    return nil if (mention_to_local_but_not_followed? || reference_to_local_but_not_followed?) && reject_reply_exclude_followers?
+    return nil if (mention_to_local? || reference_to_local_account?) && reject_reply_to_local?
+    return nil if (mention_to_local_stranger? || reference_to_local_stranger?) && reject_reply_exclude_followers?
 
     ApplicationRecord.transaction do
       @status = Status.create!(@params)
@@ -145,7 +145,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def valid_status?
     valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") && !Admin::NgWord.hashtag_reject?(@tags.size)
 
-    valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && (mention_to_local_but_not_followed? || reference_to_local_but_not_followed?)
+    valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
 
     valid
   end
@@ -447,43 +447,29 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     @skip_download ||= DomainBlock.reject_media?(@account.domain)
   end
 
-  def reply_to_local_account?
-    accounts_in_audience.any?(&:local?)
-  end
-
-  def reply_to_local_account_following?
-    accounts_in_audience.none? { |account| account.local? && !account.following?(@account) }
-  end
-
-  def reply_to_local_from_tags?
-    @mentions.present? && @mentions.any? { |m| m.account.local? }
-  end
-
-  def reply_to_local_from_tags_following?
-    @mentions.present? && @mentions.none? { |m| m.account.local? && !m.account.following?(@account) }
-  end
-
   def reply_to_local?
     !replied_to_status.nil? && replied_to_status.account.local?
   end
 
-  def reply_to_local_status_following?
-    reply_to_local? && replied_to_status.account.following?(@account)
+  def mention_to_local?
+    mentioned_accounts.any?(&:local?)
   end
 
-  def mention_to_local_but_not_followed?
-    mention? && (!reply_to_local_account_following? || !reply_to_local_status_following? || !reply_to_local_from_tags_following?)
+  def mention_to_local_stranger?
+    mentioned_accounts.any? { |account| account.local? && !account.following?(@account) }
   end
 
-  def mention?
-    accounts_in_audience.any? || replied_to_status.present? || @mentions.present?
+  def mentioned_accounts
+    return @mentioned_accounts if defined?(@mentioned_accounts)
+    
+    @mentioned_accounts = (accounts_in_audience + [replied_to_status&.account] + (@mentions&.pluck(:account) || [])).compact.uniq
   end
 
   def reference_to_local_account?
     local_referred_accounts.any?
   end
 
-  def reference_to_local_but_not_followed?
+  def reference_to_local_stranger?
     local_referred_accounts.any? { |account| !account.following?(@account) }
   end
 
