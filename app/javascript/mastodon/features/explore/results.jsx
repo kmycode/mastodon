@@ -52,7 +52,7 @@ const renderHashtags = hashtags => hidePeek(hashtags).map(hashtag => (
 ));
 
 const renderStatuses = statuses => hidePeek(statuses).map(id => (
-  <Status key={id} id={id} />
+  <Status key={id} id={id} contextType='explore' />
 ));
 
 class Results extends PureComponent {
@@ -181,7 +181,7 @@ class Results extends PureComponent {
 
           {statuses.size > 0 && (
             <SearchSection key='statuses' title={<><Icon id='quote-right' icon={FindInPageIcon} /><FormattedMessage id='search_results.statuses' defaultMessage='Posts' /></>} onClickMore={this.handleLoadMoreStatuses}>
-              {statuses.take(INITIAL_DISPLAY).map(id => <Status key={id} id={id} />)}
+              {statuses.take(INITIAL_DISPLAY).map(id => <Status key={id} id={id} contextType='explore' />)}
             </SearchSection>
           )}
         </>

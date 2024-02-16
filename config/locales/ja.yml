@@ -1414,6 +1414,7 @@ ja:
   filters:
     contexts:
       account: プロフィール
+      explore: トレンド・検索
       home: ホームおよびリスト
       notifications: 通知
       public: 公開タイムライン
