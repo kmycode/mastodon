@@ -644,8 +644,8 @@ en:
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
       history_hint: We recommend that you regularly check your NG words to make sure that you have not specified the NG words incorrectly.
       keywords: Reject keywords
-      keywords_for_stranger_mention: Reject keywords when mention/reply from strangers
-      keywords_for_stranger_mention_hint: Currently this words are checked posts from other servers only.
+      keywords_for_stranger_mention: Reject keywords when mention/reply/reference/quote from strangers
+      keywords_for_stranger_mention_hint: This words are checked posts from other servers only.
       keywords_hint: The first character of the line is "?". to use regular expressions
       post_hash_tags_max: Hash tags max for posts
       stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する

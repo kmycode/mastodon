@@ -344,6 +344,43 @@ RSpec.describe UpdateStatusService, type: :service do
       expect(status.text).to eq text
     end
 
+    it 'add reference' do
+      target_status = Fabricate(:status)
+      text = "ng word test BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
+
+      status = PostStatusService.new.call(account, text: 'hello')
+
+      status = subject.call(status, status.account_id, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+      expect(status.references.pluck(:id)).to include target_status.id
+    end
+
+    it 'hit ng words for reference' do
+      target_status = Fabricate(:status)
+      text = "ng word test BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      status = PostStatusService.new.call(account, text: 'hello')
+
+      expect { subject.call(status, status.account_id, text: text) }.to raise_error(Mastodon::ValidationError)
+    end
+
+    it 'hit ng words for reference to follower' do
+      target_status = Fabricate(:status)
+      target_status.account.follow!(status.account)
+      text = "ng word test BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      status = PostStatusService.new.call(account, text: 'hello')
+
+      status = subject.call(status, status.account_id, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
     it 'using hashtag under limit' do
       text = '#a #b'
       Form::AdminSettings.new(post_hash_tags_max: 2).save

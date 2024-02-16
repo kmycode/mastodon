@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ActivityPub::FetchReferencesService, type: :service do
-  subject { described_class.new.call(status, payload) }
+  subject { described_class.new.call(status.account, payload) }
 
   let(:actor)          { Fabricate(:account, domain: 'example.com', uri: 'http://example.com/account') }
   let(:status)         { Fabricate(:status, account: actor) }

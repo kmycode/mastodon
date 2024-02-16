@@ -212,12 +212,23 @@ class PostStatusService < BaseService
   end
 
   def validate_status_mentions!
-    raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if mention_to_stranger? && Setting.stranger_mention_from_local_ng && Admin::NgWord.stranger_mention_reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
+    raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if (mention_to_stranger? || reference_to_stranger?) && Setting.stranger_mention_from_local_ng && Admin::NgWord.stranger_mention_reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
   end
 
   def mention_to_stranger?
     @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @account.id && !mentioned_account.following?(@account) } ||
       (@in_reply_to && @in_reply_to.account.id != @account.id && !@in_reply_to.account.following?(@account))
+  end
+
+  def reference_to_stranger?
+    referred_statuses.any? { |status| !status.account.following?(@account) }
+  end
+
+  def referred_statuses
+    statuses = ProcessReferencesService.extract_uris(@text).filter_map { |uri| ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Status, url: true) }
+    statuses += Status.where(id: @reference_ids) if @reference_ids.present?
+
+    statuses
   end
 
   def validate_media!

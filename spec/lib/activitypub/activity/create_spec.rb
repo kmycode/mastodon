@@ -1978,6 +1978,50 @@ RSpec.describe ActivityPub::Activity::Create do
             end
           end
         end
+
+        context 'with references' do
+          let(:recipient) { Fabricate(:account) }
+          let!(:target_status) { Fabricate(:status, account: recipient) }
+
+          let(:object_json) do
+            {
+              id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+              type: 'Note',
+              content: 'ohagi is bad',
+              references: {
+                id: 'target_status',
+                type: 'Collection',
+                first: {
+                  type: 'CollectionPage',
+                  next: nil,
+                  partOf: 'target_status',
+                  items: [
+                    ActivityPub::TagManager.instance.uri_for(target_status),
+                  ],
+                },
+              },
+            }
+          end
+
+          context 'with a simple case' do
+            it 'creates status' do
+              expect(sender.statuses.first).to be_nil
+            end
+          end
+
+          context 'with following' do
+            let(:custom_before_sub) { true }
+
+            before do
+              recipient.follow!(sender)
+              subject.perform
+            end
+
+            it 'creates status' do
+              expect(sender.statuses.first).to_not be_nil
+            end
+          end
+        end
       end
 
       context 'when hashtags limit is set' do

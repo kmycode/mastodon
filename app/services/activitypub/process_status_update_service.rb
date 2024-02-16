@@ -165,12 +165,16 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def validate_status_mentions!
-    raise AbortError if mention_to_stranger? && Admin::NgWord.stranger_mention_reject?("#{@status.spoiler_text}\n#{@status.text}", uri: @status.uri, target_type: :status)
+    raise AbortError if (mention_to_stranger? || reference_to_stranger?) && Admin::NgWord.stranger_mention_reject?("#{@status.spoiler_text}\n#{@status.text}", uri: @status.uri, target_type: :status)
   end
 
   def mention_to_stranger?
-    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @status.account.id && !mentioned_account.following?(@status.account) } ||
-      (@status.thread.present? && @status.thread.account.id != @status.account.id && !@status.thread.account.following?(@status.account))
+    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @status.account.id && mentioned_account.local? && !mentioned_account.following?(@status.account) } ||
+      (@status.thread.present? && @status.thread.account.id != @status.account.id && @status.thread.account.local? && !@status.thread.account.following?(@status.account))
+  end
+
+  def reference_to_stranger?
+    local_referred_accounts.any? { |account| !account.following?(@account) }
   end
 
   def update_immediate_attributes!
@@ -271,10 +275,30 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def update_references!
-    references = @json['references'].nil? ? [] : ActivityPub::FetchReferencesService.new.call(@status, @json['references'])
-    quote = @json['quote'] || @json['quoteUrl'] || @json['quoteURL'] || @json['_misskey_quote']
+    references = reference_uris
 
     ProcessReferencesService.call_service_without_error(@status, [], references, [quote].compact)
+  end
+
+  def reference_uris
+    return @reference_uris if defined?(@reference_uris)
+
+    @reference_uris = @json['references'].nil? ? [] : (ActivityPub::FetchReferencesService.new.call(@status.account, @json['references']) || [])
+    @reference_uris += ProcessReferencesService.extract_uris(@json['content'] || '')
+  end
+
+  def quote
+    @json['quote'] || @json['quoteUrl'] || @json['quoteURL'] || @json['_misskey_quote']
+  end
+
+  def local_referred_accounts
+    return @local_referred_accounts if defined?(@local_referred_accounts)
+
+    local_referred_statuses = reference_uris.filter_map do |uri|
+      ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Status)
+    end.compact
+
+    @local_referred_accounts = local_referred_statuses.map(&:account)
   end
 
   def expected_type?

@@ -45,6 +45,10 @@ class ProcessReferencesService < BaseService
     reference_parameters.any? || (urls || []).any? || (quote_urls || []).any? || FormattingHelper.extract_status_plain_text(status).scan(REFURL_EXP).pluck(3).uniq.any?
   end
 
+  def self.extract_uris(text)
+    text.scan(REFURL_EXP).pluck(3)
+  end
+
   def self.perform_worker_async(status, reference_parameters, urls, quote_urls)
     return unless need_process?(status, reference_parameters, urls, quote_urls)
 
