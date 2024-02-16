@@ -47,11 +47,11 @@ const messages = defineMessages({
   },
   limited_short: {
     id: 'privacy.limited.short',
-    defaultMessage: 'Limited menbers only',
+    defaultMessage: 'Limited',
   },
   mutual_short: {
     id: 'privacy.mutual.short',
-    defaultMessage: 'Mutual only',
+    defaultMessage: 'Mutual',
   },
   circle_short: {
     id: 'privacy.circle.short',
