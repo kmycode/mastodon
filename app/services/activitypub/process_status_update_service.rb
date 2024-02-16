@@ -161,11 +161,11 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def valid_status?
-    !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}") && !Admin::NgWord.hashtag_reject?(@raw_tags.size)
+    !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status) && !Admin::NgWord.hashtag_reject?(@raw_tags.size)
   end
 
   def validate_status_mentions!
-    raise AbortError if mention_to_stranger? && Admin::NgWord.stranger_mention_reject?("#{@status.spoiler_text}\n#{@status.text}")
+    raise AbortError if mention_to_stranger? && Admin::NgWord.stranger_mention_reject?("#{@status.spoiler_text}\n#{@status.text}", uri: @status.uri, target_type: :status)
   end
 
   def mention_to_stranger?

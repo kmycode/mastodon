@@ -2,8 +2,16 @@
 
 class Admin::NgWord
   class << self
-    def reject?(text)
-      ng_words.any? { |word| include?(text, word) }
+    def reject?(text, **options)
+      hit_word = ng_words.detect { |word| include?(text, word) ? word : nil }
+      record!(:ng_words, text, hit_word, options) if hit_word.present?
+      hit_word.present?
+    end
+
+    def stranger_mention_reject?(text, **options)
+      hit_word = ng_words_for_stranger_mention.detect { |word| include?(text, word) ? word : nil }
+      record!(:ng_words_for_stranger_mention, text, hit_word, options) if hit_word.present?
+      hit_word.present?
     end
 
     def reject_with_custom_words?(text, custom_ng_words)
@@ -16,10 +24,6 @@ class Admin::NgWord
 
     def hashtag_reject_with_extractor?(text)
       hashtag_reject?(Extractor.extract_hashtags(text)&.size || 0)
-    end
-
-    def stranger_mention_reject?(text)
-      ng_words_for_stranger_mention.any? { |word| include?(text, word) }
     end
 
     private
@@ -43,6 +47,19 @@ class Admin::NgWord
     def post_hash_tags_max
       value = Setting.post_hash_tags_max
       value.is_a?(Integer) && value.positive? ? value : 0
+    end
+
+    def record!(type, text, keyword, options)
+      return unless options[:uri] && options[:target_type]
+      return if options.key?(:public) && !options.delete(:public)
+
+      return if NgwordHistory.where('created_at > ?', 1.day.ago).exists?(uri: options[:uri], keyword: options[:keyword])
+
+      NgwordHistory.create(options.merge({
+        reason: type,
+        text: text,
+        keyword: keyword,
+      }))
     end
   end
 end

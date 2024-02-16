@@ -92,6 +92,10 @@ class ActivityPub::Parser::StatusParser
     end
   end
 
+  def distributable_visibility?
+    %i(public public_unlisted unlisted login).include?(visibility)
+  end
+
   def searchability
     from_audience = searchability_from_audience
     return from_audience if from_audience

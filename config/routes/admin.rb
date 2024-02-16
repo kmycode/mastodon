@@ -33,6 +33,7 @@ namespace :admin do
   resources :action_logs, only: [:index]
   resources :warning_presets, except: [:new, :show]
   resource :ng_words, only: [:show, :create]
+  resources :ngword_histories, only: [:index]
   resource :sensitive_words, only: [:show, :create]
   resource :special_instances, only: [:show, :create]
 

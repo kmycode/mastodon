@@ -642,6 +642,7 @@ en:
       title: Media attachments
     ng_words:
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
+      history_hint: We recommend that you regularly check your NG words to make sure that you have not specified the NG words incorrectly.
       keywords: Reject keywords
       keywords_for_stranger_mention: Reject keywords when mention/reply from strangers
       keywords_for_stranger_mention_hint: Currently this words are checked posts from other servers only.
@@ -651,6 +652,13 @@ en:
       stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
       test_error: Testing is returned any errors
       title: NG words and against spams
+    ngword_histories:
+      back_to_ng_words: NG words and against spams
+      target_types:
+        account_name: Account name
+        account_note: Account note
+        status: Post
+      title: NG words history
     relationships:
       title: "%{acct}'s relationships"
     relays:

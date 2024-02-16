@@ -143,9 +143,9 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def valid_status?
-    valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") && !Admin::NgWord.hashtag_reject?(@tags.size)
+    valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?) && !Admin::NgWord.hashtag_reject?(@tags.size)
 
-    valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && mention_to_local_but_not_followed?
+    valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?) if valid && mention_to_local_but_not_followed?
 
     valid
   end

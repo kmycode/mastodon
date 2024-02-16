@@ -635,6 +635,7 @@ ja:
       title: 投稿された画像
     ng_words:
       hide_local_users_for_anonymous: ログインしていない状態でローカルユーザーの投稿をタイムラインから取得できないようにする
+      history_hint: 設定されたNGワードによって実際に拒否された投稿などは、履歴より確認できます。NGワードの指定に誤りがないか定期的に確認することをおすすめします。
       keywords: 投稿できないキーワード
       keywords_for_stranger_mention: フォローしていないアカウントへのメンションで利用できないキーワード
       keywords_for_stranger_mention_hint: フォローしていないアカウントへのメンションにのみ適用されます。現状は外部サーバーから来た投稿のみに適用されます
@@ -644,6 +645,13 @@ ja:
       stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
       test_error: NGワードのテストに失敗しました。正規表現のミスが含まれているかもしれません
       title: NGワードとスパム
+    ngword_histories:
+      back_to_ng_words: NGワードとスパム
+      target_types:
+        account_name: アカウントの名前
+        account_note: アカウントの説明文
+        status: 投稿
+      title: NGワード検出履歴
     relationships:
       title: "%{acct} さんのフォロー・フォロワー"
     relays:

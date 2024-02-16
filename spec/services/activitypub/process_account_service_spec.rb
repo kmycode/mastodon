@@ -308,12 +308,21 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
       Setting.ng_words = ['Amazon']
       subject
       expect(account.reload.display_name).to eq 'Ohagi'
+
+      history = NgwordHistory.find_by(uri: payload[:id])
+      expect(history).to be_nil
     end
 
     it 'does not create account when ng word is set' do
       Setting.ng_words = ['Ohagi']
       subject
       expect(account.reload.display_name).to_not eq 'Ohagi'
+
+      history = NgwordHistory.find_by(uri: payload[:id])
+      expect(history).to_not be_nil
+      expect(history.account_name_blocked?).to be true
+      expect(history.within_ng_words?).to be true
+      expect(history.keyword).to eq 'Ohagi'
     end
   end
 
