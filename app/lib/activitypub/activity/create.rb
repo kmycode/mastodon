@@ -461,7 +461,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
   def mentioned_accounts
     return @mentioned_accounts if defined?(@mentioned_accounts)
-    
+
     @mentioned_accounts = (accounts_in_audience + [replied_to_status&.account] + (@mentions&.pluck(:account) || [])).compact.uniq
   end
 
