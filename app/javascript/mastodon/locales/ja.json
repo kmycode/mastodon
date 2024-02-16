@@ -16,6 +16,7 @@
   "about.kmyblue_capability": "このサーバーは、kmyblueというMastodonフォークを利用しています。kmyblue独自機能の一部は、サーバー管理者によって有効・無効を切り替えることができます。",
   "about.not_available": "この情報はこのサーバーでは利用できません。",
   "about.powered_by": "{mastodon}による分散型ソーシャルメディア",
+  "about.public_visibility": "公開投稿を許可",
   "about.rules": "サーバーのルール",
   "account.account_note_header": "メモ",
   "account.add_or_remove_from_antenna": "アンテナから追加または外す",

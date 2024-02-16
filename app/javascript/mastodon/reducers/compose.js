@@ -56,7 +56,7 @@ import {
 import { REDRAFT } from '../actions/statuses';
 import { STORE_HYDRATE } from '../actions/store';
 import { TIMELINE_DELETE } from '../actions/timelines';
-import { enableLocalPrivacy, enableLoginPrivacy, me } from '../initial_state';
+import { enableLocalPrivacy, enableLoginPrivacy, enablePublicPrivacy, me } from '../initial_state';
 import { unescapeHTML } from '../utils/html';
 import { uuid } from '../uuid';
 
@@ -142,7 +142,7 @@ function clearAll(state) {
       map.set('default_privacy', state.get('privacy'));
     }
     if ((map.get('privacy') === 'login' && !enableLoginPrivacy) || (map.get('privacy') === 'public_unlisted' && !enableLocalPrivacy)) {
-      map.set('privacy', 'public');
+      map.set('privacy', enablePublicPrivacy ? 'public' : 'unlisted');
     }
     if (!state.get('in_reply_to')) {
       map.set('posted_on_this_session', true);

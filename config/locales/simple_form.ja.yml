@@ -112,6 +112,7 @@ ja:
         custom_css: ウェブ版のMastodonでカスタムスタイルを適用できます。
         enable_local_timeline: 有効にすると気の合ったユーザー同士の交流が捗る反面、内輪の雰囲気が強くなるかもしれません。Mastodonはローカルタイムラインがあるものだと思われているので、無効にする場合はサーバー紹介での注記をおすすめします。
         enable_public_unlisted_visibility: 有効にするとあなたのコミュニティは閉鎖的になるかもしれません。この設定はkmyblueの主要機能の1つであり、無効にする場合は概要などに記載することを強くおすすめします。
+        enable_public_visibility: 無効にすると公開投稿は強制的に「ローカル公開」または「非収載」に置き換えられます。
         mascot: 上級者向けWebインターフェースのイラストを上書きします。
         media_cache_retention_period: 正の値に設定されている場合、ダウンロードされたメディアファイルは指定された日数の後に削除され、リクエストに応じて再ダウンロードされます。
         peers_api_enabled: このサーバーが Fediverse で遭遇したドメイン名のリストです。このサーバーが知っているだけで、特定のサーバーと連合しているかのデータは含まれません。これは一般的に Fediverse に関する統計情報を収集するサービスによって使用されます。
@@ -362,6 +363,7 @@ ja:
         enable_emoji_reaction: 絵文字リアクション機能を有効にする
         enable_local_timeline: ローカルタイムラインを有効にする
         enable_public_unlisted_visibility: 公開範囲「ローカル公開」と検索許可「ローカルとフォロワー」を有効にする
+        enable_public_visibility: 公開範囲「公開」を有効にする
         mascot: カスタムマスコット（レガシー）
         media_cache_retention_period: メディアキャッシュの保持期間
         peers_api_enabled: 発見したサーバーのリストをAPIで公開する

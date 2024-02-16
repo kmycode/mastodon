@@ -74,6 +74,7 @@ class PostStatusService < BaseService
     @visibility   = :limited if %w(mutual circle reply).include?(@options[:visibility])
     @visibility   = :unlisted if (@visibility == :public || @visibility == :public_unlisted || @visibility == :login) && @account.silenced?
     @visibility   = :public_unlisted if @visibility == :public && !@options[:force_visibility] && !@options[:application]&.superapp && @account.user&.setting_public_post_to_unlisted && Setting.enable_public_unlisted_visibility
+    @visibility   = Setting.enable_public_unlisted_visibility ? :public_unlisted : :unlisted unless Setting.enable_public_visibility
     @limited_scope = @options[:visibility]&.to_sym if @visibility == :limited && @options[:visibility] != 'limited'
     @searchability = searchability
     @searchability = :private if @account.silenced? && %i(public public_unlisted).include?(@searchability&.to_sym)

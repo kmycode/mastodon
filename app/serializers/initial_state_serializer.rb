@@ -118,6 +118,7 @@ class InitialStateSerializer < ActiveModel::Serializer
       domain: Addressable::IDNA.to_unicode(instance_presenter.domain),
       dtl_tag: dtl_enabled? ? dtl_tag_name : nil,
       enable_local_privacy: Setting.enable_public_unlisted_visibility,
+      enable_public_privacy: Setting.enable_public_visibility,
       enable_local_timeline: Setting.enable_local_timeline,
       limited_federation_mode: Rails.configuration.x.limited_federation_mode,
       locale: I18n.locale,
