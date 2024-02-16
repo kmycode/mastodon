@@ -90,6 +90,7 @@ class REST::InstanceSerializer < ActiveModel::Serializer
       emoji_reactions: {
         max_reactions: EmojiReaction::EMOJI_REACTION_LIMIT,
         max_reactions_per_account: EmojiReaction::EMOJI_REACTION_PER_ACCOUNT_LIMIT,
+        max_reactions_per_remote_account: EmojiReaction::EMOJI_REACTION_PER_REMOTE_ACCOUNT_LIMIT,
       },
 
       reaction_deck: {

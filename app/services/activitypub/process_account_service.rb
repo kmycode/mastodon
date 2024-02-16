@@ -133,7 +133,8 @@ class ActivityPub::ProcessAccountService < BaseService
   def valid_account?
     display_name = @json['name'] || ''
     note = @json['summary'] || ''
-    !Admin::NgWord.reject?(display_name) && !Admin::NgWord.reject?(note)
+    !Admin::NgWord.reject?(display_name, uri: @uri, target_type: :account_name) &&
+      !Admin::NgWord.reject?(note, uri: @uri, target_type: :account_note)
   end
 
   def set_fetchable_key!

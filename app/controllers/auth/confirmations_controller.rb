@@ -17,7 +17,7 @@ class Auth::ConfirmationsController < Devise::ConfirmationsController
   skip_before_action :require_functional!
 
   def show
-    if reach_registrations_limit?
+    if reach_registrations_limit? && !current_user&.valid_invitation?
       render :limitation_error
       return
     end

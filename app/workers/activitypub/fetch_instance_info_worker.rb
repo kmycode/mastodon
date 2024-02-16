@@ -6,7 +6,7 @@ class ActivityPub::FetchInstanceInfoWorker
   include Redisable
   include Lockable
 
-  sidekiq_options queue: 'push', retry: 2
+  sidekiq_options queue: 'pull', retry: 2
 
   SUPPORTED_NOTEINFO_RELS = ['http://nodeinfo.diaspora.software/ns/schema/2.0', 'http://nodeinfo.diaspora.software/ns/schema/2.1'].freeze
 

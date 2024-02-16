@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_12_230358) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_16_042730) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -866,6 +866,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_12_230358) do
     t.datetime "expires_at", precision: nil
     t.index ["account_id", "target_account_id"], name: "index_mutes_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id"], name: "index_mutes_on_target_account_id"
+  end
+
+  create_table "ngword_histories", force: :cascade do |t|
+    t.string "uri", null: false
+    t.integer "target_type", null: false
+    t.integer "reason", null: false
+    t.string "text", null: false
+    t.string "keyword", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["uri", "keyword", "created_at"], name: "index_ngword_histories_on_uri_and_keyword_and_created_at"
   end
 
   create_table "notifications", force: :cascade do |t|

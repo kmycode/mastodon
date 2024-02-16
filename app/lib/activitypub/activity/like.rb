@@ -46,7 +46,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
     reaction = nil
 
     with_redis_lock("emoji_reaction:#{@original_status.id}") do
-      return if EmojiReaction.where(account: @account, status: @original_status).count >= EmojiReaction::EMOJI_REACTION_PER_ACCOUNT_LIMIT
+      return if EmojiReaction.where(account: @account, status: @original_status).count >= EmojiReaction::EMOJI_REACTION_PER_REMOTE_ACCOUNT_LIMIT
       return if EmojiReaction.find_by(account: @account, status: @original_status, name: shortcode)
 
       reaction = @original_status.emoji_reactions.create!(account: @account, name: shortcode, custom_emoji: emoji, uri: @json['id'])

@@ -1781,6 +1781,11 @@ RSpec.describe ActivityPub::Activity::Create do
           it 'creates status' do
             expect(sender.statuses.first).to_not be_nil
           end
+
+          it 'does not record history' do
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
+          end
         end
 
         context 'when hit ng words' do
@@ -1788,6 +1793,34 @@ RSpec.describe ActivityPub::Activity::Create do
 
           it 'creates status' do
             expect(sender.statuses.first).to be_nil
+          end
+
+          it 'records history' do
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to_not be_nil
+            expect(history.status_blocked?).to be true
+            expect(history.within_ng_words?).to be true
+            expect(history.keyword).to eq ng_words
+          end
+        end
+
+        context 'when hit ng words but does not public visibility' do
+          let(:content) { 'hello, world!' }
+          let(:object_json) do
+            {
+              id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+              type: 'Note',
+              content: content,
+            }
+          end
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+          end
+
+          it 'records history' do
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
           end
         end
 
@@ -1799,6 +1832,7 @@ RSpec.describe ActivityPub::Activity::Create do
               id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
               type: 'Note',
               content: content,
+              to: 'https://www.w3.org/ns/activitystreams#Public',
               tag: [
                 {
                   type: 'Mention',
@@ -1814,6 +1848,11 @@ RSpec.describe ActivityPub::Activity::Create do
             it 'creates status' do
               expect(sender.statuses.first).to_not be_nil
             end
+
+            it 'does not record history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to be_nil
+            end
           end
 
           context 'with using ng words for stranger' do
@@ -1821,6 +1860,14 @@ RSpec.describe ActivityPub::Activity::Create do
 
             it 'creates status' do
               expect(sender.statuses.first).to be_nil
+            end
+
+            it 'records history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to_not be_nil
+              expect(history.status_blocked?).to be true
+              expect(history.within_ng_words_for_stranger_mention?).to be true
+              expect(history.keyword).to eq ng_words_for_stranger_mention
             end
           end
 
@@ -1836,6 +1883,11 @@ RSpec.describe ActivityPub::Activity::Create do
             it 'creates status' do
               expect(sender.statuses.first).to_not be_nil
             end
+
+            it 'does not record history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to be_nil
+            end
           end
 
           context 'with using ng words for stranger but multiple receivers are partically following him' do
@@ -1847,6 +1899,7 @@ RSpec.describe ActivityPub::Activity::Create do
                 id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
                 type: 'Note',
                 content: content,
+                to: 'https://www.w3.org/ns/activitystreams#Public',
                 tag: [
                   {
                     type: 'Mention',
@@ -1868,6 +1921,14 @@ RSpec.describe ActivityPub::Activity::Create do
             it 'creates status' do
               expect(sender.statuses.first).to be_nil
             end
+
+            it 'records history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to_not be_nil
+              expect(history.status_blocked?).to be true
+              expect(history.within_ng_words_for_stranger_mention?).to be true
+              expect(history.keyword).to eq ng_words_for_stranger_mention
+            end
           end
         end
 
@@ -1880,6 +1941,7 @@ RSpec.describe ActivityPub::Activity::Create do
               id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
               type: 'Note',
               content: 'ohagi peers',
+              to: 'https://www.w3.org/ns/activitystreams#Public',
               inReplyTo: ActivityPub::TagManager.instance.uri_for(original_status),
             }
           end
@@ -1887,6 +1949,14 @@ RSpec.describe ActivityPub::Activity::Create do
           context 'with a simple case' do
             it 'creates status' do
               expect(sender.statuses.first).to be_nil
+            end
+
+            it 'records history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to_not be_nil
+              expect(history.status_blocked?).to be true
+              expect(history.within_ng_words_for_stranger_mention?).to be true
+              expect(history.keyword).to eq ng_words_for_stranger_mention
             end
           end
 
@@ -1900,6 +1970,11 @@ RSpec.describe ActivityPub::Activity::Create do
 
             it 'creates status' do
               expect(sender.statuses.first).to_not be_nil
+            end
+
+            it 'does not record history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to be_nil
             end
           end
         end

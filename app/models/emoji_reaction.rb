@@ -19,6 +19,7 @@ class EmojiReaction < ApplicationRecord
 
   EMOJI_REACTION_LIMIT = 32_767
   EMOJI_REACTION_PER_ACCOUNT_LIMIT = ENV.fetch('EMOJI_REACTION_PER_ACCOUNT_LIMIT', 3).to_i
+  EMOJI_REACTION_PER_REMOTE_ACCOUNT_LIMIT = ENV.fetch('EMOJI_REACTION_PER_REMOTE_ACCOUNT_LIMIT', 3).to_i
 
   update_index('statuses', :status)
 

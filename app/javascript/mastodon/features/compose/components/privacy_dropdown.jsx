@@ -271,15 +271,15 @@ class PrivacyDropdown extends PureComponent {
       this.options = this.options.filter((opt) => !['mutual', 'circle'].includes(opt.value));
     }
 
-    this.selectableOptions = [...this.options];
-
     if (!enableLoginPrivacy) {
-      this.selectableOptions = this.selectableOptions.filter((opt) => opt.value !== 'login');
+      this.options = this.options.filter((opt) => opt.value !== 'login');
     }
 
     if (!enableLocalPrivacy) {
-      this.selectableOptions = this.selectableOptions.filter((opt) => opt.value !== 'public_unlisted');
+      this.options = this.options.filter((opt) => opt.value !== 'public_unlisted');
     }
+
+    this.selectableOptions = [...this.options];
   }
 
   setTargetRef = c => {
