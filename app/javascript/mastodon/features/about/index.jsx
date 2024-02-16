@@ -162,6 +162,9 @@ class About extends PureComponent {
 
     const isFullTextSearch = server.getIn(['configuration', 'search', 'enabled']);
 
+    const email = server.getIn(['contact', 'email']) || '';
+    const emailLink = email.startsWith('https://') ? email : `mailto:${email}`;
+
     return (
       <Column bindToDocument={!multiColumn} label={intl.formatMessage(messages.title)}>
         <div className='scrollable about'>
@@ -183,7 +186,7 @@ class About extends PureComponent {
             <div className='about__meta__column'>
               <h4><FormattedMessage id='about.contact' defaultMessage='Contact:' /></h4>
 
-              {isLoading ? <Skeleton width='10ch' /> : <a className='about__mail' href={`mailto:${server.getIn(['contact', 'email'])}`}>{server.getIn(['contact', 'email'])}</a>}
+              {isLoading ? <Skeleton width='10ch' /> : <a className='about__mail' href={emailLink}>{server.getIn(['contact', 'email'])}</a>}
             </div>
           </div>
 
