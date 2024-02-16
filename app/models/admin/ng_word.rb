@@ -26,6 +26,14 @@ class Admin::NgWord
       hashtag_reject?(Extractor.extract_hashtags(text)&.size || 0)
     end
 
+    def mention_reject?(mention_count)
+      post_mentions_max.positive? && post_mentions_max < mention_count
+    end
+
+    def mention_reject_with_extractor?(text)
+      mention_reject?(text.gsub(Account::MENTION_RE)&.count || 0)
+    end
+
     private
 
     def include?(text, word)
@@ -46,6 +54,11 @@ class Admin::NgWord
 
     def post_hash_tags_max
       value = Setting.post_hash_tags_max
+      value.is_a?(Integer) && value.positive? ? value : 0
+    end
+
+    def post_mentions_max
+      value = Setting.post_mentions_max
       value.is_a?(Integer) && value.positive? ? value : 0
     end
 

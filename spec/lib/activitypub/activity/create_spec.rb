@@ -2066,6 +2066,47 @@ RSpec.describe ActivityPub::Activity::Create do
           end
         end
       end
+
+      context 'when mentions limit is set' do
+        let(:post_mentions_max) { 2 }
+        let(:custom_before) { true }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            tag: [
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(Fabricate(:account)),
+              },
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(Fabricate(:account)),
+              },
+            ],
+          }
+        end
+
+        before do
+          Form::AdminSettings.new(post_mentions_max: post_mentions_max).save
+          subject.perform
+        end
+
+        context 'when limit is enough' do
+          it 'creates status' do
+            expect(sender.statuses.first).to_not be_nil
+          end
+        end
+
+        context 'when limit is over' do
+          let(:post_mentions_max) { 1 }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+          end
+        end
+      end
     end
 
     context 'when object URI uses bearcaps' do

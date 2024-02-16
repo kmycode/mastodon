@@ -161,7 +161,7 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def valid_status?
-    !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status) && !Admin::NgWord.hashtag_reject?(@raw_tags.size)
+    !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status) && !Admin::NgWord.hashtag_reject?(@raw_tags.size) && !Admin::NgWord.mention_reject?(@raw_mentions.size)
   end
 
   def validate_status_mentions!

@@ -24,6 +24,9 @@
     = f.input :post_hash_tags_max, wrapper: :with_label, as: :integer, label: t('admin.ng_words.post_hash_tags_max')
 
   .fields-group
+    = f.input :post_mentions_max, wrapper: :with_label, as: :integer, label: t('admin.ng_words.post_mentions_max')
+
+  .fields-group
     = f.input :hide_local_users_for_anonymous, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.hide_local_users_for_anonymous')
 
   .actions

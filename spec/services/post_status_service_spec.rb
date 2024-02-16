@@ -740,6 +740,29 @@ RSpec.describe PostStatusService, type: :service do
 
       expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
     end
+
+    it 'using mentions under limit' do
+      Fabricate(:account, username: 'a')
+      Fabricate(:account, username: 'b')
+      account = Fabricate(:account)
+      text = '@a @b'
+      Form::AdminSettings.new(post_mentions_max: 2).save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'using mentions over limit' do
+      Fabricate(:account, username: 'a')
+      Fabricate(:account, username: 'b')
+      account = Fabricate(:account)
+      text = '@a @b'
+      Form::AdminSettings.new(post_mentions_max: 1).save
+
+      expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
+    end
   end
 
   def create_status_with_options(**options)

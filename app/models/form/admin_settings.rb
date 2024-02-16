@@ -49,6 +49,7 @@ class Form::AdminSettings
     stranger_mention_from_local_ng
     hide_local_users_for_anonymous
     post_hash_tags_max
+    post_mentions_max
     sensitive_words
     sensitive_words_for_full
     authorized_fetch
@@ -68,6 +69,7 @@ class Form::AdminSettings
     content_cache_retention_period
     backups_retention_period
     post_hash_tags_max
+    post_mentions_max
     registrations_limit
     registrations_limit_per_day
     registrations_start_hour
