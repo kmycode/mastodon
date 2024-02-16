@@ -53,7 +53,7 @@ class Admin::NgWord
       return unless options[:uri] && options[:target_type]
       return if options.key?(:public) && !options.delete(:public)
 
-      return if NgwordHistory.where('created_at > ?', 1.day.ago).exists?(uri: options[:uri], keyword: options[:keyword])
+      return if NgwordHistory.where('created_at > ?', 1.day.ago).exists?(uri: options[:uri], keyword: keyword)
 
       NgwordHistory.create(options.merge({
         reason: type,
