@@ -1,4 +1,4 @@
-- if account.suspended?
+- if account.suspended? && !account.remote_pending
   %hr.spacer/
   - if account.suspension_origin_remote?
     %p.muted-hint= deletion_request.present? ? t('admin.accounts.remote_suspension_reversible_hint_html', date: content_tag(:strong, l(deletion_request.due_at.to_date))) : t('admin.accounts.remote_suspension_irreversible')
