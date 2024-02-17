@@ -14,6 +14,11 @@ class RateLimiter
       period: 3.hours.freeze,
     }.freeze,
 
+    emoji_reactions: {
+      limit: 300,
+      period: 3.hours.freeze,
+    }.freeze,
+
     reports: {
       limit: 400,
       period: 24.hours.freeze,
