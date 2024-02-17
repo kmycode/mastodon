@@ -33,6 +33,7 @@ en:
     accounts:
       add_email_domain_block: Block e-mail domain
       approve: Approve
+      approve_domain: Approve domain
       approved_msg: Successfully approved %{username}'s sign-up application
       are_you_sure: Are you sure?
       avatar: Avatar
@@ -93,6 +94,7 @@ en:
         all: All
         disabled: Disabled
         pending: Pending
+        remote_pending: Pending (Remote)
         silenced: Limited
         suspended: Suspended
         title: Moderation
@@ -647,9 +649,12 @@ en:
       keywords_for_stranger_mention: Reject keywords when mention/reply/reference/quote from strangers
       keywords_for_stranger_mention_hint: This words are checked posts from other servers only.
       keywords_hint: The first character of the line is "?". to use regular expressions
+      permit_new_account_domains: Domain list to automatically approve new users
       post_hash_tags_max: Hash tags max for posts
       post_mentions_max: Mentions max for posts
       post_stranger_mentions_max: 投稿に設定可能なメンションの最大数 (If the mentions include at least one person who is not a follower of yours)
+      remote_approval_list: List of remote accounts awaiting approval
+      remote_approval_hint: If you set one or more domains on the list of domains for which you want to automatically approve new users, newly recognized accounts on unspecified domains will be placed in suspend status. You can review that list and approve them if necessary. If none is specified, all remote accounts are approved immediately.
       stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
       stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
       test_error: Testing is returned any errors
@@ -918,8 +923,6 @@ en:
     special_instances:
       emoji_reaction_disallow_domains: Domains we are not permitted emoji reaction
       emoji_reaction_disallow_domains_hint: If you need to be considerate to your coalition partners, set the domain with a new line separator. It is not possible to put an emoji reaction on a post from a set domain.
-      permit_new_account_domains: Domain to allow recognition of new accounts
-      permit_new_account_domains_hint: Only new account information sent from the domain specified here will be saved if more than one is specified,
       title: Special servers
     statuses:
       account: Author

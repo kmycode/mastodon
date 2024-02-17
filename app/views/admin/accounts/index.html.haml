@@ -50,6 +50,13 @@
 
           = f.button safe_join([fa_icon('times'), t('admin.accounts.reject')]), name: :reject, class: 'table-action-link', type: :submit, data: { confirm: t('admin.reports.are_you_sure') }
 
+        - elsif @accounts.any?(&:remote_pending)
+          = f.button safe_join([fa_icon('check'), t('admin.accounts.approve')]), name: :approve_remote, class: 'table-action-link', type: :submit, data: { confirm: t('admin.reports.are_you_sure') }
+
+          = f.button safe_join([fa_icon('check'), t('admin.accounts.approve_domain')]), name: :approve_remote_domain, class: 'table-action-link', type: :submit, data: { confirm: t('admin.reports.are_you_sure') }
+
+          = f.button safe_join([fa_icon('times'), t('admin.accounts.reject')]), name: :reject_remote, class: 'table-action-link', type: :submit, data: { confirm: t('admin.reports.are_you_sure') }
+
         = f.button safe_join([fa_icon('lock'), t('admin.accounts.perform_full_suspension')]), name: :suspend, class: 'table-action-link', type: :submit, data: { confirm: t('admin.reports.are_you_sure') }
     - if @accounts.total_count > @accounts.size
       .batch-table__select-all

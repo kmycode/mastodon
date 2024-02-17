@@ -32,8 +32,12 @@
   .fields-group
     = f.input :hide_local_users_for_anonymous, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.hide_local_users_for_anonymous')
 
+  %p.hint
+    = t 'admin.ng_words.remote_approval_hint'
+    = link_to t('admin.ng_words.remote_approval_list'), admin_accounts_path(status: 'remote_pending', origin: 'remote')
+
   .fields-group
-    = f.input :permit_new_account_domains, wrapper: :with_label, as: :text, kmyblue: true, input_html: { rows: 6 }, label: t('admin.special_instances.permit_new_account_domains'), hint: t('admin.special_instances.permit_new_account_domains_hint')
+    = f.input :permit_new_account_domains, wrapper: :with_label, as: :text, kmyblue: true, input_html: { rows: 6 }, label: t('admin.ng_words.permit_new_account_domains')
 
   .actions
     = f.button :button, t('generic.save_changes'), type: :submit

@@ -86,6 +86,7 @@ namespace :dangerous do
       20240212230358
       20240216042730
       20240217022038
+      20240217093511
     )
     # Removed: account_groups
     target_tables = %w(
@@ -112,6 +113,7 @@ namespace :dangerous do
       %w(accounts group_allow_private_message),
       # Removed: accounts group_message_following_only
       %w(accounts master_settings),
+      %w(accounts remote_pending),
       %w(accounts searchability),
       %w(accounts settings),
       # Removed: accounts stop_emoji_reaction_streaming

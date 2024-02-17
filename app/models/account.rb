@@ -55,6 +55,7 @@
 #  settings                      :jsonb
 #  indexable                     :boolean          default(FALSE), not null
 #  master_settings               :jsonb
+#  remote_pending                :boolean          default(FALSE), not null
 #
 
 class Account < ApplicationRecord
@@ -122,6 +123,7 @@ class Account < ApplicationRecord
   scope :partitioned, -> { order(Arel.sql('row_number() over (partition by domain)')) }
   scope :silenced, -> { where.not(silenced_at: nil) }
   scope :suspended, -> { where.not(suspended_at: nil) }
+  scope :remote_pending, -> { where(remote_pending: true).where.not(suspended_at: nil) }
   scope :sensitized, -> { where.not(sensitized_at: nil) }
   scope :without_suspended, -> { where(suspended_at: nil) }
   scope :without_silenced, -> { where(silenced_at: nil) }
@@ -293,6 +295,16 @@ class Account < ApplicationRecord
       update!(suspended_at: nil, suspension_origin: nil)
       destroy_canonical_email_block!
     end
+  end
+
+  def approve_remote!
+    update!(remote_pending: false)
+    unsuspend!
+  end
+
+  def reject_remote!
+    update!(remote_pending: false)
+    suspend!
   end
 
   def sensitized?

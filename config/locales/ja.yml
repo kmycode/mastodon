@@ -31,6 +31,7 @@ ja:
     accounts:
       add_email_domain_block: メールドメインブロックに追加
       approve: 承認
+      approve_domain: ドメインを承認
       approved_msg: '%{username}さんの登録申請を承認しました'
       are_you_sure: 本当に実行しますか？
       avatar: アイコン
@@ -91,6 +92,7 @@ ja:
         all: すべて
         disabled: 無効化済み
         pending: 承認待ち
+        remote_pending: 承認待ち (リモート)
         silenced: 制限
         suspended: 停止済み
         title: モデレーション
@@ -640,9 +642,12 @@ ja:
       keywords_for_stranger_mention: フォローしていないアカウントへのメンションや参照で利用できないキーワード
       keywords_for_stranger_mention_hint: フォローしていないアカウントへのメンション、参照、引用にのみ適用されます
       keywords_hint: 行を「?」で始めると、正規表現が使えます
+      permit_new_account_domains: 新規ユーザーを自動承認するドメイン
       post_hash_tags_max: 投稿に設定可能なハッシュタグの最大数
       post_mentions_max: 投稿に設定可能なメンションの最大数
       post_stranger_mentions_max: 投稿に設定可能なメンションの最大数 (メンション先にフォロワー以外を1人でも含む場合)
+      remote_approval_list: 承認待ちのリモートアカウント一覧
+      remote_approval_hint: 新規ユーザーを自動承認するドメインリストに1つ以上のドメインを設定すると、指定されていないドメインで新しく認識されたアカウントはサスペンド状態になります。その一覧を確認し、必要であれば承認を行うことができます。何も指定しなかった場合、全てのリモートアカウントが即座に承認されます。
       stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
       stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
       test_error: NGワードのテストに失敗しました。正規表現のミスが含まれているかもしれません
@@ -909,8 +914,6 @@ ja:
     special_instances:
       emoji_reaction_disallow_domains: 自分のサーバーが絵文字リアクションをすることを許可しないドメイン
       emoji_reaction_disallow_domains_hint: 連合先に配慮する必要がある場合、ドメインを改行区切りで設定します。設定されたドメインの投稿に絵文字リアクションを付けることはできません。
-      permit_new_account_domains: 新規アカウントの認知を許可するドメイン
-      permit_new_account_domains_hint: 1つ以上指定した場合、ここで指定されたドメインから送られてくる新規アカウント情報だけが保存されるようになります
       title: 特殊なサーバー
     statuses:
       account: 作成者

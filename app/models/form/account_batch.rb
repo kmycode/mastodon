@@ -23,6 +23,12 @@ class Form::AccountBatch
       approve!
     when 'reject'
       reject!
+    when 'approve_remote'
+      approve_remote!
+    when 'approve_remote_domain'
+      approve_remote_domain!
+    when 'reject_remote'
+      reject_remote!
     when 'suppress_follow_recommendation'
       suppress_follow_recommendation!
     when 'unsuppress_follow_recommendation'
@@ -84,6 +90,29 @@ class Form::AccountBatch
     end
   end
 
+  def approve_remote!
+    accounts.find_each do |account|
+      approve_remote_account(account)
+    end
+  end
+
+  def approve_remote_domain!
+    domains = accounts.group_by(&:domain).pluck(0)
+    if (Setting.permit_new_account_domains || []).compact_blank.present?
+      list = ((Setting.permit_new_account_domains || []) + domains).compact_blank.uniq.join("\n")
+      Form::AdminSettings.new(permit_new_account_domains: list).save
+    end
+    Account.where(domain: domains, remote_pending: true).find_each do |account|
+      approve_remote_account(account)
+    end
+  end
+
+  def reject_remote!
+    accounts.find_each do |account|
+      reject_remote_account(account)
+    end
+  end
+
   def suspend!
     accounts.find_each do |account|
       if account.user_pending?
@@ -115,10 +144,21 @@ class Form::AccountBatch
     AccountDeletionWorker.perform_async(account.id, { 'reserve_username' => false })
   end
 
+  def reject_remote_account(account)
+    authorize(account, :reject_remote?)
+    log_action(:reject_remote, account)
+    account.reject_remote!
+    process_suspend(account)
+  end
+
   def suspend_account(account)
     authorize(account, :suspend?)
     log_action(:suspend, account)
     account.suspend!(origin: :local)
+    process_suspend(account)
+  end
+
+  def process_suspend(account)
     account.strikes.create!(
       account: current_account,
       action: :suspend
@@ -141,6 +181,12 @@ class Form::AccountBatch
     authorize(account.user, :approve?)
     log_action(:approve, account.user)
     account.user.approve!
+  end
+
+  def approve_remote_account(account)
+    authorize(account, :approve_remote?)
+    log_action(:approve_remote, account)
+    account.approve_remote!
   end
 
   def select_all_matching?

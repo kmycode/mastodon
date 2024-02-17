@@ -37,8 +37,6 @@ class ActivityPub::ProcessAccountService < BaseService
       @suspension_changed = false
 
       if @account.nil?
-        return nil if blocking_new_account?(@domain)
-
         with_redis do |redis|
           return nil if redis.pfcount("unique_subdomains_for:#{PublicSuffix.domain(@domain, ignore_private: true)}") >= SUBDOMAINS_RATELIMIT
 
@@ -61,7 +59,7 @@ class ActivityPub::ProcessAccountService < BaseService
     clear_tombstones! if key_changed?
     after_suspension_change! if suspension_changed?
 
-    unless @options[:only_key] || @account.suspended?
+    unless @options[:only_key] || (@account.suspended? && !@account.remote_pending)
       check_featured_collection! if @account.featured_collection_url.present?
       check_featured_tags_collection! if @json['featuredTags'].present?
       check_links! if @account.fields.any?(&:requires_verification?)
@@ -87,6 +85,12 @@ class ActivityPub::ProcessAccountService < BaseService
     @account.silenced_at       = domain_block.created_at if auto_silence?
     @account.searchability     = :direct # not null
 
+    if @account.suspended_at.nil? && blocking_new_account?
+      @account.suspended_at      = Time.now.utc
+      @account.suspension_origin = :local
+      @account.remote_pending    = true
+    end
+
     set_immediate_protocol_attributes!
 
     @account.save!
@@ -98,9 +102,12 @@ class ActivityPub::ProcessAccountService < BaseService
 
     set_suspension!
     set_immediate_protocol_attributes!
-    set_fetchable_key! unless @account.suspended? && @account.suspension_origin_local?
-    set_immediate_attributes! unless @account.suspended?
-    set_fetchable_attributes! unless @options[:only_key] || @account.suspended?
+
+    freeze_data = @account.suspended? && (@account.suspension_origin_remote? || !@account.remote_pending)
+
+    set_fetchable_key! unless @account.suspended? && @account.suspension_origin_local? && !@account.remote_pending
+    set_immediate_attributes! unless freeze_data
+    set_fetchable_attributes! unless @options[:only_key] || freeze_data
 
     @account.save_with_optional_media!
   end
@@ -132,10 +139,10 @@ class ActivityPub::ProcessAccountService < BaseService
     @account.memorial                = @json['memorial'] || false
   end
 
-  def blocking_new_account?(domain)
+  def blocking_new_account?
     return false if permit_new_account_domains.blank?
 
-    permit_new_account_domains.exclude?(domain)
+    permit_new_account_domains.exclude?(@domain)
   end
 
   def permit_new_account_domains
@@ -410,7 +417,7 @@ class ActivityPub::ProcessAccountService < BaseService
   end
 
   def skip_download?
-    @account.suspended? || domain_block&.reject_media?
+    (@account.suspended? && !@account.remote_pending) || domain_block&.reject_media?
   end
 
   def auto_suspend?

@@ -168,6 +168,12 @@ module Admin
         'approve'
       elsif params[:reject]
         'reject'
+      elsif params[:approve_remote]
+        'approve_remote'
+      elsif params[:approve_remote_domain]
+        'approve_remote_domain'
+      elsif params[:reject_remote]
+        'reject_remote'
       end
     end
   end

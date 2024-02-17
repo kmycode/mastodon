@@ -30,13 +30,17 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
     it 'created account in a simple case' do
       expect(subject).to_not be_nil
       expect(subject.uri).to eq 'https://foo.test'
+      expect(subject.suspended?).to be false
+      expect(subject.remote_pending).to be false
     end
 
     context 'when is blocked' do
       let(:permit_new_account_domains) { ['foo.bar'] }
 
-      it 'does not create account' do
-        expect(subject).to be_nil
+      it 'creates pending account' do
+        expect(subject).to_not be_nil
+        expect(subject.suspended?).to be true
+        expect(subject.remote_pending).to be true
       end
 
       context 'with has existing account' do
@@ -46,7 +50,38 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
 
         it 'updated account' do
           expect(subject).to_not be_nil
+          expect(subject.suspended?).to be false
+          expect(subject.remote_pending).to be false
+          expect(subject.suspension_origin_local?).to be true
           expect(subject.note).to eq 'new bio'
+        end
+      end
+
+      context 'with has existing suspended pending account' do
+        before do
+          Fabricate(:account, uri: 'https://foo.test', domain: 'example.com', username: 'alice', note: 'old bio', suspended_at: 1.day.ago, remote_pending: true, suspension_origin: :local)
+        end
+
+        it 'updated account' do
+          expect(subject).to_not be_nil
+          expect(subject.suspended?).to be true
+          expect(subject.remote_pending).to be true
+          expect(subject.suspension_origin_local?).to be true
+          expect(subject.note).to eq 'new bio'
+        end
+      end
+
+      context 'with has existing suspended account' do
+        before do
+          Fabricate(:account, uri: 'https://foo.test', domain: 'example.com', username: 'alice', note: 'old bio', suspended_at: 1.day.ago, suspension_origin: :local)
+        end
+
+        it 'does not update account' do
+          expect(subject).to_not be_nil
+          expect(subject.suspended?).to be true
+          expect(subject.remote_pending).to be false
+          expect(subject.suspension_origin_local?).to be true
+          expect(subject.note).to eq 'old bio'
         end
       end
     end
@@ -57,6 +92,8 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
       it 'does not create account' do
         expect(subject).to_not be_nil
         expect(subject.uri).to eq 'https://foo.test'
+        expect(subject.suspended?).to be false
+        expect(subject.remote_pending).to be false
       end
     end
   end
