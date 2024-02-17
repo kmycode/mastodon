@@ -2032,6 +2032,7 @@ RSpec.describe ActivityPub::Activity::Create do
             id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
             type: 'Note',
             content: 'Lorem ipsum',
+            to: 'https://www.w3.org/ns/activitystreams#Public',
             tag: [
               {
                 type: 'Hashtag',
@@ -2055,6 +2056,9 @@ RSpec.describe ActivityPub::Activity::Create do
         context 'when limit is enough' do
           it 'creates status' do
             expect(sender.statuses.first).to_not be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
           end
         end
 
@@ -2063,6 +2067,13 @@ RSpec.describe ActivityPub::Activity::Create do
 
           it 'creates status' do
             expect(sender.statuses.first).to be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to_not be_nil
+            expect(history.status_blocked?).to be true
+            expect(history.within_hashtag_count?).to be true
+            expect(history.count).to eq 2
+            expect(history.text).to eq "\nLorem ipsum"
           end
         end
       end
@@ -2080,6 +2091,7 @@ RSpec.describe ActivityPub::Activity::Create do
             id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
             type: 'Note',
             content: 'Lorem ipsum',
+            to: 'https://www.w3.org/ns/activitystreams#Public',
             tag: [
               {
                 type: 'Mention',
@@ -2110,6 +2122,9 @@ RSpec.describe ActivityPub::Activity::Create do
         context 'when limit is enough' do
           it 'creates status' do
             expect(sender.statuses.first).to_not be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
           end
         end
 
@@ -2118,6 +2133,12 @@ RSpec.describe ActivityPub::Activity::Create do
 
           it 'creates status' do
             expect(sender.statuses.first).to be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to_not be_nil
+            expect(history.status_blocked?).to be true
+            expect(history.within_mention_count?).to be true
+            expect(history.count).to eq 3
           end
         end
 
@@ -2126,6 +2147,9 @@ RSpec.describe ActivityPub::Activity::Create do
 
           it 'creates status' do
             expect(sender.statuses.first).to_not be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
           end
         end
 
@@ -2135,6 +2159,12 @@ RSpec.describe ActivityPub::Activity::Create do
 
           it 'creates status' do
             expect(sender.statuses.first).to be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to_not be_nil
+            expect(history.status_blocked?).to be true
+            expect(history.within_stranger_mention_count?).to be true
+            expect(history.count).to eq 3
           end
         end
       end
@@ -2147,6 +2177,7 @@ RSpec.describe ActivityPub::Activity::Create do
             id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
             type: 'Note',
             content: 'Lorem ipsum',
+            to: 'https://www.w3.org/ns/activitystreams#Public',
             tag: [
               {
                 type: 'Mention',
@@ -2168,6 +2199,9 @@ RSpec.describe ActivityPub::Activity::Create do
         context 'when limit is enough' do
           it 'creates status' do
             expect(sender.statuses.first).to_not be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
           end
         end
 
@@ -2176,6 +2210,12 @@ RSpec.describe ActivityPub::Activity::Create do
 
           it 'creates status' do
             expect(sender.statuses.first).to be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to_not be_nil
+            expect(history.status_blocked?).to be true
+            expect(history.within_stranger_mention_count?).to be true
+            expect(history.count).to eq 2
           end
         end
       end

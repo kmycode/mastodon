@@ -6,25 +6,31 @@
       = html_aware_format(history.text, false)
 
     .detailed-status__meta
-      %span.negative-hint= history.keyword
+      - if history.within_ng_words? || history.within_ng_words_for_stranger_mention?
+        %span.negative-hint= history.keyword
+      - else
+        %span.negative-hint= history.count.to_s
       ·
       - if history.within_ng_words?
         = t('admin.ng_words.keywords')
       - elsif history.within_ng_words_for_stranger_mention?
         = t('admin.ng_words.keywords_for_stranger_mention')
+      - elsif history.within_hashtag_count?
+        = t('admin.ng_words.post_hash_tags_max')
+      - elsif history.within_mention_count?
+        = t('admin.ng_words.post_mentions_max')
+      - elsif history.within_stranger_mention_count?
+        = t('admin.ng_words.post_stranger_mentions_max')
 
       %br/
 
       %time.formatted{ datetime: history.created_at.iso8601, title: l(history.created_at) }= l(history.created_at)
       ·
       - if history.account_note_blocked?
-        = t('admin.ngword_history.target_types.account_note')
+        = t('admin.ngword_histories.target_types.account_note')
       - elsif history.account_name_blocked?
-        = t('admin.ngword_history.target_types.account_name')
+        = t('admin.ngword_histories.target_types.account_name')
       - elsif history.status_blocked?
-        = t('admin.ngword_history.target_types.status')
+        = t('admin.ngword_histories.target_types.status')
       ·
       = history.uri
-      -# if history.application
-        = history.application.name
-        ·
