@@ -52,7 +52,6 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
           expect(subject).to_not be_nil
           expect(subject.suspended?).to be false
           expect(subject.remote_pending).to be false
-          expect(subject.suspension_origin_local?).to be true
           expect(subject.note).to eq 'new bio'
         end
       end

@@ -232,6 +232,7 @@ en:
         update_user_role: Update Role
       actions:
         approve_appeal_html: "%{name} approved moderation decision appeal from %{target}"
+        approve_remote_account_html: "%{name} approved %{target} join on this server"
         approve_user_html: "%{name} approved sign-up from %{target}"
         assigned_to_self_report_html: "%{name} assigned report %{target} to themselves"
         change_email_user_html: "%{name} changed the e-mail address of user %{target}"
@@ -271,6 +272,7 @@ en:
         memorialize_account_html: "%{name} turned %{target}'s account into a memoriam page"
         promote_user_html: "%{name} promoted user %{target}"
         reject_appeal_html: "%{name} rejected moderation decision appeal from %{target}"
+        reject_remote_account_html: "%{name} rejected %{target} join on this server"
         reject_user_html: "%{name} rejected sign-up from %{target}"
         remove_avatar_user_html: "%{name} removed %{target}'s avatar"
         remove_history_status_html: "%{name} removed post edit histories by %{target}"
