@@ -3,7 +3,7 @@
 module Admin
   class AccountsController < BaseController
     before_action :set_account, except: [:index, :batch]
-    before_action :require_remote_account!, only: [:redownload]
+    before_action :require_remote_account!, only: [:redownload, :approve_remote, :reject_remote]
     before_action :require_local_account!, only: [:enable, :memorialize, :approve, :reject]
 
     def index
@@ -64,6 +64,20 @@ module Admin
       DeleteAccountService.new.call(@account, reserve_email: false, reserve_username: false)
       log_action :reject, @account.user
       redirect_to admin_accounts_path(status: 'pending'), notice: I18n.t('admin.accounts.rejected_msg', username: @account.acct)
+    end
+
+    def approve_remote
+      authorize @account, :approve_remote?
+      @account.approve_remote!
+      log_action :approve_remote, @account
+      redirect_to admin_account_path(@account.id), notice: I18n.t('admin.accounts.approved_msg', username: @account.acct)
+    end
+
+    def reject_remote
+      authorize @account, :reject_remote?
+      @account.reject_remote!
+      log_action :reject_remote, @account
+      redirect_to admin_account_path(@account.id), notice: I18n.t('admin.accounts.rejected_msg', username: @account.acct)
     end
 
     def destroy

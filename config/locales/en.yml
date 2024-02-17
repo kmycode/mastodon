@@ -34,6 +34,7 @@ en:
       add_email_domain_block: Block e-mail domain
       approve: Approve
       approve_domain: Approve domain
+      approve_remote: Approve remote account
       approved_msg: Successfully approved %{username}'s sign-up application
       are_you_sure: Are you sure?
       avatar: Avatar
@@ -118,7 +119,9 @@ en:
       redownload: Refresh profile
       redownloaded_msg: Successfully refreshed %{username}'s profile from origin
       reject: Reject
+      reject_remote: Reject remote account
       rejected_msg: Successfully rejected %{username}'s sign-up application
+      remote_pending_hint_html: This account is currently on hold and temporarily suspended. The account must be approved before it can be made available on this server.
       remote_suspension_irreversible: The data of this account has been irreversibly deleted.
       remote_suspension_reversible_hint_html: The account has been suspended on their server, and the data will be fully removed on %{date}. Until then, the remote server can restore this account without any ill effects. If you wish to remove all of the account's data immediately, you can do so below.
       remove_avatar: Remove avatar

@@ -303,8 +303,7 @@ class Account < ApplicationRecord
   end
 
   def reject_remote!
-    update!(remote_pending: false)
-    suspend!
+    update!(remote_pending: false, suspension_origin: :local)
   end
 
   def sensitized?

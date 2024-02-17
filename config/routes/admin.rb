@@ -130,6 +130,8 @@ namespace :admin do
       post :memorialize
       post :approve
       post :reject
+      post :approve_remote
+      post :reject_remote
       post :unblock_email
     end
 

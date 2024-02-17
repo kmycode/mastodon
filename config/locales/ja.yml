@@ -32,6 +32,7 @@ ja:
       add_email_domain_block: メールドメインブロックに追加
       approve: 承認
       approve_domain: ドメインを承認
+      approve_remote: リモートアカウントを承認
       approved_msg: '%{username}さんの登録申請を承認しました'
       are_you_sure: 本当に実行しますか？
       avatar: アイコン
@@ -115,7 +116,9 @@ ja:
       redownload: プロフィールを更新
       redownloaded_msg: '%{username}のプロフィールを正常に更新しました'
       reject: 却下
+      reject_remote: リモートアカウントを却下
       rejected_msg: '%{username}さんの登録申請を却下しました'
+      remote_pending_hint_html: このアカウントは現在保留中で、一時的にサスペンド状態になっています。このサーバーで利用可能にするためには、アカウントを承認する必要があります。
       remote_suspension_irreversible: このアカウントのデータは不可逆的に削除されました。
       remote_suspension_reversible_hint_html: このアカウントは停止されており、データは%{date} 日で完全に削除されます。それまでは悪影響なしにアカウントを復旧させることができます。アカウントを即座に削除したい場合は、以下から行うことができます。
       remove_avatar: アイコンを削除
