@@ -2068,7 +2068,79 @@ RSpec.describe ActivityPub::Activity::Create do
       end
 
       context 'when mentions limit is set' do
-        let(:post_mentions_max) { 2 }
+        let(:post_mentions_max) { 3 }
+        let(:post_stranger_mentions_max) { 0 }
+        let(:custom_before) { true }
+        let(:mention_recipient_alice) { Fabricate(:account) }
+        let(:mention_recipient_bob) { Fabricate(:account) }
+        let(:mention_recipient_ohagi) { Fabricate(:account) }
+        let(:mention_recipient_ohagi_follow) { true }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            tag: [
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(mention_recipient_alice),
+              },
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(mention_recipient_bob),
+              },
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(mention_recipient_ohagi),
+              },
+            ],
+          }
+        end
+
+        before do
+          Form::AdminSettings.new(post_mentions_max: post_mentions_max, post_stranger_mentions_max: post_stranger_mentions_max).save
+
+          mention_recipient_alice.follow!(sender)
+          mention_recipient_bob.follow!(sender)
+          mention_recipient_ohagi.follow!(sender) if mention_recipient_ohagi_follow
+
+          subject.perform
+        end
+
+        context 'when limit is enough' do
+          it 'creates status' do
+            expect(sender.statuses.first).to_not be_nil
+          end
+        end
+
+        context 'when limit is over' do
+          let(:post_mentions_max) { 1 }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+          end
+        end
+
+        context 'when limit for stranger is over but normal limit is not reach' do
+          let(:post_stranger_mentions_max) { 1 }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to_not be_nil
+          end
+        end
+
+        context 'when limit for stranger is over and following partically' do
+          let(:post_stranger_mentions_max) { 1 }
+          let(:mention_recipient_ohagi_follow) { false }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+          end
+        end
+      end
+
+      context 'when mentions limit for stranger is set' do
+        let(:post_stranger_mentions_max) { 2 }
         let(:custom_before) { true }
         let(:object_json) do
           {
@@ -2089,7 +2161,7 @@ RSpec.describe ActivityPub::Activity::Create do
         end
 
         before do
-          Form::AdminSettings.new(post_mentions_max: post_mentions_max).save
+          Form::AdminSettings.new(post_stranger_mentions_max: post_stranger_mentions_max).save
           subject.perform
         end
 
@@ -2100,7 +2172,7 @@ RSpec.describe ActivityPub::Activity::Create do
         end
 
         context 'when limit is over' do
-          let(:post_mentions_max) { 1 }
+          let(:post_stranger_mentions_max) { 1 }
 
           it 'creates status' do
             expect(sender.statuses.first).to be_nil

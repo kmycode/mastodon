@@ -146,6 +146,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?)
     valid = !Admin::NgWord.hashtag_reject?(@tags.size) if valid
     valid = !Admin::NgWord.mention_reject?(@mentions.count { |m| !m.silent }) if valid
+    valid = !Admin::NgWord.stranger_mention_reject_with_count?(@mentions.count { |m| !m.silent }) if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
     valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?) if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
 
     valid

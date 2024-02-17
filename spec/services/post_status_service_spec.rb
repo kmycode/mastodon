@@ -742,9 +742,11 @@ RSpec.describe PostStatusService, type: :service do
     end
 
     it 'using mentions under limit' do
-      Fabricate(:account, username: 'a')
-      Fabricate(:account, username: 'b')
+      a = Fabricate(:account, username: 'a')
+      b = Fabricate(:account, username: 'b')
       account = Fabricate(:account)
+      a.follow!(account)
+      b.follow!(account)
       text = '@a @b'
       Form::AdminSettings.new(post_mentions_max: 2).save
 
@@ -755,11 +757,64 @@ RSpec.describe PostStatusService, type: :service do
     end
 
     it 'using mentions over limit' do
+      a = Fabricate(:account, username: 'a')
+      b = Fabricate(:account, username: 'b')
+      account = Fabricate(:account)
+      a.follow!(account)
+      b.follow!(account)
+      text = '@a @b'
+      Form::AdminSettings.new(post_mentions_max: 1).save
+
+      expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
+    end
+
+    it 'using mentions for stranger under limit' do
       Fabricate(:account, username: 'a')
       Fabricate(:account, username: 'b')
       account = Fabricate(:account)
       text = '@a @b'
-      Form::AdminSettings.new(post_mentions_max: 1).save
+      Form::AdminSettings.new(post_stranger_mentions_max: 2).save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'using mentions for stranger over limit' do
+      Fabricate(:account, username: 'a')
+      Fabricate(:account, username: 'b')
+      account = Fabricate(:account)
+      text = '@a @b'
+      Form::AdminSettings.new(post_stranger_mentions_max: 1).save
+
+      expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
+    end
+
+    it 'using mentions for stranger over limit but normal setting is under limit' do
+      a = Fabricate(:account, username: 'a')
+      b = Fabricate(:account, username: 'b')
+      account = Fabricate(:account)
+      a.follow!(account)
+      b.follow!(account)
+      text = '@a @b'
+      Form::AdminSettings.new(post_mentions_max: 2, post_stranger_mentions_max: 1).save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'using mentions for stranger over limit but normal setting is under limit when following one only' do
+      a = Fabricate(:account, username: 'a')
+      b = Fabricate(:account, username: 'b')
+      Fabricate(:account, username: 'c')
+      account = Fabricate(:account)
+      a.follow!(account)
+      b.follow!(account)
+      text = '@a @b @c'
+      Form::AdminSettings.new(post_mentions_max: 3, post_stranger_mentions_max: 2).save
 
       expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
     end

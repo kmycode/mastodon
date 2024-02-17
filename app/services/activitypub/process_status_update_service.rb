@@ -161,11 +161,16 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def valid_status?
-    !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status) && !Admin::NgWord.hashtag_reject?(@raw_tags.size) && !Admin::NgWord.mention_reject?(@raw_mentions.size)
+    valid = !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status)
+    valid = !Admin::NgWord.hashtag_reject?(@raw_tags.size) if valid
+
+    valid
   end
 
   def validate_status_mentions!
     raise AbortError if (mention_to_stranger? || reference_to_stranger?) && Admin::NgWord.stranger_mention_reject?("#{@status.spoiler_text}\n#{@status.text}", uri: @status.uri, target_type: :status)
+    raise AbortError if Admin::NgWord.mention_reject?(@raw_mentions.size)
+    raise AbortError if (mention_to_stranger? || reference_to_stranger?) && Admin::NgWord.stranger_mention_reject_with_count?(@raw_mentions.size)
   end
 
   def mention_to_stranger?

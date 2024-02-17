@@ -50,6 +50,7 @@ class Form::AdminSettings
     hide_local_users_for_anonymous
     post_hash_tags_max
     post_mentions_max
+    post_stranger_mentions_max
     sensitive_words
     sensitive_words_for_full
     authorized_fetch
@@ -71,6 +72,7 @@ class Form::AdminSettings
     backups_retention_period
     post_hash_tags_max
     post_mentions_max
+    post_stranger_mentions_max
     registrations_limit
     registrations_limit_per_day
     registrations_start_hour
