@@ -58,13 +58,13 @@
           = f.button safe_join([fa_icon('times'), t('admin.accounts.reject')]), name: :reject_remote, class: 'table-action-link', type: :submit, data: { confirm: t('admin.reports.are_you_sure') }
 
         = f.button safe_join([fa_icon('lock'), t('admin.accounts.perform_full_suspension')]), name: :suspend, class: 'table-action-link', type: :submit, data: { confirm: t('admin.reports.are_you_sure') }
-    - if @accounts.total_count > @accounts.size
+    - if @accounts.size >= 40
       .batch-table__select-all
         .not-selected.active
           %span= t('generic.all_items_on_page_selected_html', count: @accounts.size)
-          %button{ type: 'button' }= t('generic.select_all_matching_items', count: @accounts.total_count)
+          %button{ type: 'button' }= t('generic.select_all_matching_items', count: '>40')
         .selected
-          %span= t('generic.all_matching_items_selected_html', count: @accounts.total_count)
+          %span= t('generic.all_matching_items_selected_html', count: '>40')
           %button{ type: 'button' }= t('generic.deselect')
     .batch-table__body
       - if @accounts.empty?
@@ -72,4 +72,6 @@
       - else
         = render partial: 'account', collection: @accounts, locals: { f: f }
 
-= paginate @accounts
+%nav.pagination
+  = link_to_previous_page @accounts, safe_join([fa_icon('chevron-left'), t('pagination.prev')], ' '), rel: 'prev'
+  = link_to_next_page @accounts, safe_join([t('pagination.next'), fa_icon('chevron-right')], ' '), rel: 'next'
