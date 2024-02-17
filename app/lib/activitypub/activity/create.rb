@@ -147,7 +147,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?)
     valid = !Admin::NgWord.hashtag_reject?(@tags.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid
     valid = !Admin::NgWord.mention_reject?(@raw_mention_uris.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid
-    valid = !Admin::NgWord.stranger_mention_reject_with_count?(@mentions.count { |m| !m.silent }, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
+    valid = !Admin::NgWord.stranger_mention_reject_with_count?(@raw_mention_uris.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
     valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?) if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
 
     valid
