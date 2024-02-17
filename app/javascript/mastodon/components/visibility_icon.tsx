@@ -55,7 +55,7 @@ const messages = defineMessages({
   },
   circle_short: {
     id: 'privacy.circle.short',
-    defaultMessage: 'Circle members only',
+    defaultMessage: 'Circle',
   },
   reply_short: {
     id: 'privacy.reply.short',
