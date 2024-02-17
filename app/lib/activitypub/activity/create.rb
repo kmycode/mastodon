@@ -77,6 +77,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     @mentions             = []
     @silenced_account_ids = []
     @params               = {}
+    @raw_mention_uris     = []
 
     process_status_params
     process_tags
@@ -145,7 +146,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def valid_status?
     valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?)
     valid = !Admin::NgWord.hashtag_reject?(@tags.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid
-    valid = !Admin::NgWord.mention_reject?(@mentions.count { |m| !m.silent }, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid
+    valid = !Admin::NgWord.mention_reject?(@raw_mention_uris.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid
     valid = !Admin::NgWord.stranger_mention_reject_with_count?(@mentions.count { |m| !m.silent }, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
     valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?) if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
 
@@ -252,6 +253,8 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
   def process_mention(tag)
     return if tag['href'].blank?
+
+    @raw_mention_uris << tag['href']
 
     account = account_from_uri(tag['href'])
     account = ActivityPub::FetchRemoteAccountService.new.call(tag['href'], request_id: @options[:request_id]) if account.nil?
