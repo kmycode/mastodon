@@ -64,6 +64,7 @@ class Form::AdminSettings
     unlocked_friend
     enable_local_timeline
     emoji_reaction_disallow_domains
+    permit_new_account_domains
   ).freeze
 
   INTEGER_KEYS = %i(
@@ -123,6 +124,7 @@ class Form::AdminSettings
     sensitive_words
     sensitive_words_for_full
     emoji_reaction_disallow_domains
+    permit_new_account_domains
   ).freeze
 
   attr_accessor(*KEYS)

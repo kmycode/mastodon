@@ -918,6 +918,8 @@ en:
     special_instances:
       emoji_reaction_disallow_domains: Domains we are not permitted emoji reaction
       emoji_reaction_disallow_domains_hint: If you need to be considerate to your coalition partners, set the domain with a new line separator. It is not possible to put an emoji reaction on a post from a set domain.
+      permit_new_account_domains: Domain to allow recognition of new accounts
+      permit_new_account_domains_hint: Only new account information sent from the domain specified here will be saved if more than one is specified,
       title: Special servers
     statuses:
       account: Author

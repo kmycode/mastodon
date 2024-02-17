@@ -13,7 +13,7 @@ class ActivityPub::ProcessAccountService < BaseService
 
   # Should be called with confirmed valid JSON
   # and WebFinger-resolved username and domain
-  def call(username, domain, json, options = {})
+  def call(username, domain, json, options = {}) # rubocop:disable Metrics/PerceivedComplexity
     return if json['inbox'].blank? || unsupported_uri_scheme?(json['id']) || domain_not_allowed?(domain)
 
     @options     = options
@@ -37,6 +37,8 @@ class ActivityPub::ProcessAccountService < BaseService
       @suspension_changed = false
 
       if @account.nil?
+        return nil if blocking_new_account?(@domain)
+
         with_redis do |redis|
           return nil if redis.pfcount("unique_subdomains_for:#{PublicSuffix.domain(@domain, ignore_private: true)}") >= SUBDOMAINS_RATELIMIT
 
@@ -128,6 +130,16 @@ class ActivityPub::ProcessAccountService < BaseService
     @account.settings                = other_settings
     @account.master_settings         = (@account.master_settings || {}).merge(master_settings(@account.note))
     @account.memorial                = @json['memorial'] || false
+  end
+
+  def blocking_new_account?(domain)
+    return false if permit_new_account_domains.blank?
+
+    permit_new_account_domains.exclude?(domain)
+  end
+
+  def permit_new_account_domains
+    (Setting.permit_new_account_domains || []).compact_blank
   end
 
   def valid_account?

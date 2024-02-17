@@ -9,6 +9,58 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
     stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(status: 404)
   end
 
+  describe 'about blocking new remote account' do
+    subject { described_class.new.call('alice', 'example.com', payload) }
+
+    let(:permit_new_account_domains) { nil }
+    let(:payload) do
+      {
+        id: 'https://foo.test',
+        type: 'Actor',
+        inbox: 'https://foo.test/inbox',
+        actor_type: 'Person',
+        summary: 'new bio',
+      }.with_indifferent_access
+    end
+
+    before do
+      Setting.permit_new_account_domains = permit_new_account_domains
+    end
+
+    it 'created account in a simple case' do
+      expect(subject).to_not be_nil
+      expect(subject.uri).to eq 'https://foo.test'
+    end
+
+    context 'when is blocked' do
+      let(:permit_new_account_domains) { ['foo.bar'] }
+
+      it 'does not create account' do
+        expect(subject).to be_nil
+      end
+
+      context 'with has existing account' do
+        before do
+          Fabricate(:account, uri: 'https://foo.test', domain: 'example.com', username: 'alice', note: 'old bio')
+        end
+
+        it 'updated account' do
+          expect(subject).to_not be_nil
+          expect(subject.note).to eq 'new bio'
+        end
+      end
+    end
+
+    context 'when is in whitelist' do
+      let(:permit_new_account_domains) { ['example.com'] }
+
+      it 'does not create account' do
+        expect(subject).to_not be_nil
+        expect(subject.uri).to eq 'https://foo.test'
+      end
+    end
+  end
+
   context 'with searchability' do
     subject { described_class.new.call('alice', 'example.com', payload) }
 

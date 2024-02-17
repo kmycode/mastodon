@@ -909,6 +909,8 @@ ja:
     special_instances:
       emoji_reaction_disallow_domains: 自分のサーバーが絵文字リアクションをすることを許可しないドメイン
       emoji_reaction_disallow_domains_hint: 連合先に配慮する必要がある場合、ドメインを改行区切りで設定します。設定されたドメインの投稿に絵文字リアクションを付けることはできません。
+      permit_new_account_domains: 新規アカウントの認知を許可するドメイン
+      permit_new_account_domains_hint: 1つ以上指定した場合、ここで指定されたドメインから送られてくる新規アカウント情報だけが保存されるようになります
       title: 特殊なサーバー
     statuses:
       account: 作成者
