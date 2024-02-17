@@ -30,7 +30,7 @@ RSpec.describe ActivityPub::Activity::Create do
     stub_request(:get, 'http://example.com/attachment.png').to_return(request_fixture('avatar.txt'))
     stub_request(:get, 'http://example.com/emoji.png').to_return(body: attachment_fixture('emojo.png'))
     stub_request(:get, 'http://example.com/emojib.png').to_return(body: attachment_fixture('emojo.png'), headers: { 'Content-Type' => 'application/octet-stream' })
-    stub_request(:get, 'http://example.com/conversation').to_return(body: Oj.dump(conversation))
+    stub_request(:get, 'http://example.com/conversation').to_return(body: Oj.dump(conversation), headers: { 'Content-Type': 'application/activity+json' })
     stub_request(:get, 'http://example.com/invalid-conversation').to_return(status: 404)
   end
 
@@ -1158,10 +1158,10 @@ RSpec.describe ActivityPub::Activity::Create do
           end
 
           before do
-            stub_request(:get, 'https://foo.test').to_return(status: 200, body: Oj.dump(actor_json))
-            stub_request(:get, 'https://foo.test/.well-known/webfinger?resource=acct:actor@foo.test').to_return(status: 200, body: Oj.dump(webfinger))
+            stub_request(:get, 'https://foo.test').to_return(status: 200, body: Oj.dump(actor_json), headers: { 'Content-Type': 'application/activity+json' })
+            stub_request(:get, 'https://foo.test/.well-known/webfinger?resource=acct:actor@foo.test').to_return(status: 200, body: Oj.dump(webfinger), headers: { 'Content-Type': 'application/activity+json' })
             stub_request(:post, 'https://foo.test/inbox').to_return(status: 200)
-            stub_request(:get, 'https://foo.test/.well-known/nodeinfo').to_return(status: 200)
+            stub_request(:get, 'https://foo.test/.well-known/nodeinfo').to_return(status: 200, headers: { 'Content-Type': 'application/activity+json' })
             subject.perform
           end
 
@@ -2186,12 +2186,15 @@ RSpec.describe ActivityPub::Activity::Create do
       it 'creates an encrypted message' do
         encrypted_message = target_device.encrypted_messages.reload.first
 
-        expect(encrypted_message).to_not be_nil
-        expect(encrypted_message.from_device_id).to eq '1234'
-        expect(encrypted_message.from_account).to eq sender
-        expect(encrypted_message.type).to eq 1
-        expect(encrypted_message.body).to eq 'Foo'
-        expect(encrypted_message.digest).to eq 'Foo123'
+        expect(encrypted_message)
+          .to be_present
+          .and have_attributes(
+            from_device_id: eq('1234'),
+            from_account: eq(sender),
+            type: eq(1),
+            body: eq('Foo'),
+            digest: eq('Foo123')
+          )
       end
 
       it 'creates a message franking' do

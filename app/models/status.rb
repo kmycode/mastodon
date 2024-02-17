@@ -496,6 +496,7 @@ class Status < ApplicationRecord
     def selectable_visibilities
       vs = visibilities.keys - %w(direct limited)
       vs -= %w(public_unlisted) unless Setting.enable_public_unlisted_visibility
+      vs -= %w(public) unless Setting.enable_public_visibility
       vs
     end
 

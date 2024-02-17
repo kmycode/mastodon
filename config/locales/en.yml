@@ -1435,6 +1435,7 @@ en:
   filters:
     contexts:
       account: Profiles
+      explore: Trends and search results
       home: Home and lists
       notifications: Notifications
       public: Public timelines

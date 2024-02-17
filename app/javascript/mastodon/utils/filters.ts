@@ -5,6 +5,7 @@ export const toServerSideType = (columnType: string) => {
     case 'public':
     case 'thread':
     case 'account':
+    case 'explore':
       return columnType;
     default:
       if (columnType.includes('list:') || columnType.includes('antenna:')) {

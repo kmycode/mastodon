@@ -409,7 +409,7 @@ RSpec.describe Auth::RegistrationsController do
 
             current = Time.now.utc
             today = current.beginning_of_day
-            today += 1.day if current.hour > 10
+            today += 1.day if current.hour >= 10
             travel_to today + 10.hours
           end
 

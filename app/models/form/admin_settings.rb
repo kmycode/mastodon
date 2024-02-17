@@ -58,6 +58,7 @@ class Form::AdminSettings
     streaming_local_emoji_reaction
     enable_emoji_reaction
     check_lts_version_only
+    enable_public_visibility
     enable_public_unlisted_visibility
     unlocked_friend
     enable_local_timeline
@@ -97,6 +98,7 @@ class Form::AdminSettings
     streaming_local_emoji_reaction
     enable_emoji_reaction
     check_lts_version_only
+    enable_public_visibility
     enable_public_unlisted_visibility
     unlocked_friend
     stranger_mention_from_local_ng

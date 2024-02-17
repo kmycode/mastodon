@@ -64,8 +64,8 @@ RSpec.describe ActivityPub::Activity::Like do
     before do
       stub_request(:get, 'http://example.com/emoji.png').to_return(body: attachment_fixture('emojo.png'))
       stub_request(:get, 'http://foo.bar/emoji2.png').to_return(body: attachment_fixture('emojo.png'))
-      stub_request(:get, 'https://example.com/aaa').to_return(status: 200, body: Oj.dump(original_emoji))
-      stub_request(:get, 'https://example.com/invalid').to_return(status: 200, body: Oj.dump(original_invalid_emoji))
+      stub_request(:get, 'https://example.com/aaa').to_return(status: 200, body: Oj.dump(original_emoji), headers: { 'Content-Type': 'application/activity+json' })
+      stub_request(:get, 'https://example.com/invalid').to_return(status: 200, body: Oj.dump(original_invalid_emoji), headers: { 'Content-Type': 'application/activity+json' })
     end
 
     let(:json) do

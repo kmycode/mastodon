@@ -20,7 +20,7 @@ import QuietTimeIcon from '@/material-icons/400-24px/quiet_time.svg?react';
 import ReplyIcon from '@/material-icons/400-24px/reply.svg?react';
 import LimitedIcon from '@/material-icons/400-24px/shield.svg?react';
 import { Icon }  from 'mastodon/components/icon';
-import { enableLoginPrivacy, enableLocalPrivacy } from 'mastodon/initial_state';
+import { enableLoginPrivacy, enableLocalPrivacy, enablePublicPrivacy } from 'mastodon/initial_state';
 
 const messages = defineMessages({
   public_short: { id: 'privacy.public.short', defaultMessage: 'Public' },
@@ -277,6 +277,10 @@ class PrivacyDropdown extends PureComponent {
 
     if (!enableLocalPrivacy) {
       this.options = this.options.filter((opt) => opt.value !== 'public_unlisted');
+    }
+
+    if (!enablePublicPrivacy) {
+      this.options = this.options.filter((opt) => opt.value !== 'public');
     }
 
     this.selectableOptions = [...this.options];

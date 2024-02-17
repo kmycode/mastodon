@@ -35,6 +35,7 @@ const messages = defineMessages({
   suspended: { id: 'about.domain_blocks.suspended.title', defaultMessage: 'Suspended' },
   suspendedExplanation: { id: 'about.domain_blocks.suspended.explanation', defaultMessage: 'No data from this server will be processed, stored or exchanged, making any interaction or communication with users from this server impossible.' },
   publicUnlistedVisibility: { id: 'privacy.public_unlisted.short', defaultMessage: 'Public unlisted' },
+  publicVisibility: { id: 'about.public_visibility', defaultMessage: 'Public visibility' },
   emojiReaction: { id: 'status.emoji_reaction', defaultMessage: 'Emoji reaction' },
   enabled: { id: 'about.enabled', defaultMessage: 'Enabled' },
   disabled: { id: 'about.disabled', defaultMessage: 'Disabled' },
@@ -157,6 +158,7 @@ class About extends PureComponent {
 
     const fedibirdCapabilities = server.get('fedibird_capabilities') || [];   // thinking about isLoading is true
     const isPublicUnlistedVisibility = fedibirdCapabilities.includes('kmyblue_visibility_public_unlisted');
+    const isPublicVisibility = !fedibirdCapabilities.includes('kmyblue_no_public_visibility');
     const isEmojiReaction = fedibirdCapabilities.includes('emoji_reaction');
     const isLocalTimeline = !fedibirdCapabilities.includes('timeline_no_local');
 
@@ -231,6 +233,9 @@ class About extends PureComponent {
               <ol className='rules-list'>
                 <li>
                   <span className='rules-list__text'>{intl.formatMessage(messages.emojiReaction)}: <CapabilityIcon state={isEmojiReaction} intl={intl} /></span>
+                </li>
+                <li>
+                  <span className='rules-list__text'>{intl.formatMessage(messages.publicVisibility)}: <CapabilityIcon state={isPublicVisibility} intl={intl} /></span>
                 </li>
                 <li>
                   <span className='rules-list__text'>{intl.formatMessage(messages.publicUnlistedVisibility)}: <CapabilityIcon state={isPublicUnlistedVisibility} intl={intl} /></span>

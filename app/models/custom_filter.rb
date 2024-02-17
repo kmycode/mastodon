@@ -29,6 +29,7 @@ class CustomFilter < ApplicationRecord
     public
     thread
     account
+    explore
   ).freeze
 
   include Expireable
