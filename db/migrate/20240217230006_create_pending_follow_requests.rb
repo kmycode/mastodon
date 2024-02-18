@@ -4,7 +4,6 @@ class CreatePendingFollowRequests < ActiveRecord::Migration[7.1]
   disable_ddl_transaction!
 
   def change
-    add_column :follow_requests, :silent, :boolean, null: false, default: false
     create_table :pending_follow_requests do |t|
       t.references :account, null: false, foreign_key: { on_delete: :cascade }, index: false
       t.references :target_account, null: false, foreign_key: { to_table: 'accounts', on_delete: :cascade }

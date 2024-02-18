@@ -666,7 +666,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_230006) do
     t.string "uri"
     t.boolean "notify", default: false, null: false
     t.string "languages", array: true
-    t.boolean "silent", default: false, null: false
     t.index ["account_id", "target_account_id"], name: "index_follow_requests_on_account_id_and_target_account_id", unique: true
   end
 

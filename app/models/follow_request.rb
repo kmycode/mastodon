@@ -13,7 +13,6 @@
 #  uri               :string
 #  notify            :boolean          default(FALSE), not null
 #  languages         :string           is an Array
-#  silent            :boolean          default(FALSE), not null
 #
 
 class FollowRequest < ApplicationRecord
