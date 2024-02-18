@@ -661,7 +661,7 @@ en:
       post_mentions_max: Mentions max for posts
       post_stranger_mentions_max: 投稿に設定可能なメンションの最大数 (If the mentions include at least one person who is not a follower of yours)
       remote_approval_list: List of remote accounts awaiting approval
-      remote_approval_hint: If you set one or more domains on the list of domains for which you want to automatically approve new users, newly recognized accounts on unspecified domains will be placed in suspend status. You can review that list and approve them if necessary. If none is specified, all remote accounts are approved immediately.
+      remote_approval_hint: Newly recognized accounts with unspecified domains will be placed in Suspended status. You can review that list and approve them if necessary. If this setting is not enabled, all remote accounts will be approved immediately.
       stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
       stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
       test_error: Testing is returned any errors
