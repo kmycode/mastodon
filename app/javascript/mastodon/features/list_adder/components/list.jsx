@@ -20,7 +20,7 @@ import { IconButton }  from '../../../components/icon_button';
 const messages = defineMessages({
   remove: { id: 'lists.account.remove', defaultMessage: 'Remove from list' },
   add: { id: 'lists.account.add', defaultMessage: 'Add to list' },
-  exclusive: { id: 'lists.exclusive', defaultMessage: 'Exclusive from home' },
+  exclusive: { id: 'lists.exclusive', defaultMessage: 'Hide list or antenna account posts from home' },
 });
 
 const MapStateToProps = (state, { listId, added }) => ({
