@@ -305,6 +305,7 @@ class Account < ApplicationRecord
 
   def reject_remote!
     update!(remote_pending: false, suspension_origin: :local)
+    pending_follow_requests.destroy_all
     suspend!
   end
 
