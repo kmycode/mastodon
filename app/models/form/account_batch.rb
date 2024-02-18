@@ -117,6 +117,8 @@ class Form::AccountBatch
     accounts.find_each do |account|
       if account.user_pending?
         reject_account(account)
+      elsif account.suspended? && account.remote_pending
+        reject_remote_account(account)
       else
         suspend_account(account)
       end
