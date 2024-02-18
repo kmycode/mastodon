@@ -32,6 +32,9 @@
   .fields-group
     = f.input :hide_local_users_for_anonymous, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.hide_local_users_for_anonymous')
 
+  .fields-group
+    = f.input :block_unfollow_account_mention, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.block_unfollow_account_mention')
+
   %p.hint
     = t 'admin.ng_words.remote_approval_hint'
     = link_to t('admin.ng_words.remote_approval_list'), admin_accounts_path(status: 'remote_pending', origin: 'remote')

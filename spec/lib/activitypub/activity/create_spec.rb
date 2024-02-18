@@ -2219,6 +2219,50 @@ RSpec.describe ActivityPub::Activity::Create do
           end
         end
       end
+
+      context 'when stranger mention for domain' do
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            to: 'https://www.w3.org/ns/activitystreams#Public',
+            tag: [
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(Fabricate(:account)),
+              },
+            ],
+          }
+        end
+
+        context 'when the domain does not have follower' do
+          let(:custom_before) { true }
+
+          before do
+            Setting.block_unfollow_account_mention = true
+            subject.perform
+          end
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+          end
+        end
+
+        context 'when other account following' do
+          let(:custom_before) { true }
+
+          before do
+            Setting.block_unfollow_account_mention = true
+            Fabricate(:account).follow!(sender)
+            subject.perform
+          end
+
+          it 'creates status' do
+            expect(sender.statuses.first).to_not be_nil
+          end
+        end
+      end
     end
 
     context 'when object URI uses bearcaps' do

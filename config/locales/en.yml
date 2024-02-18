@@ -648,6 +648,7 @@ en:
     media_attachments:
       title: Media attachments
     ng_words:
+      block_unfollow_account_mention: Reject all mentions/references from all accounts that do not have followers on your server
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
       history_hint: We recommend that you regularly check your NG words to make sure that you have not specified the NG words incorrectly.
       keywords: Reject keywords

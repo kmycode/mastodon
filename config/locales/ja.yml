@@ -641,6 +641,7 @@ ja:
     media_attachments:
       title: 投稿された画像
     ng_words:
+      block_unfollow_account_mention: 自分のサーバーのフォロワーを持たない全てのアカウントからのメンション・参照を全て拒否する
       hide_local_users_for_anonymous: ログインしていない状態でローカルユーザーの投稿をタイムラインから取得できないようにする
       history_hint: 設定されたNGワードによって実際に拒否された投稿などは、履歴より確認できます。NGワードの指定に誤りがないか定期的に確認することをおすすめします。
       keywords: 投稿できないキーワード
