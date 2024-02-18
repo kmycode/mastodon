@@ -28,6 +28,7 @@ class DeleteAccountService < BaseService
     notifications
     owned_lists
     passive_relationships
+    pending_follow_requests
     report_notes
     scheduled_statuses
     scheduled_expiration_statuses
@@ -57,6 +58,7 @@ class DeleteAccountService < BaseService
     muted_by_relationships
     notifications
     owned_lists
+    pending_follow_requests
     scheduled_statuses
     scheduled_expiration_statuses
     status_pins

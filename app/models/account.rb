@@ -300,10 +300,13 @@ class Account < ApplicationRecord
   def approve_remote!
     update!(remote_pending: false)
     unsuspend!
+    EnableFollowRequestsWorker.perform_async(id)
   end
 
   def reject_remote!
     update!(remote_pending: false, suspension_origin: :local)
+    pending_follow_requests.destroy_all
+    suspend!
   end
 
   def sensitized?

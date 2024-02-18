@@ -12,6 +12,7 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
   describe 'about blocking new remote account' do
     subject { described_class.new.call('alice', 'example.com', payload) }
 
+    let(:hold_remote_new_accounts) { true }
     let(:permit_new_account_domains) { nil }
     let(:payload) do
       {
@@ -24,6 +25,7 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
     end
 
     before do
+      Setting.hold_remote_new_accounts = hold_remote_new_accounts
       Setting.permit_new_account_domains = permit_new_account_domains
     end
 
@@ -41,6 +43,16 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
         expect(subject).to_not be_nil
         expect(subject.suspended?).to be true
         expect(subject.remote_pending).to be true
+      end
+
+      context 'when the domain is not on list but hold_remote_new_accounts is disabled' do
+        let(:hold_remote_new_accounts) { false }
+
+        it 'creates normal account' do
+          expect(subject).to_not be_nil
+          expect(subject.suspended?).to be false
+          expect(subject.remote_pending).to be false
+        end
       end
 
       context 'with has existing account' do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_17_215134) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_17_230006) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -954,6 +954,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_215134) do
     t.index ["key_id"], name: "index_one_time_keys_on_key_id"
   end
 
+  create_table "pending_follow_requests", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "target_account_id", null: false
+    t.string "uri", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "target_account_id"], name: "idx_on_account_id_target_account_id_46f2a00f12", unique: true
+    t.index ["target_account_id"], name: "index_pending_follow_requests_on_target_account_id"
+    t.index ["uri"], name: "index_pending_follow_requests_on_uri", unique: true
+  end
+
   create_table "pghero_space_stats", force: :cascade do |t|
     t.text "database"
     t.text "schema"
@@ -1544,6 +1555,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_215134) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id", name: "fk_e84df68546", on_delete: :cascade
   add_foreign_key "oauth_applications", "users", column: "owner_id", name: "fk_b0988c7c0a", on_delete: :cascade
   add_foreign_key "one_time_keys", "devices", on_delete: :cascade
+  add_foreign_key "pending_follow_requests", "accounts", column: "target_account_id", on_delete: :cascade
+  add_foreign_key "pending_follow_requests", "accounts", on_delete: :cascade
   add_foreign_key "poll_votes", "accounts", on_delete: :cascade
   add_foreign_key "poll_votes", "polls", on_delete: :cascade
   add_foreign_key "polls", "accounts", on_delete: :cascade
