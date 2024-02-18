@@ -65,6 +65,7 @@ class Form::AdminSettings
     enable_local_timeline
     emoji_reaction_disallow_domains
     permit_new_account_domains
+    hold_remote_new_accounts
   ).freeze
 
   INTEGER_KEYS = %i(
@@ -107,6 +108,7 @@ class Form::AdminSettings
     stranger_mention_from_local_ng
     enable_local_timeline
     delete_content_cache_without_reaction
+    hold_remote_new_accounts
   ).freeze
 
   UPLOAD_KEYS = %i(

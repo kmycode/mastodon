@@ -650,6 +650,7 @@ en:
     ng_words:
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
       history_hint: We recommend that you regularly check your NG words to make sure that you have not specified the NG words incorrectly.
+      hold_remote_new_accounts: Hold new remote accounts
       keywords: Reject keywords
       keywords_for_stranger_mention: Reject keywords when mention/reply/reference/quote from strangers
       keywords_for_stranger_mention_hint: This words are checked posts from other servers only.

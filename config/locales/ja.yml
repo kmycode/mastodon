@@ -643,6 +643,7 @@ ja:
     ng_words:
       hide_local_users_for_anonymous: ログインしていない状態でローカルユーザーの投稿をタイムラインから取得できないようにする
       history_hint: 設定されたNGワードによって実際に拒否された投稿などは、履歴より確認できます。NGワードの指定に誤りがないか定期的に確認することをおすすめします。
+      hold_remote_new_accounts: リモートの新規アカウントを保留する
       keywords: 投稿できないキーワード
       keywords_for_stranger_mention: フォローしていないアカウントへのメンションや参照で利用できないキーワード
       keywords_for_stranger_mention_hint: フォローしていないアカウントへのメンション、参照、引用にのみ適用されます
