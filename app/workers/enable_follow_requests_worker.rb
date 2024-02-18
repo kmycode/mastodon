@@ -8,6 +8,6 @@ class EnableFollowRequestsWorker
     return true if account.nil?
     return true if account.suspended?
 
-    EnablePendingFollowsService.new.call(account)
+    EnableFollowRequestsService.new.call(account)
   end
 end
