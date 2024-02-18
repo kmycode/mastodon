@@ -29,11 +29,11 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
       Setting.permit_new_account_domains = permit_new_account_domains
     end
 
-    it 'created account in a simple case' do
+    it 'creates pending account in a simple case' do
       expect(subject).to_not be_nil
       expect(subject.uri).to eq 'https://foo.test'
-      expect(subject.suspended?).to be false
-      expect(subject.remote_pending).to be false
+      expect(subject.suspended?).to be true
+      expect(subject.remote_pending).to be true
     end
 
     context 'when is blocked' do
