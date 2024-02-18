@@ -2,6 +2,7 @@
 
 class ActivityPub::Activity::Follow < ActivityPub::Activity
   include Payloadable
+  include FollowHelper
 
   def perform
     return request_follow_for_friend if friend_follow?
@@ -11,7 +12,7 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
     return if target_account.nil? || !target_account.local? || delete_arrived_first?(@json['id'])
 
     # Update id of already-existing follow requests
-    existing_follow_request = ::FollowRequest.find_by(account: @account, target_account: target_account)
+    existing_follow_request = ::FollowRequest.find_by(account: @account, target_account: target_account) || PendingFollowRequest.find_by(account: @account, target_account: target_account)
     unless existing_follow_request.nil?
       existing_follow_request.update!(uri: @json['id'])
       return
@@ -30,9 +31,16 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
       return
     end
 
+    if @account.suspended? && @account.remote_pending?
+      PendingFollowRequest.create!(account: @account, target_account: target_account, uri: @json['id'])
+      return
+    elsif @account.suspended?
+      return
+    end
+
     follow_request = FollowRequest.create!(account: @account, target_account: target_account, uri: @json['id'])
 
-    if target_account.locked? || @account.silenced? || block_straight_follow? || ((@account.bot? || proxy_account?) && target_account.user&.setting_lock_follow_from_bot)
+    if request_pending_follow?(@account, target_account)
       LocalNotificationWorker.perform_async(target_account.id, follow_request.id, 'FollowRequest', 'follow_request')
     else
       AuthorizeFollowService.new.call(@account, target_account)
@@ -79,35 +87,8 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
     @block_friend ||= DomainBlock.reject_friend?(@account.domain) || DomainBlock.blocked?(@account.domain)
   end
 
-  def block_straight_follow?
-    @block_straight_follow ||= DomainBlock.reject_straight_follow?(@account.domain)
-  end
-
   def block_new_follow?
     @block_new_follow ||= DomainBlock.reject_new_follow?(@account.domain)
-  end
-
-  def proxy_account?
-    (@account.username.downcase.include?('_proxy') ||
-     @account.username.downcase.end_with?('proxy') ||
-     @account.username.downcase.include?('_bot_') ||
-     @account.username.downcase.end_with?('bot') ||
-     @account.display_name&.downcase&.include?('proxy') ||
-     @account.display_name&.include?('プロキシ') ||
-     @account.note&.include?('プロキシ')) &&
-      (@account.following_count.zero? || @account.following_count > @account.followers_count) &&
-      proxyable_software?
-  end
-
-  def proxyable_software?
-    info = instance_info
-    return false if info.nil?
-
-    %w(misskey calckey firefish meisskey cherrypick sharkey).include?(info.software)
-  end
-
-  def instance_info
-    @instance_info ||= InstanceInfo.find_by(domain: @account.domain)
   end
 
   def notify_staff_about_pending_friend_server!
