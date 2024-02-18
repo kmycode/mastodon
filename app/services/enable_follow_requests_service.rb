@@ -21,7 +21,6 @@ class EnableFollowRequestsService < BaseService
     pending.destroy!
 
     target_account = follow_request.target_account
-    follow_request.update!(silent: false)
 
     if request_pending_follow?(@account, target_account)
       LocalNotificationWorker.perform_async(target_account.id, follow_request.id, 'FollowRequest', 'follow_request')
