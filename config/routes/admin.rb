@@ -35,7 +35,7 @@ namespace :admin do
   resource :ng_words, only: [:show, :create]
   resources :ngword_histories, only: [:index]
   resources :ng_rules, except: [:show]
-  resources :ng_rule_histories, only: [:index]
+  resources :ng_rule_histories, only: [:show]
   resource :sensitive_words, only: [:show, :create]
   resource :special_instances, only: [:show, :create]
 

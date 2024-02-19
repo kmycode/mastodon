@@ -1,0 +1,13 @@
+.batch-table__row
+  %label.batch-table__row__select.batch-checkbox
+    -# = f.check_box :history_ids, { multiple: true, include_hidden: false }, history.id
+  .batch-table__row__content
+    .status__content><
+      = html_aware_format(history.text, false)
+
+    .detailed-status__meta
+      %time.formatted{ datetime: history.created_at.iso8601, title: l(history.created_at) }= l(history.created_at)
+
+      - if history.uri.present?
+        ·
+        = history.uri

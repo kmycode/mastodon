@@ -4,7 +4,7 @@
 - if @ng_rule.id.present?
   %p.hint
     -# = t 'admin.ng_words.remote_approval_hint'
-    = link_to t('NG_rules.history'), admin_ng_rule_histories_path(ng_rule_id: @ng_rule.id)
+    = link_to t('NG_rules.history'), admin_ng_rule_history_path(id: @ng_rule.id)
 
 .fields-row
   .fields-row__column.fields-row__column-6.fields-group
