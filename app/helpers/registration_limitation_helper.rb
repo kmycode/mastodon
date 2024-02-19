@@ -32,10 +32,10 @@ module RegistrationLimitationHelper
   end
 
   def registrations_in_time?
-    start_hour = Setting.registrations_start_hour || 0
-    end_hour = Setting.registrations_end_hour || 24
-    secondary_start_hour = Setting.registrations_secondary_start_hour || 0
-    secondary_end_hour = Setting.registrations_secondary_end_hour || 0
+    start_hour = Setting.registrations_start_hour.presence || 0
+    end_hour = Setting.registrations_end_hour.presence || 24
+    secondary_start_hour = Setting.registrations_secondary_start_hour.presence || 0
+    secondary_end_hour = Setting.registrations_secondary_end_hour.presence || 0
 
     return true if start_hour >= end_hour && secondary_start_hour >= secondary_end_hour
 
