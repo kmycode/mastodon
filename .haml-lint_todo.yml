@@ -26,3 +26,4 @@ linters:
   InstanceVariables:
     exclude:
       - 'app/views/application/_sidebar.html.haml'
+      - 'app/views/admin/ng_rules/_ng_rule_fields.html.haml'

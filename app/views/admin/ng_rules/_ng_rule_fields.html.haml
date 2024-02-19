@@ -1,0 +1,83 @@
+%p= t 'ng_rules.edit.description'
+%hr.spacer/
+
+- if @ng_rule.id.present?
+  %p.hint
+    -# = t 'admin.ng_words.remote_approval_hint'
+    = link_to t('NG_rules.history'), admin_ng_rule_histories_path(ng_rule_id: @ng_rule.id)
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :title, as: :string, wrapper: :with_label, hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :expires_in, wrapper: :with_label, collection: [30.minutes, 1.hour, 6.hours, 12.hours, 1.day, 1.week, 2.weeks, 1.month, 3.months].map(&:to_i), label_method: ->(i) { I18n.t("invites.expires_in.#{i}") }, include_blank: I18n.t('invites.expires_in_prompt')
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :domain, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_include_local, as: :boolean, wrapper: :with_label, hint: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_username, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_display_name, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_field_name, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_field_value, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_note, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_avatar_state, wrapper: :with_label, collection: [[:unchecked, 0], [:yes, 1], [:no, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.states.#{i[0]}") }
+    = f.input :account_header_state, wrapper: :with_label, collection: [[:unchecked, 0], [:yes, 1], [:no, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.states.#{i[0]}") }
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_text, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_spoiler_text, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_tag, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_sensitive_state, wrapper: :with_label, collection: [[:unchecked, 0], [:yes, 1], [:no, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.states.#{i[0]}") }
+    = f.input :status_cw_state, wrapper: :with_label, collection: [[:unchecked, 0], [:yes, 1], [:no, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.states.#{i[0]}") }
+
+.fields-group
+  = f.input :status_visibility, wrapper: :with_block_label, collection: Status.all_visibilities, as: :check_boxes, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', label_method: ->(context) { I18n.t("statuses.visibilities.#{context}") }, include_blank: false
+
+.fields-group
+  = f.input :status_searchability, wrapper: :with_block_label, collection: Status.all_searchabilities, as: :check_boxes, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', label_method: ->(context) { I18n.t("statuses.searchabilities.#{context}") }, include_blank: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_media_state, wrapper: :with_label, collection: [[:unchecked, 0], [:yes, 1], [:no, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.states.#{i[0]}") }
+    = f.input :status_media_threshold, as: :string, wrapper: :with_label, hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_poll_state, wrapper: :with_label, collection: [[:unchecked, 0], [:yes, 1], [:no, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.states.#{i[0]}") }
+    = f.input :status_poll_threshold, as: :string, wrapper: :with_label, hint: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_quote_state, wrapper: :with_label, collection: [[:unchecked, 0], [:yes, 1], [:no, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.states.#{i[0]}") }
+    = f.input :status_reply_state, wrapper: :with_label, collection: [[:unchecked, 0], [:yes, 1], [:no, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.states.#{i[0]}") }
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_mention_threshold, as: :string, wrapper: :with_label, hint: false
+    = f.input :status_mention_threshold_stranger_only, as: :boolean, wrapper: :with_label, hint: false
+    = f.input :status_reference_threshold, as: :string, wrapper: :with_label, hint: false
+
+.fields-group
+  = f.input :account_action, wrapper: :with_label, as: :radio_buttons, collection: [[:nothing, 0], [:silence, 1], [:suspend, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.actions.accounts.#{i[0]}") }
+
+.fields-group
+  = f.input :status_action, wrapper: :with_label, as: :radio_buttons, collection: [[:nothing, 0], [:reject, 1], [:sensitive, 2], [:force_cw, 3]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.actions.statuses.#{i[0]}") }
+
+.fields-row
+  = f.input :available, wrapper: :with_label, label: t('ng_rules.edit.available'), hint: false

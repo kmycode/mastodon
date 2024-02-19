@@ -88,6 +88,7 @@ namespace :dangerous do
       20240217022038
       20240217093511
       20240217230006
+      20240218233621
     )
     # Removed: account_groups
     target_tables = %w(
@@ -104,6 +105,8 @@ namespace :dangerous do
       friend_domains
       instance_infos
       list_statuses
+      ng_rules
+      ng_rule_histories
       ngword_histories
       pending_follow_requests
       scheduled_expiration_statuses

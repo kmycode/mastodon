@@ -504,6 +504,10 @@ class Status < ApplicationRecord
       %w(unset) + selectable_visibilities
     end
 
+    def all_visibilities
+      visibilities.keys
+    end
+
     def selectable_searchabilities
       ss = searchabilities.keys - %w(unsupported)
       ss -= %w(public_unlisted) unless Setting.enable_public_unlisted_visibility
@@ -512,6 +516,10 @@ class Status < ApplicationRecord
 
     def selectable_searchabilities_for_search
       searchabilities.keys - %w(public_unlisted unsupported)
+    end
+
+    def all_searchabilities
+      searchabilities.keys - %w(unlisted login unsupported)
     end
 
     def favourites_map(status_ids, account_id)
