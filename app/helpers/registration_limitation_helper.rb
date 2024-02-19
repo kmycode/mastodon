@@ -42,10 +42,12 @@ module RegistrationLimitationHelper
     secondary_start_hour = 0 unless secondary_start_hour.is_a?(Integer)
     secondary_end_hour = 0   unless secondary_end_hour.is_a?(Integer)
 
+    return true if start_hour >= end_hour && secondary_start_hour >= secondary_end_hour
+
     current_hour = Time.now.utc.hour
 
-    (end_hour.positive? && current_hour.between?(start_hour, end_hour - 1)) ||
-      (secondary_end_hour.positive? && current_hour.between?(secondary_start_hour, secondary_end_hour - 1))
+    (start_hour < end_hour && end_hour.positive? && current_hour.between?(start_hour, end_hour - 1)) ||
+      (secondary_start_hour < secondary_end_hour && secondary_end_hour.positive? && current_hour.between?(secondary_start_hour, secondary_end_hour - 1))
   end
 
   def reset_registration_limit_caches!
