@@ -32,8 +32,12 @@
 #  status_mention_threshold               :integer          default(-1), not null
 #  status_mention_threshold_stranger_only :boolean          default(TRUE), not null
 #  status_reference_threshold             :integer          default(-1), not null
+#  status_violation_threshold             :integer          default(1), not null
+#  reaction_type                          :string           default([]), not null, is an Array
+#  reaction_allow_follower                :boolean          default(TRUE), not null
 #  account_action                         :integer          default(0), not null
 #  status_action                          :integer          default(0), not null
+#  reaction_action                        :integer          default(0), not null
 #  expires_at                             :datetime
 #  created_at                             :datetime         not null
 #  updated_at                             :datetime         not null
@@ -67,6 +71,7 @@ class NgRule < ApplicationRecord
   def clean_up_arrays
     self.status_visibility    = Array(status_visibility).map(&:strip).filter_map(&:presence)
     self.status_searchability = Array(status_searchability).map(&:strip).filter_map(&:presence)
+    self.reaction_type        = Array(reaction_type).map(&:strip).filter_map(&:presence)
   end
 
   def prepare_cache_invalidation!

@@ -61,8 +61,9 @@ module Admin
                                       :account_include_local, :status_spoiler_text, :status_text, :status_tag,
                                       :status_media_state, :status_sensitive_state, :status_cw_state, :status_poll_state,
                                       :status_quote_state, :status_reply_state, :status_media_threshold, :status_poll_threshold,
-                                      :status_mention_threshold, :status_mention_threshold_stranger_only,
-                                      :status_reference_threshold, :account_action, :status_action,
+                                      :status_mention_threshold, :status_mention_threshold_stranger_only, :status_violation_threshold,
+                                      :reaction_type, :reaction_allow_follower,
+                                      :status_reference_threshold, :account_action, :status_action, :reaction_action,
                                       status_visibility: [], status_searchability: [])
     end
   end

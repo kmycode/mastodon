@@ -911,8 +911,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
     t.integer "status_mention_threshold", default: -1, null: false
     t.boolean "status_mention_threshold_stranger_only", default: true, null: false
     t.integer "status_reference_threshold", default: -1, null: false
+    t.integer "status_violation_threshold", default: 1, null: false
+    t.string "reaction_type", default: [], null: false, array: true
+    t.boolean "reaction_allow_follower", default: true, null: false
     t.integer "account_action", default: 0, null: false
     t.integer "status_action", default: 0, null: false
+    t.integer "reaction_action", default: 0, null: false
     t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

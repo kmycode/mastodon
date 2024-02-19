@@ -74,10 +74,22 @@
     = f.input :status_reference_threshold, as: :string, wrapper: :with_label, hint: false
 
 .fields-group
+  = f.input :status_violation_threshold, as: :string, wrapper: :with_label, hint: false
+
+.fields-group
+  = f.input :reaction_type, wrapper: :with_block_label, collection: %i(favourite emoji_reaction reblog), as: :check_boxes, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', label_method: ->(context) { I18n.t("ng_rules.reaction_types.#{context}") }, include_blank: false
+
+.fields-row
+  = f.input :reaction_allow_follower, wrapper: :with_label, hint: false
+
+.fields-group
   = f.input :account_action, wrapper: :with_label, as: :radio_buttons, collection: [[:nothing, 0], [:silence, 1], [:suspend, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.actions.accounts.#{i[0]}") }
 
 .fields-group
   = f.input :status_action, wrapper: :with_label, as: :radio_buttons, collection: [[:nothing, 0], [:reject, 1], [:sensitive, 2], [:force_cw, 3]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.actions.statuses.#{i[0]}") }
+
+.fields-group
+  = f.input :reaction_action, wrapper: :with_label, as: :radio_buttons, collection: [[:nothing, 0], [:reject, 1]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.actions.reactions.#{i[0]}") }
 
 .fields-row
   = f.input :available, wrapper: :with_label, label: t('ng_rules.edit.available'), hint: false

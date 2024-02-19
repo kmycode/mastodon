@@ -30,8 +30,12 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.integer :status_mention_threshold, null: false, default: -1
       t.boolean :status_mention_threshold_stranger_only, null: false, default: true
       t.integer :status_reference_threshold, null: false, default: -1
+      t.integer :status_violation_threshold, null: false, default: 1
+      t.string :reaction_type, null: false, default: [], array: true
+      t.boolean :reaction_allow_follower, null: false, default: true
       t.integer :account_action, null: false, default: 0
       t.integer :status_action, null: false, default: 0
+      t.integer :reaction_action, null: false, default: 0
       t.datetime :expires_at
 
       t.timestamps
