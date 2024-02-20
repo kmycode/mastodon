@@ -30,11 +30,11 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.integer :status_mention_threshold, null: false, default: -1
       t.boolean :status_mention_threshold_stranger_only, null: false, default: true
       t.integer :status_reference_threshold, null: false, default: -1
-      t.integer :status_violation_threshold, null: false, default: 1
       t.string :reaction_type, null: false, default: [], array: true
       t.boolean :reaction_allow_follower, null: false, default: true
       t.string :emoji_reaction_name, null: false, default: ''
       t.string :emoji_reaction_origin_domain, null: false, default: ''
+      t.integer :rule_violation_threshold_per_account, null: false, default: 1
       t.integer :account_action, null: false, default: 0
       t.integer :status_action, null: false, default: 0
       t.integer :reaction_action, null: false, default: 0
@@ -47,10 +47,10 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.belongs_to :ng_rule, null: false, foreign_key: { on_cascade: :delete }
       t.belongs_to :account, null: false, foreign_key: { on_cascade: :delete }
       t.string :text
-      t.string :keyword
-      t.integer :count
       t.string :uri, index: true
-      t.integer :reason, null: false
+      t.string :reason, null: false
+      t.boolean :skip, null: false, default: false
+      t.integer :skip_count
 
       t.timestamps
     end

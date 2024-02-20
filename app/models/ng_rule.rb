@@ -13,8 +13,8 @@
 #  account_note                           :string           default(""), not null
 #  account_field_name                     :string           default(""), not null
 #  account_field_value                    :string           default(""), not null
-#  account_avatar_state                   :integer          default(0), not null
-#  account_header_state                   :integer          default(0), not null
+#  account_avatar_state                   :integer          default("optional"), not null
+#  account_header_state                   :integer          default("optional"), not null
 #  account_include_local                  :boolean          default(TRUE), not null
 #  status_spoiler_text                    :string           default(""), not null
 #  status_text                            :string           default(""), not null
@@ -22,21 +22,21 @@
 #  status_visibility                      :string           default([]), not null, is an Array
 #  status_searchability                   :string           default([]), not null, is an Array
 #  status_media_state                     :integer          default(0), not null
-#  status_sensitive_state                 :integer          default(0), not null
-#  status_cw_state                        :integer          default(0), not null
+#  status_sensitive_state                 :integer          default("optional"), not null
+#  status_cw_state                        :integer          default("optional"), not null
 #  status_poll_state                      :integer          default(0), not null
-#  status_quote_state                     :integer          default(0), not null
-#  status_reply_state                     :integer          default(0), not null
+#  status_quote_state                     :integer          default("optional"), not null
+#  status_reply_state                     :integer          default("optional"), not null
 #  status_media_threshold                 :integer          default(-1), not null
 #  status_poll_threshold                  :integer          default(-1), not null
 #  status_mention_threshold               :integer          default(-1), not null
 #  status_mention_threshold_stranger_only :boolean          default(TRUE), not null
 #  status_reference_threshold             :integer          default(-1), not null
-#  status_violation_threshold             :integer          default(1), not null
 #  reaction_type                          :string           default([]), not null, is an Array
 #  reaction_allow_follower                :boolean          default(TRUE), not null
 #  emoji_reaction_name                    :string           default(""), not null
 #  emoji_reaction_origin_domain           :string           default(""), not null
+#  rule_violation_threshold_per_account   :integer          default(1), not null
 #  account_action                         :integer          default(0), not null
 #  status_action                          :integer          default(0), not null
 #  reaction_action                        :integer          default(0), not null
@@ -50,6 +50,17 @@ class NgRule < ApplicationRecord
 
   has_many :histories, class_name: 'NgRuleHistory', inverse_of: :ng_rule, dependent: :destroy
 
+  enum :account_avatar_state, { optional: 0, needed: 1, no_needed: 2 }, prefix: :account_avatar
+  enum :account_header_state, { optional: 0, needed: 1, no_needed: 2 }, prefix: :account_header
+  enum :status_sensitive_state, { optional: 0, needed: 1, no_needed: 2 }, prefix: :status_sensitive
+  enum :status_cw_state, { optional: 0, needed: 1, no_needed: 2 }, prefix: :status_cw
+  enum :status_quote_state, { optional: 0, needed: 1, no_needed: 2 }, prefix: :status_quote
+  enum :status_reply_state, { optional: 0, needed: 1, no_needed: 2 }, prefix: :status_reply
+  enum :status_media_state, { optional: 0, needed: 1, no_needed: 2 }, prefix: :status_media
+  enum :status_poll_state, { optional: 0, needed: 1, no_needed: 2 }, prefix: :status_poll
+
+  scope :enabled, -> { where(available: true) }
+
   before_validation :clean_up_arrays
   before_save :prepare_cache_invalidation!
   before_destroy :prepare_cache_invalidation!
@@ -57,7 +68,7 @@ class NgRule < ApplicationRecord
 
   def self.cached_rules
     active_rules = Rails.cache.fetch('ng_rules') do
-      NgRule.to_a
+      NgRule.enabled.to_a
     end
 
     active_rules.reject { |ng_rule, _| ng_rule.expired? }

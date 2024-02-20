@@ -640,6 +640,62 @@ ja:
       title: IPルール
     media_attachments:
       title: 投稿された画像
+    ng_rules:
+      account_avatar_state: アイコンの有無
+      account_display_name: 名前
+      account_domain: ドメイン
+      account_field_name: フィールド名
+      account_field_value: フィールド値
+      account_header_state: ヘッダーの有無
+      account_include_local: ローカルユーザーを含む
+      account_note: アカウントの説明文
+      account_username: ID
+      actions:
+        accounts:
+          nothing: 何もしない
+          silence: サイレンス
+          suspend: サスペンド
+        reactions:
+          nothing: 何もしない
+          reject: 拒否
+        statuses:
+          nothing: 何もしない
+          reject: 拒否
+      edit:
+        title: NGルールを編集
+      index:
+        empty: NGルールが空です
+        title: NGルール
+      new:
+        title: 新規NGルール
+      reaction_type: リアクションの種類
+      reaction_types:
+        emoji_reaction: 絵文字リアクション
+        favourite: お気に入り
+        follow: フォロー
+        reblog: ブースト
+        vote: 投票
+      states:
+        needed: 有り
+        no_needed: 無し
+        optional: どちらでも
+      status_cw_state: 警告文の有無
+      status_media_state: メディアの有無
+      status_media_threshold: メディア数の条件
+      status_mention_threshold: メンション数の上限
+      status_mention_threshold_stranger_only: フォローしていない相手へのメンションを含む場合のみ、メンション数の上限を確認する
+      status_poll_state: 投票の有無
+      status_poll_threshold: 投票項目数の上限
+      status_quote_state: 引用の有無
+      status_reference_threshold: 参照数の上限
+      status_reply_state: 返信の有無
+      status_searchability: 検索許可
+      status_sensitive_state: センシティブフラグの有無
+      status_spoiler_text: 投稿警告文
+      status_tag: タグ
+      status_text: 投稿本文
+      status_visibility: 公開範囲
+      title: NGルール
     ng_words:
       block_unfollow_account_mention: 自分のサーバーのフォロワーを持たない全てのアカウントからのメンション・参照を全て拒否する
       hide_local_users_for_anonymous: ログインしていない状態でローカルユーザーの投稿をタイムラインから取得できないようにする
@@ -1922,6 +1978,7 @@ ja:
       public_search_long: 検索が許可された全ての投稿が検索できます
       public_unlisted: ローカルとフォロワー
       public_unlisted_long: ローカル・フォロワー・反応者のみが検索できます
+      unset: (未対応サーバー)
     show_more: もっと見る
     show_newer: 新しいものを表示
     show_older: 古いものを表示
@@ -1931,6 +1988,7 @@ ja:
     too_many_mentions: メンションが多すぎます
     visibilities:
       direct: ダイレクト
+      limited: 限定投稿
       login: ログインユーザーのみ
       login_long: ログインしたユーザーのみが見ることができます
       private: フォロワー限定

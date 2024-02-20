@@ -1,5 +1,5 @@
 - content_for :page_title do
-  = t('ng_rules.edit.title')
+  = t('admin.ng_rules.edit.title')
 
 = simple_form_for @ng_rule, url: admin_ng_rule_path(@ng_rule), method: :put do |f|
   = render 'shared/error_messages', object: @ng_rule

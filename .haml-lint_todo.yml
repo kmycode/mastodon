@@ -10,6 +10,7 @@ linters:
   # Offense count: 1
   LineLength:
     exclude:
+      - 'app/views/admin/ng_rules/_ng_rule_fields.html.haml'
       - 'app/views/admin/roles/_form.html.haml'
 
   # Offense count: 9

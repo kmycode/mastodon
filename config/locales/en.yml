@@ -647,6 +647,46 @@ en:
       title: IP rules
     media_attachments:
       title: Media attachments
+    ng_rules:
+      account_avatar_state: Has avatar or not
+      account_display_name: Name
+      account_domain: Domain
+      account_field_name: Field name
+      account_field_value: Field value
+      account_header_state: Has header or not
+      account_include_local: Contains local users
+      account_note: Account note
+      account_username: ID
+      actions:
+        accounts:
+          nothing: Do nothing
+          silence: Silence
+          suspend: Suspend
+        reactions:
+          nothing: Do nothing
+          reject: Reject
+        statuses:
+          nothing: Do nothing
+          reject: Reject
+      edit:
+        title: Edit NG Rule
+      index:
+        empty: NGルールが空です
+        title: NG Rules
+      new:
+        title: New NG Rule
+      reaction_type: Reaction type
+      reaction_types:
+        emoji_reaction: Emoji reaction
+        favourite: Favourite
+        follow: Follow
+        reblog: Boost
+        vote: Vote
+      states:
+        needed: have
+        no_needed: Should not have
+        optional: Optional
+      title: NG Rule
     ng_words:
       block_unfollow_account_mention: Reject all mentions/references from all accounts that do not have followers on your server
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
@@ -1949,6 +1989,7 @@ en:
       public_search_long: You can search all posts permitted to search
       public_unlisted: Local and followers
       public_unlisted_long: Local users and followers can find
+      unset: (Unsupported servers)
     show_more: Show more
     show_newer: Show newer
     show_older: Show older
@@ -1958,6 +1999,7 @@ en:
     too_many_mentions: Too many mentions
     visibilities:
       direct: Direct
+      limited: Limited
       login: Login only
       login_long: Only logined users
       private: Followers-only
