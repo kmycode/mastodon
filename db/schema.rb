@@ -874,6 +874,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
     t.bigint "ng_rule_id", null: false
     t.bigint "account_id", null: false
     t.string "text"
+    t.string "keyword"
+    t.integer "count"
     t.string "uri"
     t.integer "reason", null: false
     t.datetime "created_at", null: false
@@ -886,7 +888,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
   create_table "ng_rules", force: :cascade do |t|
     t.string "title", default: "", null: false
     t.boolean "available", default: true, null: false
-    t.string "domain", default: "", null: false
+    t.string "account_domain", default: "", null: false
     t.string "account_username", default: "", null: false
     t.string "account_display_name", default: "", null: false
     t.string "account_note", default: "", null: false
@@ -914,6 +916,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
     t.integer "status_violation_threshold", default: 1, null: false
     t.string "reaction_type", default: [], null: false, array: true
     t.boolean "reaction_allow_follower", default: true, null: false
+    t.string "emoji_reaction_name", default: "", null: false
+    t.string "emoji_reaction_origin_domain", default: "", null: false
     t.integer "account_action", default: 0, null: false
     t.integer "status_action", default: 0, null: false
     t.integer "reaction_action", default: 0, null: false
@@ -1599,7 +1603,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
   add_foreign_key "mentions", "statuses", on_delete: :cascade
   add_foreign_key "mutes", "accounts", column: "target_account_id", name: "fk_eecff219ea", on_delete: :cascade
   add_foreign_key "mutes", "accounts", name: "fk_b8d8daf315", on_delete: :cascade
-  add_foreign_key "ng_rule_histories", "accounts", on_delete: :cascade
+  add_foreign_key "ng_rule_histories", "accounts"
   add_foreign_key "ng_rule_histories", "ng_rules"
   add_foreign_key "notifications", "accounts", column: "from_account_id", name: "fk_fbd6b0bf9e", on_delete: :cascade
   add_foreign_key "notifications", "accounts", name: "fk_c141c8ee55", on_delete: :cascade

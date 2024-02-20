@@ -7,7 +7,7 @@
 #  id                                     :bigint(8)        not null, primary key
 #  title                                  :string           default(""), not null
 #  available                              :boolean          default(TRUE), not null
-#  domain                                 :string           default(""), not null
+#  account_domain                         :string           default(""), not null
 #  account_username                       :string           default(""), not null
 #  account_display_name                   :string           default(""), not null
 #  account_note                           :string           default(""), not null
@@ -35,6 +35,8 @@
 #  status_violation_threshold             :integer          default(1), not null
 #  reaction_type                          :string           default([]), not null, is an Array
 #  reaction_allow_follower                :boolean          default(TRUE), not null
+#  emoji_reaction_name                    :string           default(""), not null
+#  emoji_reaction_origin_domain           :string           default(""), not null
 #  account_action                         :integer          default(0), not null
 #  status_action                          :integer          default(0), not null
 #  reaction_action                        :integer          default(0), not null

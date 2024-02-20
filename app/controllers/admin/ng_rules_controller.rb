@@ -56,13 +56,13 @@ module Admin
     end
 
     def resource_params
-      params.require(:ng_rule).permit(:title, :expires_in, :domain, :account_username, :account_display_name, :account_note,
+      params.require(:ng_rule).permit(:title, :expires_in, :account_domain, :account_username, :account_display_name, :account_note,
                                       :account_field_name, :account_field_value, :account_avatar_state, :account_header_state,
                                       :account_include_local, :status_spoiler_text, :status_text, :status_tag,
                                       :status_media_state, :status_sensitive_state, :status_cw_state, :status_poll_state,
                                       :status_quote_state, :status_reply_state, :status_media_threshold, :status_poll_threshold,
                                       :status_mention_threshold, :status_mention_threshold_stranger_only, :status_violation_threshold,
-                                      :reaction_type, :reaction_allow_follower,
+                                      :reaction_type, :reaction_allow_follower, :emoji_reaction_name, :emoji_reaction_origin_domain,
                                       :status_reference_threshold, :account_action, :status_action, :reaction_action,
                                       status_visibility: [], status_searchability: [])
     end

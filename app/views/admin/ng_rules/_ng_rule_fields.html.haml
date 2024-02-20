@@ -14,7 +14,7 @@
 
 .fields-row
   .fields-row__column.fields-row__column-6.fields-group
-    = f.input :domain, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+    = f.input :account_domain, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
   .fields-row__column.fields-row__column-6.fields-group
     = f.input :account_include_local, as: :boolean, wrapper: :with_label, hint: false
 
@@ -81,6 +81,12 @@
 
 .fields-row
   = f.input :reaction_allow_follower, wrapper: :with_label, hint: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :emoji_reaction_name, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :emoji_reaction_origin_domain, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false
 
 .fields-group
   = f.input :account_action, wrapper: :with_label, as: :radio_buttons, collection: [[:nothing, 0], [:silence, 1], [:suspend, 2]], include_blank: false, label_method: ->(i) { I18n.t("ng_rules.actions.accounts.#{i[0]}") }

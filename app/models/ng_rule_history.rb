@@ -8,11 +8,16 @@
 #  ng_rule_id :bigint(8)        not null
 #  account_id :bigint(8)        not null
 #  text       :string
+#  keyword    :string
+#  count      :integer
 #  uri        :string
 #  reason     :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
 class NgRuleHistory < ApplicationRecord
+  enum :reason, { none: 0, account_domain: 1, account_username: 2 }, prefix: :within
+
   belongs_to :ng_rule
+  belongs_to :account
 end

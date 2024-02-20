@@ -20,6 +20,7 @@ linters:
   ViewLength:
     exclude:
       - 'app/views/admin/instances/show.html.haml'
+      - 'app/views/admin/ng_rules/_ng_rule_fields.html.haml'
       - 'app/views/settings/preferences/appearance/show.html.haml'
       - 'app/views/settings/preferences/other/show.html.haml'
 

@@ -5,7 +5,7 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
     create_table :ng_rules do |t|
       t.string :title, null: false, default: ''
       t.boolean :available, null: false, default: true
-      t.string :domain, null: false, default: ''
+      t.string :account_domain, null: false, default: ''
       t.string :account_username, null: false, default: ''
       t.string :account_display_name, null: false, default: ''
       t.string :account_note, null: false, default: ''
@@ -33,6 +33,8 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.integer :status_violation_threshold, null: false, default: 1
       t.string :reaction_type, null: false, default: [], array: true
       t.boolean :reaction_allow_follower, null: false, default: true
+      t.string :emoji_reaction_name, null: false, default: ''
+      t.string :emoji_reaction_origin_domain, null: false, default: ''
       t.integer :account_action, null: false, default: 0
       t.integer :status_action, null: false, default: 0
       t.integer :reaction_action, null: false, default: 0
@@ -43,8 +45,10 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
 
     create_table :ng_rule_histories do |t|
       t.belongs_to :ng_rule, null: false, foreign_key: { on_cascade: :delete }
-      t.references :account, null: false, foreign_key: { on_delete: :cascade }
+      t.belongs_to :account, null: false, foreign_key: { on_cascade: :delete }
       t.string :text
+      t.string :keyword
+      t.integer :count
       t.string :uri, index: true
       t.integer :reason, null: false
 
