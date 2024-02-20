@@ -31,7 +31,8 @@ class Admin::NgRule
   def record_if_text_match!(reason, text, arr, **options)
     keyword = detect_keyword(text, arr)
 
-    record!(reason, options, { text: text, keyword: keyword }) if keyword.present?
+    opts = options.merge({ text: text, keyword: keyword })
+    record!(reason, **opts) if keyword.present?
     keyword.present?
   end
 
