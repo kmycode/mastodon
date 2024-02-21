@@ -709,7 +709,7 @@ ja:
       status_media_state: メディアの有無
       status_media_threshold: メディア数の条件
       status_mention_threshold: メンション数の上限
-      status_mention_threshold_stranger_only: フォローしていない相手へのメンションを含む場合のみ、メンション数の上限を確認する
+      status_mention_threshold_stranger_only: フォローしていない相手へのメンション・参照を含む場合のみ、メンション・参照数の上限を確認する
       status_poll_state: 投票の有無
       status_poll_threshold: 投票項目数の上限
       status_quote_state: 引用の有無

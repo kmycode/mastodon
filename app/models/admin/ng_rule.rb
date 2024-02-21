@@ -27,7 +27,10 @@ class Admin::NgRule
   end
 
   def status_match?
-    @options[:mention_count] = 0 if @ng_rule.status_mention_threshold_stranger_only && !(@options[:mention_to_stranger])
+    if @ng_rule.status_mention_threshold_stranger_only && !(@options[:mention_to_stranger])
+      @options[:mention_count] = 0
+      @options[:reference_count] = 0
+    end
 
     has_media = @options[:media_count].is_a?(Integer) && @options[:media_count].positive?
     has_poll = @options[:poll_count].is_a?(Integer) && @options[:poll_count].positive?

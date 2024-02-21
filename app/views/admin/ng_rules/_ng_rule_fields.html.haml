@@ -83,9 +83,11 @@
 .fields-row
   .fields-row__column.fields-row__column-6.fields-group
     = f.input :status_mention_threshold, as: :string, wrapper: :with_label, hint: false, label: t('admin.ng_rules.status_mention_threshold')
-    = f.input :status_mention_threshold_stranger_only, as: :boolean, wrapper: :with_label, hint: false, label: t('admin.ng_rules.status_mention_threshold_stranger_only')
   .fields-row__column.fields-row__column-6.fields-group
     = f.input :status_reference_threshold, as: :string, wrapper: :with_label, hint: false, label: t('admin.ng_rules.status_reference_threshold')
+
+.fields-group
+  = f.input :status_mention_threshold_stranger_only, as: :boolean, wrapper: :with_label, hint: false, label: t('admin.ng_rules.status_mention_threshold_stranger_only')
 
 %h4= t('admin.ng_rules.edit.headers.reaction')
 %p.lead= t('admin.ng_rules.edit.summary.reaction')
