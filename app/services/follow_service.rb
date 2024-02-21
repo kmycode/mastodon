@@ -4,6 +4,7 @@ class FollowService < BaseService
   include Redisable
   include Payloadable
   include DomainControlHelper
+  include NgRuleHelper
 
   # Follow a remote user, notify remote user about the follow
   # @param [Account] source_account From which to follow
@@ -22,6 +23,8 @@ class FollowService < BaseService
 
     raise ActiveRecord::RecordNotFound if following_not_possible?
     raise Mastodon::NotPermittedError  if following_not_allowed?
+
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! @source_account, reaction_type: 'follow', recipient: @target_account
 
     if @source_account.following?(@target_account)
       return change_follow_options!
