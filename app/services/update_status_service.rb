@@ -102,7 +102,7 @@ class UpdateStatusService < BaseService
                                                visibility: @status.visibility,
                                                searchability: @status.compute_searchability,
                                                sensitive: @options.key?(:sensitive) ? @options[:sensitive] : @status.sensitive,
-                                               media_count: @options.key?(:media_ids) ? @options[:media_ids].size : @status.media_attachments.count,
+                                               media_count: @options[:media_ids].present? ? @options[:media_ids].size : @status.media_attachments.count,
                                                poll_count: @options.dig(:poll, 'options')&.size || 0,
                                                quote: quote_url,
                                                reply: @status.reply?,
