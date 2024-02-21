@@ -43,8 +43,9 @@ class Admin::NgRule
       state_match?(:status_cw_state, @options[:spoiler_text].present?, @ng_rule.status_cw_state) &&
       state_match?(:status_media_state, has_media, @ng_rule.status_media_state) &&
       state_match?(:status_poll_state, has_poll, @ng_rule.status_poll_state) &&
-      state_match?(:status_quote_state, @options[:quote].present?, @ng_rule.status_quote_state) &&
-      state_match?(:status_reply_state, @options[:reply].presence, @ng_rule.status_reply_state) &&
+      state_match?(:status_quote_state, @options[:quote], @ng_rule.status_quote_state) &&
+      state_match?(:status_reply_state, @options[:reply], @ng_rule.status_reply_state) &&
+      value_over_threshold?(:status_tag_threshold, (@options[:tag_names] || []).size, @ng_rule.status_tag_threshold) &&
       value_over_threshold?(:status_media_threshold, @options[:media_count], @ng_rule.status_media_threshold) &&
       value_over_threshold?(:status_poll_threshold, @options[:poll_count], @ng_rule.status_poll_threshold) &&
       value_over_threshold?(:status_mention_threshold, @options[:mention_count], @ng_rule.status_mention_threshold) &&
@@ -52,7 +53,8 @@ class Admin::NgRule
   end
 
   def reaction_match?
-    return false if @ng_rule.reaction_allow_follower && @options[:following]
+    recipient = @options[:recipient]
+    return false if @ng_rule.reaction_allow_follower && (recipient.id == @account.id || (!recipient.local? && !@account.local?) || recipient.following?(@account))
 
     if @options[:reaction_type] == 'emoji_reaction'
       enum_match?(:reaction_type, @options[:reaction_type], @ng_rule.reaction_type) &&
@@ -66,7 +68,7 @@ class Admin::NgRule
   def check_account_or_record!
     return true unless account_match?
 
-    record!('account', @account.uri)
+    record!('account', @account.uri) if !@account.local? || @ng_rule.record_history_also_local
 
     !violation?
   end
@@ -74,7 +76,7 @@ class Admin::NgRule
   def check_status_or_record!
     return true unless account_match? && status_match?
 
-    record!('status', @options[:uri], text: "#{@options[:spoiler_text]}\n\n#{@options[:text]}") if !@options.key?(:visibility) || %i(public public_unlisted login unlsited).include?(@options[:visibility].to_sym)
+    record!('status', @options[:uri], text: "#{@options[:spoiler_text]}\n\n#{@options[:text]}") if (!@options.key?(:visibility) || %i(public public_unlisted login unlsited).include?(@options[:visibility].to_sym)) && (!@account.local? || @ng_rule.record_history_also_local)
 
     !violation?
   end
@@ -82,35 +84,43 @@ class Admin::NgRule
   def check_reaction_or_record!
     return true unless account_match? && reaction_match?
 
-    record!('reaction', @options[:uri])
+    record!('reaction', @options[:uri]) if !@account.local? || @ng_rule.record_history_also_local
 
     !violation?
   end
 
-  private
-
-  def include?(text, word)
-    if word.start_with?('?') && word.size >= 2
-      text =~ /#{word[1..]}/
-    else
-      text.include?(word)
-    end
+  def account_action
+    @ng_rule.account_action.to_sym
   end
+
+  def status_action
+    @ng_rule.status_action.to_sym
+  end
+
+  def reaction_action
+    @ng_rule.reaction_action.to_sym
+  end
+
+  def self.extract_test!(custom_ng_words)
+    detect_keyword?('test', custom_ng_words)
+  end
+
+  private
 
   def already_did_count
     return @already_did_count if defined?(@already_did_count)
 
-    @already_did_count = NgRuleHistory.count(ng_rule: @ng_rule, account: @account)
+    @already_did_count = NgRuleHistory.where(ng_rule: @ng_rule, account: @account).count
   end
 
   def violation?
     limit = @ng_rule.rule_violation_threshold_per_account
-    limit = 1 unless limit.is_a?(Integer)
+    limit = 0 unless limit.is_a?(Integer)
 
+    return true if limit.zero?
     return false unless limit.positive?
-    return true if limit <= 1
 
-    already_did_count >= limit - 1
+    already_did_count >= limit
   end
 
   def record!(reason, uri, **options)
@@ -157,17 +167,31 @@ class Admin::NgRule
     value > expected
   end
 
-  def string_to_array(text)
-    text.split("\n")
-  end
-
-  def detect_keyword(text, arr)
-    arr = string_to_array(arr) if arr.is_a?(String)
-
-    arr.detect { |word| include?(text, word) ? word : nil }
-  end
-
   def detect_keyword?(text, arr)
-    detect_keyword(text, arr).present?
+    Admin::NgRule.detect_keyword?(text, arr)
+  end
+
+  class << self
+    def string_to_array(text)
+      text.split("\n")
+    end
+
+    def detect_keyword(text, arr)
+      arr = string_to_array(arr) if arr.is_a?(String)
+
+      arr.detect { |word| include?(text, word) ? word : nil }
+    end
+
+    def detect_keyword?(text, arr)
+      detect_keyword(text, arr).present?
+    end
+
+    def include?(text, word)
+      if word.start_with?('?') && word.size >= 2
+        text =~ /#{word[1..]}/
+      else
+        text.include?(word)
+      end
+    end
   end
 end

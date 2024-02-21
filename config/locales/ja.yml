@@ -661,13 +661,35 @@ ja:
         statuses:
           nothing: 何もしない
           reject: 拒否
+      available: 有効にする
       edit:
+        headers:
+          account: アカウント
+          action: アクション
+          reaction: リアクション
+          status: 投稿
+        helps:
+          generic: 全ての項目が条件にマッチしている場合のみ、制限が有効になります。
+          textarea: 複数行入力可能な箇所では、改行区切りで条件を入力します。複数行のうちどれか1つが含まれている場合、条件にマッチしたと判断されます。行頭を「?」で始めると正規表現を利用できます。
+          threshold: 上限の指定では、「-1」を指定すると上限チェックが無効になります。「0」を指定した場合、その対象が全く無い状態でないとチェックを通過しません。
+        history: このルールが適用された履歴を確認する
+        summary:
+          account: アカウントの条件を設定します。ここでマッチしたアカウントが投稿・リアクションする場合に、このNGルールのチェックが行われます。アカウント作成時のチェックは行いません。初期状態では全てのアカウントが対象になります。
+          action: このNGルールに該当した投稿・リアクションへの処置を決めます。条件に該当する場合、当該操作は即座に対処されます。対処を行わない場合、履歴のみが記録されます。
+          reaction: リアクションの条件を設定します。アカウントの条件も同時に一致しなければいけません。初期状態では、「リアクションの種類」を設定しない限り全てのリアクションが該当しませんので、ご注意ください。
+          status: 投稿の条件を設定します。アカウントの条件も同時に一致しなければいけません。初期状態では、「公開範囲」「検索許可」を設定しない限り全ての投稿が該当しませんので、ご注意ください。
         title: NGルールを編集
+      emoji_reaction_name: 絵文字リアクションで使われる絵文字またはショートコード
+      emoji_reaction_origin_domain: 絵文字リアクションで使われたカスタム絵文字のドメイン
+      emoji_reaction_origin_domain_hint: 他のサーバーの絵文字に相乗りした場合、その絵文字がもともと登録されていたサーバーのドメインが使用されます
       index:
         empty: NGルールが空です
         title: NGルール
       new:
         title: 新規NGルール
+      reaction_action: リアクションに対して行うアクション
+      reaction_allow_follower: フォロワーを対象とした全てのリアクションを許可する
+      reaction_allow_follower_hint: これを有効にすると、他のサーバー同士のリアクションは無条件で許可されます
       reaction_type: リアクションの種類
       reaction_types:
         emoji_reaction: 絵文字リアクション
@@ -675,10 +697,14 @@ ja:
         follow: フォロー
         reblog: ブースト
         vote: 投票
+      record_history_also_local: ローカルユーザーも履歴記録の対象とする
+      rubular: 正規表現チェッカー
+      rule_violation_threshold_per_account: アカウントごとにルール違反を許容する回数
       states:
         needed: 有り
         no_needed: 無し
-        optional: どちらでも
+        optional: 不問
+      status_action: 投稿に対して行うアクション
       status_cw_state: 警告文の有無
       status_media_state: メディアの有無
       status_media_threshold: メディア数の条件
@@ -695,6 +721,7 @@ ja:
       status_tag: タグ
       status_text: 投稿本文
       status_visibility: 公開範囲
+      test_error: 正規表現の文法が誤っています
       title: NGルール
     ng_words:
       block_unfollow_account_mention: 自分のサーバーのフォロワーを持たない全てのアカウントからのメンション・参照を全て拒否する
@@ -1986,6 +2013,7 @@ ja:
     title: '%{name}: "%{quote}"'
     too_many_hashtags: ハッシュタグが多すぎます
     too_many_mentions: メンションが多すぎます
+    violate_rules: サーバールールに違反するため投稿できません
     visibilities:
       direct: ダイレクト
       limited: 限定投稿

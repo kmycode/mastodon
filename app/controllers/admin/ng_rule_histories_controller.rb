@@ -14,7 +14,7 @@ module Admin
     private
 
     def set_ng_rule
-      @ng_rule = NgRule.find(params[:id])
+      @ng_rule = ::NgRule.find(params[:id])
     end
 
     def set_histories

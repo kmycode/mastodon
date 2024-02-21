@@ -213,7 +213,7 @@ describe Admin::NgRule do
 
     context 'when account matches but reaction does not match' do
       let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
-      let(:options) { { uri: uri, reaction_type: 'favourite' } }
+      let(:options) { { uri: uri, recipient: Fabricate(:account), reaction_type: 'favourite' } }
       let(:ng_rule) { Fabricate(:ng_rule, account_domain: 'example.com', status_text: 'span', reaction_type: ['reblog']) }
 
       it_behaves_like 'does not match rule'
@@ -221,13 +221,13 @@ describe Admin::NgRule do
 
     context 'with reaction type rule' do
       let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
-      let(:options) { { uri: uri, reaction_type: 'favourite' } }
+      let(:options) { { uri: uri, recipient: Fabricate(:account), reaction_type: 'favourite' } }
       let(:ng_rule) { Fabricate(:ng_rule, reaction_type: ['favourite', 'follow']) }
 
       it_behaves_like 'matches rule', 'reaction'
 
       context 'when reblog' do
-        let(:options) { { uri: uri, reaction_type: 'reblog' } }
+        let(:options) { { uri: uri, recipient: Fabricate(:account), reaction_type: 'reblog' } }
 
         it_behaves_like 'does not match rule'
       end
@@ -235,7 +235,7 @@ describe Admin::NgRule do
 
     context 'with emoji reaction shortcode rule' do
       let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
-      let(:options) { { uri: uri, reaction_type: 'emoji_reaction', emoji_reaction_name: 'ohagi' } }
+      let(:options) { { uri: uri, recipient: Fabricate(:account), reaction_type: 'emoji_reaction', emoji_reaction_name: 'ohagi' } }
       let(:ng_rule) { Fabricate(:ng_rule, reaction_type: ['emoji_reaction'], emoji_reaction_name: 'ohagi') }
 
       it_behaves_like 'matches rule', 'reaction'

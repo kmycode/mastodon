@@ -8,6 +8,7 @@ class ProcessReferencesService < BaseService
 
   DOMAIN = ENV['WEB_DOMAIN'] || ENV.fetch('LOCAL_DOMAIN', nil)
   REFURL_EXP = /(RT|QT|BT|RN|RE)((:|;)?\s+|:|;)(#{URI::DEFAULT_PARSER.make_regexp(%w(http https))})/
+  QUOTEURL_EXP = /(QT|RN|RE)((:|;)?\s+|:|;)(#{URI::DEFAULT_PARSER.make_regexp(%w(http https))})/
   MAX_REFERENCES = 5
 
   def call(status, reference_parameters, urls: nil, fetch_remote: true, no_fetch_urls: nil, quote_urls: nil)
@@ -47,6 +48,10 @@ class ProcessReferencesService < BaseService
 
   def self.extract_uris(text)
     text.scan(REFURL_EXP).pluck(3)
+  end
+
+  def self.extract_quote(text)
+    text.scan(QUOTEURL_EXP).pick(3)
   end
 
   def self.perform_worker_async(status, reference_parameters, urls, quote_urls)

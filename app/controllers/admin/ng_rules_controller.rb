@@ -23,6 +23,14 @@ module Admin
     def create
       authorize :ng_words, :create?
 
+      begin
+        test_words!
+      rescue
+        flash[:alert] = I18n.t('admin.ng_rules.test_error')
+        redirect_to new_admin_ng_rule_path
+        return
+      end
+
       @ng_rule = ::NgRule.build(resource_params)
 
       if @ng_rule.save
@@ -34,6 +42,14 @@ module Admin
 
     def update
       authorize :ng_words, :create?
+
+      begin
+        test_words!
+      rescue
+        flash[:alert] = I18n.t('admin.ng_rules.test_error')
+        redirect_to edit_admin_ng_rule_path(id: @ng_rule.id)
+        return
+      end
 
       if @ng_rule.update(resource_params)
         redirect_to admin_ng_rules_path
@@ -62,9 +78,27 @@ module Admin
                                       :status_sensitive_state, :status_cw_state, :status_media_state, :status_poll_state,
                                       :status_quote_state, :status_reply_state, :status_media_threshold, :status_poll_threshold,
                                       :status_mention_threshold, :status_mention_threshold_stranger_only, :rule_violation_threshold_per_account,
-                                      :reaction_type, :reaction_allow_follower, :emoji_reaction_name, :emoji_reaction_origin_domain,
+                                      :reaction_allow_follower, :emoji_reaction_name, :emoji_reaction_origin_domain,
                                       :status_reference_threshold, :account_action, :status_action, :reaction_action,
-                                      status_visibility: [], status_searchability: [])
+                                      status_visibility: [], status_searchability: [], reaction_type: [])
+    end
+
+    def test_words!
+      arr = [
+        resource_params[:account_domain],
+        resource_params[:account_username],
+        resource_params[:account_display_name],
+        resource_params[:account_note],
+        resource_params[:account_field_name],
+        resource_params[:account_field_value],
+        resource_params[:status_spoiler_text],
+        resource_params[:status_text],
+        resource_params[:status_tag],
+        resource_params[:emoji_reaction_name],
+        resource_params[:emoji_reaction_origin_domain],
+      ].compact_blank.join("\n")
+
+      Admin::NgRule.extract_test!(arr) if arr.present?
     end
   end
 end

@@ -669,6 +669,21 @@ en:
           nothing: Do nothing
           reject: Reject
       edit:
+        headers:
+          account: Account
+          action: Action
+          reaction: Reaction
+          status: Post
+        helps:
+          generic: Restrictions will be in effect only if all items match the criteria.
+          textarea: Where multiple lines can be entered, enter conditions separated by line breaks. If any one of the multiple lines is included, the condition is considered a match. You can use a regular expression by starting a line with "?" at the beginning of a line to use a regular expression.
+          threshold: In specifying the upper limit, if "-1" is specified, the upper limit check is disabled. If "0" is specified, the check will not pass unless the subject is completely absent.
+        history: Check the history of this rule's application.
+        summary:
+          account: Set the conditions for the account. This NG rule will be checked when an account matching here posts and reacts. No check is performed when an account is created. By default, all accounts are subject to this rule.
+          action: We will determine the action to be taken for any postings/reactions that fall under this NG rule. If the condition is met, the operation in question will be dealt with immediately. If no action is taken, only the history is recorded.
+          reaction: Set the reaction conditions. The account conditions must match at the same time. Please note that by default, not all reactions will match unless you set the "Reaction Type".
+          status: Set the conditions of your submission. The account conditions must match at the same time. Please note that by default, not all posts will be applicable unless you set the "Visibility" and "Searchability".
         title: Edit NG Rule
       index:
         empty: NGルールが空です
@@ -682,10 +697,31 @@ en:
         follow: Follow
         reblog: Boost
         vote: Vote
+      reaction_allow_follower_hint: If enabled, reactions between other servers are unconditionally allowed
+      record_history_also_local: Local users are also subject to history recording
+      rubular: Regular Expression Checker
       states:
         needed: have
         no_needed: Should not have
         optional: Optional
+      status_action: Action for posts
+      status_cw_state: Has warning or not
+      status_media_state: Has media or not
+      status_media_threshold: Medias limit
+      status_mention_threshold: Mentions limit
+      status_mention_threshold_stranger_only: フォローしていない相手へのメンションを含む場合のみ、メンション数の上限を確認する
+      status_poll_state: Has poll or not
+      status_poll_threshold: Poll items limit
+      status_quote_state: Has quote or not
+      status_reference_threshold: Has reference or not
+      status_reply_state: Is reply or not
+      status_searchability: Searchability
+      status_sensitive_state: Is sensitive or not
+      status_spoiler_text: Content warning
+      status_tag: Tag
+      status_text: Post text
+      status_visibility: Visibility
+      test_error: Regular expression syntax is incorrect.
       title: NG Rule
     ng_words:
       block_unfollow_account_mention: Reject all mentions/references from all accounts that do not have followers on your server
@@ -1997,6 +2033,7 @@ en:
     title: '%{name}: "%{quote}"'
     too_many_hashtags: Too many hashtags
     too_many_mentions: Too many mentions
+    violate_rules: Violate NG rules
     visibilities:
       direct: Direct
       limited: Limited

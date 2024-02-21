@@ -68,6 +68,34 @@ RSpec.describe ReblogService, type: :service do
     end
   end
 
+  context 'with ng rule' do
+    subject { described_class.new }
+
+    let(:status) { Fabricate(:status, account: alice, visibility: :public) }
+
+    context 'when rule matches' do
+      before do
+        Fabricate(:ng_rule, reaction_type: ['reblog'], reaction_action: :reject)
+        subject.call(alice, status)
+      end
+
+      it 'does not reblog' do
+        expect(alice.reblogged?(status)).to be false
+      end
+    end
+
+    context 'when rule does not match' do
+      before do
+        Fabricate(:ng_rule, account_display_name: 'else', reaction_type: ['reblog'], reaction_action: :reject)
+        subject.call(alice, status)
+      end
+
+      it 'reblogs' do
+        expect(alice.reblogged?(status)).to be true
+      end
+    end
+  end
+
   context 'when the reblogged status is discarded in the meantime' do
     let(:status) { Fabricate(:status, account: alice, visibility: :public, text: 'discard-status-text') }
 

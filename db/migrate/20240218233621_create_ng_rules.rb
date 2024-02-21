@@ -5,6 +5,7 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
     create_table :ng_rules do |t|
       t.string :title, null: false, default: ''
       t.boolean :available, null: false, default: true
+      t.boolean :record_history_also_local, null: false, default: true
       t.string :account_domain, null: false, default: ''
       t.string :account_username, null: false, default: ''
       t.string :account_display_name, null: false, default: ''
@@ -25,6 +26,7 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.integer :status_poll_state, null: false, default: 0
       t.integer :status_quote_state, null: false, default: 0
       t.integer :status_reply_state, null: false, default: 0
+      t.integer :status_tag_threshold, null: false, default: -1
       t.integer :status_media_threshold, null: false, default: -1
       t.integer :status_poll_threshold, null: false, default: -1
       t.integer :status_mention_threshold, null: false, default: -1
@@ -34,7 +36,7 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.boolean :reaction_allow_follower, null: false, default: true
       t.string :emoji_reaction_name, null: false, default: ''
       t.string :emoji_reaction_origin_domain, null: false, default: ''
-      t.integer :rule_violation_threshold_per_account, null: false, default: 1
+      t.integer :rule_violation_threshold_per_account, null: false, default: 0
       t.integer :account_action, null: false, default: 0
       t.integer :status_action, null: false, default: 0
       t.integer :reaction_action, null: false, default: 0
