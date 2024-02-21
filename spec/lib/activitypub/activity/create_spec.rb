@@ -1560,6 +1560,32 @@ RSpec.describe ActivityPub::Activity::Create do
           expect(vote.uri).to eq object_json[:id]
           expect(poll.reload.cached_tallies).to eq [1, 0]
         end
+
+        context 'when ng rule is existing' do
+          let(:custom_before) { true }
+
+          context 'when ng rule is match' do
+            before do
+              Fabricate(:ng_rule, account_domain: 'example.com', reaction_action: :reject, reaction_type: ['vote'])
+              subject.perform
+            end
+
+            it 'does not create a reblog by sender of status' do
+              expect(poll.votes.first).to be_nil
+            end
+          end
+
+          context 'when ng rule is not match' do
+            before do
+              Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_action: :reject, reaction_type: ['vote'])
+              subject.perform
+            end
+
+            it 'creates a reblog by sender of status' do
+              expect(poll.votes.first).to_not be_nil
+            end
+          end
+        end
       end
 
       context 'when a vote to an expired local poll' do

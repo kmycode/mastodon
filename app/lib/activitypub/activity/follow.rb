@@ -3,6 +3,7 @@
 class ActivityPub::Activity::Follow < ActivityPub::Activity
   include Payloadable
   include FollowHelper
+  include NgRuleHelper
 
   def perform
     return request_follow_for_friend if friend_follow?
@@ -10,6 +11,7 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
     target_account = account_from_uri(object_uri)
 
     return if target_account.nil? || !target_account.local? || delete_arrived_first?(@json['id'])
+    return unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'follow', recipient: target_account
 
     # Update id of already-existing follow requests
     existing_follow_request = ::FollowRequest.find_by(account: @account, target_account: target_account) || PendingFollowRequest.find_by(account: @account, target_account: target_account)

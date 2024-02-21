@@ -373,6 +373,8 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def poll_vote?
     return false if replied_to_status.nil? || replied_to_status.preloadable_poll.nil? || !replied_to_status.local? || !replied_to_status.preloadable_poll.options.include?(@object['name'])
 
+    return true unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'vote', recipient: replied_to_status.account
+
     poll_vote! unless replied_to_status.preloadable_poll.expired?
 
     true
