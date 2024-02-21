@@ -30,7 +30,7 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.integer :status_media_threshold, null: false, default: -1
       t.integer :status_poll_threshold, null: false, default: -1
       t.integer :status_mention_threshold, null: false, default: -1
-      t.boolean :status_mention_threshold_stranger_only, null: false, default: true
+      t.boolean :status_mention_allow_follower, null: false, default: true
       t.integer :status_reference_threshold, null: false, default: -1
       t.string :reaction_type, null: false, default: [], array: true
       t.boolean :reaction_allow_follower, null: false, default: true

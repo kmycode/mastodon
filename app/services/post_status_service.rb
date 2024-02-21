@@ -234,7 +234,7 @@ class PostStatusService < BaseService
                                                reply: @in_reply_to.present?,
                                                mention_count: mention_count,
                                                reference_count: reference_urls.size,
-                                               mention_to_stranger: mention_to_stranger? || reference_to_stranger?
+                                               mention_to_following: !(mention_to_stranger? || reference_to_stranger?)
 
     raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless result
   end

@@ -188,20 +188,20 @@ describe Admin::NgRule do
     context 'with mention size rule' do
       let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
       let(:options) { { uri: uri, mention_count: 5 } }
-      let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_mention_threshold_stranger_only: false) }
+      let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_mention_allow_follower: false) }
 
       it_behaves_like 'matches rule', 'status'
 
       context 'when mention to stranger' do
-        let(:options) { { uri: uri, mention_count: 5, mention_to_stranger: true } }
-        let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_mention_threshold_stranger_only: true) }
+        let(:options) { { uri: uri, mention_count: 5, mention_to_following: false } }
+        let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_mention_allow_follower: true) }
 
         it_behaves_like 'matches rule', 'status'
       end
 
       context 'when mention to follower' do
-        let(:options) { { uri: uri, mention_count: 5, mention_to_stranger: false } }
-        let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_mention_threshold_stranger_only: true) }
+        let(:options) { { uri: uri, mention_count: 5, mention_to_following: true } }
+        let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_mention_allow_follower: true) }
 
         it_behaves_like 'does not match rule', 'status'
       end

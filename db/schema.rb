@@ -913,7 +913,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
     t.integer "status_media_threshold", default: -1, null: false
     t.integer "status_poll_threshold", default: -1, null: false
     t.integer "status_mention_threshold", default: -1, null: false
-    t.boolean "status_mention_threshold_stranger_only", default: true, null: false
+    t.boolean "status_mention_allow_follower", default: true, null: false
     t.integer "status_reference_threshold", default: -1, null: false
     t.string "reaction_type", default: [], null: false, array: true
     t.boolean "reaction_allow_follower", default: true, null: false

@@ -171,7 +171,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
                                       reply: in_reply_to_uri.present?,
                                       mention_count: mentioned_accounts.count,
                                       reference_count: reference_uris.size,
-                                      mention_to_stranger: mention_to_local_stranger? || reference_to_local_stranger?
+                                      mention_to_following: !(mention_to_local_stranger? || reference_to_local_stranger?)
   end
 
   def accounts_in_audience

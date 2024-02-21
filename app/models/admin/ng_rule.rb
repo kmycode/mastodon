@@ -27,10 +27,7 @@ class Admin::NgRule
   end
 
   def status_match?
-    if @ng_rule.status_mention_threshold_stranger_only && !(@options[:mention_to_stranger])
-      @options[:mention_count] = 0
-      @options[:reference_count] = 0
-    end
+    return false if @ng_rule.status_mention_allow_follower && @options[:mention_to_following]
 
     has_media = @options[:media_count].is_a?(Integer) && @options[:media_count].positive?
     has_poll = @options[:poll_count].is_a?(Integer) && @options[:poll_count].positive?

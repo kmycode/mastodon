@@ -708,8 +708,8 @@ en:
       status_cw_state: Has warning or not
       status_media_state: Has media or not
       status_media_threshold: Medias limit
+      status_mention_allow_follower: フォローしていない相手へのメンションを含む場合のみ、メンション数の上限を確認する
       status_mention_threshold: Mentions limit
-      status_mention_threshold_stranger_only: フォローしていない相手へのメンションを含む場合のみ、メンション数の上限を確認する
       status_poll_state: Has poll or not
       status_poll_threshold: Poll items limit
       status_quote_state: Has quote or not
