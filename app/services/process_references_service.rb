@@ -46,8 +46,10 @@ class ProcessReferencesService < BaseService
     reference_parameters.any? || (urls || []).any? || (quote_urls || []).any? || FormattingHelper.extract_status_plain_text(status).scan(REFURL_EXP).pluck(3).uniq.any?
   end
 
-  def self.extract_uris(text)
-    text.scan(REFURL_EXP).pluck(3)
+  def self.extract_uris(text, remote: false)
+    return text.scan(REFURL_EXP).pluck(3) unless remote
+
+    PlainTextFormatter.new(text, false).to_s.scan(REFURL_EXP).pluck(3)
   end
 
   def self.extract_quote(text)

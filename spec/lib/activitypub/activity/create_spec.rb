@@ -2024,6 +2024,43 @@ RSpec.describe ActivityPub::Activity::Create do
         end
       end
 
+      context 'when ng rule is set' do
+        let(:custom_before) { true }
+        let(:content) { 'Lorem ipsum' }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: content,
+            to: 'https://www.w3.org/ns/activitystreams#Public',
+          }
+        end
+
+        context 'when rule hits' do
+          before do
+            Fabricate(:ng_rule, status_text: 'ipsum', status_action: :reject)
+            subject.perform
+          end
+
+          it 'creates status' do
+            status = sender.statuses.first
+            expect(status).to be_nil
+          end
+        end
+
+        context 'when rule does not hit' do
+          before do
+            Fabricate(:ng_rule, status_text: 'amely', status_action: :reject)
+            subject.perform
+          end
+
+          it 'creates status' do
+            status = sender.statuses.first
+            expect(status).to_not be_nil
+          end
+        end
+      end
+
       context 'when hashtags limit is set' do
         let(:post_hash_tags_max) { 2 }
         let(:custom_before) { true }

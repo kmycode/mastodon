@@ -2,6 +2,7 @@
 
 class ActivityPub::Activity::Create < ActivityPub::Activity
   include FormattingHelper
+  include NgRuleHelper
 
   def perform
     @account.schedule_refresh_if_stale!
@@ -150,8 +151,27 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     valid = !Admin::NgWord.stranger_mention_reject_with_count?(@raw_mention_uris.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
     valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?) if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
     valid = false if valid && Setting.block_unfollow_account_mention && (mention_to_local_stranger? || reference_to_local_stranger?) && !local_following_sender?
+    valid = false if valid && !valid_status_for_ng_rule?
 
     valid
+  end
+
+  def valid_status_for_ng_rule?
+    check_invalid_status_for_ng_rule! @account,
+                                      uri: @status_parser.uri,
+                                      spoiler_text: @params[:spoiler_text],
+                                      text: @params[:text],
+                                      tag_names: @tags.map(&:name),
+                                      visibility: @params[:visibility].to_s,
+                                      searchability: @params[:searchability]&.to_s,
+                                      sensitive: @params[:sensitive],
+                                      media_count: @params[:media_attachment_ids]&.size,
+                                      poll_count: @params[:poll]&.options&.size || 0,
+                                      quote: quote,
+                                      reply: in_reply_to_uri.present?,
+                                      mention_count: mentioned_accounts.count,
+                                      reference_count: reference_uris.size,
+                                      mention_to_stranger: mention_to_local_stranger? || reference_to_local_stranger?
   end
 
   def accounts_in_audience
@@ -552,7 +572,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     return @reference_uris if defined?(@reference_uris)
 
     @reference_uris = @object['references'].nil? ? [] : (ActivityPub::FetchReferencesService.new.call(@account, @object['references']) || []).uniq
-    @reference_uris += ProcessReferencesService.extract_uris(@object['content'] || '')
+    @reference_uris += ProcessReferencesService.extract_uris(@object['content'] || '', remote: true)
   end
 
   def local_referred_accounts

@@ -72,26 +72,27 @@ RSpec.describe ReblogService, type: :service do
     subject { described_class.new }
 
     let(:status) { Fabricate(:status, account: alice, visibility: :public) }
+    let(:account) { Fabricate(:account) }
 
     context 'when rule matches' do
       before do
         Fabricate(:ng_rule, reaction_type: ['reblog'], reaction_action: :reject)
-        subject.call(alice, status)
       end
 
       it 'does not reblog' do
-        expect(alice.reblogged?(status)).to be false
+        expect { subject.call(account, status) }.to raise_error Mastodon::ValidationError
+        expect(account.reblogged?(status)).to be false
       end
     end
 
     context 'when rule does not match' do
       before do
         Fabricate(:ng_rule, account_display_name: 'else', reaction_type: ['reblog'], reaction_action: :reject)
-        subject.call(alice, status)
       end
 
       it 'reblogs' do
-        expect(alice.reblogged?(status)).to be true
+        expect { subject.call(account, status) }.to_not raise_error
+        expect(account.reblogged?(status)).to be true
       end
     end
   end
