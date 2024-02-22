@@ -222,6 +222,7 @@ class PostStatusService < BaseService
 
   def validate_status_ng_rules!
     result = check_invalid_status_for_ng_rule! @account,
+                                               reaction_type: 'create',
                                                spoiler_text: @options[:spoiler_text] || '',
                                                text: @text,
                                                tag_names: Extractor.extract_hashtags(@text) || [],

@@ -12,7 +12,7 @@ class FavouriteService < BaseService
   def call(account, status)
     authorize_with account, status, :favourite?
 
-    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! account, reaction_type: 'favourite', recipient: status.account
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! account, reaction_type: 'favourite', recipient: status.account, target_status: status
 
     favourite = Favourite.find_by(account: account, status: status)
 

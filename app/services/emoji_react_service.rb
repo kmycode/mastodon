@@ -22,7 +22,7 @@ class EmojiReactService < BaseService
     shortcode, domain = name.split('@')
     domain = nil if TagManager.instance.local_domain?(domain)
 
-    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! account, reaction_type: 'emoji_reaction', emoji_reaction_name: shortcode, emoji_reaction_origin_domain: domain, recipient: status.account
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! account, reaction_type: 'emoji_reaction', emoji_reaction_name: shortcode, emoji_reaction_origin_domain: domain, recipient: status.account, target_status: status
 
     with_redis_lock("emoji_reaction:#{status.id}") do
       custom_emoji = CustomEmoji.find_by(shortcode: shortcode, domain: domain)

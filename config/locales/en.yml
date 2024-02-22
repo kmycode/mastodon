@@ -686,6 +686,9 @@ en:
           status: Set the conditions of your submission. The account conditions must match at the same time. Please note that by default, not all posts will be applicable unless you set the "Visibility" and "Searchability".
         title: Edit NG Rule
       index:
+        delete: Delete
+        edit:
+          title: Edit
         empty: NGルールが空です
         title: NG Rules
       new:
@@ -697,6 +700,7 @@ en:
         follow: Follow
         reblog: Boost
         vote: Vote
+      reaction_allow_follower: Allow all reactions targeted at followers
       reaction_allow_follower_hint: If enabled, reactions between other servers are unconditionally allowed
       record_history_also_local: Local users are also subject to history recording
       rubular: Regular Expression Checker
@@ -705,10 +709,11 @@ en:
         no_needed: Should not have
         optional: Optional
       status_action: Action for posts
+      status_allow_follower_mention: Check posts only if they contain mentions/references to non-followers
+      status_allow_follower_mention_hint: If enabled, mentions between other servers are unconditionally allowed
       status_cw_state: Has warning or not
       status_media_state: Has media or not
       status_media_threshold: Medias limit
-      status_mention_allow_follower: フォローしていない相手へのメンションを含む場合のみ、メンション数の上限を確認する
       status_mention_threshold: Mentions limit
       status_poll_state: Has poll or not
       status_poll_threshold: Poll items limit
@@ -723,6 +728,20 @@ en:
       status_visibility: Visibility
       test_error: Regular expression syntax is incorrect.
       title: NG Rule
+    ng_rule_histories:
+      data:
+        media_count: "%{count} medias"
+        poll_count: "%{count} polls"
+      moderate_account: Moderate account
+      reason_actions:
+        reaction_emoji_reaction: Emoji reaction
+        reaction_favourite: Favourite
+        reaction_follow: Follow request
+        reaction_reblog: Boost
+        reaction_vote: Vote
+        status_create: Post
+        status_edit: Edit post
+      title: NG Rule History %{title}
     ng_words:
       block_unfollow_account_mention: Reject all mentions/references from all accounts that do not have followers on your server
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous

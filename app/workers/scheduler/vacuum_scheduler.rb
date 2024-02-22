@@ -26,6 +26,7 @@ class Scheduler::VacuumScheduler
       feeds_vacuum,
       imports_vacuum,
       list_statuses_vacuum,
+      ng_histories_vacuum,
     ]
   end
 
@@ -63,6 +64,10 @@ class Scheduler::VacuumScheduler
 
   def applications_vacuum
     Vacuum::ApplicationsVacuum.new
+  end
+
+  def ng_histories_vacuum
+    Vacuum::NgHistoriesVacuum.new
   end
 
   def content_retention_policy

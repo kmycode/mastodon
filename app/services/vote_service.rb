@@ -17,7 +17,7 @@ class VoteService < BaseService
     @choices = choices
     @votes   = []
 
-    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! @account, reaction_type: 'vote', recipient: @poll.status.account
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! @account, reaction_type: 'vote', recipient: @poll.status.account, target_status: @poll.status
 
     already_voted = true
 

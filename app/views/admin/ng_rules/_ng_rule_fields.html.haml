@@ -19,6 +19,9 @@
 %h4= t('admin.ng_rules.edit.headers.account')
 %p.lead= t('admin.ng_rules.edit.summary.account')
 
+.fields-group
+  = f.input :account_allow_followed_by_local, as: :boolean, wrapper: :with_label, hint: t('admin.ng_rules.account_allow_followed_by_local_hint'), label: t('admin.ng_rules.account_allow_followed_by_local')
+
 .fields-row
   .fields-row__column.fields-row__column-6.fields-group
     = f.input :account_domain, as: :text, input_html: { rows: 4 }, wrapper: :with_label, label: t('admin.ng_rules.account_domain'), hint: false
@@ -46,6 +49,9 @@
 
 %h4= t('admin.ng_rules.edit.headers.status')
 %p.lead= t('admin.ng_rules.edit.summary.status')
+
+.fields-group
+  = f.input :status_allow_follower_mention, as: :boolean, wrapper: :with_label, hint: t('admin.ng_rules.status_allow_follower_mention_hint'), label: t('admin.ng_rules.status_allow_follower_mention')
 
 .fields-row
   .fields-row__column.fields-row__column-6.fields-group
@@ -86,17 +92,14 @@
   .fields-row__column.fields-row__column-6.fields-group
     = f.input :status_reference_threshold, as: :string, wrapper: :with_label, hint: false, label: t('admin.ng_rules.status_reference_threshold')
 
-.fields-group
-  = f.input :status_mention_allow_follower, as: :boolean, wrapper: :with_label, hint: false, label: t('admin.ng_rules.status_mention_allow_follower')
-
 %h4= t('admin.ng_rules.edit.headers.reaction')
 %p.lead= t('admin.ng_rules.edit.summary.reaction')
 
-.fields-group
-  = f.input :reaction_type, wrapper: :with_block_label, collection: %i(favourite emoji_reaction reblog follow vote), as: :check_boxes, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', label_method: ->(context) { I18n.t("admin.ng_rules.reaction_types.#{context}") }, include_blank: false, label: t('admin.ng_rules.reaction_type')
-
 .fields-row
   = f.input :reaction_allow_follower, wrapper: :with_label, hint: t('admin.ng_rules.reaction_allow_follower_hint'), label: t('admin.ng_rules.reaction_allow_follower')
+
+.fields-group
+  = f.input :reaction_type, wrapper: :with_block_label, collection: %i(favourite emoji_reaction reblog follow vote), as: :check_boxes, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', label_method: ->(context) { I18n.t("admin.ng_rules.reaction_types.#{context}") }, include_blank: false, label: t('admin.ng_rules.reaction_type')
 
 .fields-row
   .fields-row__column.fields-row__column-6.fields-group

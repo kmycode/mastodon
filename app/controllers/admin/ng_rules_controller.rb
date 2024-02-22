@@ -77,9 +77,10 @@ module Admin
                                       :account_include_local, :status_spoiler_text, :status_text, :status_tag,
                                       :status_sensitive_state, :status_cw_state, :status_media_state, :status_poll_state,
                                       :status_quote_state, :status_reply_state, :status_media_threshold, :status_poll_threshold,
-                                      :status_mention_threshold, :status_mention_allow_follower, :rule_violation_threshold_per_account,
+                                      :status_mention_threshold, :status_allow_follower_mention, :rule_violation_threshold_per_account,
                                       :reaction_allow_follower, :emoji_reaction_name, :emoji_reaction_origin_domain,
                                       :status_reference_threshold, :account_action, :status_action, :reaction_action,
+                                      :account_allow_followed_by_local,
                                       status_visibility: [], status_searchability: [], reaction_type: [])
     end
 

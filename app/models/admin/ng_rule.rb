@@ -10,6 +10,7 @@ class Admin::NgRule
 
   def account_match?
     return false if @account.local? && !@ng_rule.account_include_local
+    return false if !@account.local? && @ng_rule.account_allow_followed_by_local && followed_by_local_accounts?
 
     if @account.local?
       return false unless @ng_rule.account_include_local
@@ -27,7 +28,7 @@ class Admin::NgRule
   end
 
   def status_match?
-    return false if @ng_rule.status_mention_allow_follower && @options[:mention_to_following]
+    return false if @ng_rule.status_allow_follower_mention && @options[:mention_to_following]
 
     has_media = @options[:media_count].is_a?(Integer) && @options[:media_count].positive?
     has_poll = @options[:poll_count].is_a?(Integer) && @options[:poll_count].positive?
@@ -68,7 +69,7 @@ class Admin::NgRule
   def check_account_or_record!
     return true unless account_match?
 
-    record!('account', @account.uri) if !@account.local? || @ng_rule.record_history_also_local
+    record!('account', @account.uri, 'account_create') if !@account.local? || @ng_rule.record_history_also_local
 
     !violation?
   end
@@ -76,7 +77,13 @@ class Admin::NgRule
   def check_status_or_record!
     return true unless account_match? && status_match?
 
-    record!('status', @options[:uri], text: "#{@options[:spoiler_text]}\n\n#{@options[:text]}") if (!@options.key?(:visibility) || %i(public public_unlisted login unlsited).include?(@options[:visibility].to_sym)) && (!@account.local? || @ng_rule.record_history_also_local)
+    text = [@options[:spoiler_text], @options[:text]].compact_blank.join("\n\n")
+    data = {
+      media_count: @options[:media_count],
+      poll_count: @options[:poll_count],
+      url: @options[:url],
+    }
+    record!('status', @options[:uri], "status_#{@options[:reaction_type]}", text: text, data: data) if loggable_visibility? && (!@account.local? || @ng_rule.record_history_also_local)
 
     !violation?
   end
@@ -84,9 +91,20 @@ class Admin::NgRule
   def check_reaction_or_record!
     return true unless account_match? && reaction_match?
 
-    record!('reaction', @options[:uri]) if !@account.local? || @ng_rule.record_history_also_local
+    text = @options[:target_status].present? ? [@options[:target_status].spoiler_text, @options[:target_status].text].compact_blank.join("\n\n") : nil
+    data = {
+      url: @options[:target_status].present? ? @options[:target_status].url : nil,
+    }
+    record!('reaction', @options[:uri], "reaction_#{@options[:reaction_type]}", text: text, data: data) if loggable_visibility? && (!@account.local? || @ng_rule.record_history_also_local)
 
     !violation?
+  end
+
+  def loggable_visibility?
+    visibility = @options[:target_status]&.visibility || @options[:visibility]
+    return true unless visibility
+
+    %i(public public_unlisted login unlsited).include?(visibility.to_sym)
   end
 
   def account_action
@@ -107,6 +125,10 @@ class Admin::NgRule
 
   private
 
+  def followed_by_local_accounts?
+    Follow.exists?(account: Account.local, target_account: @account)
+  end
+
   def already_did_count
     return @already_did_count if defined?(@already_did_count)
 
@@ -123,14 +145,17 @@ class Admin::NgRule
     already_did_count >= limit
   end
 
-  def record!(reason, uri, **options)
+  def record!(reason, uri, reason_action, **options)
     opts = options.merge({
       ng_rule: @ng_rule,
       account: @account,
+      local: @account.local?,
       reason: reason,
+      reason_action: reason_action,
       uri: uri,
     })
     opts = opts.merge({ skip_count: already_did_count, skip: true }) unless violation?
+
     NgRuleHistory.create!(**opts)
   end
 

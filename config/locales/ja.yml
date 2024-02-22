@@ -641,6 +641,8 @@ ja:
     media_attachments:
       title: 投稿された画像
     ng_rules:
+      account_allow_followed_by_local: ローカルユーザーからフォローされていないアカウントのみチェックする
+      account_allow_followed_by_local_hint: 1以上のフォローを持つ全てのローカルユーザーが信頼できる場合にのみこのオプションを使用してください
       account_avatar_state: アイコンの有無
       account_display_name: 名前
       account_domain: ドメイン
@@ -683,12 +685,15 @@ ja:
       emoji_reaction_origin_domain: 絵文字リアクションで使われたカスタム絵文字のドメイン
       emoji_reaction_origin_domain_hint: 他のサーバーの絵文字に相乗りした場合、その絵文字がもともと登録されていたサーバーのドメインが使用されます
       index:
+        delete: 削除
+        edit:
+          title: 編集
         empty: NGルールが空です
         title: NGルール
       new:
         title: 新規NGルール
       reaction_action: リアクションに対して行うアクション
-      reaction_allow_follower: フォロワーを対象とした全てのリアクションを許可する
+      reaction_allow_follower: フォロワー以外に対するリアクションのみチェックする
       reaction_allow_follower_hint: これを有効にすると、他のサーバー同士のリアクションは無条件で許可されます
       reaction_type: リアクションの種類
       reaction_types:
@@ -705,10 +710,11 @@ ja:
         no_needed: 無し
         optional: 不問
       status_action: 投稿に対して行うアクション
+      status_allow_follower_mention: フォロワー以外へのメンション・参照を含む場合のみ投稿をチェックする
+      status_allow_follower_mention_hint: これを有効にすると、他のサーバー同士のメンションは無条件で許可されます
       status_cw_state: 警告文の有無
       status_media_state: メディアの有無
       status_media_threshold: メディア数の条件
-      status_mention_allow_follower: フォローしていない相手へのメンション・参照を含む場合のみ、メンション・参照数の上限を確認する
       status_mention_threshold: メンション数の上限
       status_poll_state: 投票の有無
       status_poll_threshold: 投票項目数の上限
@@ -723,6 +729,20 @@ ja:
       status_visibility: 公開範囲
       test_error: 正規表現の文法が誤っています
       title: NGルール
+    ng_rule_histories:
+      data:
+        media_count: "%{count} のメディア"
+        poll_count: 項目 %{count} の投票
+      moderate_account: アカウントをモデレートする
+      reason_actions:
+        reaction_emoji_reaction: 絵文字リアクション
+        reaction_favourite: お気に入りに登録
+        reaction_follow: フォローリクエスト
+        reaction_reblog: ブースト
+        reaction_vote: 投票
+        status_create: 投稿
+        status_edit: 投稿を編集
+      title: NGルール「%{title}」の履歴
     ng_words:
       block_unfollow_account_mention: 自分のサーバーのフォロワーを持たない全てのアカウントからのメンション・参照を全て拒否する
       hide_local_users_for_anonymous: ログインしていない状態でローカルユーザーの投稿をタイムラインから取得できないようにする

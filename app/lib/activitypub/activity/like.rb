@@ -26,7 +26,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
 
   def process_favourite
     return if @account.favourited?(@original_status)
-    return unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'favourite', recipient: @original_status.account
+    return unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'favourite', recipient: @original_status.account, target_status: @original_status
 
     favourite = @original_status.favourites.create!(account: @account, uri: @json['id'])
 
@@ -45,7 +45,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
       return if emoji.nil?
     end
 
-    return unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'emoji_reaction', emoji_reaction_name: emoji&.shortcode || shortcode, emoji_reaction_origin_domain: emoji&.domain, recipient: @original_status.account
+    return unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'emoji_reaction', emoji_reaction_name: emoji&.shortcode || shortcode, emoji_reaction_origin_domain: emoji&.domain, recipient: @original_status.account, target_status: @original_status
 
     reaction = nil
 

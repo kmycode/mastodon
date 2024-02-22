@@ -177,7 +177,9 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
 
   def valid_status_for_ng_rule?
     check_invalid_status_for_ng_rule! @account,
-                                      uri: @status_parser.uri,
+                                      reaction_type: 'edit',
+                                      uri: @status.uri,
+                                      url: @status_parser.url || @status.url,
                                       spoiler_text: @status.spoiler_text,
                                       text: @status.text,
                                       tag_names: @raw_tags,

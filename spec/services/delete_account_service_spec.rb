@@ -47,6 +47,8 @@ RSpec.describe DeleteAccountService, type: :service do
 
     let!(:account_note) { Fabricate(:account_note, account: account) }
 
+    let!(:ng_rule_history) { Fabricate(:ng_rule_history, account: account) }
+
     it 'deletes associated owned and target records and target notifications' do
       subject
 
@@ -68,6 +70,7 @@ RSpec.describe DeleteAccountService, type: :service do
       expect { bookmark_category_status.status.reload }.to_not raise_error
       expect { antenna_account.account.reload }.to_not raise_error
       expect { circle_account.account.reload }.to_not raise_error
+      expect { ng_rule_history.reload }.to_not raise_error
       expect { list.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect { list_account.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect { antenna_account.reload }.to raise_error(ActiveRecord::RecordNotFound)

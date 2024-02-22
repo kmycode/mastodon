@@ -17,6 +17,7 @@
 #  account_avatar_state                 :integer          default("optional"), not null
 #  account_header_state                 :integer          default("optional"), not null
 #  account_include_local                :boolean          default(TRUE), not null
+#  account_allow_followed_by_local      :boolean          default(FALSE), not null
 #  status_spoiler_text                  :string           default(""), not null
 #  status_text                          :string           default(""), not null
 #  status_tag                           :string           default(""), not null
@@ -32,7 +33,7 @@
 #  status_media_threshold               :integer          default(-1), not null
 #  status_poll_threshold                :integer          default(-1), not null
 #  status_mention_threshold             :integer          default(-1), not null
-#  status_mention_allow_follower        :boolean          default(TRUE), not null
+#  status_allow_follower_mention        :boolean          default(TRUE), not null
 #  status_reference_threshold           :integer          default(-1), not null
 #  reaction_type                        :string           default([]), not null, is an Array
 #  reaction_allow_follower              :boolean          default(TRUE), not null

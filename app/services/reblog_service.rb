@@ -17,7 +17,7 @@ class ReblogService < BaseService
 
     authorize_with account, reblogged_status, :reblog?
 
-    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! account, reaction_type: 'reblog', recipient: reblogged_status.account
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! account, reaction_type: 'reblog', recipient: reblogged_status.account, target_status: reblogged_status
 
     reblog = account.statuses.find_by(reblog: reblogged_status)
 

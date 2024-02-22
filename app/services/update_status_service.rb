@@ -96,6 +96,7 @@ class UpdateStatusService < BaseService
 
   def validate_status_ng_rules!
     result = check_invalid_status_for_ng_rule! @status.account,
+                                               reaction_type: 'edit',
                                                spoiler_text: @options.key?(:spoiler_text) ? (@options[:spoiler_text] || '') : @status.spoiler_text,
                                                text: text,
                                                tag_names: Extractor.extract_hashtags(text) || [],

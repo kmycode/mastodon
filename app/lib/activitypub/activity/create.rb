@@ -158,7 +158,9 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
   def valid_status_for_ng_rule?
     check_invalid_status_for_ng_rule! @account,
-                                      uri: @status_parser.uri,
+                                      reaction_type: 'create',
+                                      uri: @params[:uri],
+                                      url: @params[:url],
                                       spoiler_text: @params[:spoiler_text],
                                       text: @params[:text],
                                       tag_names: @tags.map(&:name),
@@ -373,7 +375,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def poll_vote?
     return false if replied_to_status.nil? || replied_to_status.preloadable_poll.nil? || !replied_to_status.local? || !replied_to_status.preloadable_poll.options.include?(@object['name'])
 
-    return true unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'vote', recipient: replied_to_status.account
+    return true unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'vote', recipient: replied_to_status.account, target_status: replied_to_status
 
     poll_vote! unless replied_to_status.preloadable_poll.expired?
 

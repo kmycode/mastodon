@@ -1,14 +1,14 @@
 .filters-list__item{ class: [ng_rule.expired? && 'expired'] }
   = link_to edit_admin_ng_rule_path(ng_rule), class: 'filters-list__item__title' do
-    %h3= ng_rule.title.presence || t('ng_rules.index.empty_title')
+    %h3= ng_rule.title.presence || t('admin.ng_rules.index.empty_title')
 
     - if ng_rule.expires?
-      .expiration{ title: t('ng_rules.index.expires_on', date: l(ng_rule.expires_at)) }
+      .expiration{ title: t('filters.index.expires_on', date: l(ng_rule.expires_at)) }
         - if ng_rule.expired?
           = t('invites.expired')
         - else
-          = t('ng_rules.index.expires_in', distance: distance_of_time_in_words_to_now(ng_rule.expires_at))
+          = t('filters.index.expires_in', distance: distance_of_time_in_words_to_now(ng_rule.expires_at))
 
     %div
-      = table_link_to 'pencil', t('ng_rules.edit.title'), edit_admin_ng_rule_path(ng_rule)
-      = table_link_to 'times', t('ng_rules.index.delete'), admin_ng_rule_path(ng_rule), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }
+      = table_link_to 'pencil', t('admin.ng_rules.index.edit.title'), edit_admin_ng_rule_path(ng_rule)
+      = table_link_to 'times', t('admin.ng_rules.index.delete'), admin_ng_rule_path(ng_rule), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }

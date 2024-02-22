@@ -872,16 +872,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
 
   create_table "ng_rule_histories", force: :cascade do |t|
     t.bigint "ng_rule_id", null: false
-    t.bigint "account_id", null: false
+    t.bigint "account_id"
     t.string "text"
     t.string "uri"
-    t.string "reason", null: false
+    t.integer "reason", null: false
+    t.integer "reason_action", null: false
     t.boolean "skip", default: false, null: false
     t.integer "skip_count"
+    t.boolean "local", default: true, null: false
+    t.jsonb "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["account_id"], name: "index_ng_rule_histories_on_account_id"
-    t.index ["ng_rule_id"], name: "index_ng_rule_histories_on_ng_rule_id"
+    t.index ["created_at"], name: "index_ng_rule_histories_on_created_at"
+    t.index ["ng_rule_id", "account_id"], name: "index_ng_rule_histories_on_ng_rule_id_and_account_id"
     t.index ["uri"], name: "index_ng_rule_histories_on_uri"
   end
 
@@ -898,6 +901,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
     t.integer "account_avatar_state", default: 0, null: false
     t.integer "account_header_state", default: 0, null: false
     t.boolean "account_include_local", default: true, null: false
+    t.boolean "account_allow_followed_by_local", default: false, null: false
     t.string "status_spoiler_text", default: "", null: false
     t.string "status_text", default: "", null: false
     t.string "status_tag", default: "", null: false
@@ -913,7 +917,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
     t.integer "status_media_threshold", default: -1, null: false
     t.integer "status_poll_threshold", default: -1, null: false
     t.integer "status_mention_threshold", default: -1, null: false
-    t.boolean "status_mention_allow_follower", default: true, null: false
+    t.boolean "status_allow_follower_mention", default: true, null: false
     t.integer "status_reference_threshold", default: -1, null: false
     t.string "reaction_type", default: [], null: false, array: true
     t.boolean "reaction_allow_follower", default: true, null: false

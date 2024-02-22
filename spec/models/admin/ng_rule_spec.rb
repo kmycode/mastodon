@@ -103,7 +103,10 @@ describe Admin::NgRule do
   end
 
   describe '#check_status_or_record!' do
-    subject { described_class.new(ng_rule, account, **options).check_status_or_record! }
+    subject do
+      opts = { reaction_type: 'create' }.merge(options)
+      described_class.new(ng_rule, account, **opts).check_status_or_record!
+    end
 
     context 'when status matches but account does not match' do
       let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
@@ -188,20 +191,20 @@ describe Admin::NgRule do
     context 'with mention size rule' do
       let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
       let(:options) { { uri: uri, mention_count: 5 } }
-      let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_mention_allow_follower: false) }
+      let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_allow_follower_mention: false) }
 
       it_behaves_like 'matches rule', 'status'
 
       context 'when mention to stranger' do
         let(:options) { { uri: uri, mention_count: 5, mention_to_following: false } }
-        let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_mention_allow_follower: true) }
+        let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_allow_follower_mention: true) }
 
         it_behaves_like 'matches rule', 'status'
       end
 
       context 'when mention to follower' do
         let(:options) { { uri: uri, mention_count: 5, mention_to_following: true } }
-        let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_mention_allow_follower: true) }
+        let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_allow_follower_mention: true) }
 
         it_behaves_like 'does not match rule', 'status'
       end
@@ -209,7 +212,9 @@ describe Admin::NgRule do
   end
 
   describe '#check_reaction_or_record!' do
-    subject { described_class.new(ng_rule, account, **options).check_reaction_or_record! }
+    subject do
+      described_class.new(ng_rule, account, **options).check_reaction_or_record!
+    end
 
     context 'when account matches but reaction does not match' do
       let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }

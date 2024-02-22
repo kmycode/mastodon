@@ -15,6 +15,7 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.integer :account_avatar_state, null: false, default: 0
       t.integer :account_header_state, null: false, default: 0
       t.boolean :account_include_local, null: false, default: true
+      t.boolean :account_allow_followed_by_local, null: false, default: false
       t.string :status_spoiler_text, null: false, default: ''
       t.string :status_text, null: false, default: ''
       t.string :status_tag, null: false, default: ''
@@ -30,7 +31,7 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.integer :status_media_threshold, null: false, default: -1
       t.integer :status_poll_threshold, null: false, default: -1
       t.integer :status_mention_threshold, null: false, default: -1
-      t.boolean :status_mention_allow_follower, null: false, default: true
+      t.boolean :status_allow_follower_mention, null: false, default: true
       t.integer :status_reference_threshold, null: false, default: -1
       t.string :reaction_type, null: false, default: [], array: true
       t.boolean :reaction_allow_follower, null: false, default: true
@@ -46,15 +47,21 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
     end
 
     create_table :ng_rule_histories do |t|
-      t.belongs_to :ng_rule, null: false, foreign_key: { on_cascade: :delete }
-      t.belongs_to :account, null: false, foreign_key: { on_cascade: :delete }
+      t.belongs_to :ng_rule, null: false, foreign_key: { on_cascade: :delete }, index: false
+      t.belongs_to :account, foreign_key: { on_cascade: :nullify }, index: false
       t.string :text
       t.string :uri, index: true
-      t.string :reason, null: false
+      t.integer :reason, null: false
+      t.integer :reason_action, null: false
       t.boolean :skip, null: false, default: false
       t.integer :skip_count
+      t.boolean :local, null: false, default: true
+      t.jsonb :data
 
       t.timestamps
     end
+
+    add_index :ng_rule_histories, [:ng_rule_id, :account_id]
+    add_index :ng_rule_histories, :created_at
   end
 end
