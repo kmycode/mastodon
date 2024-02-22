@@ -407,7 +407,7 @@ RSpec.describe UpdateStatusService, type: :service do
 
     context 'when rule hits' do
       before do
-        Fabricate(:ng_rule, status_text: 'Bar', status_action: :reject)
+        Fabricate(:ng_rule, status_text: 'Bar', status_allow_follower_mention: false, status_action: :reject)
       end
 
       it 'does not update text' do
@@ -419,7 +419,7 @@ RSpec.describe UpdateStatusService, type: :service do
 
     context 'when rule does not hit' do
       before do
-        Fabricate(:ng_rule, status_text: 'aar', status_action: :reject)
+        Fabricate(:ng_rule, status_text: 'aar', status_allow_follower_mention: false, status_action: :reject)
       end
 
       it 'does not update text' do

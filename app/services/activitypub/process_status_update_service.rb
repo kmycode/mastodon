@@ -169,10 +169,10 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def validate_status_mentions!
+    raise AbortError unless valid_status_for_ng_rule?
     raise AbortError if (mention_to_local_stranger? || reference_to_local_stranger?) && Admin::NgWord.stranger_mention_reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status)
     raise AbortError if Admin::NgWord.mention_reject?(@raw_mentions.size, uri: @status.uri, target_type: :status, text: "#{@status_parser.spoiler_text}\n#{@status_parser.text}")
     raise AbortError if (mention_to_local_stranger? || reference_to_local_stranger?) && Admin::NgWord.stranger_mention_reject_with_count?(@raw_mentions.size, uri: @status.uri, target_type: :status, text: "#{@status_parser.spoiler_text}\n#{@status_parser.text}")
-    raise AbortError unless valid_status_for_ng_rule?
   end
 
   def valid_status_for_ng_rule?

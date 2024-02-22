@@ -149,8 +149,8 @@ class PostStatusService < BaseService
     @status = @account.statuses.new(status_attributes)
     process_mentions_service.call(@status, limited_type: @status.limited_visibility? ? @limited_scope : '', circle: @circle, save_records: false)
     safeguard_mentions!(@status)
-    validate_status_mentions!
     validate_status_ng_rules!
+    validate_status_mentions!
 
     @status.limited_scope = :personal if @status.limited_visibility? && !@status.reply_limited? && !process_mentions_service.mentions?
 
