@@ -17,6 +17,6 @@
 class NgwordHistory < ApplicationRecord
   include Paginable
 
-  enum target_type: { status: 0, account_note: 1, account_name: 2 }, _suffix: :blocked
-  enum reason: { ng_words: 0, ng_words_for_stranger_mention: 1, hashtag_count: 2, mention_count: 3, stranger_mention_count: 4 }, _prefix: :within
+  enum :target_type, { status: 0, account_note: 1, account_name: 2 }, suffix: :blocked
+  enum :reason, { ng_words: 0, ng_words_for_stranger_mention: 1, hashtag_count: 2, mention_count: 3, stranger_mention_count: 4 }, prefix: :within
 end

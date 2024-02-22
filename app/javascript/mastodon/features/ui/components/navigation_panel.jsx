@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import CirclesIcon from '@/material-icons/400-24px/account_circle-fill.svg?react';
 import AlternateEmailIcon from '@/material-icons/400-24px/alternate_email.svg?react';
 import BookmarksIcon from '@/material-icons/400-24px/bookmarks-fill.svg?react';
+import ExploreIcon from '@/material-icons/400-24px/explore.svg?react';
 import PeopleIcon from '@/material-icons/400-24px/group.svg?react';
 import HomeIcon from '@/material-icons/400-24px/home-fill.svg?react';
 import ListAltIcon from '@/material-icons/400-24px/list_alt.svg?react';
@@ -16,7 +17,6 @@ import PublicIcon from '@/material-icons/400-24px/public.svg?react';
 import SearchIcon from '@/material-icons/400-24px/search.svg?react';
 import SettingsIcon from '@/material-icons/400-24px/settings-fill.svg?react';
 import StarIcon from '@/material-icons/400-24px/star-fill.svg?react';
-import TagIcon from '@/material-icons/400-24px/tag.svg?react';
 import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import { WordmarkLogo } from 'mastodon/components/logo';
 import { NavigationPortal } from 'mastodon/components/navigation_portal';
@@ -74,7 +74,7 @@ class NavigationPanel extends Component {
     const { signedIn, disabledAccountId } = this.context.identity;
 
     const explorer = (trendsEnabled ? (
-      <ColumnLink transparent to='/explore' icon='hashtag' iconComponent={TagIcon} text={intl.formatMessage(messages.explore)} />
+      <ColumnLink transparent to='/explore' icon='hashtag' iconComponent={ExploreIcon} text={intl.formatMessage(messages.explore)} />
     ) : (
       <ColumnLink transparent to='/search' icon='search' iconComponent={SearchIcon} text={intl.formatMessage(messages.search)} />
     ));
