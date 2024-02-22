@@ -104,7 +104,7 @@ class Admin::NgRule
     visibility = @options[:target_status]&.visibility || @options[:visibility]
     return true unless visibility
 
-    %i(public public_unlisted login unlsited).include?(visibility.to_sym)
+    %i(public public_unlisted login unlisted).include?(visibility.to_sym)
   end
 
   def account_action
