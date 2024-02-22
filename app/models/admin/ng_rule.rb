@@ -198,7 +198,7 @@ class Admin::NgRule
 
   class << self
     def string_to_array(text)
-      text.split("\n")
+      text.delete("\r").split("\n")
     end
 
     def detect_keyword(text, arr)

@@ -71,6 +71,14 @@ describe Admin::NgRule do
       it_behaves_like 'matches rule', 'account'
     end
 
+    context 'with display name rule' do
+      let(:uri) { '' }
+      let(:account) { Fabricate(:account, display_name: '') }
+      let(:ng_rule) { Fabricate(:ng_rule, account_display_name: "?^$\r\n?[a-z0-9]{10}", account_include_local: true) }
+
+      it_behaves_like 'matches rule', 'account'
+    end
+
     context 'with field name rule' do
       let(:account) { Fabricate(:account, fields_attributes: { '0' => { name: 'Name', value: 'Value' } }, domain: 'example.com', uri: uri) }
       let(:ng_rule) { Fabricate(:ng_rule, account_field_name: 'Name') }
