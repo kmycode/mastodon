@@ -653,6 +653,8 @@ ja:
       account_note: アカウントの説明文
       account_username: ID
       available: 有効にする
+      copy: 複製
+      copy_error: 複製に失敗しました。
       edit:
         headers:
           account: アカウント

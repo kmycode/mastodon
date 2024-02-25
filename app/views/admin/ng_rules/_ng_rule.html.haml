@@ -11,4 +11,5 @@
 
     %div
       = table_link_to 'pencil', t('admin.ng_rules.index.edit.title'), edit_admin_ng_rule_path(ng_rule)
+      = table_link_to 'files-o', t('admin.ng_rules.copy'), duplicate_admin_ng_rule_path(ng_rule), method: :post, data: { confirm: t('admin.accounts.are_you_sure') }
       = table_link_to 'times', t('admin.ng_rules.index.delete'), admin_ng_rule_path(ng_rule), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }

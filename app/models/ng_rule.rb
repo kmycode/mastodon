@@ -84,6 +84,12 @@ class NgRule < ApplicationRecord
     [30.minutes, 1.hour, 6.hours, 12.hours, 1.day, 1.week, 2.weeks, 1.month, 3.months].find { |expires_in| expires_in.from_now >= expires_at }
   end
 
+  def copy!
+    dup
+  end
+
+  private
+
   def clean_up_arrays
     self.status_visibility    = Array(status_visibility).map(&:strip).filter_map(&:presence)
     self.status_searchability = Array(status_searchability).map(&:strip).filter_map(&:presence)

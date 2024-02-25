@@ -657,6 +657,8 @@ en:
       account_include_local: Contains local users
       account_note: Account note
       account_username: ID
+      copy: Copy
+      copy_error: Copy failed.
       edit:
         headers:
           account: Account

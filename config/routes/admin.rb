@@ -34,7 +34,11 @@ namespace :admin do
   resources :warning_presets, except: [:new, :show]
   resource :ng_words, only: [:show, :create]
   resources :ngword_histories, only: [:index]
-  resources :ng_rules, except: [:show]
+  resources :ng_rules, except: [:show] do
+    member do
+      post :duplicate
+    end
+  end
   resources :ng_rule_histories, only: [:show]
   resource :sensitive_words, only: [:show, :create]
   resource :special_instances, only: [:show, :create]

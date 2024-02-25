@@ -138,6 +138,13 @@ describe Admin::NgRule do
       let(:ng_rule) { Fabricate(:ng_rule, status_text: 'spam') }
 
       it_behaves_like 'matches rule', 'status'
+
+      it 'records as public' do
+        subject
+
+        history = NgRuleHistory.order(id: :desc).find_by(ng_rule: ng_rule)
+        expect(history.hidden).to be false
+      end
     end
 
     context 'with visibility rule' do
@@ -215,6 +222,24 @@ describe Admin::NgRule do
         let(:ng_rule) { Fabricate(:ng_rule, status_mention_threshold: 4, status_allow_follower_mention: true) }
 
         it_behaves_like 'does not match rule', 'status'
+      end
+    end
+
+    context 'with private privacy' do
+      let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
+      let(:options) { { uri: uri, text: 'this is a spam', visibility: 'private' } }
+      let(:ng_rule) { Fabricate(:ng_rule, status_text: 'spam', status_visibility: %w(private)) }
+
+      it 'records as hidden' do
+        expect(subject).to be false
+
+        history = NgRuleHistory.order(id: :desc).find_by(ng_rule: ng_rule)
+        expect(history).to_not be_nil
+        expect(history.account_id).to eq account.id
+        expect(history.reason).to eq 'status'
+        expect(history.uri).to be_nil
+        expect(history.hidden).to be true
+        expect(history.text).to be_nil
       end
     end
   end

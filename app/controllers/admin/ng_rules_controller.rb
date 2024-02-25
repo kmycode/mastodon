@@ -2,7 +2,7 @@
 
 module Admin
   class NgRulesController < BaseController
-    before_action :set_ng_rule, only: [:edit, :update, :destroy]
+    before_action :set_ng_rule, only: [:edit, :update, :destroy, :duplicate]
 
     def index
       authorize :ng_words, :show?
@@ -56,6 +56,16 @@ module Admin
       else
         render :edit
       end
+    end
+
+    def duplicate
+      authorize :ng_words, :create?
+
+      @ng_rule = @ng_rule.copy!
+
+      flash[:alert] = I18n.t('admin.ng_rules.copy_error') unless @ng_rule.save
+
+      redirect_to admin_ng_rules_path
     end
 
     def destroy
