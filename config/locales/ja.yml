@@ -652,32 +652,20 @@ ja:
       account_include_local: ローカルユーザーを含む
       account_note: アカウントの説明文
       account_username: ID
-      actions:
-        accounts:
-          nothing: 何もしない
-          silence: サイレンス
-          suspend: サスペンド
-        reactions:
-          nothing: 何もしない
-          reject: 拒否
-        statuses:
-          nothing: 何もしない
-          reject: 拒否
       available: 有効にする
       edit:
         headers:
           account: アカウント
-          action: アクション
+          options: オプション
           reaction: リアクション
           status: 投稿
         helps:
           generic: 全ての項目が条件にマッチしている場合のみ、制限が有効になります。
-          textarea: 複数行入力可能な箇所では、改行区切りで条件を入力します。複数行のうちどれか1つが含まれている場合、条件にマッチしたと判断されます。行頭を「?」で始めると正規表現を利用できます。
-          threshold: 上限の指定では、「-1」を指定すると上限チェックが無効になります。「0」を指定した場合、その対象が全く無い状態でないとチェックを通過しません。
+          textarea_html: <strong>複数行入力可能な箇所</strong>では、改行区切りで条件を入力します。複数行のうちどれか1つが含まれている場合、条件にマッチしたと判断されます。行頭を「?」で始めると正規表現を利用できます。
+          threshold_html: <strong>上限の指定</strong>では、「-1」を指定すると上限チェックが無効になります。「0」を指定した場合、その対象が全く無い状態に限りチェックを通過します。例えばメディア数の上限「0」は、「メディア無し」と等価ではありません。
         history: このルールが適用された履歴を確認する
         summary:
           account: アカウントの条件を設定します。ここでマッチしたアカウントが投稿・リアクションする場合に、このNGルールのチェックが行われます。アカウント作成時のチェックは行いません。初期状態では全てのアカウントが対象になります。
-          action: このNGルールに該当した投稿・リアクションへの処置を決めます。条件に該当する場合、当該操作は即座に対処されます。対処を行わない場合、履歴のみが記録されます。
           reaction: リアクションの条件を設定します。アカウントの条件も同時に一致しなければいけません。初期状態では、「リアクションの種類」を設定しない限り全てのリアクションが該当しませんので、ご注意ください。
           status: 投稿の条件を設定します。アカウントの条件も同時に一致しなければいけません。初期状態では、「公開範囲」「検索許可」を設定しない限り全ての投稿が該当しませんので、ご注意ください。
         title: NGルールを編集
@@ -689,10 +677,10 @@ ja:
         edit:
           title: 編集
         empty: NGルールが空です
+        preamble: 通常のスパムへの対応にはNGワードで十分ですが、中にはどうしても緩すぎる条件を指定しなければならず、他の正常な投稿が規制に巻き込まれやすくなる場合があります。NGルールにおいてアカウントや投稿の特徴などを詳細に指定して、巻き込まれる投稿を少しでも減らすことができます。また、リアクションを使用したスパムの防止もサポートしています。
         title: NGルール
       new:
         title: 新規NGルール
-      reaction_action: リアクションに対して行うアクション
       reaction_allow_follower: フォロワー以外に対するリアクションのみチェックする
       reaction_allow_follower_hint: これを有効にすると、他のサーバー同士のリアクションは無条件で許可されます
       reaction_type: リアクションの種類
@@ -704,21 +692,21 @@ ja:
         vote: 投票
       record_history_also_local: ローカルユーザーも履歴記録の対象とする
       rubular: 正規表現チェッカー
-      rule_violation_threshold_per_account: アカウントごとにルール違反を許容する回数
       states:
         needed: 有り
         no_needed: 無し
         optional: 不問
-      status_action: 投稿に対して行うアクション
       status_allow_follower_mention: フォロワー以外へのメンション・参照を含む場合のみ投稿をチェックする
       status_allow_follower_mention_hint: これを有効にすると、他のサーバー同士のメンションは無条件で許可されます
       status_cw_state: 警告文の有無
       status_media_state: メディアの有無
-      status_media_threshold: メディア数の条件
+      status_media_threshold: メディア数の上限
+      status_mention_state: メンションの有無
       status_mention_threshold: メンション数の上限
       status_poll_state: 投票の有無
       status_poll_threshold: 投票項目数の上限
       status_quote_state: 引用の有無
+      status_reference_state: 参照の有無
       status_reference_threshold: 参照数の上限
       status_reply_state: 返信の有無
       status_searchability: 検索許可
@@ -730,9 +718,12 @@ ja:
       test_error: 正規表現の文法が誤っています
       title: NGルール
     ng_rule_histories:
+      back_to_ng_rule: NGルール設定に戻る
       data:
         media_count: "%{count} のメディア"
         poll_count: 項目 %{count} の投票
+      from_local_user: ローカルユーザー
+      hidden: 非公開投稿
       moderate_account: アカウントをモデレートする
       reason_actions:
         reaction_emoji_reaction: 絵文字リアクション
@@ -745,7 +736,11 @@ ja:
       title: NGルール「%{title}」の履歴
     ng_words:
       block_unfollow_account_mention: 自分のサーバーのフォロワーを持たない全てのアカウントからのメンション・参照を全て拒否する
+      block_unfollow_account_mention_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。NGルールで代替してください。
+      deprecated: 新しいバージョンで削除する予定の設定
+      deprecated_hint: これらの設定は、次回のLTS、またはkmyblueバージョン15.0のどちらか早い方で削除する予定です。それぞれの設定の説明を参照して、可能であれば新しい設定に置き換えてください。
       hide_local_users_for_anonymous: ログインしていない状態でローカルユーザーの投稿をタイムラインから取得できないようにする
+      hide_local_users_for_anonymous_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。サーバー設定の「見つける」にある「公開タイムラインへの未認証のアクセスを許可する」で、完全ではありませんが代替可能です。
       history_hint: 設定されたNGワードによって実際に拒否された投稿などは、履歴より確認できます。NGワードの指定に誤りがないか定期的に確認することをおすすめします。
       hold_remote_new_accounts: リモートの新規アカウントを保留する
       keywords: 投稿できないキーワード
@@ -753,13 +748,14 @@ ja:
       keywords_for_stranger_mention_hint: フォローしていないアカウントへのメンション、参照、引用にのみ適用されます
       keywords_hint: 行を「?」で始めると、正規表現が使えます
       permit_new_account_domains: 新規ユーザーを自動承認するドメイン
+      preamble: スパムや嫌がらせを多くのサーバーから受け取った場合など、ドメインブロックで解決できない問題が発生した場合にこの設定が非常に役に立ちます。他のサーバーからの受信や自分のサーバー内で、特定キーワードが含まれていたり、メンション数が多すぎたりする投稿を拒否することができます。問題のない投稿が削除されないよう、設定は慎重に検討してください。拒否された投稿は、限定投稿でない限り履歴に記録されます。さらに細かい設定が必要な場合は、別の機能である「NGルール」をお使いください。
       post_hash_tags_max: 投稿に設定可能なハッシュタグの最大数
       post_mentions_max: 投稿に設定可能なメンションの最大数
       post_stranger_mentions_max: 投稿に設定可能なメンションの最大数 (メンション先にフォロワー以外を1人でも含む場合)
       remote_approval_list: 承認待ちのリモートアカウント一覧
       remote_approval_hint: 指定されていないドメインで新しく認識されたアカウントはサスペンド状態になります。その一覧を確認し、必要であれば承認を行うことができます。この設定が有効でない場合、全てのリモートアカウントが即座に承認されます。
       stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
-      stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
+      stranger_mention_from_local_ng_hint: この設定は削除予定です。設定削除後は、常にチェックをつけている場合と同じ挙動になります。この動作を希望しない場合は、NGルールで代替してください。
       test_error: NGワードのテストに失敗しました。正規表現のミスが含まれているかもしれません
       title: NGワードとスパム
     ngword_histories:
@@ -949,7 +945,7 @@ ja:
       title: サーバーのルール
     sensitive_words:
       alert: この投稿にはセンシティブなキーワードが含まれるため、警告文が追加されました
-      hint: センシティブなキーワードの設定は、当サーバーのローカルユーザーによる公開範囲「公開」「ローカル公開」「ログインユーザーのみ」に対して適用されます。
+      hint: センシティブなキーワードの設定は、ローカルタイムラインを流れる公開範囲「公開」「ローカル公開」「ログインユーザーのみ」に対して適用されます。条件に該当した投稿には強制的に警告文章が追加されます。NGワードと違い、デフォルトで連合の投稿を対象としません。
       keywords: センシティブなキーワード（警告文は除外）
       keywords_for_all: センシティブなキーワード（警告文にも適用）
       keywords_for_all_hint: ここで指定したキーワードを含む投稿は強制的にCWになります。警告文にも含まれていればCWになります。行が「?」で始まっていれば正規表現が使えます

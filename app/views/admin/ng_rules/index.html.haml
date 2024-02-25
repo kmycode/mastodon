@@ -4,6 +4,9 @@
 - content_for :heading_actions do
   = link_to t('admin.ng_rules.new.title'), new_admin_ng_rule_path, class: 'button'
 
+.simple_form
+  %p.lead= t('admin.ng_rules.index.preamble')
+
 - if @ng_rules.empty?
   .muted-hint.center-text= t 'admin.ng_rules.index.empty'
 - else

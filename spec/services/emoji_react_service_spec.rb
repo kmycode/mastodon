@@ -119,7 +119,7 @@ RSpec.describe EmojiReactService, type: :service do
     context 'when rule hits' do
       before do
         Fabricate(:custom_emoji, shortcode: 'ohagi')
-        Fabricate(:ng_rule, reaction_type: ['emoji_reaction'], reaction_action: :reject)
+        Fabricate(:ng_rule, reaction_type: ['emoji_reaction'])
       end
 
       it 'react with emoji' do
@@ -130,7 +130,7 @@ RSpec.describe EmojiReactService, type: :service do
     context 'when rule does not hit' do
       before do
         Fabricate(:custom_emoji, shortcode: 'ohagi')
-        Fabricate(:ng_rule, reaction_type: ['emoji_reaction'], emoji_reaction_name: 'aaa', reaction_action: :reject)
+        Fabricate(:ng_rule, reaction_type: ['emoji_reaction'], emoji_reaction_name: 'aaa')
       end
 
       it 'react with emoji' do

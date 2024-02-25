@@ -44,7 +44,7 @@ RSpec.describe FavouriteService, type: :service do
 
     context 'when rule matches' do
       before do
-        Fabricate(:ng_rule, reaction_type: ['favourite'], reaction_action: :reject)
+        Fabricate(:ng_rule, reaction_type: ['favourite'])
       end
 
       it 'does not favourite' do
@@ -55,7 +55,7 @@ RSpec.describe FavouriteService, type: :service do
 
     context 'when rule does not match' do
       before do
-        Fabricate(:ng_rule, account_display_name: 'else', reaction_type: ['favourite'], reaction_action: :reject)
+        Fabricate(:ng_rule, account_display_name: 'else', reaction_type: ['favourite'])
       end
 
       it 'favourites' do

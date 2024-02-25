@@ -76,7 +76,7 @@ RSpec.describe ReblogService, type: :service do
 
     context 'when rule matches' do
       before do
-        Fabricate(:ng_rule, reaction_type: ['reblog'], reaction_action: :reject)
+        Fabricate(:ng_rule, reaction_type: ['reblog'])
       end
 
       it 'does not reblog' do
@@ -87,7 +87,7 @@ RSpec.describe ReblogService, type: :service do
 
     context 'when rule does not match' do
       before do
-        Fabricate(:ng_rule, account_display_name: 'else', reaction_type: ['reblog'], reaction_action: :reject)
+        Fabricate(:ng_rule, account_display_name: 'else', reaction_type: ['reblog'])
       end
 
       it 'reblogs' do

@@ -101,7 +101,7 @@ class UpdateStatusService < BaseService
                                                text: text,
                                                tag_names: Extractor.extract_hashtags(text) || [],
                                                visibility: @status.visibility,
-                                               searchability: @status.compute_searchability,
+                                               searchability: @status.searchability,
                                                sensitive: @options.key?(:sensitive) ? @options[:sensitive] : @status.sensitive,
                                                media_count: @options[:media_ids].present? ? @options[:media_ids].size : @status.media_attachments.count,
                                                poll_count: @options.dig(:poll, 'options')&.size || 0,

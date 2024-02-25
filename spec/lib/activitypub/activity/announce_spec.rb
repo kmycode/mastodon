@@ -114,7 +114,7 @@ RSpec.describe ActivityPub::Activity::Announce do
     context 'when ng rule is existing' do
       context 'when ng rule is match' do
         before do
-          Fabricate(:ng_rule, account_domain: 'example.com', reaction_action: :reject, reaction_type: ['reblog'])
+          Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['reblog'])
           subject.perform
         end
 
@@ -129,7 +129,7 @@ RSpec.describe ActivityPub::Activity::Announce do
 
       context 'when ng rule is not match' do
         before do
-          Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_action: :reject, reaction_type: ['reblog'])
+          Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['reblog'])
           subject.perform
         end
 

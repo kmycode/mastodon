@@ -877,9 +877,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
     t.string "uri"
     t.integer "reason", null: false
     t.integer "reason_action", null: false
-    t.boolean "skip", default: false, null: false
-    t.integer "skip_count"
     t.boolean "local", default: true, null: false
+    t.boolean "hidden", default: false, null: false
     t.jsonb "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -913,6 +912,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
     t.integer "status_poll_state", default: 0, null: false
     t.integer "status_quote_state", default: 0, null: false
     t.integer "status_reply_state", default: 0, null: false
+    t.integer "status_mention_state", default: 0, null: false
+    t.integer "status_reference_state", default: 0, null: false
     t.integer "status_tag_threshold", default: -1, null: false
     t.integer "status_media_threshold", default: -1, null: false
     t.integer "status_poll_threshold", default: -1, null: false
@@ -923,10 +924,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
     t.boolean "reaction_allow_follower", default: true, null: false
     t.string "emoji_reaction_name", default: "", null: false
     t.string "emoji_reaction_origin_domain", default: "", null: false
-    t.integer "rule_violation_threshold_per_account", default: 0, null: false
-    t.integer "account_action", default: 0, null: false
-    t.integer "status_action", default: 0, null: false
-    t.integer "reaction_action", default: 0, null: false
     t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

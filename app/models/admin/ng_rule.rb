@@ -27,11 +27,13 @@ class Admin::NgRule
       media_state_match?(:account_header_state, @account.header, @ng_rule.account_header_state)
   end
 
-  def status_match?
+  def status_match? # rubocop:disable Metrics/CyclomaticComplexity
     return false if @ng_rule.status_allow_follower_mention && @options[:mention_to_following]
 
     has_media = @options[:media_count].is_a?(Integer) && @options[:media_count].positive?
     has_poll = @options[:poll_count].is_a?(Integer) && @options[:poll_count].positive?
+    has_mention = @options[:mention_count].is_a?(Integer) && @options[:mention_count].positive?
+    has_reference = @options[:reference_count].is_a?(Integer) && @options[:reference_count].positive?
 
     @options = @options.merge({ searchability: 'unset' }) if @options[:searchability].nil?
 
@@ -46,6 +48,8 @@ class Admin::NgRule
       state_match?(:status_poll_state, has_poll, @ng_rule.status_poll_state) &&
       state_match?(:status_quote_state, @options[:quote], @ng_rule.status_quote_state) &&
       state_match?(:status_reply_state, @options[:reply], @ng_rule.status_reply_state) &&
+      state_match?(:status_mention_state, has_mention, @ng_rule.status_mention_state) &&
+      state_match?(:status_reference_state, has_reference, @ng_rule.status_reference_state) &&
       value_over_threshold?(:status_tag_threshold, (@options[:tag_names] || []).size, @ng_rule.status_tag_threshold) &&
       value_over_threshold?(:status_media_threshold, @options[:media_count], @ng_rule.status_media_threshold) &&
       value_over_threshold?(:status_poll_threshold, @options[:poll_count], @ng_rule.status_poll_threshold) &&
@@ -71,7 +75,7 @@ class Admin::NgRule
 
     record!('account', @account.uri, 'account_create') if !@account.local? || @ng_rule.record_history_also_local
 
-    !violation?
+    false
   end
 
   def check_status_or_record!
@@ -83,9 +87,9 @@ class Admin::NgRule
       poll_count: @options[:poll_count],
       url: @options[:url],
     }
-    record!('status', @options[:uri], "status_#{@options[:reaction_type]}", text: text, data: data) if loggable_visibility? && (!@account.local? || @ng_rule.record_history_also_local)
+    record!('status', @options[:uri], "status_#{@options[:reaction_type]}", text: text, data: data) if !@account.local? || @ng_rule.record_history_also_local
 
-    !violation?
+    false
   end
 
   def check_reaction_or_record!
@@ -95,9 +99,9 @@ class Admin::NgRule
     data = {
       url: @options[:target_status].present? ? @options[:target_status].url : nil,
     }
-    record!('reaction', @options[:uri], "reaction_#{@options[:reaction_type]}", text: text, data: data) if loggable_visibility? && (!@account.local? || @ng_rule.record_history_also_local)
+    record!('reaction', @options[:uri], "reaction_#{@options[:reaction_type]}", text: text, data: data) if !@account.local? || @ng_rule.record_history_also_local
 
-    !violation?
+    false
   end
 
   def loggable_visibility?
@@ -105,18 +109,6 @@ class Admin::NgRule
     return true unless visibility
 
     %i(public public_unlisted login unlisted).include?(visibility.to_sym)
-  end
-
-  def account_action
-    @ng_rule.account_action.to_sym
-  end
-
-  def status_action
-    @ng_rule.status_action.to_sym
-  end
-
-  def reaction_action
-    @ng_rule.reaction_action.to_sym
   end
 
   def self.extract_test!(custom_ng_words)
@@ -129,22 +121,6 @@ class Admin::NgRule
     Follow.exists?(account: Account.local, target_account: @account)
   end
 
-  def already_did_count
-    return @already_did_count if defined?(@already_did_count)
-
-    @already_did_count = NgRuleHistory.where(ng_rule: @ng_rule, account: @account).count
-  end
-
-  def violation?
-    limit = @ng_rule.rule_violation_threshold_per_account
-    limit = 0 unless limit.is_a?(Integer)
-
-    return true if limit.zero?
-    return false unless limit.positive?
-
-    already_did_count >= limit
-  end
-
   def record!(reason, uri, reason_action, **options)
     opts = options.merge({
       ng_rule: @ng_rule,
@@ -154,7 +130,14 @@ class Admin::NgRule
       reason_action: reason_action,
       uri: uri,
     })
-    opts = opts.merge({ skip_count: already_did_count, skip: true }) unless violation?
+
+    unless loggable_visibility?
+      opts = opts.merge({
+        text: nil,
+        uri: nil,
+        hidden: true,
+      })
+    end
 
     NgRuleHistory.create!(**opts)
   end

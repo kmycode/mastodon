@@ -184,7 +184,7 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
                                       text: @status.text,
                                       tag_names: @raw_tags,
                                       visibility: @status.visibility,
-                                      searchability: @status.compute_searchability,
+                                      searchability: @status.searchability,
                                       sensitive: @status.sensitive,
                                       media_count: @next_media_attachments.size,
                                       poll_count: @status.poll&.options&.size || 0,

@@ -11,9 +11,8 @@
 #  uri           :string
 #  reason        :integer          not null
 #  reason_action :integer          not null
-#  skip          :boolean          default(FALSE), not null
-#  skip_count    :integer
 #  local         :boolean          default(TRUE), not null
+#  hidden        :boolean          default(FALSE), not null
 #  data          :jsonb
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null

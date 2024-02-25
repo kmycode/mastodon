@@ -60,7 +60,7 @@ RSpec.describe ActivityPub::Activity::Like do
 
     context 'when ng rule is match' do
       before do
-        Fabricate(:ng_rule, account_domain: 'example.com', reaction_action: :reject, reaction_type: ['favourite'])
+        Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['favourite'])
         subject.perform
       end
 
@@ -71,7 +71,7 @@ RSpec.describe ActivityPub::Activity::Like do
 
     context 'when ng rule is not match' do
       before do
-        Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_action: :reject, reaction_type: ['favourite'])
+        Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['favourite'])
         subject.perform
       end
 
@@ -624,7 +624,7 @@ RSpec.describe ActivityPub::Activity::Like do
 
       context 'when ng rule is match' do
         before do
-          Fabricate(:ng_rule, account_domain: 'example.com', reaction_action: :reject, reaction_type: ['emoji_reaction'])
+          Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['emoji_reaction'])
         end
 
         it 'does not create a reblog by sender of status' do
@@ -634,7 +634,7 @@ RSpec.describe ActivityPub::Activity::Like do
 
       context 'when ng rule is not match' do
         before do
-          Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_action: :reject, reaction_type: ['emoji_reaction'])
+          Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['emoji_reaction'])
         end
 
         it 'creates a reblog by sender of status' do

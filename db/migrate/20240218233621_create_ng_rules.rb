@@ -27,6 +27,8 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.integer :status_poll_state, null: false, default: 0
       t.integer :status_quote_state, null: false, default: 0
       t.integer :status_reply_state, null: false, default: 0
+      t.integer :status_mention_state, null: false, default: 0
+      t.integer :status_reference_state, null: false, default: 0
       t.integer :status_tag_threshold, null: false, default: -1
       t.integer :status_media_threshold, null: false, default: -1
       t.integer :status_poll_threshold, null: false, default: -1
@@ -37,10 +39,6 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.boolean :reaction_allow_follower, null: false, default: true
       t.string :emoji_reaction_name, null: false, default: ''
       t.string :emoji_reaction_origin_domain, null: false, default: ''
-      t.integer :rule_violation_threshold_per_account, null: false, default: 0
-      t.integer :account_action, null: false, default: 0
-      t.integer :status_action, null: false, default: 0
-      t.integer :reaction_action, null: false, default: 0
       t.datetime :expires_at
 
       t.timestamps
@@ -53,9 +51,8 @@ class CreateNgRules < ActiveRecord::Migration[7.1]
       t.string :uri, index: true
       t.integer :reason, null: false
       t.integer :reason_action, null: false
-      t.boolean :skip, null: false, default: false
-      t.integer :skip_count
       t.boolean :local, null: false, default: true
+      t.boolean :hidden, null: false, default: false
       t.jsonb :data
 
       t.timestamps

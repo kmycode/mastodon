@@ -657,31 +657,19 @@ en:
       account_include_local: Contains local users
       account_note: Account note
       account_username: ID
-      actions:
-        accounts:
-          nothing: Do nothing
-          silence: Silence
-          suspend: Suspend
-        reactions:
-          nothing: Do nothing
-          reject: Reject
-        statuses:
-          nothing: Do nothing
-          reject: Reject
       edit:
         headers:
           account: Account
-          action: Action
+          options: Options
           reaction: Reaction
           status: Post
         helps:
           generic: Restrictions will be in effect only if all items match the criteria.
-          textarea: Where multiple lines can be entered, enter conditions separated by line breaks. If any one of the multiple lines is included, the condition is considered a match. You can use a regular expression by starting a line with "?" at the beginning of a line to use a regular expression.
-          threshold: In specifying the upper limit, if "-1" is specified, the upper limit check is disabled. If "0" is specified, the check will not pass unless the subject is completely absent.
+          textarea_html: <strong>Where multiple lines can be entered</strong>, enter conditions separated by line breaks. If any one of the multiple lines is included, the condition is considered a match. You can use a regular expression by starting a line with "?" at the beginning of a line to use a regular expression.
+          threshold_html: <strong>In specifying the upper limit</strong>, specifying "-1" disables the upper limit check. If "0" is specified, the check will pass only if the subject is completely absent. For example, an upper limit of "0" for the number of media is not equivalent to "no media.
         history: Check the history of this rule's application.
         summary:
           account: Set the conditions for the account. This NG rule will be checked when an account matching here posts and reacts. No check is performed when an account is created. By default, all accounts are subject to this rule.
-          action: We will determine the action to be taken for any postings/reactions that fall under this NG rule. If the condition is met, the operation in question will be dealt with immediately. If no action is taken, only the history is recorded.
           reaction: Set the reaction conditions. The account conditions must match at the same time. Please note that by default, not all reactions will match unless you set the "Reaction Type".
           status: Set the conditions of your submission. The account conditions must match at the same time. Please note that by default, not all posts will be applicable unless you set the "Visibility" and "Searchability".
         title: Edit NG Rule
@@ -689,7 +677,8 @@ en:
         delete: Delete
         edit:
           title: Edit
-        empty: NGルールが空です
+        empty: Empty NG rules
+        preamble: While NG words are sufficient to deal with normal spam, some of these words must be specified too loosely, making it easier for other normal postings to get caught up in the restrictions. You can also specify the details of the account and the characteristics of the post in the NG rule. NG rules also support the prevention of spam using reactions.
         title: NG Rules
       new:
         title: New NG Rule
@@ -708,16 +697,17 @@ en:
         needed: have
         no_needed: Should not have
         optional: Optional
-      status_action: Action for posts
       status_allow_follower_mention: Check posts only if they contain mentions/references to non-followers
       status_allow_follower_mention_hint: If enabled, mentions between other servers are unconditionally allowed
       status_cw_state: Has warning or not
       status_media_state: Has media or not
       status_media_threshold: Medias limit
+      status_mention_state: Has mention or not
       status_mention_threshold: Mentions limit
       status_poll_state: Has poll or not
       status_poll_threshold: Poll items limit
       status_quote_state: Has quote or not
+      status_reference_state: Has reference or not
       status_reference_threshold: Has reference or not
       status_reply_state: Is reply or not
       status_searchability: Searchability
@@ -729,9 +719,12 @@ en:
       test_error: Regular expression syntax is incorrect.
       title: NG Rule
     ng_rule_histories:
+      back_to_ng_rule: Back to NG rule
       data:
         media_count: "%{count} medias"
         poll_count: "%{count} polls"
+      from_local_user: Local user
+      hidden: Private post
       moderate_account: Moderate account
       reason_actions:
         reaction_emoji_reaction: Emoji reaction
@@ -744,7 +737,11 @@ en:
       title: NG Rule History %{title}
     ng_words:
       block_unfollow_account_mention: Reject all mentions/references from all accounts that do not have followers on your server
+      block_unfollow_account_mention_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。NGルールで代替してください。
+      deprecated: Will remove settings
+      deprecated_hint: These settings will be removed in the next LTS or kmyblue version 15.0, whichever comes first. Please refer to the description of each setting and replace them with the new settings if possible.
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
+      hide_local_users_for_anonymous_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。サーバー設定の「見つける」にある「公開タイムラインへの未認証のアクセスを許可する」で、完全ではありませんが代替可能です。
       history_hint: We recommend that you regularly check your NG words to make sure that you have not specified the NG words incorrectly.
       hold_remote_new_accounts: Hold new remote accounts
       keywords: Reject keywords
@@ -752,13 +749,14 @@ en:
       keywords_for_stranger_mention_hint: This words are checked posts from other servers only.
       keywords_hint: The first character of the line is "?". to use regular expressions
       permit_new_account_domains: Domain list to automatically approve new users
+      preamble: This setting is very useful when you receive spam or harassment from many servers, or when you encounter other problems that cannot be solved by domain blocking. You can reject posts received from other servers or within your own server that contain specific keywords or too many mentions. Please consider this setting carefully to ensure that posts that are not problematic are not deleted. Rejected posts will be recorded in your history unless they are limited posts. If you need more detailed settings, please use another feature, "NG Rules".
       post_hash_tags_max: Hash tags max for posts
       post_mentions_max: Mentions max for posts
       post_stranger_mentions_max: 投稿に設定可能なメンションの最大数 (If the mentions include at least one person who is not a follower of yours)
       remote_approval_list: List of remote accounts awaiting approval
       remote_approval_hint: Newly recognized accounts with unspecified domains will be placed in Suspended status. You can review that list and approve them if necessary. If this setting is not enabled, all remote accounts will be approved immediately.
       stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
-      stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
+      stranger_mention_from_local_ng_hint: この設定は削除予定です。設定削除後は、常にチェックをつけている場合と同じ挙動になります。この動作を希望しない場合は、NGルールで代替してください。
       test_error: Testing is returned any errors
       title: NG words and against spams
     ngword_histories:
@@ -951,7 +949,7 @@ en:
       title: Server rules
     sensitive_words:
       alert: This post contains sensitive words, so alert added
-      hint: This keywords is applied to public posts only..
+      hint: The sensitive keywords setting is applied to the "Public", "Local Public", and "Logged-in Users Only" public ranges that flow through the local timeline. A mandatory warning text will be added to any post that meets the criteria; unlike NG words, it does not target coalition posts by default.
       keywords: Sensitive keywords
       keywords_for_all: Sensitive keywords (Contains CW alert)
       keywords_for_all_hint: The first character of the line is "?". to use regular expressions
