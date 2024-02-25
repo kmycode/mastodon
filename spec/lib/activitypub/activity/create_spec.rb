@@ -2064,7 +2064,7 @@ RSpec.describe ActivityPub::Activity::Create do
 
         context 'when rule hits' do
           before do
-            Fabricate(:ng_rule, status_text: 'ipsum', status_allow_follower_mention: false, status_action: :reject)
+            Fabricate(:ng_rule, status_text: 'ipsum', status_allow_follower_mention: false)
             subject.perform
           end
 
@@ -2076,7 +2076,7 @@ RSpec.describe ActivityPub::Activity::Create do
 
         context 'when rule does not hit' do
           before do
-            Fabricate(:ng_rule, status_text: 'amely', status_allow_follower_mention: false, status_action: :reject)
+            Fabricate(:ng_rule, status_text: 'amely', status_allow_follower_mention: false)
             subject.perform
           end
 

@@ -685,7 +685,7 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
     context 'when ng rule is existing' do
       context 'when ng rule is match' do
         before do
-          Fabricate(:ng_rule, account_domain: 'example.com', status_text: 'universe', status_action: :reject)
+          Fabricate(:ng_rule, account_domain: 'example.com', status_text: 'universe')
           subject.call(status, json, json)
         end
 
@@ -697,7 +697,7 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
 
       context 'when ng rule is not match' do
         before do
-          Fabricate(:ng_rule, account_domain: 'foo.bar', status_text: 'universe', status_action: :reject)
+          Fabricate(:ng_rule, account_domain: 'foo.bar', status_text: 'universe')
           subject.call(status, json, json)
         end
 

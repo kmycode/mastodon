@@ -822,7 +822,7 @@ RSpec.describe PostStatusService, type: :service do
 
   describe 'ng rule is set' do
     it 'creates a new status when no rule matches' do
-      Fabricate(:ng_rule, account_username: 'ohagi', status_allow_follower_mention: false, status_action: :reject)
+      Fabricate(:ng_rule, account_username: 'ohagi', status_allow_follower_mention: false)
       account = Fabricate(:account)
       text = 'test status update'
 
@@ -833,7 +833,7 @@ RSpec.describe PostStatusService, type: :service do
     end
 
     it 'does not create a new status when a rule matches' do
-      Fabricate(:ng_rule, status_text: 'test', status_allow_follower_mention: false, status_action: :reject)
+      Fabricate(:ng_rule, status_text: 'test', status_allow_follower_mention: false)
       account = Fabricate(:account)
       text = 'test status update'
 
