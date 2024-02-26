@@ -5,6 +5,7 @@ class VoteService < BaseService
   include Payloadable
   include Redisable
   include Lockable
+  include NgRuleHelper
 
   def call(account, poll, choices)
     return if choices.empty?
@@ -15,6 +16,8 @@ class VoteService < BaseService
     @poll    = poll
     @choices = choices
     @votes   = []
+
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! @account, reaction_type: 'vote', recipient: @poll.status.account, target_status: @poll.status
 
     already_voted = true
 

@@ -5,6 +5,7 @@ class EmojiReactService < BaseService
   include Payloadable
   include Redisable
   include Lockable
+  include NgRuleHelper
 
   # React a status with emoji and notify remote user
   # @param [Account] account
@@ -18,9 +19,12 @@ class EmojiReactService < BaseService
 
     raise Mastodon::ValidationError, I18n.t('reactions.errors.banned') if account.silenced? && !status.account.following?(account)
 
+    shortcode, domain = name.split('@')
+    domain = nil if TagManager.instance.local_domain?(domain)
+
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! account, reaction_type: 'emoji_reaction', emoji_reaction_name: shortcode, emoji_reaction_origin_domain: domain, recipient: status.account, target_status: status
+
     with_redis_lock("emoji_reaction:#{status.id}") do
-      shortcode, domain = name.split('@')
-      domain = nil if TagManager.instance.local_domain?(domain)
       custom_emoji = CustomEmoji.find_by(shortcode: shortcode, domain: domain)
       return if domain.present? && !EmojiReaction.exists?(status: status, custom_emoji: custom_emoji)
 

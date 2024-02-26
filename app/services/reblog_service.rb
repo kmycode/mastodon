@@ -3,6 +3,7 @@
 class ReblogService < BaseService
   include Authorization
   include Payloadable
+  include NgRuleHelper
 
   # Reblog a status and notify its remote author
   # @param [Account] account Account to reblog from
@@ -15,6 +16,8 @@ class ReblogService < BaseService
     reblogged_status = reblogged_status.reblog if reblogged_status.reblog?
 
     authorize_with account, reblogged_status, :reblog?
+
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! account, reaction_type: 'reblog', recipient: reblogged_status.account, target_status: reblogged_status
 
     reblog = account.statuses.find_by(reblog: reblogged_status)
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_17_230006) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_18_233621) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -870,6 +870,65 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_230006) do
     t.index ["target_account_id"], name: "index_mutes_on_target_account_id"
   end
 
+  create_table "ng_rule_histories", force: :cascade do |t|
+    t.bigint "ng_rule_id", null: false
+    t.bigint "account_id"
+    t.string "text"
+    t.string "uri"
+    t.integer "reason", null: false
+    t.integer "reason_action", null: false
+    t.boolean "local", default: true, null: false
+    t.boolean "hidden", default: false, null: false
+    t.jsonb "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_ng_rule_histories_on_created_at"
+    t.index ["ng_rule_id", "account_id"], name: "index_ng_rule_histories_on_ng_rule_id_and_account_id"
+    t.index ["uri"], name: "index_ng_rule_histories_on_uri"
+  end
+
+  create_table "ng_rules", force: :cascade do |t|
+    t.string "title", default: "", null: false
+    t.boolean "available", default: true, null: false
+    t.boolean "record_history_also_local", default: true, null: false
+    t.string "account_domain", default: "", null: false
+    t.string "account_username", default: "", null: false
+    t.string "account_display_name", default: "", null: false
+    t.string "account_note", default: "", null: false
+    t.string "account_field_name", default: "", null: false
+    t.string "account_field_value", default: "", null: false
+    t.integer "account_avatar_state", default: 0, null: false
+    t.integer "account_header_state", default: 0, null: false
+    t.boolean "account_include_local", default: true, null: false
+    t.boolean "account_allow_followed_by_local", default: false, null: false
+    t.string "status_spoiler_text", default: "", null: false
+    t.string "status_text", default: "", null: false
+    t.string "status_tag", default: "", null: false
+    t.string "status_visibility", default: [], null: false, array: true
+    t.string "status_searchability", default: [], null: false, array: true
+    t.integer "status_media_state", default: 0, null: false
+    t.integer "status_sensitive_state", default: 0, null: false
+    t.integer "status_cw_state", default: 0, null: false
+    t.integer "status_poll_state", default: 0, null: false
+    t.integer "status_quote_state", default: 0, null: false
+    t.integer "status_reply_state", default: 0, null: false
+    t.integer "status_mention_state", default: 0, null: false
+    t.integer "status_reference_state", default: 0, null: false
+    t.integer "status_tag_threshold", default: -1, null: false
+    t.integer "status_media_threshold", default: -1, null: false
+    t.integer "status_poll_threshold", default: -1, null: false
+    t.integer "status_mention_threshold", default: -1, null: false
+    t.boolean "status_allow_follower_mention", default: true, null: false
+    t.integer "status_reference_threshold", default: -1, null: false
+    t.string "reaction_type", default: [], null: false, array: true
+    t.boolean "reaction_allow_follower", default: true, null: false
+    t.string "emoji_reaction_name", default: "", null: false
+    t.string "emoji_reaction_origin_domain", default: "", null: false
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "ngword_histories", force: :cascade do |t|
     t.string "uri", null: false
     t.integer "target_type", null: false
@@ -1547,6 +1606,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_17_230006) do
   add_foreign_key "mentions", "statuses", on_delete: :cascade
   add_foreign_key "mutes", "accounts", column: "target_account_id", name: "fk_eecff219ea", on_delete: :cascade
   add_foreign_key "mutes", "accounts", name: "fk_b8d8daf315", on_delete: :cascade
+  add_foreign_key "ng_rule_histories", "accounts"
+  add_foreign_key "ng_rule_histories", "ng_rules"
   add_foreign_key "notifications", "accounts", column: "from_account_id", name: "fk_fbd6b0bf9e", on_delete: :cascade
   add_foreign_key "notifications", "accounts", name: "fk_c141c8ee55", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id", name: "fk_34d54b0a33", on_delete: :cascade

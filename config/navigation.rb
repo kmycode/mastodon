@@ -50,6 +50,7 @@ SimpleNavigation::Configuration.run do |navigation|
       s.item :reports, safe_join([fa_icon('flag fw'), t('admin.reports.title')]), admin_reports_path, highlights_on: %r{/admin/reports}, if: -> { current_user.can?(:manage_reports) }
       s.item :accounts, safe_join([fa_icon('users fw'), t('admin.accounts.title')]), admin_accounts_path(origin: 'local'), highlights_on: %r{/admin/accounts|/admin/pending_accounts|/admin/disputes|/admin/users}, if: -> { current_user.can?(:manage_users) }
       s.item :ng_words, safe_join([fa_icon('list fw'), t('admin.ng_words.title')]), admin_ng_words_path, highlights_on: %r{/admin/(ng_words|ngword_histories)}, if: -> { current_user.can?(:manage_ng_words) }
+      s.item :ng_rules, safe_join([fa_icon('rub fw'), t('admin.ng_rules.title')]), admin_ng_rules_path, highlights_on: %r{/admin/(ng_rules|ng_rule_histories)}, if: -> { current_user.can?(:manage_ng_words) }
       s.item :sensitive_words, safe_join([fa_icon('list fw'), t('admin.sensitive_words.title')]), admin_sensitive_words_path, highlights_on: %r{/admin/sensitive_words}, if: -> { current_user.can?(:manage_sensitive_words) }
       s.item :invites, safe_join([fa_icon('user-plus fw'), t('admin.invites.title')]), admin_invites_path, if: -> { current_user.can?(:manage_invites) }
       s.item :follow_recommendations, safe_join([fa_icon('user-plus fw'), t('admin.follow_recommendations.title')]), admin_follow_recommendations_path, highlights_on: %r{/admin/follow_recommendations}, if: -> { current_user.can?(:manage_taxonomies) }

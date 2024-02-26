@@ -37,4 +37,31 @@ RSpec.describe FavouriteService, type: :service do
       expect(a_request(:post, 'http://example.com/inbox')).to have_been_made.once
     end
   end
+
+  context 'with ng rule' do
+    let(:status) { Fabricate(:status) }
+    let(:sender) { Fabricate(:account) }
+
+    context 'when rule matches' do
+      before do
+        Fabricate(:ng_rule, reaction_type: ['favourite'])
+      end
+
+      it 'does not favourite' do
+        expect { subject.call(sender, status) }.to raise_error Mastodon::ValidationError
+        expect(sender.favourited?(status)).to be false
+      end
+    end
+
+    context 'when rule does not match' do
+      before do
+        Fabricate(:ng_rule, account_display_name: 'else', reaction_type: ['favourite'])
+      end
+
+      it 'favourites' do
+        expect { subject.call(sender, status) }.to_not raise_error
+        expect(sender.favourited?(status)).to be true
+      end
+    end
+  end
 end

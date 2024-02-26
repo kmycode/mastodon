@@ -1560,6 +1560,32 @@ RSpec.describe ActivityPub::Activity::Create do
           expect(vote.uri).to eq object_json[:id]
           expect(poll.reload.cached_tallies).to eq [1, 0]
         end
+
+        context 'when ng rule is existing' do
+          let(:custom_before) { true }
+
+          context 'when ng rule is match' do
+            before do
+              Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['vote'])
+              subject.perform
+            end
+
+            it 'does not create a reblog by sender of status' do
+              expect(poll.votes.first).to be_nil
+            end
+          end
+
+          context 'when ng rule is not match' do
+            before do
+              Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['vote'])
+              subject.perform
+            end
+
+            it 'creates a reblog by sender of status' do
+              expect(poll.votes.first).to_not be_nil
+            end
+          end
+        end
       end
 
       context 'when a vote to an expired local poll' do
@@ -2020,6 +2046,43 @@ RSpec.describe ActivityPub::Activity::Create do
             it 'creates status' do
               expect(sender.statuses.first).to_not be_nil
             end
+          end
+        end
+      end
+
+      context 'when ng rule is set' do
+        let(:custom_before) { true }
+        let(:content) { 'Lorem ipsum' }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: content,
+            to: 'https://www.w3.org/ns/activitystreams#Public',
+          }
+        end
+
+        context 'when rule hits' do
+          before do
+            Fabricate(:ng_rule, status_text: 'ipsum', status_allow_follower_mention: false)
+            subject.perform
+          end
+
+          it 'creates status' do
+            status = sender.statuses.first
+            expect(status).to be_nil
+          end
+        end
+
+        context 'when rule does not hit' do
+          before do
+            Fabricate(:ng_rule, status_text: 'amely', status_allow_follower_mention: false)
+            subject.perform
+          end
+
+          it 'creates status' do
+            status = sender.statuses.first
+            expect(status).to_not be_nil
           end
         end
       end

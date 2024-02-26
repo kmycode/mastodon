@@ -1,0 +1,25 @@
+- content_for :page_title do
+  = t('admin.ng_rule_histories.title', title: @ng_rule.title)
+
+.filters
+  .back-link
+    = link_to edit_admin_ng_rule_path(id: @ng_rule.id) do
+      = fa_icon 'chevron-left fw'
+      = t('admin.ng_rule_histories.back_to_ng_rule')
+    = link_to admin_ng_rules_path do
+      = fa_icon 'chevron-left fw'
+      = t('admin.ng_rule_histories.back_to_ng_rules')
+
+%hr.spacer/
+
+.batch-table
+  .batch-table__toolbar
+    %label.batch-table__toolbar__select.batch-checkbox-all
+      = check_box_tag :batch_checkbox_all, nil, false
+  .batch-table__body
+    - if @histories.empty?
+      = nothing_here 'nothing-here--under-tabs'
+    - else
+      = render partial: 'admin/ng_rule_histories/history', collection: @histories
+
+= paginate @histories

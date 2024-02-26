@@ -401,4 +401,32 @@ RSpec.describe UpdateStatusService, type: :service do
       expect(status.text).to_not eq text
     end
   end
+
+  describe 'ng rule is set' do
+    let(:status) { Fabricate(:status, text: 'Foo') }
+
+    context 'when rule hits' do
+      before do
+        Fabricate(:ng_rule, status_text: 'Bar', status_allow_follower_mention: false)
+      end
+
+      it 'does not update text' do
+        expect { subject.call(status, status.account_id, text: 'Bar') }.to raise_error Mastodon::ValidationError
+        expect(status.reload.text).to_not eq 'Bar'
+        expect(status.edits.pluck(:text)).to eq %w()
+      end
+    end
+
+    context 'when rule does not hit' do
+      before do
+        Fabricate(:ng_rule, status_text: 'aar', status_allow_follower_mention: false)
+      end
+
+      it 'does not update text' do
+        expect { subject.call(status, status.account_id, text: 'Bar') }.to_not raise_error
+        expect(status.reload.text).to eq 'Bar'
+        expect(status.edits.pluck(:text)).to eq %w(Foo Bar)
+      end
+    end
+  end
 end

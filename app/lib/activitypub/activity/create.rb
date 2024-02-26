@@ -2,6 +2,7 @@
 
 class ActivityPub::Activity::Create < ActivityPub::Activity
   include FormattingHelper
+  include NgRuleHelper
 
   def perform
     @account.schedule_refresh_if_stale!
@@ -153,7 +154,9 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def valid_status?
-    valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?)
+    valid = true
+    valid = false if valid && !valid_status_for_ng_rule?
+    valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?) if valid
     valid = !Admin::NgWord.hashtag_reject?(@tags.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid
     valid = !Admin::NgWord.mention_reject?(@raw_mention_uris.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid
     valid = !Admin::NgWord.stranger_mention_reject_with_count?(@raw_mention_uris.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
@@ -161,6 +164,26 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     valid = false if valid && Setting.block_unfollow_account_mention && (mention_to_local_stranger? || reference_to_local_stranger?) && !local_following_sender?
 
     valid
+  end
+
+  def valid_status_for_ng_rule?
+    check_invalid_status_for_ng_rule! @account,
+                                      reaction_type: 'create',
+                                      uri: @params[:uri],
+                                      url: @params[:url],
+                                      spoiler_text: @params[:spoiler_text],
+                                      text: @params[:text],
+                                      tag_names: @tags.map(&:name),
+                                      visibility: @params[:visibility].to_s,
+                                      searchability: @params[:searchability]&.to_s,
+                                      sensitive: @params[:sensitive],
+                                      media_count: @params[:media_attachment_ids]&.size,
+                                      poll_count: @params[:poll]&.options&.size || 0,
+                                      quote: quote,
+                                      reply: in_reply_to_uri.present?,
+                                      mention_count: mentioned_accounts.count,
+                                      reference_count: reference_uris.size,
+                                      mention_to_following: !(mention_to_local_stranger? || reference_to_local_stranger?)
   end
 
   def accounts_in_audience
@@ -362,6 +385,8 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def poll_vote?
     return false if replied_to_status.nil? || replied_to_status.preloadable_poll.nil? || !replied_to_status.local? || !replied_to_status.preloadable_poll.options.include?(@object['name'])
 
+    return true unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'vote', recipient: replied_to_status.account, target_status: replied_to_status
+
     poll_vote! unless replied_to_status.preloadable_poll.expired?
 
     true
@@ -561,7 +586,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     return @reference_uris if defined?(@reference_uris)
 
     @reference_uris = @object['references'].nil? ? [] : (ActivityPub::FetchReferencesService.new.call(@account, @object['references']) || []).uniq
-    @reference_uris += ProcessReferencesService.extract_uris(@object['content'] || '')
+    @reference_uris += ProcessReferencesService.extract_uris(@object['content'] || '', remote: true)
   end
 
   def local_referred_accounts

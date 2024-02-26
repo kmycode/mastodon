@@ -244,6 +244,33 @@ RSpec.describe ActivityPub::Activity::Follow do
           expect(sender.requested?(recipient)).to be false
         end
       end
+
+      context 'when ng rule is existing' do
+        context 'when ng rule is match' do
+          before do
+            Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['follow'])
+            stub_request(:post, 'https://example.com/inbox').to_return(status: 200, body: '', headers: {})
+            subject.perform
+          end
+
+          it 'does not create a reblog by sender of status' do
+            expect(sender.following?(recipient)).to be false
+            expect(sender.requested?(recipient)).to be false
+          end
+        end
+
+        context 'when ng rule is not match' do
+          before do
+            Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['follow'])
+            subject.perform
+          end
+
+          it 'creates a reblog by sender of status' do
+            expect(sender.following?(recipient)).to be true
+            expect(sender.requested?(recipient)).to be false
+          end
+        end
+      end
     end
 
     context 'when a follow relationship already exists' do

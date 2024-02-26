@@ -113,6 +113,33 @@ RSpec.describe EmojiReactService, type: :service do
     end
   end
 
+  context 'with ng rule' do
+    let(:name) { 'ohagi' }
+
+    context 'when rule hits' do
+      before do
+        Fabricate(:custom_emoji, shortcode: 'ohagi')
+        Fabricate(:ng_rule, reaction_type: ['emoji_reaction'])
+      end
+
+      it 'react with emoji' do
+        expect { subject }.to raise_error Mastodon::ValidationError
+      end
+    end
+
+    context 'when rule does not hit' do
+      before do
+        Fabricate(:custom_emoji, shortcode: 'ohagi')
+        Fabricate(:ng_rule, reaction_type: ['emoji_reaction'], emoji_reaction_name: 'aaa')
+      end
+
+      it 'react with emoji' do
+        expect { subject }.to_not raise_error
+        expect(subject.count).to eq 1
+      end
+    end
+  end
+
   context 'with custom emoji of remote' do
     let(:name) { 'ohagi@foo.bar' }
     let!(:custom_emoji) { Fabricate(:custom_emoji, shortcode: 'ohagi', domain: 'foo.bar', uri: 'https://foo.bar/emoji/ohagi') }

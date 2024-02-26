@@ -111,6 +111,38 @@ RSpec.describe ActivityPub::Activity::Announce do
       end
     end
 
+    context 'when ng rule is existing' do
+      context 'when ng rule is match' do
+        before do
+          Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['reblog'])
+          subject.perform
+        end
+
+        let(:object_json) do
+          ActivityPub::TagManager.instance.uri_for(status)
+        end
+
+        it 'does not create a reblog by sender of status' do
+          expect(sender.reblogged?(status)).to be false
+        end
+      end
+
+      context 'when ng rule is not match' do
+        before do
+          Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['reblog'])
+          subject.perform
+        end
+
+        let(:object_json) do
+          ActivityPub::TagManager.instance.uri_for(status)
+        end
+
+        it 'creates a reblog by sender of status' do
+          expect(sender.reblogged?(status)).to be true
+        end
+      end
+    end
+
     context 'when the sender is relayed' do
       subject { described_class.new(json, sender, relayed_through_actor: relay_account) }
 

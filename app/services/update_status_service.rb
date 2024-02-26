@@ -3,6 +3,7 @@
 class UpdateStatusService < BaseService
   include Redisable
   include LanguagesHelper
+  include NgRuleHelper
 
   class NoChangesSubmittedError < StandardError; end
 
@@ -31,6 +32,8 @@ class UpdateStatusService < BaseService
     validate_status!
 
     Status.transaction do
+      validate_status_ng_rules!
+
       create_previous_edit! unless @options[:no_history]
       update_media_attachments! if @options.key?(:media_ids)
       update_poll! if @options.key?(:poll)
@@ -91,6 +94,30 @@ class UpdateStatusService < BaseService
     raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if (mention_to_stranger? || reference_to_stranger?) && Setting.stranger_mention_from_local_ng && Admin::NgWord.stranger_mention_reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
   end
 
+  def validate_status_ng_rules!
+    result = check_invalid_status_for_ng_rule! @status.account,
+                                               reaction_type: 'edit',
+                                               spoiler_text: @options.key?(:spoiler_text) ? (@options[:spoiler_text] || '') : @status.spoiler_text,
+                                               text: text,
+                                               tag_names: Extractor.extract_hashtags(text) || [],
+                                               visibility: @status.visibility,
+                                               searchability: @status.searchability,
+                                               sensitive: @options.key?(:sensitive) ? @options[:sensitive] : @status.sensitive,
+                                               media_count: @options[:media_ids].present? ? @options[:media_ids].size : @status.media_attachments.count,
+                                               poll_count: @options.dig(:poll, 'options')&.size || 0,
+                                               quote: quote_url,
+                                               reply: @status.reply?,
+                                               mention_count: mention_count,
+                                               reference_count: reference_urls.size,
+                                               mention_to_following: !(mention_to_stranger? || reference_to_stranger?)
+
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless result
+  end
+
+  def mention_count
+    text.gsub(Account::MENTION_RE)&.count || 0
+  end
+
   def mention_to_stranger?
     @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @status.account.id && !mentioned_account.following?(@status.account) } ||
       (@status.thread.present? && @status.thread.account.id != @status.account.id && !@status.thread.account.following?(@status.account))
@@ -101,9 +128,21 @@ class UpdateStatusService < BaseService
   end
 
   def referred_statuses
-    return [] unless @options[:text]
+    return [] unless text
 
-    ProcessReferencesService.extract_uris(@options[:text]).filter_map { |uri| ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Status, url: true) }
+    reference_urls.filter_map { |uri| ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Status, url: true) }
+  end
+
+  def quote_url
+    ProcessReferencesService.extract_quote(text)
+  end
+
+  def reference_urls
+    @reference_urls ||= ProcessReferencesService.extract_uris(text) || []
+  end
+
+  def text
+    @options.key?(:text) ? (@options[:text] || '') : @status.text
   end
 
   def validate_media!

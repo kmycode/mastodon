@@ -4,16 +4,16 @@
 - content_for :header_tags do
   = javascript_pack_tag 'admin', async: true, crossorigin: 'anonymous'
 
-%p.hint= t 'admin.sensitive_words.hint'
-
 = simple_form_for @admin_settings, url: admin_sensitive_words_path, html: { method: :post } do |f|
   = render 'shared/error_messages', object: @admin_settings
 
-  .fields-group
-    = f.input :sensitive_words_for_full, wrapper: :with_label, as: :text, input_html: { rows: 12 }, label: t('admin.sensitive_words.keywords_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')
+  %p.lead= t 'admin.sensitive_words.hint'
 
   .fields-group
-    = f.input :sensitive_words, wrapper: :with_label, as: :text, input_html: { rows: 12 }, label: t('admin.sensitive_words.keywords'), hint: t('admin.sensitive_words.keywords_hint')
+    = f.input :sensitive_words_for_full, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')
+
+  .fields-group
+    = f.input :sensitive_words, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords'), hint: t('admin.sensitive_words.keywords_hint')
 
   .fields-group
     = f.input :sensitive_words_all_for_full, wrapper: :with_label, as: :text, input_html: { rows: 12 }, label: t('admin.sensitive_words.keywords_all_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')

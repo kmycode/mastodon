@@ -7,15 +7,14 @@
 = simple_form_for @admin_settings, url: admin_ng_words_path, html: { method: :post } do |f|
   = render 'shared/error_messages', object: @admin_settings
 
+  %p.lead= t('admin.ng_words.preamble')
+
   %p.hint
     = t 'admin.ng_words.history_hint'
     = link_to t('admin.ngword_histories.title'), admin_ngword_histories_path
 
   .fields-group
     = f.input :ng_words_for_stranger_mention, wrapper: :with_label, as: :text, input_html: { rows: 10 }, label: t('admin.ng_words.keywords_for_stranger_mention'), hint: t('admin.ng_words.keywords_for_stranger_mention_hint')
-
-  .fields-group
-    = f.input :stranger_mention_from_local_ng, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.stranger_mention_from_local_ng'), hint: t('admin.ng_words.stranger_mention_from_local_ng_hint')
 
   .fields-group
     = f.input :ng_words, wrapper: :with_label, as: :text, input_html: { rows: 10 }, label: t('admin.ng_words.keywords'), hint: t('admin.ng_words.keywords_hint')
@@ -29,21 +28,28 @@
   .fields-group
     = f.input :post_mentions_max, wrapper: :with_label, as: :integer, label: t('admin.ng_words.post_mentions_max')
 
-  .fields-group
-    = f.input :hide_local_users_for_anonymous, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.hide_local_users_for_anonymous')
-
-  .fields-group
-    = f.input :block_unfollow_account_mention, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.block_unfollow_account_mention')
-
-  %p.hint
-    = t 'admin.ng_words.remote_approval_hint'
+  %h4= t('admin.ng_words.white_list')
+  %p.lead
+    = t('admin.ng_words.white_list_hint')
     = link_to t('admin.ng_words.remote_approval_list'), admin_accounts_path(status: 'remote_pending', origin: 'remote')
 
   .fields-group
-    = f.input :hold_remote_new_accounts, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.hold_remote_new_accounts')
+    = f.input :hold_remote_new_accounts, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.hold_remote_new_accounts'), hint: t('admin.ng_words.remote_approval_hint')
 
   .fields-group
     = f.input :permit_new_account_domains, wrapper: :with_label, as: :text, kmyblue: true, input_html: { rows: 6 }, label: t('admin.ng_words.permit_new_account_domains')
+
+  %h4= t('admin.ng_words.deprecated')
+  %p.hint= t('admin.ng_words.deprecated_hint')
+
+  .fields-group
+    = f.input :stranger_mention_from_local_ng, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.stranger_mention_from_local_ng'), hint: t('admin.ng_words.stranger_mention_from_local_ng_hint')
+
+  .fields-group
+    = f.input :hide_local_users_for_anonymous, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.hide_local_users_for_anonymous'), hint: t('admin.ng_words.hide_local_users_for_anonymous_hint')
+
+  .fields-group
+    = f.input :block_unfollow_account_mention, wrapper: :with_label, as: :boolean, label: t('admin.ng_words.block_unfollow_account_mention'), hint: t('admin.ng_words.block_unfollow_account_mention_hint')
 
   .actions
     = f.button :button, t('generic.save_changes'), type: :submit

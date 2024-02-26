@@ -1,0 +1,42 @@
+.batch-table__row
+  %label.batch-table__row__select.batch-checkbox
+    -# = f.check_box :history_ids, { multiple: true, include_hidden: false }, history.id
+  .batch-table__row__content
+    - if history.hidden
+      .simple_form
+        %p.hint= t('admin.ng_rule_histories.hidden')
+    - else
+      .status__content><
+        = html_aware_format(history.text, history.local)
+
+    .detailed-status__meta
+      = t("admin.ng_rule_histories.reason_actions.#{history.reason_action}")
+      - if history.data.present? && !history.hidden
+        - if history.data['media_count'].present? && history.data['media_count'].positive?
+          ·
+          = t('admin.ng_rule_histories.data.media_count', count: history.data['media_count'])
+        - if history.data['poll_count'].present? && history.data['poll_count'].positive?
+          ·
+          = t('admin.ng_rule_histories.data.poll_count', count: history.data['poll_count'])
+
+      %br/
+
+      - if history.account.present?
+        - if history.hidden
+          - if history.account.local?
+            = t('admin.ng_rule_histories.from_local_user')
+          - else
+            = history.account.domain
+          ·
+        - else
+          = link_to t('admin.ng_rule_histories.moderate_account'), admin_account_path(history.account.id)
+          ·
+
+      %time.formatted{ datetime: history.created_at.iso8601, title: l(history.created_at) }= l(history.created_at)
+
+      - if history.uri.present? && !history.hidden
+        ·
+        - if history.data.present? && history.data['url'].present?
+          = link_to history.uri, history.data['url'] || history.uri, target: '_blank', rel: 'noopener'
+        - else
+          = link_to history.uri, target: '_blank', rel: 'noopener'

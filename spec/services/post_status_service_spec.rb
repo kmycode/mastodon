@@ -820,6 +820,27 @@ RSpec.describe PostStatusService, type: :service do
     end
   end
 
+  describe 'ng rule is set' do
+    it 'creates a new status when no rule matches' do
+      Fabricate(:ng_rule, account_username: 'ohagi', status_allow_follower_mention: false)
+      account = Fabricate(:account)
+      text = 'test status update'
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'does not create a new status when a rule matches' do
+      Fabricate(:ng_rule, status_text: 'test', status_allow_follower_mention: false)
+      account = Fabricate(:account)
+      text = 'test status update'
+
+      expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
+    end
+  end
+
   def create_status_with_options(**options)
     subject.call(Fabricate(:account), options.merge(text: 'test'))
   end

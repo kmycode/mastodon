@@ -1,0 +1,8 @@
+- content_for :page_title do
+  = t('admin.ng_rules.new.title')
+
+= simple_form_for @ng_rule, url: admin_ng_rules_path do |f|
+  = render 'ng_rule_fields', f: f
+
+  .actions
+    = f.button :button, t('admin.ng_rules.new.save'), type: :submit

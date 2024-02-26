@@ -55,6 +55,32 @@ RSpec.describe ActivityPub::Activity::Like do
     end
   end
 
+  context 'when ng rule is existing' do
+    subject { described_class.new(json, sender) }
+
+    context 'when ng rule is match' do
+      before do
+        Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['favourite'])
+        subject.perform
+      end
+
+      it 'does not create a reblog by sender of status' do
+        expect(sender.favourited?(status)).to be false
+      end
+    end
+
+    context 'when ng rule is not match' do
+      before do
+        Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['favourite'])
+        subject.perform
+      end
+
+      it 'creates a reblog by sender of status' do
+        expect(sender.favourited?(status)).to be true
+      end
+    end
+  end
+
   describe '#perform when receive emoji reaction' do
     subject do
       described_class.new(json, sender).perform
@@ -589,6 +615,30 @@ RSpec.describe ActivityPub::Activity::Like do
             expect(subject.first.custom_emoji.domain).to eq 'example.com'
             expect(sender.favourited?(status)).to be false
           end
+        end
+      end
+    end
+
+    context 'when ng rule is existing' do
+      let(:content) { '😀' }
+
+      context 'when ng rule is match' do
+        before do
+          Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['emoji_reaction'])
+        end
+
+        it 'does not create a reblog by sender of status' do
+          expect(subject.count).to eq 0
+        end
+      end
+
+      context 'when ng rule is not match' do
+        before do
+          Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['emoji_reaction'])
+        end
+
+        it 'creates a reblog by sender of status' do
+          expect(subject.count).to eq 1
         end
       end
     end

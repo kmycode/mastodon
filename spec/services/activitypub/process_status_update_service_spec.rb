@@ -682,6 +682,32 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
       end
     end
 
+    describe 'ng rule is set' do
+      context 'when ng rule is match' do
+        before do
+          Fabricate(:ng_rule, account_domain: 'example.com', status_text: 'universe')
+          subject.call(status, json, json)
+        end
+
+        it 'does not update text' do
+          expect(status.reload.text).to eq 'Hello world'
+          expect(status.edits.reload.map(&:text)).to eq []
+        end
+      end
+
+      context 'when ng rule is not match' do
+        before do
+          Fabricate(:ng_rule, account_domain: 'foo.bar', status_text: 'universe')
+          subject.call(status, json, json)
+        end
+
+        it 'updates text' do
+          expect(status.reload.text).to eq 'Hello universe'
+          expect(status.edits.reload.map(&:text)).to eq ['Hello world', 'Hello universe']
+        end
+      end
+    end
+
     describe 'sensitive word is set' do
       let(:payload) do
         {

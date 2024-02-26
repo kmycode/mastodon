@@ -39,7 +39,7 @@ en:
         text: You can only appeal a strike once
       defaults:
         autofollow: People who sign up through the invite will automatically follow you
-        avatar: PNG, GIF or JPG. At most %{size}. Will be downscaled to %{dimensions}px
+        avatar: WEBP, PNG, GIF or JPG. At most %{size}. Will be downscaled to %{dimensions}px
         bot: Signal to others that the account mainly performs automated actions and might not be monitored
         context: One or multiple contexts where the filter should apply
         current_password: For security purposes please enter the password of the current account
@@ -48,9 +48,7 @@ en:
         discoverable: Allow your account to be discovered by strangers through recommendations, trends and other features
         discoverable_local: Disable the setting on federated servers. The setting is available this server only for avoiding full-text search on other servers
         email: You will be sent a confirmation e-mail
-        group: Reps sent to this account will be automatically BT'd and distributed to all accounts you follow!
-        group_allow_private_message: Posts are duplicated and cannot be edited or deleted by the post
-        header: PNG, GIF or JPG. At most %{size}. Will be downscaled to %{dimensions}px
+        header: WEBP, PNG, GIF or JPG. At most %{size}. Will be downscaled to %{dimensions}px
         inbox_url: Copy the URL from the frontpage of the relay you want to use
         irreversible: Filtered posts will disappear irreversibly, even if filter is later removed
         locale: The language of the user interface, e-mails and push notifications
@@ -220,7 +218,6 @@ en:
         expires_in: Expire after
         fields: Extra fields
         group: This is a group account
-        group_allow_private_message: For group accounts, duplicate private or direct message
         header: Header picture
         honeypot: "%{label} (do not fill in)"
         inbox_url: URL of the relay inbox
