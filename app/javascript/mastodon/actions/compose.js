@@ -213,7 +213,7 @@ export function submitCompose(routerHistory) {
         in_reply_to_id: getState().getIn(['compose', 'in_reply_to'], null),
         media_ids: media.map(item => item.get('id')),
         media_attributes,
-        sensitive: media.size > 0 ? getState().getIn(['compose', 'sensitive']) : false,
+        sensitive: media.size > 0 ? getState().getIn(['compose', 'spoiler']) : false,
         spoiler_text: getState().getIn(['compose', 'spoiler']) ? getState().getIn(['compose', 'spoiler_text'], '') : '',
         markdown: getState().getIn(['compose', 'markdown']),
         visibility: getState().getIn(['compose', 'privacy']),
@@ -306,6 +306,8 @@ export function uploadCompose(files) {
     const uploadLimit = 4;
     const media = getState().getIn(['compose', 'media_attachments']);
     const pending = getState().getIn(['compose', 'pending_media_attachments']);
+    const defaultSensitive = getState().getIn(['compose', 'default_sensitive']);
+    const spoiler = getState().getIn(['compose', 'spoiler']);
     const progress = new Array(files.length).fill(0);
 
     let total = Array.from(files).reduce((a, v) => a + v.size, 0);
@@ -334,6 +336,10 @@ export function uploadCompose(files) {
 
         if (status === 200) {
           dispatch(uploadComposeSuccess(data, file));
+
+          if (defaultSensitive && !spoiler) {
+            dispatch(changeComposeSpoilerness());
+          }
         } else if (status === 202) {
           dispatch(uploadComposeProcessing());
 
