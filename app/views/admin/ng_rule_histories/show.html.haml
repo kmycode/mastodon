@@ -6,6 +6,9 @@
     = link_to edit_admin_ng_rule_path(id: @ng_rule.id) do
       = fa_icon 'chevron-left fw'
       = t('admin.ng_rule_histories.back_to_ng_rule')
+    = link_to admin_ng_rules_path do
+      = fa_icon 'chevron-left fw'
+      = t('admin.ng_rule_histories.back_to_ng_rules')
 
 %hr.spacer/
 

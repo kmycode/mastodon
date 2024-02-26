@@ -677,13 +677,17 @@ en:
         title: Edit NG Rule
       index:
         delete: Delete
+        disabled: Disabled
         edit:
           title: Edit
         empty: Empty NG rules
+        empty_title: Empty title
+        hit_count: "%{count} hits on this week"
         preamble: While NG words are sufficient to deal with normal spam, some of these words must be specified too loosely, making it easier for other normal postings to get caught up in the restrictions. You can also specify the details of the account and the characteristics of the post in the NG rule. NG rules also support the prevention of spam using reactions.
         title: NG Rules
       new:
-        title: New NG Rule
+        save: Save new NG rule
+        title: Add new NG Rule
       reaction_type: Reaction type
       reaction_types:
         emoji_reaction: Emoji reaction
@@ -722,6 +726,7 @@ en:
       title: NG Rule
     ng_rule_histories:
       back_to_ng_rule: Back to NG rule
+      back_to_ng_rules: Back to index
       data:
         media_count: "%{count} medias"
         poll_count: "%{count} polls"
@@ -741,7 +746,7 @@ en:
       block_unfollow_account_mention: Reject all mentions/references from all accounts that do not have followers on your server
       block_unfollow_account_mention_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。NGルールで代替してください。
       deprecated: Will remove settings
-      deprecated_hint: These settings will be removed in the next LTS or kmyblue version 15.0, whichever comes first. Please refer to the description of each setting and replace them with the new settings if possible.
+      deprecated_hint: These settings will be removed in the next LTS or kmyblue version 14.0, whichever comes first. Please refer to the description of each setting and replace them with the new settings if possible.
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
       hide_local_users_for_anonymous_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。サーバー設定の「見つける」にある「公開タイムラインへの未認証のアクセスを許可する」で、完全ではありませんが代替可能です。
       history_hint: We recommend that you regularly check your NG words to make sure that you have not specified the NG words incorrectly.
@@ -761,6 +766,8 @@ en:
       stranger_mention_from_local_ng_hint: この設定は削除予定です。設定削除後は、常にチェックをつけている場合と同じ挙動になります。この動作を希望しない場合は、NGルールで代替してください。
       test_error: Testing is returned any errors
       title: NG words and against spams
+      white_list: White list
+      white_list_hint: Unlike a normal whitelist, all previous accounts are marked as trusted, and all newly recognized accounts are placed on hold. Activating the whitelist does not immediately eliminate external attacks, but it can gradually and surely reduce them through moderation. In addition, a periodic remote account approval process is required.
     ngword_histories:
       back_to_ng_words: NG words and against spams
       target_types:
@@ -951,9 +958,9 @@ en:
       title: Server rules
     sensitive_words:
       alert: This post contains sensitive words, so alert added
-      hint: The sensitive keywords setting is applied to the "Public", "Local Public", and "Logged-in Users Only" public ranges that flow through the local timeline. A mandatory warning text will be added to any post that meets the criteria; unlike NG words, it does not target coalition posts by default.
-      keywords: Sensitive keywords
-      keywords_for_all: Sensitive keywords (Contains CW alert)
+      hint: The sensitive keywords setting is applied to the "Public", "Local Public", and "Logged-in Users Only" public ranges that flow through the local timeline. A mandatory warning text will be added to any post that meets the criteria.
+      keywords: Sensitive keywords for local posts
+      keywords_for_all: Sensitive keywords for local posts (Contains CW alert)
       keywords_for_all_hint: The first character of the line is "?". to use regular expressions
       title: Sensitive words and moderation options
     settings:

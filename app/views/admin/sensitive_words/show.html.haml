@@ -10,10 +10,10 @@
   %p.lead= t 'admin.sensitive_words.hint'
 
   .fields-group
-    = f.input :sensitive_words_for_full, wrapper: :with_label, as: :text, input_html: { rows: 12 }, label: t('admin.sensitive_words.keywords_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')
+    = f.input :sensitive_words_for_full, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')
 
   .fields-group
-    = f.input :sensitive_words, wrapper: :with_label, as: :text, input_html: { rows: 12 }, label: t('admin.sensitive_words.keywords'), hint: t('admin.sensitive_words.keywords_hint')
+    = f.input :sensitive_words, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords'), hint: t('admin.sensitive_words.keywords_hint')
 
   .actions
     = f.button :button, t('generic.save_changes'), type: :submit

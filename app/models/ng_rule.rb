@@ -88,6 +88,10 @@ class NgRule < ApplicationRecord
     dup
   end
 
+  def hit_count
+    Rails.cache.fetch("ng_rule:hit_count:#{id}", expires_in: 15.minutes) { NgRuleHistory.where(ng_rule_id: id).count }
+  end
+
   private
 
   def clean_up_arrays

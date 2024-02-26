@@ -1,6 +1,6 @@
-.filters-list__item{ class: [ng_rule.expired? && 'expired'] }
+.filters-list__item{ class: [(ng_rule.expired? || !ng_rule.available) && 'expired'] }
   = link_to edit_admin_ng_rule_path(ng_rule), class: 'filters-list__item__title' do
-    %h3= ng_rule.title.presence || t('admin.ng_rules.index.empty_title')
+    = ng_rule.title.presence || "(#{t('admin.ng_rules.index.empty_title')})"
 
     - if ng_rule.expires?
       .expiration{ title: t('filters.index.expires_on', date: l(ng_rule.expires_at)) }
@@ -8,6 +8,16 @@
           = t('invites.expired')
         - else
           = t('filters.index.expires_in', distance: distance_of_time_in_words_to_now(ng_rule.expires_at))
+    - elsif !ng_rule.available
+      .expiration
+        = t('admin.ng_rules.index.disabled')
+
+  .filters-list__item__permissions
+    %ul.permissions-list
+
+  .announcements-list__item__action-bar
+    .announcements-list__item__meta
+      = link_to t('admin.ng_rules.index.hit_count', count: ng_rule.hit_count), admin_ng_rule_history_path(ng_rule)
 
     %div
       = table_link_to 'pencil', t('admin.ng_rules.index.edit.title'), edit_admin_ng_rule_path(ng_rule)
