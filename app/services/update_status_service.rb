@@ -170,7 +170,8 @@ class UpdateStatusService < BaseService
     return unless [:public, :public_unlisted, :login].include?(@status.visibility&.to_sym) && Admin::SensitiveWord.sensitive?(@status.text, @status.spoiler_text || '')
 
     @status.text = Admin::SensitiveWord.modified_text(@status.text, @status.spoiler_text)
-    @status.spoiler_text = I18n.t('admin.sensitive_words.alert')
+    @status.spoiler_text = Admin::SensitiveWord.alternative_text
+    @status.sensitive = true
   end
 
   def update_expiration!

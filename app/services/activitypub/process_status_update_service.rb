@@ -188,11 +188,21 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
     @status.sensitive    = @account.sensitized? || @status_parser.sensitive || false
     @status.language     = @status_parser.language
 
+    process_sensitive_words
+
     @significant_changes = text_significantly_changed? || @status.spoiler_text_changed? || @media_attachments_changed || @poll_changed
 
     @status.edited_at = @status_parser.edited_at if significant_changes?
 
     @status.save!
+  end
+
+  def process_sensitive_words
+    return unless %i(public public_unlisted login).include?(@status.visibility.to_sym) && Admin::SensitiveWord.sensitive?(@status.text, @status.spoiler_text, local: false)
+
+    @status.text = Admin::SensitiveWord.modified_text(@status.text, @status.spoiler_text)
+    @status.spoiler_text = Admin::SensitiveWord.alternative_text
+    @status.sensitive = true
   end
 
   def read_metadata

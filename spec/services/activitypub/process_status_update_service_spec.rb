@@ -681,5 +681,42 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
         end
       end
     end
+
+    describe 'sensitive word is set' do
+      let(:payload) do
+        {
+          '@context': 'https://www.w3.org/ns/activitystreams',
+          id: 'foo',
+          type: 'Note',
+          content: content,
+          updated: '2021-09-08T22:39:25Z',
+          tag: json_tags,
+        }
+      end
+
+      context 'when hit sensitive words' do
+        let(:content) { 'ng word aiueo' }
+
+        it 'update status' do
+          Form::AdminSettings.new(sensitive_words_all: 'test').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to eq content
+          expect(status.spoiler_text).to eq ''
+        end
+      end
+
+      context 'when not hit sensitive words' do
+        let(:content) { 'ng word test' }
+
+        it 'update status' do
+          Form::AdminSettings.new(sensitive_words_all: 'test').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to eq content
+          expect(status.spoiler_text).to_not eq ''
+        end
+      end
+    end
   end
 end

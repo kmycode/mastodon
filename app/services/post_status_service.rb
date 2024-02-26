@@ -121,7 +121,8 @@ class PostStatusService < BaseService
   def process_sensitive_words
     if [:public, :public_unlisted, :login].include?(@visibility&.to_sym) && Admin::SensitiveWord.sensitive?(@text, @options[:spoiler_text] || '')
       @text = Admin::SensitiveWord.modified_text(@text, @options[:spoiler_text])
-      @options[:spoiler_text] = I18n.t('admin.sensitive_words.alert')
+      @options[:spoiler_text] = Admin::SensitiveWord.alternative_text
+      @sensitive = true
     end
   end
 

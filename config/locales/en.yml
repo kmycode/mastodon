@@ -856,9 +856,13 @@ en:
       title: Server rules
     sensitive_words:
       alert: This post contains sensitive words, so alert added
+      auto_warning_text: Custom warning text
+      auto_warning_text_hint: If not specified, the default warning text is used.
       hint: This keywords is applied to public posts only..
-      keywords: Sensitive keywords
-      keywords_for_all: Sensitive keywords (Contains CW alert)
+      keywords: Sensitive keywords for local only
+      keywords_all: Sensitive keywords for local+remote
+      keywords_all_for_all: Sensitive keywords for local+remote (Contains CW alert)
+      keywords_for_all: Sensitive keywords for local only (Contains CW alert)
       keywords_for_all_hint: The first character of the line is "?". to use regular expressions
       title: Sensitive words and moderation options
     settings:

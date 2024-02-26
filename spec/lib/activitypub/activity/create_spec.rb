@@ -2024,6 +2024,45 @@ RSpec.describe ActivityPub::Activity::Create do
         end
       end
 
+      context 'when sensitive word is set' do
+        let(:custom_before) { true }
+        let(:content) { 'Lorem ipsum' }
+        let(:sensitive_words_all) { 'hello' }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: content,
+            to: 'https://www.w3.org/ns/activitystreams#Public',
+          }
+        end
+
+        before do
+          Form::AdminSettings.new(sensitive_words_all: sensitive_words_all, sensitive_words: 'ipsum').save
+          subject.perform
+        end
+
+        context 'when not contains sensitive words' do
+          it 'creates status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.spoiler_text).to eq ''
+          end
+        end
+
+        context 'when contains sensitive words' do
+          let(:content) { 'hello world' }
+
+          it 'creates status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.spoiler_text).to_not eq ''
+          end
+        end
+      end
+
       context 'when hashtags limit is set' do
         let(:post_hash_tags_max) { 2 }
         let(:custom_before) { true }

@@ -80,6 +80,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     @raw_mention_uris     = []
 
     process_status_params
+    process_sensitive_words
     process_tags
     process_audience
 
@@ -141,6 +142,14 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       ordered_media_attachment_ids: attachment_ids,
       poll: process_poll,
     }
+  end
+
+  def process_sensitive_words
+    return unless %i(public public_unlisted login).include?(@params[:visibility].to_sym) && Admin::SensitiveWord.sensitive?(@params[:text], @params[:spoiler_text], local: false)
+
+    @params[:text] = Admin::SensitiveWord.modified_text(@params[:text], @params[:spoiler_text])
+    @params[:spoiler_text] = Admin::SensitiveWord.alternative_text
+    @params[:sensitive] = true
   end
 
   def valid_status?
