@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_27_222450) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_27_225017) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1023,6 +1023,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_27_222450) do
     t.index ["uri"], name: "index_pending_follow_requests_on_uri", unique: true
   end
 
+  create_table "pending_statuses", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "fetch_account_id", null: false
+    t.string "uri", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_pending_statuses_on_account_id"
+    t.index ["fetch_account_id"], name: "index_pending_statuses_on_fetch_account_id"
+    t.index ["uri"], name: "index_pending_statuses_on_uri", unique: true
+  end
+
   create_table "pghero_space_stats", force: :cascade do |t|
     t.text "database"
     t.text "schema"
@@ -1617,6 +1628,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_27_222450) do
   add_foreign_key "one_time_keys", "devices", on_delete: :cascade
   add_foreign_key "pending_follow_requests", "accounts", column: "target_account_id", on_delete: :cascade
   add_foreign_key "pending_follow_requests", "accounts", on_delete: :cascade
+  add_foreign_key "pending_statuses", "accounts", column: "fetch_account_id", on_delete: :cascade
+  add_foreign_key "pending_statuses", "accounts", on_delete: :cascade
   add_foreign_key "poll_votes", "accounts", on_delete: :cascade
   add_foreign_key "poll_votes", "polls", on_delete: :cascade
   add_foreign_key "polls", "accounts", on_delete: :cascade

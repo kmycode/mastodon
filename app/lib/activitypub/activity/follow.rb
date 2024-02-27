@@ -20,6 +20,11 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
       return
     end
 
+    if @account.suspended?
+      PendingFollowRequest.create!(account: @account, target_account: target_account, uri: @json['id']) if @account.remote_pending?
+      return
+    end
+
     if target_account.blocking?(@account) || target_account.domain_blocking?(@account.domain) || target_account.moved? || target_account.instance_actor? || block_new_follow?
       reject_follow_request!(target_account)
       return
@@ -30,13 +35,6 @@ class ActivityPub::Activity::Follow < ActivityPub::Activity
     unless existing_follow.nil?
       existing_follow.update!(uri: @json['id'])
       AuthorizeFollowService.new.call(@account, target_account, skip_follow_request: true, follow_request_uri: @json['id'])
-      return
-    end
-
-    if @account.suspended? && @account.remote_pending?
-      PendingFollowRequest.create!(account: @account, target_account: target_account, uri: @json['id'])
-      return
-    elsif @account.suspended?
       return
     end
 

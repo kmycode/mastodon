@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class EnableFollowRequestsService < BaseService
+class ActivateFollowRequestsService < BaseService
   include Payloadable
   include FollowHelper
 

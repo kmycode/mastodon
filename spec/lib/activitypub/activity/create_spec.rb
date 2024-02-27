@@ -2468,6 +2468,40 @@ RSpec.describe ActivityPub::Activity::Create do
       end
     end
 
+    context 'when sender is in remote pending' do
+      subject { described_class.new(json, sender, delivery: true) }
+
+      let!(:local_account) { Fabricate(:account) }
+      let(:object_json) do
+        {
+          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+          type: 'Note',
+          content: 'Lorem ipsum',
+          to: local_account ? ActivityPub::TagManager.instance.uri_for(local_account) : 'https://www.w3.org/ns/activitystreams#Public',
+        }
+      end
+
+      before do
+        sender.update(suspended_at: Time.now.utc, suspension_origin: :local, remote_pending: true)
+        subject.perform
+      end
+
+      it 'does not create a status' do
+        status = sender.statuses.first
+
+        expect(status).to be_nil
+      end
+
+      it 'pending data is created' do
+        pending = PendingStatus.find_by(account: sender)
+
+        expect(pending).to_not be_nil
+        expect(pending.uri).to eq object_json[:id]
+        expect(pending.account_id).to eq sender.id
+        expect(pending.fetch_account_id).to eq local_account.id
+      end
+    end
+
     context 'when sender is followed by local users' do
       subject { described_class.new(json, sender, delivery: true) }
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class EnableFollowRequestsWorker
+class ActivateRemoteAccountWorker
   include Sidekiq::Worker
 
   def perform(account_id)
@@ -8,6 +8,7 @@ class EnableFollowRequestsWorker
     return true if account.nil?
     return true if account.suspended?
 
-    EnableFollowRequestsService.new.call(account)
+    ActivateFollowRequestsService.new.call(account)
+    ActivateRemoteStatusesService.new.call(account)
   end
 end

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe EnableFollowRequestsService, type: :service do
+RSpec.describe ActivateFollowRequestsService, type: :service do
   subject { described_class.new.call(sender) }
 
   let(:sender) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }

@@ -300,7 +300,7 @@ class Account < ApplicationRecord
   def approve_remote!
     update!(remote_pending: false)
     unsuspend!
-    EnableFollowRequestsWorker.perform_async(id)
+    ActivateRemoteAccountWorker.perform_async(id)
   end
 
   def reject_remote!

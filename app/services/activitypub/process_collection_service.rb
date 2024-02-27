@@ -56,7 +56,7 @@ class ActivityPub::ProcessCollectionService < BaseService
   end
 
   def activity_allowed_while_remote_pending?
-    %w(Follow).include?(@json['type']) || activity_allowed_while_suspended?
+    %w(Follow Create).include?(@json['type']) || activity_allowed_while_suspended?
   end
 
   def process_items(items)
