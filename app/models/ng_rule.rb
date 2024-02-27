@@ -29,8 +29,8 @@
 #  status_poll_state               :integer          default("optional"), not null
 #  status_quote_state              :integer          default("optional"), not null
 #  status_reply_state              :integer          default("optional"), not null
-#  status_mention_state            :integer          default(0), not null
-#  status_reference_state          :integer          default(0), not null
+#  status_mention_state            :integer          default("optional"), not null
+#  status_reference_state          :integer          default("optional"), not null
 #  status_tag_threshold            :integer          default(-1), not null
 #  status_media_threshold          :integer          default(-1), not null
 #  status_poll_threshold           :integer          default(-1), not null

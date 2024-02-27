@@ -89,6 +89,7 @@ namespace :dangerous do
       20240217093511
       20240217230006
       20240218233621
+      20240227033337
     )
     # Removed: account_groups
     target_tables = %w(
@@ -115,14 +116,14 @@ namespace :dangerous do
     )
     target_table_columns = [
       # Removed: accounts dissubscribable
-      %w(accounts group_allow_private_message),
+      # Removed: accounts group_allow_private_message
       # Removed: accounts group_message_following_only
       %w(accounts master_settings),
       %w(accounts remote_pending),
       %w(accounts searchability),
       %w(accounts settings),
       # Removed: accounts stop_emoji_reaction_streaming
-      %w(account_stats group_activitypub_count),
+      # Removed: account_stats group_activitypub_count
       %w(account_statuses_cleanup_policies keep_self_emoji),
       %w(account_statuses_cleanup_policies min_emojis),
       %w(conversations ancestor_status_id),
