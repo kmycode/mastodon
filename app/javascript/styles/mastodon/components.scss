@@ -5240,16 +5240,6 @@ a.status-card {
 
 .privacy-dropdown .privacy-dropdown__value.searchability {
   position: relative;
-
-  .searchability-dropdown__value-overlay {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    color: purple;
-    pointer-events: none;
-    width: 60%;
-    height: 60%;
-  }
 }
 
 .language-dropdown {
