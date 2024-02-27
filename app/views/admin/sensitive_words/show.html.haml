@@ -16,10 +16,10 @@
     = f.input :sensitive_words, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords'), hint: t('admin.sensitive_words.keywords_hint')
 
   .fields-group
-    = f.input :sensitive_words_all_for_full, wrapper: :with_label, as: :text, input_html: { rows: 12 }, label: t('admin.sensitive_words.keywords_all_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')
+    = f.input :sensitive_words_all_for_full, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords_all_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')
 
   .fields-group
-    = f.input :sensitive_words_all, wrapper: :with_label, as: :text, input_html: { rows: 12 }, label: t('admin.sensitive_words.keywords_all'), hint: t('admin.sensitive_words.keywords_hint')
+    = f.input :sensitive_words_all, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords_all'), hint: t('admin.sensitive_words.keywords_hint')
 
   .fields-group
     = f.input :auto_warning_text, wrapper: :with_label, input_html: { placeholder: t('admin.sensitive_words.alert') }, label: t('admin.sensitive_words.auto_warning_text'), hint: t('admin.sensitive_words.auto_warning_text_hint')
