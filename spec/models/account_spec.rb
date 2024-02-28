@@ -434,6 +434,18 @@ RSpec.describe Account do
     end
   end
 
+  describe '#approve_remote!' do
+    it 'calls worker' do
+      account = Fabricate(:account, suspended_at: Time.now.utc, suspension_origin: :local, remote_pending: true)
+      allow(ActivateRemoteAccountWorker).to receive(:perform_async)
+
+      account.approve_remote!
+      expect(account.remote_pending).to be false
+      expect(account.suspended?).to be false
+      expect(ActivateRemoteAccountWorker).to have_received(:perform_async).with(account.id)
+    end
+  end
+
   describe '#favourited?' do
     subject { Fabricate(:account) }
 

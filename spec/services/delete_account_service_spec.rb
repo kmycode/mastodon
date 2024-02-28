@@ -48,6 +48,9 @@ RSpec.describe DeleteAccountService, type: :service do
     let!(:account_note) { Fabricate(:account_note, account: account) }
 
     let!(:ng_rule_history) { Fabricate(:ng_rule_history, account: account) }
+    let!(:pending_follow_request) { Fabricate(:pending_follow_request, account: account) }
+    let!(:pending_status) { Fabricate(:pending_status, account: account, uri: 'https://example.com/note1') }
+    let!(:fetchable_pending_status) { Fabricate(:pending_status, fetch_account: account, uri: 'https://example.com/note2') }
 
     it 'deletes associated owned and target records and target notifications' do
       subject
@@ -77,6 +80,9 @@ RSpec.describe DeleteAccountService, type: :service do
       expect { circle_account.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect { circle_status.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect { bookmark_category_status.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { pending_follow_request.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { pending_status.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { fetchable_pending_status.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     def expect_deletion_of_associated_owned_records

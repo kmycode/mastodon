@@ -20,6 +20,7 @@ class DeleteAccountService < BaseService
     devices
     domain_blocks
     featured_tags
+    fetchable_pending_statuses
     follow_requests
     list_accounts
     migrations
@@ -29,6 +30,7 @@ class DeleteAccountService < BaseService
     owned_lists
     passive_relationships
     pending_follow_requests
+    pending_statuses
     report_notes
     scheduled_statuses
     scheduled_expiration_statuses
@@ -51,6 +53,7 @@ class DeleteAccountService < BaseService
     devices
     domain_blocks
     featured_tags
+    fetchable_pending_statuses
     follow_requests
     list_accounts
     migrations
@@ -59,6 +62,7 @@ class DeleteAccountService < BaseService
     notifications
     owned_lists
     pending_follow_requests
+    pending_statuses
     scheduled_statuses
     scheduled_expiration_statuses
     status_pins

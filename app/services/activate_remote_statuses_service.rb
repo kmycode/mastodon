@@ -19,11 +19,13 @@ class ActivateRemoteStatusesService < BaseService
   def approve_status!(pending)
     account_id       = pending.account_id
     fetch_account_id = pending.fetch_account_id
+    fetch_account    = pending.fetch_account
     uri              = pending.uri
     pending.destroy!
 
+    return if fetch_account.suspended?
     return if ActivityPub::TagManager.instance.uri_to_resource(uri, Status).present?
 
-    FetchRemoteStatusWorker.perform_async(uri, account_id, fetch_account_id)
+    ActivityPub::FetchRemoteStatusWorker.perform_async(uri, account_id, fetch_account_id)
   end
 end

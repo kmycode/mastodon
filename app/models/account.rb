@@ -298,14 +298,19 @@ class Account < ApplicationRecord
   end
 
   def approve_remote!
+    return unless remote_pending
+
     update!(remote_pending: false)
     unsuspend!
     ActivateRemoteAccountWorker.perform_async(id)
   end
 
   def reject_remote!
+    return unless remote_pending
+
     update!(remote_pending: false, suspension_origin: :local)
     pending_follow_requests.destroy_all
+    pending_statuses.destroy_all
     suspend!
   end
 
