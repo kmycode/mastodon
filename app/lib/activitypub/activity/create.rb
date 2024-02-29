@@ -411,15 +411,17 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def process_pending_status
-    return if PendingStatus.exists?(uri: @object['id'])
+    with_redis_lock("pending_status:#{@object['id']}") do
+      return if PendingStatus.exists?(uri: @object['id'])
 
-    fetch_account = as_array(@object['tag'])
-                    .filter_map { |tag| equals_or_includes?(tag['type'], 'Mention') && tag['href'] && ActivityPub::TagManager.instance.local_uri?(tag['href']) && ActivityPub::TagManager.instance.uri_to_resource(tag['href'], Account) }
-                    .first
-    fetch_account ||= (audience_to + audience_cc).filter_map { |uri| ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Account) }.first
-    fetch_account ||= Account.representative
+      fetch_account = as_array(@object['tag'])
+                      .filter_map { |tag| equals_or_includes?(tag['type'], 'Mention') && tag['href'] && ActivityPub::TagManager.instance.local_uri?(tag['href']) && ActivityPub::TagManager.instance.uri_to_resource(tag['href'], Account) }
+                      .first
+      fetch_account ||= (audience_to + audience_cc).filter_map { |uri| ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Account) }.first
+      fetch_account ||= Account.representative
 
-    PendingStatus.create!(account: @account, uri: @object['id'], fetch_account: fetch_account)
+      PendingStatus.create!(account: @account, uri: @object['id'], fetch_account: fetch_account)
+    end
   end
 
   def resolve_thread(status)
