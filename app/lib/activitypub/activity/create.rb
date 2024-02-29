@@ -91,7 +91,6 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     process_audience
 
     return nil unless valid_status?
-    return nil if (mention_to_local? || reference_to_local_account?) && reject_reply_to_local?
     return nil if (mention_to_local_stranger? || reference_to_local_stranger?) && reject_reply_exclude_followers?
 
     ApplicationRecord.transaction do
@@ -510,10 +509,6 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     !replied_to_status.nil? && replied_to_status.account.local?
   end
 
-  def mention_to_local?
-    mentioned_accounts.any?(&:local?)
-  end
-
   def mention_to_local_stranger?
     mentioned_accounts.any? { |account| account.local? && !account.following?(@account) }
   end
@@ -530,10 +525,6 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
   def reference_to_local_stranger?
     local_referred_accounts.any? { |account| !account.following?(@account) }
-  end
-
-  def reject_reply_to_local?
-    @reject_reply_to_local ||= DomainBlock.reject_reply?(@account.domain)
   end
 
   def reject_reply_exclude_followers?

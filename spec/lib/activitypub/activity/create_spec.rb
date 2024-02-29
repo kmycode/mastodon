@@ -869,36 +869,6 @@ RSpec.describe ActivityPub::Activity::Create do
         end
       end
 
-      context 'with mentions domain block reject_reply' do
-        before do
-          Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_reply: true)
-          subject.perform
-        end
-
-        let(:custom_before) { true }
-        let(:recipient) { Fabricate(:account) }
-
-        let(:object_json) do
-          {
-            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
-            type: 'Note',
-            content: 'Lorem ipsum',
-            tag: [
-              {
-                type: 'Mention',
-                href: ActivityPub::TagManager.instance.uri_for(recipient),
-              },
-            ],
-          }
-        end
-
-        it 'creates status' do
-          status = sender.statuses.first
-
-          expect(status).to be_nil
-        end
-      end
-
       context 'with mentions domain block reject_reply_exclude_followers' do
         before do
           Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_reply_exclude_followers: true)

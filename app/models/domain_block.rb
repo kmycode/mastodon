@@ -15,7 +15,6 @@
 #  public_comment                 :text
 #  obfuscate                      :boolean          default(FALSE), not null
 #  reject_favourite               :boolean          default(FALSE), not null
-#  reject_reply                   :boolean          default(FALSE), not null
 #  reject_send_sensitive          :boolean          default(FALSE), not null
 #  reject_hashtag                 :boolean          default(FALSE), not null
 #  reject_straight_follow         :boolean          default(FALSE), not null
@@ -44,7 +43,6 @@ class DomainBlock < ApplicationRecord
     where(severity: [:silence, :suspend])
       .or(where(reject_media: true))
       .or(where(reject_favourite: true))
-      .or(where(reject_reply: true))
       .or(where(reject_reply_exclude_followers: true))
       .or(where(reject_new_follow: true))
       .or(where(reject_straight_follow: true))
@@ -64,7 +62,6 @@ class DomainBlock < ApplicationRecord
       [severity.to_sym,
        reject_media? ? :reject_media : nil,
        reject_favourite? ? :reject_favourite : nil,
-       reject_reply? ? :reject_reply : nil,
        reject_reply_exclude_followers? ? :reject_reply_exclude_followers : nil,
        reject_send_sensitive? ? :reject_send_sensitive : nil,
        reject_hashtag? ? :reject_hashtag : nil,
@@ -92,10 +89,6 @@ class DomainBlock < ApplicationRecord
 
     def reject_favourite?(domain)
       !!rule_for(domain)&.reject_favourite?
-    end
-
-    def reject_reply?(domain)
-      !!rule_for(domain)&.reject_reply?
     end
 
     def reject_reply_exclude_followers?(domain)
@@ -150,7 +143,7 @@ class DomainBlock < ApplicationRecord
     return false if other_block.suspend? && (silence? || noop?)
     return false if other_block.silence? && noop?
 
-    (reject_media || !other_block.reject_media) && (reject_favourite || !other_block.reject_favourite) && (reject_reply || !other_block.reject_reply) && (reject_reply_exclude_followers || !other_block.reject_reply_exclude_followers) && (reject_reports || !other_block.reject_reports)
+    (reject_media || !other_block.reject_media) && (reject_favourite || !other_block.reject_favourite) && (reject_reply_exclude_followers || !other_block.reject_reply_exclude_followers) && (reject_reports || !other_block.reject_reports)
   end
 
   def public_domain

@@ -92,6 +92,7 @@ namespace :dangerous do
       20240227033337
       20240227222450
       20240227225017
+      20240229233617
     )
     # Removed: account_groups
     target_tables = %w(
@@ -147,7 +148,7 @@ namespace :dangerous do
       %w(domain_blocks reject_friend),
       %w(domain_blocks reject_hashtag),
       %w(domain_blocks reject_new_follow),
-      %w(domain_blocks reject_reply),
+      # Removed: domain_blocks reject_reply
       %w(domain_blocks reject_reply_exclude_followers),
       # Removed: domain_blocks reject_send_dissubscribable
       # Removed: domain_blocks reject_send_media

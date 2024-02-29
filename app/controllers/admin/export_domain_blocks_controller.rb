@@ -38,7 +38,6 @@ module Admin
                                        public_comment: row['#public_comment'],
                                        obfuscate: row.fetch('#obfuscate', false),
                                        reject_favourite: row.fetch('#reject_favourite', false),
-                                       reject_reply: row.fetch('#reject_reply', false),
                                        reject_send_sensitive: row.fetch('#reject_send_sensitive', false),
                                        reject_hashtag: row.fetch('#reject_hashtag', false),
                                        reject_straight_follow: row.fetch('#reject_straight_follow', false),
@@ -86,7 +85,6 @@ module Admin
         #public_comment
         #obfuscate
         #reject_favourite
-        #reject_reply
         #reject_send_sensitive
         #reject_hashtag
         #reject_straight_follow
@@ -110,7 +108,6 @@ module Admin
             instance.public_comment,
             instance.obfuscate,
             instance.reject_favourite,
-            instance.reject_reply,
             instance.reject_send_sensitive,
             instance.reject_hashtag,
             instance.reject_straight_follow,
