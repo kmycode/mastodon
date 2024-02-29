@@ -1802,7 +1802,7 @@ RSpec.describe ActivityPub::Activity::Create do
         end
 
         context 'when not contains ng words' do
-          let(:content) { 'ohagi, world!' }
+          let(:content) { 'ohagi, world! <a href="https://hello.org">OH GOOD</a>' }
 
           it 'creates status' do
             expect(sender.statuses.first).to_not be_nil
@@ -2052,7 +2052,7 @@ RSpec.describe ActivityPub::Activity::Create do
 
       context 'when ng rule is set' do
         let(:custom_before) { true }
-        let(:content) { 'Lorem ipsum' }
+        let(:content) { 'Lorem ipsum <a href="https://amely.net/">GOOD LINK</a>' }
         let(:object_json) do
           {
             id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,

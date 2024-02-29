@@ -3,12 +3,14 @@
 class Admin::NgWord
   class << self
     def reject?(text, **options)
+      text = PlainTextFormatter.new(text, false).to_s if options[:uri].present?
       hit_word = ng_words.detect { |word| include?(text, word) ? word : nil }
       record!(:ng_words, text, hit_word, options) if hit_word.present?
       hit_word.present?
     end
 
     def stranger_mention_reject?(text, **options)
+      text = PlainTextFormatter.new(text, false).to_s if options[:uri].present?
       hit_word = ng_words_for_stranger_mention.detect { |word| include?(text, word) ? word : nil }
       record!(:ng_words_for_stranger_mention, text, hit_word, options) if hit_word.present?
       hit_word.present?
