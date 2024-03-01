@@ -453,7 +453,7 @@ ja:
       reject_new_follow: 新規フォローを拒否
       reject_new_follow_hint: 今後の新規フォローを拒否します。停止とは無関係です
       reject_reply: リプライを拒否
-      reject_reply_exclude_followers: フォロー相手以外からのリプライを拒否
+      reject_reply_exclude_followers: フォロー相手以外からのメンションと参照を拒否
       reject_reply_hint: 今後のリプライを拒否します。停止とは無関係です
       reject_reply_exclude_followers_hint: 今後のリプライを拒否します。停止とは無関係です
       reject_reports: 通報を拒否
@@ -567,7 +567,7 @@ ja:
           reject_media: メディアを拒否する
           reject_new_follow: 新規フォローを拒否
           reject_reply: リプライを拒否
-          reject_reply_exclude_followers: フォロー相手以外からのリプライを拒否
+          reject_reply_exclude_followers: フォロー相手以外からのメンション・参照を拒否
           reject_reports: 通報を拒否
           reject_send_sensitive: センシティブ投稿配送なし
           reject_straight_follow: フォローを制限

@@ -458,7 +458,7 @@ en:
       reject_new_follow: Reject follows
       reject_new_follow_hint: Reject follows in the future
       reject_reply: Reject replies
-      reject_reply_exclude_followers: Reject replies exclude followers
+      reject_reply_exclude_followers: Reject mentions/references exclude followers
       reject_reply_hint: Reject replies in the future
       reject_reply_exclude_followers_hint: Reject replies exclude followers in the future
       reject_reports: Reject reports
@@ -575,7 +575,7 @@ en:
           reject_new_follow: Reject follows
           reject_straight_follow: Reject straight follow
           reject_reply: Reject reply
-          reject_reply_exclude_followers: Reject reply exclude followers
+          reject_reply_exclude_followers: Reject reply/reference exclude followers
           reject_reports: Reject reports
           silence: Limit
           suspend: Suspend

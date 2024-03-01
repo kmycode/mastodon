@@ -164,15 +164,16 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   def valid_status?
     valid = !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status)
     valid = !Admin::NgWord.hashtag_reject?(@raw_tags.size) if valid
+    valid = false if valid && Admin::NgWord.mention_reject?(@raw_mentions.size, uri: @status.uri, target_type: :status, text: "#{@status_parser.spoiler_text}\n#{@status_parser.text}")
+    valid = false if valid && (mention_to_local_stranger? || reference_to_local_stranger?) && Admin::NgWord.stranger_mention_reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status)
+    valid = false if valid && (mention_to_local_stranger? || reference_to_local_stranger?) && Admin::NgWord.stranger_mention_reject_with_count?(@raw_mentions.size, uri: @status.uri, target_type: :status, text: "#{@status_parser.spoiler_text}\n#{@status_parser.text}")
+    valid = false if valid && (mention_to_local_stranger? || reference_to_local_stranger?) && reject_reply_exclude_followers?
 
     valid
   end
 
   def validate_status_mentions!
     raise AbortError unless valid_status_for_ng_rule?
-    raise AbortError if (mention_to_local_stranger? || reference_to_local_stranger?) && Admin::NgWord.stranger_mention_reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status)
-    raise AbortError if Admin::NgWord.mention_reject?(@raw_mentions.size, uri: @status.uri, target_type: :status, text: "#{@status_parser.spoiler_text}\n#{@status_parser.text}")
-    raise AbortError if (mention_to_local_stranger? || reference_to_local_stranger?) && Admin::NgWord.stranger_mention_reject_with_count?(@raw_mentions.size, uri: @status.uri, target_type: :status, text: "#{@status_parser.spoiler_text}\n#{@status_parser.text}")
   end
 
   def valid_status_for_ng_rule?
@@ -196,8 +197,11 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def mention_to_local_stranger?
-    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @status.account.id && mentioned_account.local? && !mentioned_account.following?(@status.account) } ||
-      (@status.thread.present? && @status.thread.account.id != @status.account.id && @status.thread.account.local? && !@status.thread.account.following?(@status.account))
+    return @mention_to_local_stranger if defined?(@mention_to_local_stranger)
+
+    @mention_to_local_stranger = @raw_mentions.filter_map { |uri| ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Account) }.any? { |mentioned_account| !mentioned_account.following?(@status.account) }
+    @mention_to_local_stranger ||= @status.thread.present? && @status.thread.account_id != @status.account_id && @status.thread.account.local? && !@status.thread.account.following?(@status.account)
+    @mention_to_local_stranger
   end
 
   def reference_to_local_stranger?
@@ -363,6 +367,12 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
     return @ignore_hashtags if defined?(@ignore_hashtags)
 
     @ignore_hashtags ||= DomainBlock.reject_hashtag?(@account.domain)
+  end
+
+  def reject_reply_exclude_followers?
+    return @reject_reply_exclude_followers if defined?(@reject_reply_exclude_followers)
+
+    @reject_reply_exclude_followers ||= DomainBlock.reject_reply_exclude_followers?(@account.domain)
   end
 
   def unsupported_media_type?(mime_type)

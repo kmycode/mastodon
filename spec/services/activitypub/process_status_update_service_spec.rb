@@ -325,6 +325,31 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
       end
     end
 
+    context 'when reject mentions to stranger by domain-block' do
+      let(:json_tags) do
+        [
+          { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
+        ]
+      end
+
+      before do
+        Fabricate(:domain_block, domain: 'example.com', reject_reply_exclude_followers: true, severity: :noop)
+      end
+
+      it 'updates mentions' do
+        subject.call(status, json, json)
+
+        expect(status.mentions.reload.map(&:account_id)).to eq []
+      end
+
+      it 'updates mentions when follower' do
+        alice.follow!(status.account)
+        subject.call(status, json, json)
+
+        expect(status.mentions.reload.map(&:account_id)).to eq [alice.id]
+      end
+    end
+
     context 'when originally without mentions' do
       before do
         subject.call(status, json, json)
@@ -508,7 +533,7 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
         end
       end
 
-      context 'when hit ng words for mention' do
+      context 'when hit ng words for mention to local stranger' do
         let(:json_tags) do
           [
             { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
@@ -522,6 +547,15 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
           subject.call(status, json, json)
           expect(status.reload.text).to_not eq content
           expect(status.mentioned_accounts.pluck(:id)).to_not include alice.id
+        end
+
+        it 'update status when following' do
+          Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+          alice.follow!(status.account)
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to eq content
+          expect(status.mentioned_accounts.pluck(:id)).to include alice.id
         end
       end
 
