@@ -176,7 +176,7 @@ class Admin::NgRule
   end
 
   def detect_keyword?(text, arr)
-    Admin::NgRule.detect_keyword?(text, arr)
+    Admin::NgRule.detect_keyword?(text, arr, local: @account.local?)
   end
 
   class << self
@@ -184,14 +184,15 @@ class Admin::NgRule
       text.delete("\r").split("\n")
     end
 
-    def detect_keyword(text, arr)
+    def detect_keyword(text, arr, local: true)
       arr = string_to_array(arr) if arr.is_a?(String)
+      text = PlainTextFormatter.new(text, false).to_s unless local
 
       arr.detect { |word| include?(text, word) ? word : nil }
     end
 
-    def detect_keyword?(text, arr)
-      detect_keyword(text, arr).present?
+    def detect_keyword?(text, arr, local: true)
+      detect_keyword(text, arr, local: local).present?
     end
 
     def include?(text, word)
