@@ -27,8 +27,8 @@ import Column from 'mastodon/components/column';
 import ColumnHeader from 'mastodon/components/column_header';
 import LinkFooter from 'mastodon/features/ui/components/link_footer';
 
-import { me, showTrends } from '../../initial_state';
-import NavigationContainer from '../compose/containers/navigation_container';
+import { dtlTag, enableDtlMenu, me, showTrends } from '../../initial_state';
+import { NavigationBar } from '../compose/components/navigation_bar';
 import ColumnLink from '../ui/components/column_link';
 import ColumnSubheading from '../ui/components/column_subheading';
 
@@ -40,6 +40,7 @@ const messages = defineMessages({
   public_timeline: { id: 'navigation_bar.public_timeline', defaultMessage: 'Federated timeline' },
   settings_subheading: { id: 'column_subheading.settings', defaultMessage: 'Settings' },
   community_timeline: { id: 'navigation_bar.community_timeline', defaultMessage: 'Local timeline' },
+  deep_timeline: { id: 'navigation_bar.deep_timeline', defaultMessage: 'Deep timeline' },
   explore: { id: 'navigation_bar.explore', defaultMessage: 'Explore' },
   direct: { id: 'navigation_bar.direct', defaultMessage: 'Private mentions' },
   bookmarks: { id: 'navigation_bar.bookmarks', defaultMessage: 'Bookmarks' },
@@ -116,12 +117,21 @@ class GettingStarted extends ImmutablePureComponent {
 
     if (showTrends) {
       navItems.push(
-        <ColumnLink key='explore' icon='hashtag' iconComponent={TagIcon} text={intl.formatMessage(messages.explore)} to='/explore' />,
+        <ColumnLink key='explore' icon='explore' iconComponent={TagIcon} text={intl.formatMessage(messages.explore)} to='/explore' />,
       );
     }
 
     navItems.push(
       <ColumnLink key='community_timeline' icon='users' iconComponent={PeopleIcon} text={intl.formatMessage(messages.community_timeline)} to='/public/local' />,
+    );
+
+    if (signedIn && enableDtlMenu && dtlTag) {
+      navItems.push(
+        <ColumnLink key='deep_timeline' icon='users' iconComponent={PeopleIcon} text={intl.formatMessage(messages.deep_timeline)} to={`/tags/${dtlTag}`} />,
+      );
+    }
+
+    navItems.push(
       <ColumnLink key='public_timeline' icon='globe' iconComponent={PublicIcon} text={intl.formatMessage(messages.public_timeline)} to='/public' />,
     );
 
@@ -149,7 +159,7 @@ class GettingStarted extends ImmutablePureComponent {
 
     return (
       <Column>
-        {(signedIn && !multiColumn) ? <NavigationContainer /> : <ColumnHeader title={intl.formatMessage(messages.menu)} icon='bars' iconComponent={MenuIcon} multiColumn={multiColumn} />}
+        {(signedIn && !multiColumn) ? <NavigationBar /> : <ColumnHeader title={intl.formatMessage(messages.menu)} icon='bars' iconComponent={MenuIcon} multiColumn={multiColumn} />}
 
         <div className='getting-started scrollable scrollable--flex'>
           <div className='getting-started__wrapper'>

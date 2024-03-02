@@ -12,6 +12,7 @@ import RepeatIcon from '@/material-icons/400-24px/repeat.svg?react';
 import ReplyAllIcon from '@/material-icons/400-24px/reply_all.svg?react';
 import StarIcon from '@/material-icons/400-24px/star.svg?react';
 import { Icon }  from 'mastodon/components/icon';
+import { enableEmojiReaction } from 'mastodon/initial_state';
 
 const tooltips = defineMessages({
   mentions: { id: 'notifications.filter.mentions', defaultMessage: 'Mentions' },
@@ -85,13 +86,15 @@ class FilterBar extends PureComponent {
         >
           <Icon id='star' icon={StarIcon} />
         </button>
-        <button
-          className={selectedFilter === 'emoji_reaction' ? 'active' : ''}
-          onClick={this.onClick('emoji_reaction')}
-          title={intl.formatMessage(tooltips.emojiReactions)}
-        >
-          <Icon id='smile-o' icon={EmojiReactionIcon} fixedWidth />
-        </button>
+        {enableEmojiReaction && (
+          <button
+            className={selectedFilter === 'emoji_reaction' ? 'active' : ''}
+            onClick={this.onClick('emoji_reaction')}
+            title={intl.formatMessage(tooltips.emojiReactions)}
+          >
+            <Icon id='smile-o' icon={EmojiReactionIcon} fixedWidth />
+          </button>
+        )}
         <button
           className={selectedFilter === 'reblog' ? 'active' : ''}
           onClick={this.onClick('reblog')}

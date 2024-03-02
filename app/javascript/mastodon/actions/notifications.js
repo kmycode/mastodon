@@ -4,7 +4,7 @@ import { defineMessages } from 'react-intl';
 import { List as ImmutableList } from 'immutable';
 
 import { compareId } from 'mastodon/compare_id';
-import { usePendingItems as preferPendingItems } from 'mastodon/initial_state';
+import { enableEmojiReaction, usePendingItems as preferPendingItems } from 'mastodon/initial_state';
 
 import api, { getLinks } from '../api';
 import { unescapeHTML } from '../utils/html';
@@ -175,11 +175,16 @@ export function expandNotifications({ maxId, forceLoad } = {}, done = noOp) {
       }
     }
 
+    let exclude_types = activeFilter === 'all'
+      ? excludeTypesFromSettings(getState())
+      : excludeTypesFromFilter(activeFilter);
+    if (!enableEmojiReaction && !exclude_types.includes('emoji_reaction')) {
+      exclude_types.push('emoji_reaction');
+    }
+
     const params = {
       max_id: maxId,
-      exclude_types: activeFilter === 'all'
-        ? excludeTypesFromSettings(getState())
-        : excludeTypesFromFilter(activeFilter),
+      exclude_types,
     };
 
     if (!params.max_id && (notifications.get('items', ImmutableList()).size + notifications.get('pendingItems', ImmutableList()).size) > 0) {

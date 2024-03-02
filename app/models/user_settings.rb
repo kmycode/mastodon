@@ -31,7 +31,6 @@ class UserSettings
   setting :public_post_to_unlisted, default: false
   setting :reject_public_unlisted_subscription, default: false
   setting :reject_unlisted_subscription, default: false
-  setting :send_without_domain_blocks, default: false
   setting :reaction_deck, default: nil
   setting :stop_emoji_reaction_streaming, default: false
   setting :emoji_reaction_streaming_notify_impl2, default: false
@@ -42,6 +41,7 @@ class UserSettings
   setting :dtl_force_subscribable, default: false
   setting :lock_follow_from_bot, default: false
   setting :allow_quote, default: true
+  setting :reject_send_limited_to_suspects, default: false
 
   setting_inverse_alias :indexable, :noindex
 

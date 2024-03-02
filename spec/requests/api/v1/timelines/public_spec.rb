@@ -25,10 +25,10 @@ describe 'Public' do
       get '/api/v1/timelines/public', headers: headers, params: params
     end
 
-    let!(:private_status) { Fabricate(:status, visibility: :private) } # rubocop:disable RSpec/LetSetup
-    let!(:local_status)   { Fabricate(:status, account: Fabricate.build(:account, domain: nil)) }
-    let!(:remote_status)  { Fabricate(:status, account: Fabricate.build(:account, domain: 'example.com')) }
-    let!(:media_status)   { Fabricate(:status, media_attachments: [Fabricate.build(:media_attachment)]) }
+    let!(:private_status) { Fabricate(:status, text: 'ohagi', visibility: :private) } # rubocop:disable RSpec/LetSetup
+    let!(:local_status)   { Fabricate(:status, text: 'ohagi', account: Fabricate.build(:account, domain: nil)) }
+    let!(:remote_status)  { Fabricate(:status, text: 'ohagi', account: Fabricate.build(:account, domain: 'example.com')) }
+    let!(:media_status)   { Fabricate(:status, text: 'ohagi', media_attachments: [Fabricate.build(:media_attachment)]) }
 
     let(:params) { {} }
 
@@ -67,6 +67,7 @@ describe 'Public' do
 
         context 'when local timeline is disabled' do
           let(:ltl_enabled) { false }
+          let(:expected_statuses) { [local_status, remote_status, media_status] }
 
           it_behaves_like 'a successful request to the public timeline'
         end
@@ -131,6 +132,62 @@ describe 'Public' do
           subject
 
           expect(response).to have_http_status(422)
+        end
+      end
+    end
+
+    context 'when user is setting filters' do
+      subject do
+        get '/api/v1/timelines/public', headers: headers, params: params
+        body_as_json.filter { |status| status[:filtered].empty? || status[:filtered][0][:filter][:id] != filter.id.to_s }.map { |status| status[:id].to_i }
+      end
+
+      before do
+        Fabricate(:custom_filter_keyword, custom_filter: filter, keyword: 'ohagi')
+        Fabricate(:follow, account: account, target_account: remote_account)
+      end
+
+      let(:exclude_follows) { false }
+      let(:exclude_localusers) { false }
+      let(:include_quotes) { false }
+      let(:account) { user.account }
+      let(:remote_account) { remote_status.account }
+      let!(:filter) { Fabricate(:custom_filter, account: account, exclude_follows: exclude_follows, exclude_localusers: exclude_localusers, with_quote: include_quotes) }
+      let!(:quote_status) { Fabricate(:status, quote: Fabricate(:status, text: 'ohagi')) }
+
+      it 'load statuses', :aggregate_failures do
+        ids = subject
+        expect(ids).to_not include(local_status.id)
+        expect(ids).to_not include(remote_status.id)
+      end
+
+      context 'when exclude_followers' do
+        let(:exclude_follows) { true }
+
+        it 'load statuses', :aggregate_failures do
+          ids = subject
+          expect(ids).to_not include(local_status.id)
+          expect(ids).to include(remote_status.id)
+        end
+      end
+
+      context 'when exclude_localusers' do
+        let(:exclude_localusers) { true }
+
+        it 'load statuses', :aggregate_failures do
+          ids = subject
+          expect(ids).to include(local_status.id)
+          expect(ids).to_not include(remote_status.id)
+        end
+      end
+
+      context 'when include_quotes' do # rubocop:disable RSpec/MultipleMemoizedHelpers
+        let(:with_quote) { true }
+
+        it 'load statuses', :aggregate_failures do
+          ids = subject
+          expect(ids).to_not include(local_status.id)
+          expect(ids).to include(quote_status.id)
         end
       end
     end

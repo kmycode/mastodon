@@ -154,4 +154,30 @@ RSpec.describe FollowService, type: :service do
       expect(a_request(:post, 'http://example.com/inbox')).to have_been_made.once
     end
   end
+
+  context 'with ng rule' do
+    let(:bob) { Fabricate(:account) }
+
+    context 'when rule matches' do
+      before do
+        Fabricate(:ng_rule, reaction_type: ['follow'])
+      end
+
+      it 'does not favourite' do
+        expect { subject.call(sender, bob) }.to raise_error Mastodon::ValidationError
+        expect(sender.following?(bob)).to be false
+      end
+    end
+
+    context 'when rule does not match' do
+      before do
+        Fabricate(:ng_rule, account_display_name: 'else', reaction_type: ['follow'])
+      end
+
+      it 'favourites' do
+        expect { subject.call(sender, bob) }.to_not raise_error
+        expect(sender.following?(bob)).to be true
+      end
+    end
+  end
 end

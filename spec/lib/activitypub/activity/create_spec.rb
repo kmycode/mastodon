@@ -30,7 +30,7 @@ RSpec.describe ActivityPub::Activity::Create do
     stub_request(:get, 'http://example.com/attachment.png').to_return(request_fixture('avatar.txt'))
     stub_request(:get, 'http://example.com/emoji.png').to_return(body: attachment_fixture('emojo.png'))
     stub_request(:get, 'http://example.com/emojib.png').to_return(body: attachment_fixture('emojo.png'), headers: { 'Content-Type' => 'application/octet-stream' })
-    stub_request(:get, 'http://example.com/conversation').to_return(body: Oj.dump(conversation))
+    stub_request(:get, 'http://example.com/conversation').to_return(body: Oj.dump(conversation), headers: { 'Content-Type': 'application/activity+json' })
     stub_request(:get, 'http://example.com/invalid-conversation').to_return(status: 404)
   end
 
@@ -869,36 +869,6 @@ RSpec.describe ActivityPub::Activity::Create do
         end
       end
 
-      context 'with mentions domain block reject_reply' do
-        before do
-          Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_reply: true)
-          subject.perform
-        end
-
-        let(:custom_before) { true }
-        let(:recipient) { Fabricate(:account) }
-
-        let(:object_json) do
-          {
-            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
-            type: 'Note',
-            content: 'Lorem ipsum',
-            tag: [
-              {
-                type: 'Mention',
-                href: ActivityPub::TagManager.instance.uri_for(recipient),
-              },
-            ],
-          }
-        end
-
-        it 'creates status' do
-          status = sender.statuses.first
-
-          expect(status).to be_nil
-        end
-      end
-
       context 'with mentions domain block reject_reply_exclude_followers' do
         before do
           Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_reply_exclude_followers: true)
@@ -1158,10 +1128,10 @@ RSpec.describe ActivityPub::Activity::Create do
           end
 
           before do
-            stub_request(:get, 'https://foo.test').to_return(status: 200, body: Oj.dump(actor_json))
-            stub_request(:get, 'https://foo.test/.well-known/webfinger?resource=acct:actor@foo.test').to_return(status: 200, body: Oj.dump(webfinger))
+            stub_request(:get, 'https://foo.test').to_return(status: 200, body: Oj.dump(actor_json), headers: { 'Content-Type': 'application/activity+json' })
+            stub_request(:get, 'https://foo.test/.well-known/webfinger?resource=acct:actor@foo.test').to_return(status: 200, body: Oj.dump(webfinger), headers: { 'Content-Type': 'application/activity+json' })
             stub_request(:post, 'https://foo.test/inbox').to_return(status: 200)
-            stub_request(:get, 'https://foo.test/.well-known/nodeinfo').to_return(status: 200)
+            stub_request(:get, 'https://foo.test/.well-known/nodeinfo').to_return(status: 200, headers: { 'Content-Type': 'application/activity+json' })
             subject.perform
           end
 
@@ -1343,6 +1313,22 @@ RSpec.describe ActivityPub::Activity::Create do
 
           expect(status).to_not be_nil
           expect(status.tags.map(&:name)).to include('test')
+        end
+
+        context 'with domain-block' do
+          let(:custom_before) { true }
+
+          before do
+            Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_hashtag: true)
+            subject.perform
+          end
+
+          it 'does not create status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.tags.map(&:name)).to eq []
+          end
         end
       end
 
@@ -1543,6 +1529,32 @@ RSpec.describe ActivityPub::Activity::Create do
           expect(vote).to_not be_nil
           expect(vote.uri).to eq object_json[:id]
           expect(poll.reload.cached_tallies).to eq [1, 0]
+        end
+
+        context 'when ng rule is existing' do
+          let(:custom_before) { true }
+
+          context 'when ng rule is match' do
+            before do
+              Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['vote'])
+              subject.perform
+            end
+
+            it 'does not create a reblog by sender of status' do
+              expect(poll.votes.first).to be_nil
+            end
+          end
+
+          context 'when ng rule is not match' do
+            before do
+              Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['vote'])
+              subject.perform
+            end
+
+            it 'creates a reblog by sender of status' do
+              expect(poll.votes.first).to_not be_nil
+            end
+          end
         end
       end
 
@@ -1760,10 +1772,15 @@ RSpec.describe ActivityPub::Activity::Create do
         end
 
         context 'when not contains ng words' do
-          let(:content) { 'ohagi, world!' }
+          let(:content) { 'ohagi, world! <a href="https://hello.org">OH GOOD</a>' }
 
           it 'creates status' do
             expect(sender.statuses.first).to_not be_nil
+          end
+
+          it 'does not record history' do
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
           end
         end
 
@@ -1772,6 +1789,34 @@ RSpec.describe ActivityPub::Activity::Create do
 
           it 'creates status' do
             expect(sender.statuses.first).to be_nil
+          end
+
+          it 'records history' do
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to_not be_nil
+            expect(history.status_blocked?).to be true
+            expect(history.within_ng_words?).to be true
+            expect(history.keyword).to eq ng_words
+          end
+        end
+
+        context 'when hit ng words but does not public visibility' do
+          let(:content) { 'hello, world!' }
+          let(:object_json) do
+            {
+              id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+              type: 'Note',
+              content: content,
+            }
+          end
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+          end
+
+          it 'records history' do
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
           end
         end
 
@@ -1783,6 +1828,7 @@ RSpec.describe ActivityPub::Activity::Create do
               id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
               type: 'Note',
               content: content,
+              to: 'https://www.w3.org/ns/activitystreams#Public',
               tag: [
                 {
                   type: 'Mention',
@@ -1798,6 +1844,11 @@ RSpec.describe ActivityPub::Activity::Create do
             it 'creates status' do
               expect(sender.statuses.first).to_not be_nil
             end
+
+            it 'does not record history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to be_nil
+            end
           end
 
           context 'with using ng words for stranger' do
@@ -1805,6 +1856,14 @@ RSpec.describe ActivityPub::Activity::Create do
 
             it 'creates status' do
               expect(sender.statuses.first).to be_nil
+            end
+
+            it 'records history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to_not be_nil
+              expect(history.status_blocked?).to be true
+              expect(history.within_ng_words_for_stranger_mention?).to be true
+              expect(history.keyword).to eq ng_words_for_stranger_mention
             end
           end
 
@@ -1820,6 +1879,11 @@ RSpec.describe ActivityPub::Activity::Create do
             it 'creates status' do
               expect(sender.statuses.first).to_not be_nil
             end
+
+            it 'does not record history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to be_nil
+            end
           end
 
           context 'with using ng words for stranger but multiple receivers are partically following him' do
@@ -1831,6 +1895,7 @@ RSpec.describe ActivityPub::Activity::Create do
                 id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
                 type: 'Note',
                 content: content,
+                to: 'https://www.w3.org/ns/activitystreams#Public',
                 tag: [
                   {
                     type: 'Mention',
@@ -1852,6 +1917,14 @@ RSpec.describe ActivityPub::Activity::Create do
             it 'creates status' do
               expect(sender.statuses.first).to be_nil
             end
+
+            it 'records history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to_not be_nil
+              expect(history.status_blocked?).to be true
+              expect(history.within_ng_words_for_stranger_mention?).to be true
+              expect(history.keyword).to eq ng_words_for_stranger_mention
+            end
           end
         end
 
@@ -1864,7 +1937,65 @@ RSpec.describe ActivityPub::Activity::Create do
               id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
               type: 'Note',
               content: 'ohagi peers',
+              to: 'https://www.w3.org/ns/activitystreams#Public',
               inReplyTo: ActivityPub::TagManager.instance.uri_for(original_status),
+            }
+          end
+
+          context 'with a simple case' do
+            it 'creates status' do
+              expect(sender.statuses.first).to be_nil
+            end
+
+            it 'records history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to_not be_nil
+              expect(history.status_blocked?).to be true
+              expect(history.within_ng_words_for_stranger_mention?).to be true
+              expect(history.keyword).to eq ng_words_for_stranger_mention
+            end
+          end
+
+          context 'with following' do
+            let(:custom_before_sub) { true }
+
+            before do
+              recipient.follow!(sender)
+              subject.perform
+            end
+
+            it 'creates status' do
+              expect(sender.statuses.first).to_not be_nil
+            end
+
+            it 'does not record history' do
+              history = NgwordHistory.find_by(uri: object_json[:id])
+              expect(history).to be_nil
+            end
+          end
+        end
+
+        context 'with references' do
+          let(:recipient) { Fabricate(:account) }
+          let!(:target_status) { Fabricate(:status, account: recipient) }
+
+          let(:object_json) do
+            {
+              id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+              type: 'Note',
+              content: 'ohagi is bad',
+              references: {
+                id: 'target_status',
+                type: 'Collection',
+                first: {
+                  type: 'CollectionPage',
+                  next: nil,
+                  partOf: 'target_status',
+                  items: [
+                    ActivityPub::TagManager.instance.uri_for(target_status),
+                  ],
+                },
+              },
             }
           end
 
@@ -1889,6 +2020,82 @@ RSpec.describe ActivityPub::Activity::Create do
         end
       end
 
+      context 'when ng rule is set' do
+        let(:custom_before) { true }
+        let(:content) { 'Lorem ipsum <a href="https://amely.net/">GOOD LINK</a>' }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: content,
+            to: 'https://www.w3.org/ns/activitystreams#Public',
+          }
+        end
+
+        context 'when rule hits' do
+          before do
+            Fabricate(:ng_rule, status_text: 'ipsum', status_allow_follower_mention: false)
+            subject.perform
+          end
+
+          it 'creates status' do
+            status = sender.statuses.first
+            expect(status).to be_nil
+          end
+        end
+
+        context 'when rule does not hit' do
+          before do
+            Fabricate(:ng_rule, status_text: 'amely', status_allow_follower_mention: false)
+            subject.perform
+          end
+
+          it 'creates status' do
+            status = sender.statuses.first
+            expect(status).to_not be_nil
+          end
+        end
+      end
+
+      context 'when sensitive word is set' do
+        let(:custom_before) { true }
+        let(:content) { 'Lorem ipsum' }
+        let(:sensitive_words_all) { 'hello' }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: content,
+            to: 'https://www.w3.org/ns/activitystreams#Public',
+          }
+        end
+
+        before do
+          Form::AdminSettings.new(sensitive_words_all: sensitive_words_all, sensitive_words: 'ipsum').save
+          subject.perform
+        end
+
+        context 'when not contains sensitive words' do
+          it 'creates status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.spoiler_text).to eq ''
+          end
+        end
+
+        context 'when contains sensitive words' do
+          let(:content) { 'hello world' }
+
+          it 'creates status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.spoiler_text).to_not eq ''
+          end
+        end
+      end
+
       context 'when hashtags limit is set' do
         let(:post_hash_tags_max) { 2 }
         let(:custom_before) { true }
@@ -1897,6 +2104,7 @@ RSpec.describe ActivityPub::Activity::Create do
             id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
             type: 'Note',
             content: 'Lorem ipsum',
+            to: 'https://www.w3.org/ns/activitystreams#Public',
             tag: [
               {
                 type: 'Hashtag',
@@ -1920,6 +2128,9 @@ RSpec.describe ActivityPub::Activity::Create do
         context 'when limit is enough' do
           it 'creates status' do
             expect(sender.statuses.first).to_not be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
           end
         end
 
@@ -1928,8 +2139,244 @@ RSpec.describe ActivityPub::Activity::Create do
 
           it 'creates status' do
             expect(sender.statuses.first).to be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to_not be_nil
+            expect(history.status_blocked?).to be true
+            expect(history.within_hashtag_count?).to be true
+            expect(history.count).to eq 2
+            expect(history.text).to eq "\nLorem ipsum"
           end
         end
+      end
+
+      context 'when mentions limit is set' do
+        let(:post_mentions_max) { 3 }
+        let(:post_stranger_mentions_max) { 0 }
+        let(:custom_before) { true }
+        let(:mention_recipient_alice) { Fabricate(:account) }
+        let(:mention_recipient_bob) { Fabricate(:account) }
+        let(:mention_recipient_ohagi) { Fabricate(:account) }
+        let(:mention_recipient_ohagi_follow) { true }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            to: 'https://www.w3.org/ns/activitystreams#Public',
+            tag: [
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(mention_recipient_alice),
+              },
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(mention_recipient_bob),
+              },
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(mention_recipient_ohagi),
+              },
+            ],
+          }
+        end
+
+        before do
+          Form::AdminSettings.new(post_mentions_max: post_mentions_max, post_stranger_mentions_max: post_stranger_mentions_max).save
+
+          mention_recipient_alice.follow!(sender)
+          mention_recipient_bob.follow!(sender)
+          mention_recipient_ohagi.follow!(sender) if mention_recipient_ohagi_follow
+
+          subject.perform
+        end
+
+        context 'when limit is enough' do
+          it 'creates status' do
+            expect(sender.statuses.first).to_not be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
+          end
+        end
+
+        context 'when limit is over' do
+          let(:post_mentions_max) { 1 }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to_not be_nil
+            expect(history.status_blocked?).to be true
+            expect(history.within_mention_count?).to be true
+            expect(history.count).to eq 3
+          end
+        end
+
+        context 'when limit for stranger is over but normal limit is not reach' do
+          let(:post_stranger_mentions_max) { 1 }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to_not be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
+          end
+        end
+
+        context 'when limit for stranger is over and following partically' do
+          let(:post_stranger_mentions_max) { 1 }
+          let(:mention_recipient_ohagi_follow) { false }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to_not be_nil
+            expect(history.status_blocked?).to be true
+            expect(history.within_stranger_mention_count?).to be true
+            expect(history.count).to eq 3
+          end
+        end
+      end
+
+      context 'when mentions limit for stranger is set' do
+        let(:post_stranger_mentions_max) { 2 }
+        let(:custom_before) { true }
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            to: 'https://www.w3.org/ns/activitystreams#Public',
+            tag: [
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(Fabricate(:account)),
+              },
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(Fabricate(:account)),
+              },
+            ],
+          }
+        end
+
+        before do
+          Form::AdminSettings.new(post_stranger_mentions_max: post_stranger_mentions_max).save
+          subject.perform
+        end
+
+        context 'when limit is enough' do
+          it 'creates status' do
+            expect(sender.statuses.first).to_not be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to be_nil
+          end
+        end
+
+        context 'when limit is over' do
+          let(:post_stranger_mentions_max) { 1 }
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+
+            history = NgwordHistory.find_by(uri: object_json[:id])
+            expect(history).to_not be_nil
+            expect(history.status_blocked?).to be true
+            expect(history.within_stranger_mention_count?).to be true
+            expect(history.count).to eq 2
+          end
+        end
+      end
+
+      context 'when stranger mention for domain' do
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            to: 'https://www.w3.org/ns/activitystreams#Public',
+            tag: [
+              {
+                type: 'Mention',
+                href: ActivityPub::TagManager.instance.uri_for(Fabricate(:account)),
+              },
+            ],
+          }
+        end
+
+        context 'when the domain does not have follower' do
+          let(:custom_before) { true }
+
+          before do
+            Setting.block_unfollow_account_mention = true
+            subject.perform
+          end
+
+          it 'creates status' do
+            expect(sender.statuses.first).to be_nil
+          end
+        end
+
+        context 'when other account following' do
+          let(:custom_before) { true }
+
+          before do
+            Setting.block_unfollow_account_mention = true
+            Fabricate(:account).follow!(sender)
+            subject.perform
+          end
+
+          it 'creates status' do
+            expect(sender.statuses.first).to_not be_nil
+          end
+        end
+      end
+    end
+
+    context 'when object URI uses bearcaps' do
+      subject { described_class.new(json, sender) }
+
+      let(:token) { 'foo' }
+
+      let(:json) do
+        {
+          '@context': 'https://www.w3.org/ns/activitystreams',
+          id: [ActivityPub::TagManager.instance.uri_for(sender), '#foo'].join,
+          type: 'Create',
+          actor: ActivityPub::TagManager.instance.uri_for(sender),
+          object: Addressable::URI.new(scheme: 'bear', query_values: { t: token, u: object_json[:id] }).to_s,
+        }.with_indifferent_access
+      end
+
+      let(:object_json) do
+        {
+          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+          type: 'Note',
+          content: 'Lorem ipsum',
+          to: 'https://www.w3.org/ns/activitystreams#Public',
+        }
+      end
+
+      before do
+        stub_request(:get, object_json[:id])
+          .with(headers: { Authorization: "Bearer #{token}" })
+          .to_return(body: Oj.dump(object_json), headers: { 'Content-Type': 'application/activity+json' })
+
+        subject.perform
+      end
+
+      it 'creates status' do
+        status = sender.statuses.first
+
+        expect(status).to_not be_nil
+        expect(status).to have_attributes(
+          visibility: 'public',
+          text: 'Lorem ipsum'
+        )
       end
     end
 
@@ -1967,12 +2414,15 @@ RSpec.describe ActivityPub::Activity::Create do
       it 'creates an encrypted message' do
         encrypted_message = target_device.encrypted_messages.reload.first
 
-        expect(encrypted_message).to_not be_nil
-        expect(encrypted_message.from_device_id).to eq '1234'
-        expect(encrypted_message.from_account).to eq sender
-        expect(encrypted_message.type).to eq 1
-        expect(encrypted_message.body).to eq 'Foo'
-        expect(encrypted_message.digest).to eq 'Foo123'
+        expect(encrypted_message)
+          .to be_present
+          .and have_attributes(
+            from_device_id: eq('1234'),
+            from_account: eq(sender),
+            type: eq(1),
+            body: eq('Foo'),
+            digest: eq('Foo123')
+          )
       end
 
       it 'creates a message franking' do
@@ -1985,6 +2435,40 @@ RSpec.describe ActivityPub::Activity::Create do
         expect(json['source_account_id']).to eq sender.id
         expect(json['target_account_id']).to eq recipient.id
         expect(json['original_franking']).to eq 'Baz678'
+      end
+    end
+
+    context 'when sender is in remote pending' do
+      subject { described_class.new(json, sender, delivery: true) }
+
+      let!(:local_account) { Fabricate(:account) }
+      let(:object_json) do
+        {
+          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+          type: 'Note',
+          content: 'Lorem ipsum',
+          to: local_account ? ActivityPub::TagManager.instance.uri_for(local_account) : 'https://www.w3.org/ns/activitystreams#Public',
+        }
+      end
+
+      before do
+        sender.update(suspended_at: Time.now.utc, suspension_origin: :local, remote_pending: true)
+        subject.perform
+      end
+
+      it 'does not create a status' do
+        status = sender.statuses.first
+
+        expect(status).to be_nil
+      end
+
+      it 'pending data is created' do
+        pending = PendingStatus.find_by(account: sender)
+
+        expect(pending).to_not be_nil
+        expect(pending.uri).to eq object_json[:id]
+        expect(pending.account_id).to eq sender.id
+        expect(pending.fetch_account_id).to eq local_account.id
       end
     end
 
@@ -2180,55 +2664,6 @@ RSpec.describe ActivityPub::Activity::Create do
 
       it 'does not create anything' do
         expect(sender.statuses.count).to eq 0
-      end
-    end
-
-    context 'when bearcaps' do
-      subject { described_class.new(json, sender) }
-
-      before do
-        stub_request(:get, 'https://example.com/statuses/1234567890')
-          .with(headers: { 'Authorization' => 'Bearer test_ohagi_token' })
-          .to_return(status: 200, body: Oj.dump(object_json), headers: {})
-
-        subject.perform
-      end
-
-      let!(:recipient) { Fabricate(:account) }
-      let(:object_json) do
-        {
-          id: 'https://example.com/statuses/1234567890',
-          type: 'Note',
-          content: 'Lorem ipsum',
-          to: ActivityPub::TagManager.instance.uri_for(recipient),
-          attachment: [
-            {
-              type: 'Document',
-              mediaType: 'image/png',
-              url: 'http://example.com/attachment.png',
-            },
-          ],
-        }
-      end
-      let(:json) do
-        {
-          '@context': 'https://www.w3.org/ns/activitystreams',
-          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
-          type: 'Create',
-          actor: ActivityPub::TagManager.instance.uri_for(sender),
-          object: "bear:?#{{ u: 'https://example.com/statuses/1234567890', t: 'test_ohagi_token' }.to_query}",
-        }.with_indifferent_access
-      end
-
-      it 'creates status' do
-        status = sender.statuses.first
-
-        expect(status).to_not be_nil
-        expect(status.text).to eq 'Lorem ipsum'
-        expect(status.mentions.map(&:account)).to include(recipient)
-        expect(status.mentions.count).to eq 1
-        expect(status.visibility).to eq 'limited'
-        expect(status.media_attachments.map(&:remote_url)).to include('http://example.com/attachment.png')
       end
     end
   end

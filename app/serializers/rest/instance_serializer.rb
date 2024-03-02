@@ -9,6 +9,7 @@ class REST::InstanceSerializer < ActiveModel::Serializer
 
   include RoutingHelper
   include KmyblueCapabilitiesHelper
+  include RegistrationLimitationHelper
 
   attributes :domain, :title, :version, :source_url, :description,
              :usage, :thumbnail, :languages, :configuration,
@@ -89,6 +90,7 @@ class REST::InstanceSerializer < ActiveModel::Serializer
       emoji_reactions: {
         max_reactions: EmojiReaction::EMOJI_REACTION_LIMIT,
         max_reactions_per_account: EmojiReaction::EMOJI_REACTION_PER_ACCOUNT_LIMIT,
+        max_reactions_per_remote_account: EmojiReaction::EMOJI_REACTION_PER_REMOTE_ACCOUNT_LIMIT,
       },
 
       reaction_deck: {
@@ -110,6 +112,7 @@ class REST::InstanceSerializer < ActiveModel::Serializer
     {
       enabled: registrations_enabled?,
       approval_required: Setting.registrations_mode == 'approved',
+      limit_reached: Setting.registrations_mode != 'none' && reach_registrations_limit?,
       message: registrations_enabled? ? nil : registrations_message,
       url: ENV.fetch('SSO_ACCOUNT_SIGN_UP', nil),
     }
@@ -118,7 +121,7 @@ class REST::InstanceSerializer < ActiveModel::Serializer
   private
 
   def registrations_enabled?
-    Setting.registrations_mode != 'none' && !Rails.configuration.x.single_user_mode
+    Setting.registrations_mode != 'none' && !reach_registrations_limit? && !Rails.configuration.x.single_user_mode
   end
 
   def registrations_message

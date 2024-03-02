@@ -2,6 +2,7 @@
 
 class DeleteAccountService < BaseService
   include Payloadable
+  include RegistrationLimitationHelper
 
   ASSOCIATIONS_ON_SUSPEND = %w(
     account_notes
@@ -19,6 +20,7 @@ class DeleteAccountService < BaseService
     devices
     domain_blocks
     featured_tags
+    fetchable_pending_statuses
     follow_requests
     list_accounts
     migrations
@@ -27,6 +29,8 @@ class DeleteAccountService < BaseService
     notifications
     owned_lists
     passive_relationships
+    pending_follow_requests
+    pending_statuses
     report_notes
     scheduled_statuses
     scheduled_expiration_statuses
@@ -49,6 +53,7 @@ class DeleteAccountService < BaseService
     devices
     domain_blocks
     featured_tags
+    fetchable_pending_statuses
     follow_requests
     list_accounts
     migrations
@@ -56,6 +61,8 @@ class DeleteAccountService < BaseService
     muted_by_relationships
     notifications
     owned_lists
+    pending_follow_requests
+    pending_statuses
     scheduled_statuses
     scheduled_expiration_statuses
     status_pins
@@ -143,6 +150,8 @@ class DeleteAccountService < BaseService
     else
       @account.user.destroy
     end
+
+    reset_registration_limit_caches!
   end
 
   def purge_content!

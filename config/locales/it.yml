@@ -767,6 +767,7 @@ it:
         disabled: A nessuno
         users: Agli utenti locali connessi
       registrations:
+        moderation_recommandation: Assicurati di avere un team di moderazione adeguato e reattivo prima di aprire le registrazioni a tutti!
         preamble: Controlla chi può creare un account sul tuo server.
         title: Registrazioni
       registrations_mode:
@@ -774,6 +775,7 @@ it:
           approved: Approvazione richiesta per le iscrizioni
           none: Nessuno può iscriversi
           open: Chiunque può iscriversi
+        warning_hint: Ti consigliamo di utilizzare “Approvazione richiesta per la registrazione” a meno che tu non sia sicuro che il tuo team di moderazione possa gestire lo spam e le registrazioni dannose in modo tempestivo.
       security:
         authorized_fetch: Richiede l'autenticazione dai server federati
         authorized_fetch_hint: La richiesta di autenticazione da server federati consente un'applicazione più rigorosa dei blocchi sia a livello di utente che a livello di server. Tuttavia, ciò comporta una riduzione delle prestazioni, riduce la portata delle tue risposte e potrebbe introdurre problemi di compatibilità con alcuni servizi federati. Inoltre, ciò non impedirà agli attori dedicati di recuperare i tuoi post pubblici e account.
@@ -966,6 +968,9 @@ it:
       title: Webhook
       webhook: Webhook
   admin_mailer:
+    auto_close_registrations:
+      body: A causa della mancanza di attività recente da parte dei moderatori, le registrazioni su %{instance} sono passate automaticamente alla richiesta di revisione manuale, per evitare che %{instance} venga utilizzata come piattaforma per potenziali malintenzionati. Puoi ripristinarlo per aprire le registrazioni in qualsiasi momento.
+      subject: Le registrazioni per %{instance} sono passate automaticamente alla richiesta di approvazione
     new_appeal:
       actions:
         delete_statuses: per cancellare i loro post
@@ -1548,6 +1553,9 @@ it:
     errors:
       limit_reached: Raggiunto il limite di reazioni diverse
       unrecognized_emoji: non è un emoji riconosciuto
+  redirects:
+    prompt: Se ti fidi di questo collegamento, fai clic su di esso per continuare.
+    title: Stai lasciando %{instance}.
   relationships:
     activity: Attività dell'account
     confirm_follow_selected_followers: Sei sicuro di voler seguire i follower selezionati?
@@ -1792,6 +1800,12 @@ it:
       extra: Ora è pronto per il download!
       subject: Il tuo archivio è pronto per essere scaricato
       title: Esportazione archivio
+    failed_2fa:
+      details: 'Questi sono i dettagli del tentativo di accesso:'
+      explanation: Qualcuno ha tentato di accedere al tuo account ma ha fornito un secondo fattore di autenticazione non valido.
+      further_actions_html: Se non eri tu, ti consigliamo di %{action} immediatamente poiché potrebbe essere compromesso.
+      subject: Errore di autenticazione del secondo fattore
+      title: Autenticazione del secondo fattore non riuscita
     suspicious_sign_in:
       change_password: cambiare la tua password
       details: 'Questi sono i dettagli del tentativo di accesso:'
@@ -1845,6 +1859,7 @@ it:
     go_to_sso_account_settings: Vai alle impostazioni dell'account del tuo provider di identità
     invalid_otp_token: Codice d'accesso non valido
     otp_lost_help_html: Se perdessi l'accesso ad entrambi, puoi entrare in contatto con %{email}
+    rate_limited: Troppi tentativi di autenticazione, per favore riprova più tardi.
     seamless_external_login: Hai effettuato l'accesso tramite un servizio esterno, quindi le impostazioni di password e e-mail non sono disponibili.
     signed_in_as: 'Hai effettuato l''accesso come:'
   verification:

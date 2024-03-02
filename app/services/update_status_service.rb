@@ -3,6 +3,7 @@
 class UpdateStatusService < BaseService
   include Redisable
   include LanguagesHelper
+  include NgRuleHelper
 
   class NoChangesSubmittedError < StandardError; end
 
@@ -24,12 +25,15 @@ class UpdateStatusService < BaseService
     @account_id                = account_id
     @media_attachments_changed = false
     @poll_changed              = false
+    @old_sensitive             = sensitive?
 
     clear_histories! if @options[:no_history]
 
     validate_status!
 
     Status.transaction do
+      validate_status_ng_rules!
+
       create_previous_edit! unless @options[:no_history]
       update_media_attachments! if @options.key?(:media_ids)
       update_poll! if @options.key?(:poll)
@@ -81,16 +85,64 @@ class UpdateStatusService < BaseService
 
   def validate_status!
     raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if Admin::NgWord.reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
-    raise Mastodon::ValidationError, I18n.t('statuses.too_many_hashtags') if Admin::NgWord.hashtag_reject_with_extractor?(@options[:text])
+    raise Mastodon::ValidationError, I18n.t('statuses.too_many_hashtags') if Admin::NgWord.hashtag_reject_with_extractor?(@options[:text] || '')
+    raise Mastodon::ValidationError, I18n.t('statuses.too_many_mentions') if Admin::NgWord.mention_reject_with_extractor?(@options[:text] || '')
+    raise Mastodon::ValidationError, I18n.t('statuses.too_many_mentions') if (mention_to_stranger? || reference_to_stranger?) && Admin::NgWord.stranger_mention_reject_with_extractor?(@options[:text] || '')
   end
 
   def validate_status_mentions!
-    raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if mention_to_stranger? && Setting.stranger_mention_from_local_ng && Admin::NgWord.stranger_mention_reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
+    raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if (mention_to_stranger? || reference_to_stranger?) && Setting.stranger_mention_from_local_ng && Admin::NgWord.stranger_mention_reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
+  end
+
+  def validate_status_ng_rules!
+    result = check_invalid_status_for_ng_rule! @status.account,
+                                               reaction_type: 'edit',
+                                               spoiler_text: @options.key?(:spoiler_text) ? (@options[:spoiler_text] || '') : @status.spoiler_text,
+                                               text: text,
+                                               tag_names: Extractor.extract_hashtags(text) || [],
+                                               visibility: @status.visibility,
+                                               searchability: @status.searchability,
+                                               sensitive: @options.key?(:sensitive) ? @options[:sensitive] : @status.sensitive,
+                                               media_count: @options[:media_ids].present? ? @options[:media_ids].size : @status.media_attachments.count,
+                                               poll_count: @options.dig(:poll, 'options')&.size || 0,
+                                               quote: quote_url,
+                                               reply: @status.reply?,
+                                               mention_count: mention_count,
+                                               reference_count: reference_urls.size,
+                                               mention_to_following: !(mention_to_stranger? || reference_to_stranger?)
+
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless result
+  end
+
+  def mention_count
+    text.gsub(Account::MENTION_RE)&.count || 0
   end
 
   def mention_to_stranger?
     @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @status.account.id && !mentioned_account.following?(@status.account) } ||
       (@status.thread.present? && @status.thread.account.id != @status.account.id && !@status.thread.account.following?(@status.account))
+  end
+
+  def reference_to_stranger?
+    referred_statuses.any? { |status| !status.account.following?(@status.account) }
+  end
+
+  def referred_statuses
+    return [] unless text
+
+    reference_urls.filter_map { |uri| ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Status, url: true) }
+  end
+
+  def quote_url
+    ProcessReferencesService.extract_quote(text)
+  end
+
+  def reference_urls
+    @reference_urls ||= ProcessReferencesService.extract_uris(text) || []
+  end
+
+  def text
+    @options.key?(:text) ? (@options[:text] || '') : @status.text
   end
 
   def validate_media!
@@ -157,7 +209,8 @@ class UpdateStatusService < BaseService
     return unless [:public, :public_unlisted, :login].include?(@status.visibility&.to_sym) && Admin::SensitiveWord.sensitive?(@status.text, @status.spoiler_text || '')
 
     @status.text = Admin::SensitiveWord.modified_text(@status.text, @status.spoiler_text)
-    @status.spoiler_text = I18n.t('admin.sensitive_words.alert')
+    @status.spoiler_text = Admin::SensitiveWord.alternative_text
+    @status.sensitive = true
   end
 
   def update_expiration!
@@ -189,7 +242,7 @@ class UpdateStatusService < BaseService
 
   def broadcast_updates!
     DistributionWorker.perform_async(@status.id, { 'update' => true })
-    ActivityPub::StatusUpdateDistributionWorker.perform_async(@status.id)
+    ActivityPub::StatusUpdateDistributionWorker.perform_async(@status.id, { 'sensitive' => sensitive?, 'sensitive_changed' => @old_sensitive != sensitive? && sensitive? })
   end
 
   def queue_poll_notifications!
@@ -226,5 +279,9 @@ class UpdateStatusService < BaseService
     @status.edits.destroy_all
     @status.edited_at = nil
     @status.save!
+  end
+
+  def sensitive?
+    @status.sensitive
   end
 end

@@ -40,6 +40,7 @@ class Status < ApplicationRecord
   include Discard::Model
   include Paginable
   include RateLimitable
+  include Status::DomainBlockConcern
   include Status::SafeReblogInsert
   include Status::SearchConcern
   include Status::SnapshotConcern
@@ -57,9 +58,9 @@ class Status < ApplicationRecord
   update_index('statuses', :proper)
   update_index('public_statuses', :proper)
 
-  enum visibility: { public: 0, unlisted: 1, private: 2, direct: 3, limited: 4, public_unlisted: 10, login: 11 }, _suffix: :visibility
-  enum searchability: { public: 0, private: 1, direct: 2, limited: 3, unsupported: 4, public_unlisted: 10 }, _suffix: :searchability
-  enum limited_scope: { none: 0, mutual: 1, circle: 2, personal: 3, reply: 4 }, _suffix: :limited
+  enum :visibility, { public: 0, unlisted: 1, private: 2, direct: 3, limited: 4, public_unlisted: 10, login: 11 }, suffix: :visibility
+  enum :searchability, { public: 0, private: 1, direct: 2, limited: 3, unsupported: 4, public_unlisted: 10 }, suffix: :searchability
+  enum :limited_scope, { none: 0, mutual: 1, circle: 2, personal: 3, reply: 4 }, suffix: :limited
 
   belongs_to :application, class_name: 'Doorkeeper::Application', optional: true
 
@@ -69,9 +70,11 @@ class Status < ApplicationRecord
   has_one :owned_conversation, class_name: 'Conversation', foreign_key: 'ancestor_status_id', dependent: :nullify, inverse_of: false
   belongs_to :preloadable_poll, class_name: 'Poll', foreign_key: 'poll_id', optional: true, inverse_of: false
 
-  belongs_to :thread, foreign_key: 'in_reply_to_id', class_name: 'Status', inverse_of: :replies, optional: true
-  belongs_to :reblog, foreign_key: 'reblog_of_id', class_name: 'Status', inverse_of: :reblogs, optional: true
-  belongs_to :quote, foreign_key: 'quote_of_id', class_name: 'Status', inverse_of: :quotes, optional: true
+  with_options class_name: 'Status', optional: true do
+    belongs_to :thread, foreign_key: 'in_reply_to_id', inverse_of: :replies
+    belongs_to :reblog, foreign_key: 'reblog_of_id', inverse_of: :reblogs
+    belongs_to :quote, foreign_key: 'quote_of_id', inverse_of: :quotes
+  end
 
   has_many :favourites, inverse_of: :status, dependent: :destroy
   has_many :emoji_reactions, inverse_of: :status, dependent: :destroy
@@ -328,11 +331,11 @@ class Status < ApplicationRecord
   end
 
   def reported?
-    @reported ||= Report.where(target_account: account).unresolved.where('? = ANY(status_ids)', id).exists?
+    @reported ||= Report.where(target_account: account).unresolved.exists?(['? = ANY(status_ids)', id])
   end
 
   def dtl?
-    (%w(public public_unlisted login).include?(visibility) || (unlisted_visibility? && public_searchability?)) && tags.where(name: dtl_tag_name).exists?
+    (%w(public public_unlisted login).include?(visibility) || (unlisted_visibility? && public_searchability?)) && tags.exists?(name: dtl_tag_name)
   end
 
   def emojis
@@ -493,11 +496,16 @@ class Status < ApplicationRecord
     def selectable_visibilities
       vs = visibilities.keys - %w(direct limited)
       vs -= %w(public_unlisted) unless Setting.enable_public_unlisted_visibility
+      vs -= %w(public) unless Setting.enable_public_visibility
       vs
     end
 
     def selectable_reblog_visibilities
       %w(unset) + selectable_visibilities
+    end
+
+    def all_visibilities
+      visibilities.keys
     end
 
     def selectable_searchabilities
@@ -508,6 +516,10 @@ class Status < ApplicationRecord
 
     def selectable_searchabilities_for_search
       searchabilities.keys - %w(public_unlisted unsupported)
+    end
+
+    def all_searchabilities
+      searchabilities.keys - %w(unlisted login unsupported)
     end
 
     def favourites_map(status_ids, account_id)

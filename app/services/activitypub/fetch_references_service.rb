@@ -3,10 +3,10 @@
 class ActivityPub::FetchReferencesService < BaseService
   include JsonLdHelper
 
-  def call(status, collection_or_uri)
-    @account = status.account
+  def call(account, collection_or_uri)
+    @account = account
 
-    collection_items(collection_or_uri)&.map { |item| value_or_id(item) }
+    collection_items(collection_or_uri)&.take(8)&.map { |item| value_or_id(item) }
   end
 
   private
@@ -20,9 +20,9 @@ class ActivityPub::FetchReferencesService < BaseService
 
     case collection['type']
     when 'Collection', 'CollectionPage'
-      collection['items']
+      as_array(collection['items'])
     when 'OrderedCollection', 'OrderedCollectionPage'
-      collection['orderedItems']
+      as_array(collection['orderedItems'])
     end
   end
 
@@ -31,6 +31,19 @@ class ActivityPub::FetchReferencesService < BaseService
     return if unsupported_uri_scheme?(collection_or_uri)
     return if ActivityPub::TagManager.instance.local_uri?(collection_or_uri)
 
-    fetch_resource_without_id_validation(collection_or_uri, nil, true)
+    # NOTE: For backward compatibility reasons, Mastodon signs outgoing
+    # queries incorrectly by default.
+    #
+    # While this is relevant for all URLs with query strings, this is
+    # the only code path where this happens in practice.
+    #
+    # Therefore, retry with correct signatures if this fails.
+    begin
+      fetch_resource_without_id_validation(collection_or_uri, nil, true)
+    rescue Mastodon::UnexpectedResponseError => e
+      raise unless e.response && e.response.code == 401 && Addressable::URI.parse(collection_or_uri).query.present?
+
+      fetch_resource_without_id_validation(collection_or_uri, nil, true, request_options: { with_query_string: true })
+    end
   end
 end

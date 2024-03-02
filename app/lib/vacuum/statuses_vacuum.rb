@@ -32,9 +32,24 @@ class Vacuum::StatusesVacuum
   end
 
   def statuses_scope
-    Status.unscoped.kept
-          .joins(:account).merge(Account.remote)
-          .where('statuses.id < ?', retention_period_as_id)
+    scope = Status.unscoped.kept
+                  .joins(:account).merge(Account.remote)
+                  .where('statuses.id < ?', retention_period_as_id)
+
+    if Setting.delete_content_cache_without_reaction
+      scope = scope.where.not(id: favourited_statuses)
+                   .where.not(id: bookmarked_statuses)
+    end
+
+    scope
+  end
+
+  def favourited_statuses
+    Favourite.local.select(:status_id)
+  end
+
+  def bookmarked_statuses
+    Bookmark.select(:status_id)
   end
 
   def retention_period_as_id

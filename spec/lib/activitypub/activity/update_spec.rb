@@ -117,6 +117,33 @@ RSpec.describe ActivityPub::Activity::Update do
       end
     end
 
+    context 'when the status is not existing' do
+      let(:json) do
+        {
+          '@context': 'https://www.w3.org/ns/activitystreams',
+          id: 'foo',
+          type: 'Update',
+          actor: sender.uri,
+          signature: 'foo',
+          object: {
+            type: 'Note',
+            id: 'https://example.com/note',
+            content: 'Ohagi is tsubuan',
+          },
+        }.with_indifferent_access
+      end
+
+      before do
+        stub_request(:post, 'https://example.com/inbox').to_return(status: 200)
+        subject.perform
+      end
+
+      it 'does not create a new status', :sidekiq_inline do
+        status = Status.find_by(uri: 'https://example.com/note')
+        expect(status).to be_nil
+      end
+    end
+
     context 'when the status is limited post and has conversation' do
       let(:status) { Fabricate(:status, visibility: :limited, account: sender, uri: 'https://example.com/note', text: 'Ohagi is koshian') }
       let(:conversation) { Fabricate(:conversation, ancestor_status: status) }

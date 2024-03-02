@@ -9,12 +9,15 @@
 #  updated_at :datetime         not null
 #  account_id :bigint(8)        not null
 #  status_id  :bigint(8)        not null
+#  uri        :string
 #
 
 class Favourite < ApplicationRecord
   include Paginable
 
   update_index('statuses', :status)
+
+  scope :local, -> { where(uri: nil) }
 
   belongs_to :account, inverse_of: :favourites
   belongs_to :status,  inverse_of: :favourites

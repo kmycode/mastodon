@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
+import { enableEmojiReaction } from 'mastodon/initial_state';
 import { PERMISSION_MANAGE_USERS, PERMISSION_MANAGE_REPORTS } from 'mastodon/permissions';
 
 import ClearColumnButton from './clear_column_button';
@@ -124,16 +125,18 @@ export default class ColumnSettings extends PureComponent {
           </div>
         </div>
 
-        <div role='group' aria-labelledby='notifications-emoji_reaction'>
-          <span id='notifications-emoji_reaction' className='column-settings__section'><FormattedMessage id='notifications.column_settings.emoji_reaction' defaultMessage='Stamps:' /></span>
+        {enableEmojiReaction && (
+          <div role='group' aria-labelledby='notifications-emoji_reaction'>
+            <span id='notifications-emoji_reaction' className='column-settings__section'><FormattedMessage id='notifications.column_settings.emoji_reaction' defaultMessage='Stamps:' /></span>
 
-          <div className='column-settings__row'>
-            <SettingToggle disabled={browserPermission === 'denied'} prefix='notifications_desktop' settings={settings} settingPath={['alerts', 'emoji_reaction']} onChange={onChange} label={alertStr} />
-            {showPushSettings && <SettingToggle prefix='notifications_push' settings={pushSettings} settingPath={['alerts', 'emoji_reaction']} onChange={this.onPushChange} label={pushStr} />}
-            <SettingToggle prefix='notifications' settings={settings} settingPath={['shows', 'emoji_reaction']} onChange={onChange} label={showStr} />
-            <SettingToggle prefix='notifications' settings={settings} settingPath={['sounds', 'emoji_reaction']} onChange={onChange} label={soundStr} />
+            <div className='column-settings__row'>
+              <SettingToggle disabled={browserPermission === 'denied'} prefix='notifications_desktop' settings={settings} settingPath={['alerts', 'emoji_reaction']} onChange={onChange} label={alertStr} />
+              {showPushSettings && <SettingToggle prefix='notifications_push' settings={pushSettings} settingPath={['alerts', 'emoji_reaction']} onChange={this.onPushChange} label={pushStr} />}
+              <SettingToggle prefix='notifications' settings={settings} settingPath={['shows', 'emoji_reaction']} onChange={onChange} label={showStr} />
+              <SettingToggle prefix='notifications' settings={settings} settingPath={['sounds', 'emoji_reaction']} onChange={onChange} label={soundStr} />
+            </div>
           </div>
-        </div>
+        )}
 
         <div role='group' aria-labelledby='notifications-mention'>
           <span id='notifications-mention' className='column-settings__section'><FormattedMessage id='notifications.column_settings.mention' defaultMessage='Mentions:' /></span>

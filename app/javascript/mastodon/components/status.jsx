@@ -76,6 +76,7 @@ export const defaultMediaVisibility = (status) => {
 };
 
 const messages = defineMessages({
+  limited_short: { id: 'privacy.limited.short', defaultMessage: 'Limited' },
   edited: { id: 'status.edited', defaultMessage: 'Edited {date}' },
 });
 
@@ -608,7 +609,7 @@ class Status extends ImmutablePureComponent {
     const {statusContentProps, hashtagBar} = getHashtagBarForStatus(status);
     const expanded = !status.get('hidden') || status.get('spoiler_text').length === 0;
 
-    const withLimited = status.get('visibility_ex') === 'limited' && status.get('limited_scope') ? <span className='status__visibility-icon'><Icon id='get-pocket' icon={LimitedIcon} title='Limited' /></span> : null;
+    const withLimited = status.get('visibility_ex') === 'limited' && status.get('limited_scope') ? <span className='status__visibility-icon'><Icon id='get-pocket' icon={LimitedIcon} title={intl.formatMessage(messages.limited_short)} /></span> : null;
     const withQuote = status.get('quote_id') ? <span className='status__visibility-icon'><Icon id='quote-right' icon={QuoteIcon} title='Quote' /></span> : null;
     const withReference = (!withQuote && status.get('status_references_count') > 0) ? <span className='status__visibility-icon'><Icon id='link' icon={ReferenceIcon} title='Reference' /></span> : null;
     const withExpiration = status.get('expires_at') ? <span className='status__visibility-icon'><Icon id='clock-o' icon={TimerIcon} title='Expiration' /></span> : null;

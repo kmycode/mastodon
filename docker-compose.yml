@@ -56,7 +56,7 @@ services:
 
   web:
     build: .
-    image: ghcr.io/mastodon/mastodon:v4.2.1
+    image: ghcr.io/mastodon/mastodon:v4.2.7
     restart: always
     env_file: .env.production
     command: bundle exec puma -C config/puma.rb
@@ -79,7 +79,7 @@ services:
     build:
       context: .
       dockerfile: streaming/Dockerfile
-    image: ghcr.io/mastodon/mastodon:v4.2.1
+    image: ghcr.io/mastodon/mastodon:v4.2.7
     restart: always
     env_file: .env.production
     command: node ./streaming
@@ -97,7 +97,7 @@ services:
 
   sidekiq:
     build: .
-    image: ghcr.io/mastodon/mastodon:v4.2.1
+    image: ghcr.io/mastodon/mastodon:v4.2.7
     restart: always
     env_file: .env.production
     command: bundle exec sidekiq

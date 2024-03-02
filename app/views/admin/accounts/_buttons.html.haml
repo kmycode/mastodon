@@ -1,4 +1,4 @@
-- if account.suspended?
+- if account.suspended? && !account.remote_pending
   %hr.spacer/
   - if account.suspension_origin_remote?
     %p.muted-hint= deletion_request.present? ? t('admin.accounts.remote_suspension_reversible_hint_html', date: content_tag(:strong, l(deletion_request.due_at.to_date))) : t('admin.accounts.remote_suspension_irreversible')
@@ -8,6 +8,11 @@
   = link_to t('admin.accounts.redownload'), redownload_admin_account_path(account.id), method: :post, class: 'button' if can?(:redownload, account) && account.suspension_origin_remote?
   - if deletion_request.present? && can?(:destroy, account)
     = link_to t('admin.accounts.delete'), admin_account_path(account.id), method: :delete, class: 'button button--destructive', data: { confirm: t('admin.accounts.are_you_sure') }
+- elsif account.suspended? && account.remote_pending
+  %hr.spacer/
+  %p.muted-hint= t('admin.accounts.remote_pending_hint_html')
+  = link_to t('admin.accounts.approve_remote'), approve_remote_admin_account_path(account.id), method: :post, class: 'button' if can?(:approve_remote, account)
+  = link_to t('admin.accounts.reject_remote'), reject_remote_admin_account_path(account.id), method: :post, class: 'button' if can?(:reject_remote, account)
 - else
   .action-buttons
     %div

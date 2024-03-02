@@ -3,6 +3,7 @@
 class InitialStateSerializer < ActiveModel::Serializer
   include RoutingHelper
   include DtlHelper
+  include RegistrationLimitationHelper
 
   attributes :meta, :compose, :accounts,
              :media_attachments, :settings,
@@ -117,12 +118,14 @@ class InitialStateSerializer < ActiveModel::Serializer
       domain: Addressable::IDNA.to_unicode(instance_presenter.domain),
       dtl_tag: dtl_enabled? ? dtl_tag_name : nil,
       enable_local_privacy: Setting.enable_public_unlisted_visibility,
+      enable_public_privacy: Setting.enable_public_visibility,
       enable_local_timeline: Setting.enable_local_timeline,
       limited_federation_mode: Rails.configuration.x.limited_federation_mode,
       locale: I18n.locale,
       mascot: instance_presenter.mascot&.file&.url,
       profile_directory: Setting.profile_directory,
-      registrations_open: Setting.registrations_mode != 'none' && !Rails.configuration.x.single_user_mode,
+      registrations_open: Setting.registrations_mode != 'none' && !reach_registrations_limit? && !Rails.configuration.x.single_user_mode,
+      registrations_reach_limit: Setting.registrations_mode != 'none' && reach_registrations_limit?,
       repository: Mastodon::Version.repository,
       search_enabled: Chewy.enabled?,
       single_user_mode: Rails.configuration.x.single_user_mode,

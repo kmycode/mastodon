@@ -5,8 +5,6 @@ class ActivityPub::ReferencesController < ActivityPub::BaseController
   include Authorization
   include AccountOwnedConcern
 
-  REFERENCES_LIMIT = 5
-
   before_action :require_signature!, if: :authorized_fetch_mode?
   before_action :set_status
 
@@ -40,9 +38,13 @@ class ActivityPub::ReferencesController < ActivityPub::BaseController
     @results ||= begin
       references = @status.reference_objects.order(target_status_id: :asc)
       references = references.where('target_status_id > ?', page_params[:min_id]) if page_params[:min_id].present?
-      references = references.limit(limit_param(REFERENCES_LIMIT))
+      references = references.limit(limit_param(references_limit))
       references.pluck(:target_status_id)
     end
+  end
+
+  def references_limit
+    StatusReference::REFERENCES_LIMIT
   end
 
   def pagination_min_id
@@ -50,7 +52,7 @@ class ActivityPub::ReferencesController < ActivityPub::BaseController
   end
 
   def records_continue?
-    results.size == limit_param(REFERENCES_LIMIT)
+    results.size == limit_param(references_limit)
   end
 
   def references_collection_presenter

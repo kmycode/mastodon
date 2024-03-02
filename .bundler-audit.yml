@@ -4,3 +4,4 @@ ignore:
   # We have rate-limits on authentication endpoints in place (including second
   # factor verification) since Mastodon v3.2.0
   - CVE-2024-0227
+  - CVE-2024-27456

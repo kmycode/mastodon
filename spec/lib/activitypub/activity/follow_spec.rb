@@ -100,6 +100,10 @@ RSpec.describe ActivityPub::Activity::Follow do
           expect(sender.requested?(recipient)).to be true
           expect(sender.follow_requests.find_by(target_account: recipient).uri).to eq 'foo'
         end
+
+        it 'does not create pending request' do
+          expect(sender.pending_follow_requests.find_by(target_account: recipient)).to be_nil
+        end
       end
 
       context 'when unlocked account but locked from bot' do
@@ -169,6 +173,49 @@ RSpec.describe ActivityPub::Activity::Follow do
         end
       end
 
+      context 'when remote pending account follows unlocked account' do
+        before do
+          sender.update(suspended_at: Time.now.utc, suspension_origin: :local, remote_pending: true)
+          allow(LocalNotificationWorker).to receive(:perform_async).and_return(nil)
+          subject.perform
+        end
+
+        it 'does not create a follow from sender to recipient' do
+          expect(sender.following?(recipient)).to be false
+        end
+
+        it 'does not notify' do
+          expect(LocalNotificationWorker).to_not have_received(:perform_async)
+        end
+
+        it 'creates a follow request' do
+          expect(sender.requested?(recipient)).to be false
+
+          follow_request = sender.pending_follow_requests.find_by(target_account: recipient)
+          expect(follow_request).to_not be_nil
+          expect(follow_request.uri).to eq 'foo'
+        end
+      end
+
+      context 'when remote pending account follows unlocked account but has already existing request' do
+        before do
+          sender.update(suspended_at: Time.now.utc, suspension_origin: :local, remote_pending: true)
+          Fabricate(:pending_follow_request, account: sender, target_account: recipient, uri: 'old')
+          subject.perform
+        end
+
+        it 'does not create a follow from sender to recipient' do
+          expect(sender.following?(recipient)).to be false
+          expect(sender.requested?(recipient)).to be false
+        end
+
+        it 'changes follow request uri' do
+          follow_request = sender.pending_follow_requests.find_by(target_account: recipient)
+          expect(follow_request).to_not be_nil
+          expect(follow_request.uri).to eq 'foo'
+        end
+      end
+
       context 'when domain block reject_straight_follow' do
         before do
           Fabricate(:domain_block, domain: 'example.com', reject_straight_follow: true)
@@ -195,6 +242,33 @@ RSpec.describe ActivityPub::Activity::Follow do
         it 'does not create a follow from sender to recipient' do
           expect(sender.following?(recipient)).to be false
           expect(sender.requested?(recipient)).to be false
+        end
+      end
+
+      context 'when ng rule is existing' do
+        context 'when ng rule is match' do
+          before do
+            Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['follow'])
+            stub_request(:post, 'https://example.com/inbox').to_return(status: 200, body: '', headers: {})
+            subject.perform
+          end
+
+          it 'does not create a reblog by sender of status' do
+            expect(sender.following?(recipient)).to be false
+            expect(sender.requested?(recipient)).to be false
+          end
+        end
+
+        context 'when ng rule is not match' do
+          before do
+            Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['follow'])
+            subject.perform
+          end
+
+          it 'creates a reblog by sender of status' do
+            expect(sender.following?(recipient)).to be true
+            expect(sender.requested?(recipient)).to be false
+          end
         end
       end
     end

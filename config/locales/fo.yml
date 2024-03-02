@@ -767,6 +767,7 @@ fo:
         disabled: Til ongan
         users: Fyri lokalum brúkarum, sum eru ritaðir inn
       registrations:
+        moderation_recommandation: Vinarliga tryggja tær, at tú hevur eitt nøktandi og klárt umsjónartoymi, áðreen tú letur upp fyri skrásetingum frá øllum!
         preamble: Stýr, hvør kann stovna eina kontu á tínum ambætara.
         title: Skrásetingar
       registrations_mode:
@@ -774,6 +775,7 @@ fo:
           approved: Góðkenning kravd fyri tilmelding
           none: Eingin kann tilmelda seg
           open: Øll kunnu tilmelda seg
+        warning_hint: Vit mæla til at brúka "Góðkenning kravd fyri tilmelding" uttan so at tú er fullvís/ur í, at umsjónartoymið hjá tær kann handfara ruskpost og óndsinnaðar skrásetingar so hvørt.
       security:
         authorized_fetch: Krev samgildi frá sameindum ambætarum
         authorized_fetch_hint: At krevja samgildi frá sameindum ambætarum ger strangari útinning av blokkum bæði á brúkara- og ambætara-stigi møguliga. Tó so, kostnaðurin er ein avriksstraffur, minkar um hvussu langt svarini hjá tær røkka og kann viðføra sambæristruplleikar við summar sameindar tænastur. Harafturat forðar hetta ikki teimum, ið miðvíst leggja seg eftir at heinta tínar almennu postar og kontur.
@@ -966,6 +968,9 @@ fo:
       title: Webhooks/vevhúkar
       webhook: Webhook/vevhúkur
   admin_mailer:
+    auto_close_registrations:
+      body: Vegna avmarkað virksemi hjá umsjónarfólki eru skrásetingar á %{instance} broyttar sjálvvirkandi til at krevja manuella eftirkanning fyri at forða at %{instance} verður brúktur sum ein pallur fyri ringar aktørar. Tú kanst skifta aftur til opnar skrásetingar tá tú vilt.
+      subject: Skrásetingar á %{instance} eru sjálvvirkandi broyttar soleiðis at tær krevja váttan
     new_appeal:
       actions:
         delete_statuses: at strika teirra postar
@@ -1546,6 +1551,9 @@ fo:
     errors:
       limit_reached: Mark fyri ymisk aftursvar rokkið
       unrecognized_emoji: er ikki eitt kenslutekn, sum kennist aftur
+  redirects:
+    prompt: Um tú lítir á hetta leinkið, so kanst tú klikkja á tað fyri at halda fram.
+    title: Tú fer burtur úr %{instance}.
   relationships:
     activity: Kontuvirksemi
     confirm_follow_selected_followers: Vil tú veruliga fylgja valdu fylgjarunum?
@@ -1790,6 +1798,12 @@ fo:
       extra: Tað er nú klárt at taka niður!
       subject: Savnið hjá tær er tøkt at taka niður
       title: Tak savn niður
+    failed_2fa:
+      details: 'Her eru smálutirnir í innritanarroyndini:'
+      explanation: Onkur hevur roynt at rita inn á tína kontu, men gav eitt ógildugt seinna samgildi.
+      further_actions_html: Um hetta ikki var tú, so skjóta vit upp, at tú %{action} beinan vegin, tí tað kann vera sett í vanda.
+      subject: Seinna samgildi miseydnaðist
+      title: Miseydnað seinna samgildi
     suspicious_sign_in:
       change_password: broyt loyniorðið hjá tær
       details: 'Her eru smálutirnir í innritanini:'
@@ -1843,6 +1857,7 @@ fo:
     go_to_sso_account_settings: Far til kontustillingarnar hjá samleikaveitaranum hjá tær
     invalid_otp_token: Ógyldug tvey-stigs koda
     otp_lost_help_html: Hevur tú mist atgongd til bæði, so kanst tú koma í samband við %{email}
+    rate_limited: Ov nógvar samgildisroyndir, royn aftur seinni.
     seamless_external_login: Tú er ritað/ur inn umvegis eina uttanhýsis tænastu, so loyniorð og teldupoststillingar eru ikki tøkar.
     signed_in_as: 'Ritað/ur inn sum:'
   verification:

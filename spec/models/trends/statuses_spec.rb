@@ -57,6 +57,29 @@ RSpec.describe Trends::Statuses do
     end
   end
 
+  describe '#register for remote user' do
+    let(:account) { Fabricate(:account, searchability: :public, discoverable: true, domain: 'example.com', uri: 'https://example.com/actor') }
+    let(:status) { Fabricate(:status, account: account, searchability: :public, language: 'en') }
+    let(:domain_block) { false }
+
+    before do
+      Fabricate(:domain_block, domain: 'example.com', severity: :noop, block_trends: true) if domain_block
+      subject.register(status, at_time)
+    end
+
+    it 'records use' do
+      expect(subject.send(:recently_used_ids, at_time)).to eq [status.id]
+    end
+
+    context 'when domain-blocked' do
+      let(:domain_block) { true }
+
+      it 'does not record use' do
+        expect(subject.send(:recently_used_ids, at_time)).to eq []
+      end
+    end
+  end
+
   describe '#query' do
     it 'returns a composable query scope' do
       expect(subject.query).to be_a Trends::Query

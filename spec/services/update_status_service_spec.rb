@@ -62,6 +62,55 @@ RSpec.describe UpdateStatusService, type: :service do
     end
   end
 
+  context 'when content warning changes and has remote user', :sidekiq_inline do
+    let(:remote_follower) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor', protocol: :activitypub, inbox_url: 'https://example.com/inbox') }
+    let(:status) { Fabricate(:status, text: 'Foo', spoiler_text: '', account: Fabricate(:user).account) }
+
+    before do
+      remote_follower.follow!(status.account)
+      stub_request(:post, 'https://example.com/inbox').to_return(status: 200)
+    end
+
+    def match_update_request(req, type)
+      json = JSON.parse(req.body)
+      actor_id = ActivityPub::TagManager.instance.uri_for(status.account)
+      status_id = ActivityPub::TagManager.instance.uri_for(status)
+      json['type'] == type && json['actor'] == actor_id && json['object']['id'] == status_id
+    end
+
+    it 'edit activity is sent' do
+      subject.call(status, status.account_id, text: 'Foo', spoiler_text: 'Bar')
+
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Update') }).to have_been_made.once
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Delete') }).to_not have_been_made
+    end
+
+    it 'edit activity is sent for target user' do
+      Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_send_sensitive: true)
+      subject.call(status, status.account_id, text: 'Ohagi')
+
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Update') }).to have_been_made.once
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Delete') }).to_not have_been_made
+    end
+
+    it 'delete activity is sent when follower is target user' do
+      Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_send_sensitive: true)
+      subject.call(status, status.account_id, text: 'Foo', spoiler_text: 'Bar')
+
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Delete') }).to have_been_made.once
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Update') }).to_not have_been_made
+    end
+
+    it 'delete activity is sent and update activity is not sent when follower is target user' do
+      Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_send_sensitive: true)
+      subject.call(status, status.account_id, text: 'Foo', spoiler_text: 'Bar')
+      subject.call(status, status.account_id, text: 'Ohagi', spoiler_text: 'Bar')
+
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Delete') }).to have_been_made.once
+      expect(a_request(:post, 'https://example.com/inbox').with { |req| match_update_request(req, 'Update') }).to_not have_been_made
+    end
+  end
+
   context 'when media attachments change' do
     let!(:status) { Fabricate(:status, text: 'Foo') }
     let!(:detached_media_attachment) { Fabricate(:media_attachment, account: status.account) }
@@ -295,6 +344,43 @@ RSpec.describe UpdateStatusService, type: :service do
       expect(status.text).to eq text
     end
 
+    it 'add reference' do
+      target_status = Fabricate(:status)
+      text = "ng word test BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
+
+      status = PostStatusService.new.call(account, text: 'hello')
+
+      status = subject.call(status, status.account_id, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+      expect(status.references.pluck(:id)).to include target_status.id
+    end
+
+    it 'hit ng words for reference' do
+      target_status = Fabricate(:status)
+      text = "ng word test BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      status = PostStatusService.new.call(account, text: 'hello')
+
+      expect { subject.call(status, status.account_id, text: text) }.to raise_error(Mastodon::ValidationError)
+    end
+
+    it 'hit ng words for reference to follower' do
+      target_status = Fabricate(:status)
+      target_status.account.follow!(status.account)
+      text = "ng word test BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      status = PostStatusService.new.call(account, text: 'hello')
+
+      status = subject.call(status, status.account_id, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
     it 'using hashtag under limit' do
       text = '#a #b'
       Form::AdminSettings.new(post_hash_tags_max: 2).save
@@ -313,6 +399,34 @@ RSpec.describe UpdateStatusService, type: :service do
 
       expect(status.reload.tags.count).to eq 0
       expect(status.text).to_not eq text
+    end
+  end
+
+  describe 'ng rule is set' do
+    let(:status) { Fabricate(:status, text: 'Foo') }
+
+    context 'when rule hits' do
+      before do
+        Fabricate(:ng_rule, status_text: 'Bar', status_allow_follower_mention: false)
+      end
+
+      it 'does not update text' do
+        expect { subject.call(status, status.account_id, text: 'Bar') }.to raise_error Mastodon::ValidationError
+        expect(status.reload.text).to_not eq 'Bar'
+        expect(status.edits.pluck(:text)).to eq %w()
+      end
+    end
+
+    context 'when rule does not hit' do
+      before do
+        Fabricate(:ng_rule, status_text: 'aar', status_allow_follower_mention: false)
+      end
+
+      it 'does not update text' do
+        expect { subject.call(status, status.account_id, text: 'Bar') }.to_not raise_error
+        expect(status.reload.text).to eq 'Bar'
+        expect(status.edits.pluck(:text)).to eq %w(Foo Bar)
+      end
     end
   end
 end

@@ -33,7 +33,8 @@ class AccountStatusesFilter
     available_visibilities -= [:unlisted] if (domain_block&.detect_invalid_subscription || misskey_software?) && @account.user&.setting_reject_unlisted_subscription
     available_visibilities -= [:login] if current_account.nil?
 
-    scope.merge!(scope.where(spoiler_text: ['', nil])) if domain_block&.reject_send_sensitive
+    scope.merge!(scope.where(sensitive: false)) if domain_block&.reject_send_sensitive
+
     scope.merge!(scope.where(searchability: available_searchabilities))
     scope.merge!(scope.where(visibility: available_visibilities))
 
@@ -153,9 +154,9 @@ class AccountStatusesFilter
   end
 
   def domain_block
-    return nil if @account.nil? || @account.local?
+    return nil if @current_account.nil? || @current_account.local?
 
-    @domain_block = DomainBlock.find_by(domain: @account.domain)
+    @domain_block = DomainBlock.find_by(domain: @current_account.domain)
   end
 
   def misskey_software?

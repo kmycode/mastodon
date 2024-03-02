@@ -3,6 +3,7 @@
 class ReblogService < BaseService
   include Authorization
   include Payloadable
+  include NgRuleHelper
 
   # Reblog a status and notify its remote author
   # @param [Account] account Account to reblog from
@@ -16,6 +17,8 @@ class ReblogService < BaseService
 
     authorize_with account, reblogged_status, :reblog?
 
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless check_invalid_reaction_for_ng_rule! account, reaction_type: 'reblog', recipient: reblogged_status.account, target_status: reblogged_status
+
     reblog = account.statuses.find_by(reblog: reblogged_status)
 
     return reblog unless reblog.nil?
@@ -25,7 +28,10 @@ class ReblogService < BaseService
                  else
                    options[:visibility] ||
                      (account.user&.setting_default_reblog_privacy == 'unset' ? account.user&.setting_default_privacy : account.user&.setting_default_reblog_privacy)
-                 end
+                 end.to_s
+
+    visibility = 'public_unlisted' if !Setting.enable_public_visibility && visibility == 'public'
+    visibility = 'unlisted' if !Setting.enable_public_unlisted_visibility && visibility == 'public_unlisted'
 
     reblog = account.statuses.create!(reblog: reblogged_status, text: '', visibility: visibility, rate_limit: options[:with_rate_limit])
 

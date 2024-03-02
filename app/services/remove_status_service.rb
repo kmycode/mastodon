@@ -146,7 +146,7 @@ class RemoveStatusService < BaseService
       featured_tag.decrement(@status.id)
     end
 
-    return unless @status.public_visibility?
+    return unless %i(public public_unlisted login).include?(@status.visibility.to_sym) || (@status.unlisted_visibility? && %i(public public_unlisted).include?(@status.searchability.to_sym))
 
     return if skip_streaming?
 
@@ -157,7 +157,7 @@ class RemoveStatusService < BaseService
   end
 
   def remove_from_public
-    return unless @status.public_visibility?
+    return unless %i(public public_unlisted login).include?(@status.visibility.to_sym)
 
     return if skip_streaming?
 
@@ -166,7 +166,7 @@ class RemoveStatusService < BaseService
   end
 
   def remove_from_media
-    return unless @status.public_visibility?
+    return unless %i(public public_unlisted login).include?(@status.visibility.to_sym)
 
     return if skip_streaming?
 

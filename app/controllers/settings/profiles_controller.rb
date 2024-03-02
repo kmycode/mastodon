@@ -20,8 +20,8 @@ class Settings::ProfilesController < Settings::BaseController
   private
 
   def account_params
-    # params.require(:account).permit(:display_name, :note, :bio_markdown, :avatar, :header, :locked, :my_actor_type, :searchability, :dissubscribable, :group_allow_private_message, :discoverable, :discoverable_local, :hide_collections, fields_attributes: [:name, :value])
-    params.require(:account).permit(:display_name, :note, :bio_markdown, :avatar, :header, :bot, :my_actor_type, :group_allow_private_message, :dissubscribable, fields_attributes: [:name, :value])
+    # params.require(:account).permit(:display_name, :note, :bio_markdown, :avatar, :header, :locked, :my_actor_type, :searchability, :dissubscribable, :discoverable, :discoverable_local, :hide_collections, fields_attributes: [:name, :value])
+    params.require(:account).permit(:display_name, :note, :bio_markdown, :avatar, :header, :bot, :my_actor_type, :dissubscribable, fields_attributes: [:name, :value])
   end
 
   def set_account

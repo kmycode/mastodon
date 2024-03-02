@@ -12,7 +12,12 @@
 
   .fields-group
     = f.input :media_cache_retention_period, wrapper: :with_block_label, input_html: { pattern: '[0-9]+' }
+
+  .fields-group
     = f.input :content_cache_retention_period, wrapper: :with_block_label, input_html: { pattern: '[0-9]+' }, hint: false, warning_hint: t('simple_form.hints.form_admin_settings.content_cache_retention_period')
+    = f.input :delete_content_cache_without_reaction, as: :boolean, wrapper: :with_label, kmyblue: true, hint: false
+
+  .fields-group
     = f.input :backups_retention_period, wrapper: :with_block_label, input_html: { pattern: '[0-9]+' }
 
   .actions

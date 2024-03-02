@@ -13,11 +13,8 @@ import PublicUnlistedIcon from '@/material-icons/400-24px/cloud.svg?react';
 import LockIcon from '@/material-icons/400-24px/lock.svg?react';
 import LockOpenIcon from '@/material-icons/400-24px/no_encryption.svg?react';
 import PublicIcon from '@/material-icons/400-24px/public.svg?react';
-import SearchIcon from '@/material-icons/400-24px/search.svg?react';
 import { Icon }  from 'mastodon/components/icon';
 import { enableLocalPrivacy } from 'mastodon/initial_state';
-
-import { IconButton } from '../../../components/icon_button';
 
 
 const messages = defineMessages({
@@ -263,31 +260,22 @@ class SearchabilityDropdown extends PureComponent {
     const valueOption = this.options.find(item => item.value === value);
 
     return (
-      <div className={classNames('privacy-dropdown', placement, { active: open })} onKeyDown={this.handleKeyDown}>
-        <div className={classNames('privacy-dropdown__value', 'searchability', { active: this.options.indexOf(valueOption) === (placement === 'bottom' ? 0 : (this.options.length - 1)) })} ref={this.setTargetRef}>
-          <IconButton
-            className='privacy-dropdown__value-icon'
-            icon={valueOption.icon}
-            iconComponent={valueOption.iconComponent}
-            title={intl.formatMessage(messages.change_searchability)}
-            size={18}
-            expanded={open}
-            active={open}
-            inverted
-            onClick={this.handleToggle}
-            onMouseDown={this.handleMouseDown}
-            onKeyDown={this.handleButtonKeyDown}
-            style={{ height: null, lineHeight: '27px' }}
-            disabled={disabled}
-          />
-          <Icon
-            className='searchability-dropdown__value-overlay'
-            id='search'
-            icon={SearchIcon}
-          />
-        </div>
+      <div ref={this.setTargetRef} onKeyDown={this.handleKeyDown}>
+        <button
+          type='button'
+          title={intl.formatMessage(messages.change_searchability)}
+          aria-expanded={open}
+          onClick={this.handleToggle}
+          onMouseDown={this.handleMouseDown}
+          onKeyDown={this.handleButtonKeyDown}
+          disabled={disabled}
+          className={classNames('dropdown-button', { active: open })}
+        >
+          <Icon id={valueOption.icon} icon={valueOption.iconComponent} />
+          <span className='dropdown-button__label'>{valueOption.text}</span>
+        </button>
 
-        <Overlay show={open} placement={'bottom'} flip target={this.findTarget} container={container} popperConfig={{ strategy: 'fixed', onFirstUpdate: this.handleOverlayEnter }}>
+        <Overlay show={open} offset={[5, 5]} placement={placement} flip target={this.findTarget} container={container} popperConfig={{ strategy: 'fixed', onFirstUpdate: this.handleOverlayEnter }}>
           {({ props, placement }) => (
             <div {...props}>
               <div className={`dropdown-animation privacy-dropdown__dropdown ${placement}`}>

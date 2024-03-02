@@ -81,6 +81,18 @@ namespace :dangerous do
       20230222232121
       20240117021025
       20240117022353
+      20240121231131
+      20240212224800
+      20240212230358
+      20240216042730
+      20240217022038
+      20240217093511
+      20240217230006
+      20240218233621
+      20240227033337
+      20240227222450
+      20240227225017
+      20240229233617
     )
     # Removed: account_groups
     target_tables = %w(
@@ -97,19 +109,25 @@ namespace :dangerous do
       friend_domains
       instance_infos
       list_statuses
+      ng_rules
+      ng_rule_histories
+      ngword_histories
+      pending_follow_requests
+      pending_statuses
       scheduled_expiration_statuses
       status_capability_tokens
       status_references
     )
     target_table_columns = [
       # Removed: accounts dissubscribable
-      %w(accounts group_allow_private_message),
+      # Removed: accounts group_allow_private_message
       # Removed: accounts group_message_following_only
       %w(accounts master_settings),
+      %w(accounts remote_pending),
       %w(accounts searchability),
       %w(accounts settings),
       # Removed: accounts stop_emoji_reaction_streaming
-      %w(account_stats group_activitypub_count),
+      # Removed: account_stats group_activitypub_count
       %w(account_statuses_cleanup_policies keep_self_emoji),
       %w(account_statuses_cleanup_policies min_emojis),
       %w(conversations ancestor_status_id),
@@ -122,6 +140,7 @@ namespace :dangerous do
       %w(custom_filters exclude_follows),
       %w(custom_filters exclude_localusers),
       %w(custom_filters with_quote),
+      %w(domain_blocks block_trends),
       %w(domain_blocks detect_invalid_subscription),
       %w(domain_blocks hidden),
       # Removed: domain_blocks hidden_anonymous
@@ -129,7 +148,7 @@ namespace :dangerous do
       %w(domain_blocks reject_friend),
       %w(domain_blocks reject_hashtag),
       %w(domain_blocks reject_new_follow),
-      %w(domain_blocks reject_reply),
+      # Removed: domain_blocks reject_reply
       %w(domain_blocks reject_reply_exclude_followers),
       # Removed: domain_blocks reject_send_dissubscribable
       # Removed: domain_blocks reject_send_media
@@ -138,6 +157,7 @@ namespace :dangerous do
       # Removed: domain_blocks reject_send_unlisted_dissubscribable
       %w(domain_blocks reject_send_sensitive),
       %w(domain_blocks reject_straight_follow),
+      %w(favourites uri),
       %w(lists notify),
       %w(statuses limited_scope),
       %w(statuses markdown),

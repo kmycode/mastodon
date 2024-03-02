@@ -16,6 +16,10 @@ RSpec.describe ReblogService, type: :service do
       subject.call(alice, status, visibility: reblog_visibility)
     end
 
+    it 'a simple case reblogs publicly' do
+      expect(status.reblogs.first.visibility).to eq 'public'
+    end
+
     describe 'boosting privately' do
       let(:reblog_visibility) { :private }
 
@@ -30,6 +34,65 @@ RSpec.describe ReblogService, type: :service do
 
       it 'reblogs privately' do
         expect(status.reblogs.first.visibility).to eq 'private'
+      end
+    end
+  end
+
+  context 'when public visibility is disabled' do
+    subject { described_class.new }
+
+    let(:status) { Fabricate(:status, account: alice, visibility: :public) }
+
+    before do
+      Setting.enable_public_visibility = false
+      subject.call(alice, status, visibility: :public)
+    end
+
+    it 'reblogs as public unlisted' do
+      expect(status.reblogs.first.visibility).to eq 'public_unlisted'
+    end
+  end
+
+  context 'when public unlisted visibility is disabled' do
+    subject { described_class.new }
+
+    let(:status) { Fabricate(:status, account: alice, visibility: :public) }
+
+    before do
+      Setting.enable_public_unlisted_visibility = false
+      subject.call(alice, status, visibility: :public_unlisted)
+    end
+
+    it 'reblogs as public unlisted' do
+      expect(status.reblogs.first.visibility).to eq 'unlisted'
+    end
+  end
+
+  context 'with ng rule' do
+    subject { described_class.new }
+
+    let(:status) { Fabricate(:status, account: alice, visibility: :public) }
+    let(:account) { Fabricate(:account) }
+
+    context 'when rule matches' do
+      before do
+        Fabricate(:ng_rule, reaction_type: ['reblog'])
+      end
+
+      it 'does not reblog' do
+        expect { subject.call(account, status) }.to raise_error Mastodon::ValidationError
+        expect(account.reblogged?(status)).to be false
+      end
+    end
+
+    context 'when rule does not match' do
+      before do
+        Fabricate(:ng_rule, account_display_name: 'else', reaction_type: ['reblog'])
+      end
+
+      it 'reblogs' do
+        expect { subject.call(account, status) }.to_not raise_error
+        expect(account.reblogged?(status)).to be true
       end
     end
   end

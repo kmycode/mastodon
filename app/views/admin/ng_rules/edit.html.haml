@@ -1,0 +1,9 @@
+- content_for :page_title do
+  = t('admin.ng_rules.edit.title')
+
+= simple_form_for @ng_rule, url: admin_ng_rule_path(@ng_rule), method: :put do |f|
+  = render 'shared/error_messages', object: @ng_rule
+  = render 'ng_rule_fields', f: f
+
+  .actions
+    = f.button :button, t('generic.save_changes'), type: :submit

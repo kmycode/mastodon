@@ -50,6 +50,11 @@ module Account::Associations
     has_many :account_warnings, dependent: :destroy, inverse_of: :account
     has_many :strikes, class_name: 'AccountWarning', foreign_key: :target_account_id, dependent: :destroy, inverse_of: :target_account
 
+    # Remote pendings
+    has_many :pending_follow_requests, dependent: :destroy
+    has_many :pending_statuses, dependent: :destroy
+    has_many :fetchable_pending_statuses, class_name: 'PendingStatus', foreign_key: :fetch_account_id, dependent: :destroy, inverse_of: :fetch_account
+
     # Antennas (that the account is on, not owned by the account)
     has_many :antenna_accounts, inverse_of: :account, dependent: :destroy
     has_many :joined_antennas, class_name: 'Antenna', through: :antenna_accounts, source: :antenna

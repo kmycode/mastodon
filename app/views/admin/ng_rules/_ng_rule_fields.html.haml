@@ -1,0 +1,123 @@
+
+.fields-group
+  %p= t('admin.ng_rules.edit.helps.generic')
+
+.fields-group
+  %p
+    = t('admin.ng_rules.edit.helps.textarea_html')
+    = link_to t('admin.ng_rules.rubular'), 'https://rubular.com/', target: '_blank', rel: 'noopener'
+
+.fields-group
+  %p= t('admin.ng_rules.edit.helps.threshold_html')
+
+- if @ng_rule.id.present?
+  %p.hint= link_to t('admin.ng_rules.edit.history'), admin_ng_rule_history_path(id: @ng_rule.id)
+
+%hr.spacer/
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :title, as: :string, wrapper: :with_label, hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :expires_in, wrapper: :with_label, collection: [30.minutes, 1.hour, 6.hours, 12.hours, 1.day, 1.week, 2.weeks, 1.month, 3.months].map(&:to_i), label_method: ->(i) { I18n.t("invites.expires_in.#{i}") }, include_blank: I18n.t('invites.expires_in_prompt')
+
+%h4= t('admin.ng_rules.edit.headers.account')
+%p.lead= t('admin.ng_rules.edit.summary.account')
+
+.fields-group
+  = f.input :account_allow_followed_by_local, as: :boolean, wrapper: :with_label, hint: t('admin.ng_rules.account_allow_followed_by_local_hint'), label: t('admin.ng_rules.account_allow_followed_by_local')
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_domain, as: :text, input_html: { rows: 4 }, wrapper: :with_label, label: t('admin.ng_rules.account_domain'), hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_include_local, as: :boolean, wrapper: :with_label, label: t('admin.ng_rules.account_include_local'), hint: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_username, as: :text, input_html: { rows: 4 }, wrapper: :with_label, label: t('admin.ng_rules.account_username'), hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_display_name, as: :text, input_html: { rows: 4 }, wrapper: :with_label, label: t('admin.ng_rules.account_display_name'), hint: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_field_name, as: :text, input_html: { rows: 4 }, wrapper: :with_label, label: t('admin.ng_rules.account_field_name'), hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_field_value, as: :text, input_html: { rows: 4 }, wrapper: :with_label, label: t('admin.ng_rules.account_field_value'), hint: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_note, as: :text, input_html: { rows: 4 }, wrapper: :with_label, label: t('admin.ng_rules.account_note'), hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :account_avatar_state, wrapper: :with_label, collection: %i(optional needed no_needed), include_blank: false, label_method: ->(i) { I18n.t("admin.ng_rules.states.#{i}") }, label: t('admin.ng_rules.account_avatar_state')
+    = f.input :account_header_state, wrapper: :with_label, collection: %i(optional needed no_needed), include_blank: false, label_method: ->(i) { I18n.t("admin.ng_rules.states.#{i}") }, label: t('admin.ng_rules.account_header_state')
+
+%h4= t('admin.ng_rules.edit.headers.status')
+%p.lead= t('admin.ng_rules.edit.summary.status')
+
+.fields-group
+  = f.input :status_allow_follower_mention, as: :boolean, wrapper: :with_label, hint: t('admin.ng_rules.status_allow_follower_mention_hint'), label: t('admin.ng_rules.status_allow_follower_mention')
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_text, as: :text, input_html: { rows: 4 }, wrapper: :with_label, label: t('admin.ng_rules.status_text'), hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_spoiler_text, as: :text, input_html: { rows: 4 }, wrapper: :with_label, label: t('admin.ng_rules.status_spoiler_text'), hint: false
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_tag, as: :text, input_html: { rows: 4 }, wrapper: :with_label, label: t('admin.ng_rules.status_tag'), hint: false
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_sensitive_state, wrapper: :with_label, collection: %i(optional needed no_needed), include_blank: false, label_method: ->(i) { I18n.t("admin.ng_rules.states.#{i}") }, label: t('admin.ng_rules.status_sensitive_state')
+    = f.input :status_cw_state, wrapper: :with_label, collection: %i(optional needed no_needed), include_blank: false, label_method: ->(i) { I18n.t("admin.ng_rules.states.#{i}") }, label: t('admin.ng_rules.status_cw_state')
+
+.fields-group
+  = f.input :status_visibility, wrapper: :with_block_label, collection: Status.all_visibilities, as: :check_boxes, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', label_method: ->(context) { I18n.t("statuses.visibilities.#{context}") }, include_blank: false, label: t('admin.ng_rules.status_visibility')
+
+.fields-group
+  = f.input :status_searchability, wrapper: :with_block_label, collection: Status.all_searchabilities + %w(unset), as: :check_boxes, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', label_method: ->(context) { I18n.t("statuses.searchabilities.#{context}") }, include_blank: false, label: t('admin.ng_rules.status_searchability')
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_media_state, wrapper: :with_label, collection: %i(optional needed no_needed), include_blank: false, label_method: ->(i) { I18n.t("admin.ng_rules.states.#{i}") }, label: t('admin.ng_rules.status_media_state')
+    = f.input :status_media_threshold, as: :string, wrapper: :with_label, hint: false, label: t('admin.ng_rules.status_media_threshold')
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_poll_state, wrapper: :with_label, collection: %i(optional needed no_needed), include_blank: false, label_method: ->(i) { I18n.t("admin.ng_rules.states.#{i}") }, label: t('admin.ng_rules.status_poll_state')
+    = f.input :status_poll_threshold, as: :string, wrapper: :with_label, hint: false, label: t('admin.ng_rules.status_poll_threshold')
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_quote_state, wrapper: :with_label, collection: %i(optional needed no_needed), include_blank: false, label_method: ->(i) { I18n.t("admin.ng_rules.states.#{i}") }, label: t('admin.ng_rules.status_quote_state')
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_reply_state, wrapper: :with_label, collection: %i(optional needed no_needed), include_blank: false, label_method: ->(i) { I18n.t("admin.ng_rules.states.#{i}") }, label: t('admin.ng_rules.status_reply_state')
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_mention_state, wrapper: :with_label, collection: %i(optional needed no_needed), include_blank: false, label_method: ->(i) { I18n.t("admin.ng_rules.states.#{i}") }, label: t('admin.ng_rules.status_mention_state')
+    = f.input :status_mention_threshold, as: :string, wrapper: :with_label, hint: false, label: t('admin.ng_rules.status_mention_threshold')
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :status_reference_state, wrapper: :with_label, collection: %i(optional needed no_needed), include_blank: false, label_method: ->(i) { I18n.t("admin.ng_rules.states.#{i}") }, label: t('admin.ng_rules.status_reference_state')
+    = f.input :status_reference_threshold, as: :string, wrapper: :with_label, hint: false, label: t('admin.ng_rules.status_reference_threshold')
+
+%h4= t('admin.ng_rules.edit.headers.reaction')
+%p.lead= t('admin.ng_rules.edit.summary.reaction')
+
+.fields-row
+  = f.input :reaction_allow_follower, wrapper: :with_label, hint: t('admin.ng_rules.reaction_allow_follower_hint'), label: t('admin.ng_rules.reaction_allow_follower')
+
+.fields-group
+  = f.input :reaction_type, wrapper: :with_block_label, collection: %i(favourite emoji_reaction reblog follow vote), as: :check_boxes, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', label_method: ->(context) { I18n.t("admin.ng_rules.reaction_types.#{context}") }, include_blank: false, label: t('admin.ng_rules.reaction_type')
+
+.fields-row
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :emoji_reaction_name, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: false, label: t('admin.ng_rules.emoji_reaction_name')
+  .fields-row__column.fields-row__column-6.fields-group
+    = f.input :emoji_reaction_origin_domain, as: :text, input_html: { rows: 4 }, wrapper: :with_label, hint: t('admin.ng_rules.emoji_reaction_origin_domain_hint'), label: t('admin.ng_rules.emoji_reaction_origin_domain')
+
+%h4= t('admin.ng_rules.edit.headers.options')
+
+.fields-group
+  = f.input :available, wrapper: :with_label, label: t('admin.ng_rules.available'), hint: false
+
+.fields-group
+  = f.input :record_history_also_local, wrapper: :with_label, label: t('admin.ng_rules.record_history_also_local'), hint: false

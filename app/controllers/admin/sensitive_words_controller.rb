@@ -34,7 +34,9 @@ module Admin
     def test_words
       sensitive_words = settings_params['sensitive_words'].split(/\r\n|\r|\n/)
       sensitive_words_for_full = settings_params['sensitive_words_for_full'].split(/\r\n|\r|\n/)
-      Admin::NgWord.reject_with_custom_words?('Sample text', sensitive_words + sensitive_words_for_full)
+      sensitive_words_all = settings_params['sensitive_words_all'].split(/\r\n|\r|\n/)
+      sensitive_words_all_for_full = settings_params['sensitive_words_all_for_full'].split(/\r\n|\r|\n/)
+      Admin::NgWord.reject_with_custom_words?('Sample text', sensitive_words + sensitive_words_for_full + sensitive_words_all + sensitive_words_all_for_full)
     end
 
     def after_update_redirect_path

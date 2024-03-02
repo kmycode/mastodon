@@ -36,7 +36,17 @@ module Admin
                                        reject_reports: row.fetch('#reject_reports', false),
                                        private_comment: @global_private_comment,
                                        public_comment: row['#public_comment'],
-                                       obfuscate: row.fetch('#obfuscate', false))
+                                       obfuscate: row.fetch('#obfuscate', false),
+                                       reject_favourite: row.fetch('#reject_favourite', false),
+                                       reject_send_sensitive: row.fetch('#reject_send_sensitive', false),
+                                       reject_hashtag: row.fetch('#reject_hashtag', false),
+                                       reject_straight_follow: row.fetch('#reject_straight_follow', false),
+                                       reject_new_follow: row.fetch('#reject_new_follow', false),
+                                       hidden: row.fetch('#hidden', false),
+                                       detect_invalid_subscription: row.fetch('#detect_invalid_subscription', false),
+                                       reject_reply_exclude_followers: row.fetch('#reject_reply_exclude_followers', false),
+                                       reject_friend: row.fetch('#reject_friend', false),
+                                       block_trends: row.fetch('#block_trends', false))
 
         if domain_block.invalid?
           flash.now[:alert] = I18n.t('admin.export_domain_blocks.invalid_domain_block', error: domain_block.errors.full_messages.join(', '))
@@ -49,7 +59,7 @@ module Admin
         next
       end
 
-      @warning_domains = Instance.where(domain: @domain_blocks.map(&:domain)).where('EXISTS (SELECT 1 FROM follows JOIN accounts ON follows.account_id = accounts.id OR follows.target_account_id = accounts.id WHERE accounts.domain = instances.domain)').pluck(:domain)
+      @warning_domains = instances_from_imported_blocks.pluck(:domain)
     rescue ActionController::ParameterMissing
       flash.now[:alert] = I18n.t('admin.export_domain_blocks.no_file')
       set_dummy_import!
@@ -58,18 +68,56 @@ module Admin
 
     private
 
+    def instances_from_imported_blocks
+      Instance.with_domain_follows(@domain_blocks.map(&:domain))
+    end
+
     def export_filename
       'domain_blocks.csv'
     end
 
     def export_headers
-      %w(#domain #severity #reject_media #reject_reports #public_comment #obfuscate)
+      %w(
+        #domain
+        #severity
+        #reject_media
+        #reject_reports
+        #public_comment
+        #obfuscate
+        #reject_favourite
+        #reject_send_sensitive
+        #reject_hashtag
+        #reject_straight_follow
+        #reject_new_follow
+        #hidden
+        #detect_invalid_subscription
+        #reject_reply_exclude_followers
+        #reject_friend
+        #block_trends
+      )
     end
 
     def export_data
       CSV.generate(headers: export_headers, write_headers: true) do |content|
         DomainBlock.with_limitations.order(id: :asc).each do |instance|
-          content << [instance.domain, instance.severity, instance.reject_media, instance.reject_reports, instance.public_comment, instance.obfuscate]
+          content << [
+            instance.domain,
+            instance.severity,
+            instance.reject_media,
+            instance.reject_reports,
+            instance.public_comment,
+            instance.obfuscate,
+            instance.reject_favourite,
+            instance.reject_send_sensitive,
+            instance.reject_hashtag,
+            instance.reject_straight_follow,
+            instance.reject_new_follow,
+            instance.hidden,
+            instance.detect_invalid_subscription,
+            instance.reject_reply_exclude_followers,
+            instance.reject_friend,
+            instance.block_trends,
+          ]
         end
       end
     end

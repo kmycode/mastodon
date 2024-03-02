@@ -52,6 +52,29 @@ RSpec.describe EmojiReactService, type: :service do
     end
   end
 
+  context 'when user is silenced' do
+    before do
+      sender.silence!
+    end
+
+    it 'emoji reaction is not allowed' do
+      expect { subject }.to raise_error Mastodon::ValidationError
+    end
+  end
+
+  context 'when user is silenced but following target' do
+    before do
+      author.follow!(sender)
+      sender.silence!
+    end
+
+    it 'emoji reaction is allowed' do
+      expect(subject.count).to eq 1
+      expect(subject.first.name).to eq '😀'
+      expect(subject.first.custom_emoji_id).to be_nil
+    end
+  end
+
   context 'when over limit' do
     let(:name) { '🚗' }
 
@@ -87,6 +110,33 @@ RSpec.describe EmojiReactService, type: :service do
     it 'react with emoji' do
       expect { subject.count }.to raise_error ActiveRecord::RecordInvalid
       expect(EmojiReaction.exists?(status: status, account: sender, name: 'ohagi')).to be false
+    end
+  end
+
+  context 'with ng rule' do
+    let(:name) { 'ohagi' }
+
+    context 'when rule hits' do
+      before do
+        Fabricate(:custom_emoji, shortcode: 'ohagi')
+        Fabricate(:ng_rule, reaction_type: ['emoji_reaction'])
+      end
+
+      it 'react with emoji' do
+        expect { subject }.to raise_error Mastodon::ValidationError
+      end
+    end
+
+    context 'when rule does not hit' do
+      before do
+        Fabricate(:custom_emoji, shortcode: 'ohagi')
+        Fabricate(:ng_rule, reaction_type: ['emoji_reaction'], emoji_reaction_name: 'aaa')
+      end
+
+      it 'react with emoji' do
+        expect { subject }.to_not raise_error
+        expect(subject.count).to eq 1
+      end
     end
   end
 

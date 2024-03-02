@@ -1,0 +1,25 @@
+.filters-list__item{ class: [(ng_rule.expired? || !ng_rule.available) && 'expired'] }
+  = link_to edit_admin_ng_rule_path(ng_rule), class: 'filters-list__item__title' do
+    = ng_rule.title.presence || "(#{t('admin.ng_rules.index.empty_title')})"
+
+    - if ng_rule.expires?
+      .expiration{ title: t('filters.index.expires_on', date: l(ng_rule.expires_at)) }
+        - if ng_rule.expired?
+          = t('invites.expired')
+        - else
+          = t('filters.index.expires_in', distance: distance_of_time_in_words_to_now(ng_rule.expires_at))
+    - elsif !ng_rule.available
+      .expiration
+        = t('admin.ng_rules.index.disabled')
+
+  .filters-list__item__permissions
+    %ul.permissions-list
+
+  .announcements-list__item__action-bar
+    .announcements-list__item__meta
+      = link_to t('admin.ng_rules.index.hit_count', count: ng_rule.hit_count), admin_ng_rule_history_path(ng_rule)
+
+    %div
+      = table_link_to 'pencil', t('admin.ng_rules.index.edit.title'), edit_admin_ng_rule_path(ng_rule)
+      = table_link_to 'files-o', t('admin.ng_rules.copy'), duplicate_admin_ng_rule_path(ng_rule), method: :post, data: { confirm: t('admin.accounts.are_you_sure') }
+      = table_link_to 'times', t('admin.ng_rules.index.delete'), admin_ng_rule_path(ng_rule), method: :delete, data: { confirm: t('admin.accounts.are_you_sure') }

@@ -1,0 +1,22 @@
+- content_for :page_title do
+  = t('admin.ngword_histories.title')
+
+.filters
+  .back-link
+    = link_to admin_ng_words_path do
+      = fa_icon 'chevron-left fw'
+      = t('admin.ngword_histories.back_to_ng_words')
+
+%hr.spacer/
+
+.batch-table
+  .batch-table__toolbar
+    %label.batch-table__toolbar__select.batch-checkbox-all
+      = check_box_tag :batch_checkbox_all, nil, false
+  .batch-table__body
+    - if @histories.empty?
+      = nothing_here 'nothing-here--under-tabs'
+    - else
+      = render partial: 'admin/ngword_histories/history', collection: @histories
+
+= paginate @histories

@@ -9,6 +9,106 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
     stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(status: 404)
   end
 
+  describe 'about blocking new remote account' do
+    subject { described_class.new.call('alice', 'example.com', payload) }
+
+    let(:hold_remote_new_accounts) { true }
+    let(:permit_new_account_domains) { nil }
+    let(:payload) do
+      {
+        id: 'https://foo.test',
+        type: 'Actor',
+        inbox: 'https://foo.test/inbox',
+        actor_type: 'Person',
+        summary: 'new bio',
+      }.with_indifferent_access
+    end
+
+    before do
+      Setting.hold_remote_new_accounts = hold_remote_new_accounts
+      Setting.permit_new_account_domains = permit_new_account_domains
+    end
+
+    it 'creates pending account in a simple case' do
+      expect(subject).to_not be_nil
+      expect(subject.uri).to eq 'https://foo.test'
+      expect(subject.suspended?).to be true
+      expect(subject.remote_pending).to be true
+    end
+
+    context 'when is blocked' do
+      let(:permit_new_account_domains) { ['foo.bar'] }
+
+      it 'creates pending account' do
+        expect(subject).to_not be_nil
+        expect(subject.suspended?).to be true
+        expect(subject.remote_pending).to be true
+      end
+
+      context 'when the domain is not on list but hold_remote_new_accounts is disabled' do
+        let(:hold_remote_new_accounts) { false }
+
+        it 'creates normal account' do
+          expect(subject).to_not be_nil
+          expect(subject.suspended?).to be false
+          expect(subject.remote_pending).to be false
+        end
+      end
+
+      context 'with has existing account' do
+        before do
+          Fabricate(:account, uri: 'https://foo.test', domain: 'example.com', username: 'alice', note: 'old bio')
+        end
+
+        it 'updated account' do
+          expect(subject).to_not be_nil
+          expect(subject.suspended?).to be false
+          expect(subject.remote_pending).to be false
+          expect(subject.note).to eq 'new bio'
+        end
+      end
+
+      context 'with has existing suspended pending account' do
+        before do
+          Fabricate(:account, uri: 'https://foo.test', domain: 'example.com', username: 'alice', note: 'old bio', suspended_at: 1.day.ago, remote_pending: true, suspension_origin: :local)
+        end
+
+        it 'updated account' do
+          expect(subject).to_not be_nil
+          expect(subject.suspended?).to be true
+          expect(subject.remote_pending).to be true
+          expect(subject.suspension_origin_local?).to be true
+          expect(subject.note).to eq 'new bio'
+        end
+      end
+
+      context 'with has existing suspended account' do
+        before do
+          Fabricate(:account, uri: 'https://foo.test', domain: 'example.com', username: 'alice', note: 'old bio', suspended_at: 1.day.ago, suspension_origin: :local)
+        end
+
+        it 'does not update account' do
+          expect(subject).to_not be_nil
+          expect(subject.suspended?).to be true
+          expect(subject.remote_pending).to be false
+          expect(subject.suspension_origin_local?).to be true
+          expect(subject.note).to eq 'old bio'
+        end
+      end
+    end
+
+    context 'when is in whitelist' do
+      let(:permit_new_account_domains) { ['example.com'] }
+
+      it 'does not create account' do
+        expect(subject).to_not be_nil
+        expect(subject.uri).to eq 'https://foo.test'
+        expect(subject.suspended?).to be false
+        expect(subject.remote_pending).to be false
+      end
+    end
+  end
+
   context 'with searchability' do
     subject { described_class.new.call('alice', 'example.com', payload) }
 
@@ -225,7 +325,7 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
     end
   end
 
-  context 'with property values' do
+  context 'with property values, an avatar, and a profile header' do
     let(:payload) do
       {
         id: 'https://foo.test',
@@ -236,23 +336,51 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
           { type: 'PropertyValue', name: 'Occupation', value: 'Unit test' },
           { type: 'PropertyValue', name: 'non-string', value: %w(foo bar) },
         ],
+        image: {
+          type: 'Image',
+          mediaType: 'image/png',
+          url: 'https://foo.test/image.png',
+        },
+        icon: {
+          type: 'Image',
+          url: [
+            {
+              mediaType: 'image/png',
+              href: 'https://foo.test/icon.png',
+            },
+          ],
+        },
       }.with_indifferent_access
     end
 
     before do
       stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(body: '{}')
+      stub_request(:get, 'https://foo.test/image.png').to_return(request_fixture('avatar.txt'))
+      stub_request(:get, 'https://foo.test/icon.png').to_return(request_fixture('avatar.txt'))
     end
 
-    it 'parses out of attachment' do
+    it 'parses property values, avatar and profile header as expected' do
       account = subject.call('alice', 'example.com', payload)
-      expect(account.fields).to be_a Array
-      expect(account.fields.size).to eq 2
-      expect(account.fields[0]).to be_a Account::Field
-      expect(account.fields[0].name).to eq 'Pronouns'
-      expect(account.fields[0].value).to eq 'They/them'
-      expect(account.fields[1]).to be_a Account::Field
-      expect(account.fields[1].name).to eq 'Occupation'
-      expect(account.fields[1].value).to eq 'Unit test'
+
+      expect(account.fields)
+        .to be_an(Array)
+        .and have_attributes(size: 2)
+      expect(account.fields.first)
+        .to be_an(Account::Field)
+        .and have_attributes(
+          name: eq('Pronouns'),
+          value: eq('They/them')
+        )
+      expect(account.fields.last)
+        .to be_an(Account::Field)
+        .and have_attributes(
+          name: eq('Occupation'),
+          value: eq('Unit test')
+        )
+      expect(account).to have_attributes(
+        avatar_remote_url: 'https://foo.test/icon.png',
+        header_remote_url: 'https://foo.test/image.png'
+      )
     end
   end
 
@@ -279,6 +407,42 @@ RSpec.describe ActivityPub::ProcessAccountService, type: :service do
       expect(account.settings.size).to eq 2
       expect(account.settings['Pronouns']).to eq 'They/them'
       expect(account.settings['Occupation']).to eq 'Unit test'
+    end
+  end
+
+  context 'when account is using note contains ng words' do
+    subject { described_class.new.call(account.username, account.domain, payload) }
+
+    let!(:account) { Fabricate(:account, username: 'alice', domain: 'example.com') }
+
+    let(:payload) do
+      {
+        id: 'https://foo.test',
+        type: 'Actor',
+        inbox: 'https://foo.test/inbox',
+        name: 'Ohagi',
+      }.with_indifferent_access
+    end
+
+    it 'creates account when ng word is not set' do
+      Setting.ng_words = ['Amazon']
+      subject
+      expect(account.reload.display_name).to eq 'Ohagi'
+
+      history = NgwordHistory.find_by(uri: payload[:id])
+      expect(history).to be_nil
+    end
+
+    it 'does not create account when ng word is set' do
+      Setting.ng_words = ['Ohagi']
+      subject
+      expect(account.reload.display_name).to_not eq 'Ohagi'
+
+      history = NgwordHistory.find_by(uri: payload[:id])
+      expect(history).to_not be_nil
+      expect(history.account_name_blocked?).to be true
+      expect(history.within_ng_words?).to be true
+      expect(history.keyword).to eq 'Ohagi'
     end
   end
 

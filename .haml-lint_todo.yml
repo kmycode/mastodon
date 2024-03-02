@@ -10,6 +10,7 @@ linters:
   # Offense count: 1
   LineLength:
     exclude:
+      - 'app/views/admin/ng_rules/_ng_rule_fields.html.haml'
       - 'app/views/admin/roles/_form.html.haml'
 
   # Offense count: 9
@@ -20,9 +21,11 @@ linters:
   ViewLength:
     exclude:
       - 'app/views/admin/instances/show.html.haml'
+      - 'app/views/admin/ng_rules/_ng_rule_fields.html.haml'
       - 'app/views/settings/preferences/appearance/show.html.haml'
       - 'app/views/settings/preferences/other/show.html.haml'
 
   InstanceVariables:
     exclude:
       - 'app/views/application/_sidebar.html.haml'
+      - 'app/views/admin/ng_rules/_ng_rule_fields.html.haml'

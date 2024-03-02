@@ -50,11 +50,11 @@
 #  trendable                     :boolean
 #  reviewed_at                   :datetime
 #  requested_review_at           :datetime
-#  group_allow_private_message   :boolean
 #  searchability                 :integer          default("direct"), not null
 #  settings                      :jsonb
 #  indexable                     :boolean          default(FALSE), not null
 #  master_settings               :jsonb
+#  remote_pending                :boolean          default(FALSE), not null
 #
 
 class Account < ApplicationRecord
@@ -68,6 +68,7 @@ class Account < ApplicationRecord
   )
 
   BACKGROUND_REFRESH_INTERVAL = 1.week.freeze
+  INSTANCE_ACTOR_ID = -99
 
   USERNAME_RE   = /[a-z0-9_]+([a-z0-9_.-]+[a-z0-9_]+)?/i
   MENTION_RE    = %r{(?<![=/[:word:]])@((#{USERNAME_RE})(?:@[[:word:].-]+[[:word:]]+)?)}i
@@ -91,9 +92,9 @@ class Account < ApplicationRecord
   include DomainNormalizable
   include Paginable
 
-  enum protocol: { ostatus: 0, activitypub: 1 }
-  enum suspension_origin: { local: 0, remote: 1 }, _prefix: true
-  enum searchability: { public: 0, private: 1, direct: 2, limited: 3, unsupported: 4, public_unlisted: 10 }, _suffix: :searchability
+  enum :protocol, { ostatus: 0, activitypub: 1 }
+  enum :suspension_origin, { local: 0, remote: 1 }, prefix: true
+  enum :searchability, { public: 0, private: 1, direct: 2, limited: 3, unsupported: 4, public_unlisted: 10 }, suffix: :searchability
 
   validates :username, presence: true
   validates_with UniqueUsernameValidator, if: -> { will_save_change_to_username? }
@@ -122,18 +123,20 @@ class Account < ApplicationRecord
   scope :partitioned, -> { order(Arel.sql('row_number() over (partition by domain)')) }
   scope :silenced, -> { where.not(silenced_at: nil) }
   scope :suspended, -> { where.not(suspended_at: nil) }
+  scope :remote_pending, -> { where(remote_pending: true).where.not(suspended_at: nil) }
   scope :sensitized, -> { where.not(sensitized_at: nil) }
   scope :without_suspended, -> { where(suspended_at: nil) }
   scope :without_silenced, -> { where(silenced_at: nil) }
-  scope :without_instance_actor, -> { where.not(id: -99) }
+  scope :without_instance_actor, -> { where.not(id: INSTANCE_ACTOR_ID) }
   scope :recent, -> { reorder(id: :desc) }
   scope :bots, -> { where(actor_type: %w(Application Service)) }
   scope :groups, -> { where(actor_type: 'Group') }
   scope :alphabetic, -> { order(domain: :asc, username: :asc) }
-  scope :matches_username, ->(value) { where('lower((username)::text) ~ lower(?)', value.to_s) }
-  scope :matches_display_name, ->(value) { where(arel_table[:display_name].matches_regexp(value.to_s)) }
-  scope :matches_domain, ->(value) { where(arel_table[:domain].matches("%#{value}%")) }
+  scope :matches_uri_prefix, ->(value) { where(arel_table[:uri].matches("#{sanitize_sql_like(value)}/%", false, true)).or(where(uri: value)) }
+  scope :matches_username, ->(value) { where('lower((username)::text) LIKE lower(?)', "#{value}%") }
+  scope :matches_display_name, ->(value) { where(arel_table[:display_name].matches("#{value}%")) }
   scope :without_unapproved, -> { left_outer_joins(:user).merge(User.approved.confirmed).or(remote) }
+  scope :auditable, -> { where(id: Admin::ActionLog.select(:account_id).distinct) }
   scope :searchable, -> { without_unapproved.without_suspended.where(moved_to_account_id: nil) }
   scope :discoverable, -> { searchable.without_silenced.where(discoverable: true).joins(:account_stat) }
   scope :by_recent_status, -> { includes(:account_stat).merge(AccountStat.order('last_status_at DESC NULLS LAST')).references(:account_stat) }
@@ -182,7 +185,7 @@ class Account < ApplicationRecord
   end
 
   def instance_actor?
-    id == -99
+    id == INSTANCE_ACTOR_ID
   end
 
   alias bot bot?
@@ -292,6 +295,23 @@ class Account < ApplicationRecord
       update!(suspended_at: nil, suspension_origin: nil)
       destroy_canonical_email_block!
     end
+  end
+
+  def approve_remote!
+    return unless remote_pending
+
+    update!(remote_pending: false)
+    unsuspend!
+    ActivateRemoteAccountWorker.perform_async(id)
+  end
+
+  def reject_remote!
+    return unless remote_pending
+
+    update!(remote_pending: false, suspension_origin: :local)
+    pending_follow_requests.destroy_all
+    pending_statuses.destroy_all
+    suspend!
   end
 
   def sensitized?

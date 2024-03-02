@@ -33,6 +33,8 @@ en:
     accounts:
       add_email_domain_block: Block e-mail domain
       approve: Approve
+      approve_domain: Approve domain
+      approve_remote: Approve remote account
       approved_msg: Successfully approved %{username}'s sign-up application
       are_you_sure: Are you sure?
       avatar: Avatar
@@ -93,6 +95,7 @@ en:
         all: All
         disabled: Disabled
         pending: Pending
+        remote_pending: Pending (Remote)
         silenced: Limited
         suspended: Suspended
         title: Moderation
@@ -116,7 +119,9 @@ en:
       redownload: Refresh profile
       redownloaded_msg: Successfully refreshed %{username}'s profile from origin
       reject: Reject
+      reject_remote: Reject remote account
       rejected_msg: Successfully rejected %{username}'s sign-up application
+      remote_pending_hint_html: This account is currently on hold and temporarily suspended. The account must be approved before it can be made available on this server.
       remote_suspension_irreversible: The data of this account has been irreversibly deleted.
       remote_suspension_reversible_hint_html: The account has been suspended on their server, and the data will be fully removed on %{date}. Until then, the remote server can restore this account without any ill effects. If you wish to remove all of the account's data immediately, you can do so below.
       remove_avatar: Remove avatar
@@ -230,6 +235,7 @@ en:
         update_user_role: Update Role
       actions:
         approve_appeal_html: "%{name} approved moderation decision appeal from %{target}"
+        approve_remote_account_html: "%{name} approved %{target} join on this server"
         approve_user_html: "%{name} approved sign-up from %{target}"
         assigned_to_self_report_html: "%{name} assigned report %{target} to themselves"
         change_email_user_html: "%{name} changed the e-mail address of user %{target}"
@@ -269,6 +275,7 @@ en:
         memorialize_account_html: "%{name} turned %{target}'s account into a memoriam page"
         promote_user_html: "%{name} promoted user %{target}"
         reject_appeal_html: "%{name} rejected moderation decision appeal from %{target}"
+        reject_remote_account_html: "%{name} rejected %{target} join on this server"
         reject_user_html: "%{name} rejected sign-up from %{target}"
         remove_avatar_user_html: "%{name} removed %{target}'s avatar"
         remove_history_status_html: "%{name} removed post edit histories by %{target}"
@@ -397,6 +404,8 @@ en:
       undo: Disallow federation with domain
     domain_blocks:
       add_new: Add new domain block
+      block_trends: Reject trends
+      block_trends_hint: Reject trends in the future
       confirm_suspension:
         cancel: Cancel
         confirm: Suspend
@@ -416,7 +425,7 @@ en:
       existing_domain_block_html: You have already imposed stricter limits on %{name}, you need to <a href="%{unblock_url}">unblock it</a> first.
       export: Export
       headers:
-        disagreement: Protect sensitive posts from political disagreement
+        disagreement: Political disagreement
         harassment: Harassment or spam
         invalid_privacy: Privacy is not protected
         mastodon_default: Original Mastodon supports
@@ -448,8 +457,7 @@ en:
       reject_media_hint: Removes locally stored media files and refuses to download any in the future. Irrelevant for suspensions
       reject_new_follow: Reject follows
       reject_new_follow_hint: Reject follows in the future
-      reject_reply: Reject replies
-      reject_reply_exclude_followers: Reject replies exclude followers
+      reject_reply_exclude_followers: Reject mentions/references exclude followers
       reject_reply_hint: Reject replies in the future
       reject_reply_exclude_followers_hint: Reject replies exclude followers in the future
       reject_reports: Reject reports
@@ -558,14 +566,14 @@ en:
         description_html: You can define content policies that will be applied to all accounts from this domain and any of its subdomains.
         limited_federation_mode_description_html: You can chose whether to allow federation with this domain.
         policies:
+          block_trends: Reject trends
           reject_favourite: Reject favorite
           reject_friend: Reject friend server application
           reject_hashtag: Reject hashtags
           reject_media: Reject media
           reject_new_follow: Reject follows
           reject_straight_follow: Reject straight follow
-          reject_reply: Reject reply
-          reject_reply_exclude_followers: Reject reply exclude followers
+          reject_reply_exclude_followers: Reject reply/reference exclude followers
           reject_reports: Reject reports
           silence: Limit
           suspend: Suspend
@@ -637,17 +645,134 @@ en:
       title: IP rules
     media_attachments:
       title: Media attachments
+    ng_rules:
+      account_avatar_state: Has avatar or not
+      account_display_name: Name
+      account_domain: Domain
+      account_field_name: Field name
+      account_field_value: Field value
+      account_header_state: Has header or not
+      account_include_local: Contains local users
+      account_note: Account note
+      account_username: ID
+      copy: Copy
+      copy_error: Copy failed.
+      edit:
+        headers:
+          account: Account
+          options: Options
+          reaction: Reaction
+          status: Post
+        helps:
+          generic: Restrictions will be in effect only if all items match the criteria.
+          textarea_html: <strong>Where multiple lines can be entered</strong>, enter conditions separated by line breaks. If any one of the multiple lines is included, the condition is considered a match. You can use a regular expression by starting a line with "?" at the beginning of a line to use a regular expression.
+          threshold_html: <strong>In specifying the upper limit</strong>, specifying "-1" disables the upper limit check. If "0" is specified, the check will pass only if the subject is completely absent. For example, an upper limit of "0" for the number of media is not equivalent to "no media.
+        history: Check the history of this rule's application.
+        summary:
+          account: Set the conditions for the account. This NG rule will be checked when an account matching here posts and reacts. No check is performed when an account is created. By default, all accounts are subject to this rule.
+          reaction: Set the reaction conditions. The account conditions must match at the same time. Please note that by default, not all reactions will match unless you set the "Reaction Type".
+          status: Set the conditions of your submission. The account conditions must match at the same time. Please note that by default, not all posts will be applicable unless you set the "Visibility" and "Searchability".
+        title: Edit NG Rule
+      index:
+        delete: Delete
+        disabled: Disabled
+        edit:
+          title: Edit
+        empty: Empty NG rules
+        empty_title: Empty title
+        hit_count: "%{count} hits on this week"
+        preamble: While NG words are sufficient to deal with normal spam, some of these words must be specified too loosely, making it easier for other normal postings to get caught up in the restrictions. You can also specify the details of the account and the characteristics of the post in the NG rule. NG rules also support the prevention of spam using reactions.
+        title: NG Rules
+      new:
+        save: Save new NG rule
+        title: Add new NG Rule
+      reaction_type: Reaction type
+      reaction_types:
+        emoji_reaction: Emoji reaction
+        favourite: Favourite
+        follow: Follow
+        reblog: Boost
+        vote: Vote
+      reaction_allow_follower: Allow all reactions targeted at followers
+      reaction_allow_follower_hint: If enabled, reactions between other servers are unconditionally allowed
+      record_history_also_local: Local users are also subject to history recording
+      rubular: Regular Expression Checker
+      states:
+        needed: have
+        no_needed: Should not have
+        optional: Optional
+      status_allow_follower_mention: Check posts only if they contain mentions/references to non-followers
+      status_allow_follower_mention_hint: If enabled, mentions between other servers are unconditionally allowed
+      status_cw_state: Has warning or not
+      status_media_state: Has media or not
+      status_media_threshold: Medias limit
+      status_mention_state: Has mention or not
+      status_mention_threshold: Mentions limit
+      status_poll_state: Has poll or not
+      status_poll_threshold: Poll items limit
+      status_quote_state: Has quote or not
+      status_reference_state: Has reference or not
+      status_reference_threshold: Has reference or not
+      status_reply_state: Is reply or not
+      status_searchability: Searchability
+      status_sensitive_state: Is sensitive or not
+      status_spoiler_text: Content warning
+      status_tag: Tag
+      status_text: Post text
+      status_visibility: Visibility
+      test_error: Regular expression syntax is incorrect.
+      title: NG Rule
+    ng_rule_histories:
+      back_to_ng_rule: Back to NG rule
+      back_to_ng_rules: Back to index
+      data:
+        media_count: "%{count} medias"
+        poll_count: "%{count} polls"
+      from_local_user: Local user
+      hidden: Private post
+      moderate_account: Moderate account
+      reason_actions:
+        reaction_emoji_reaction: Emoji reaction
+        reaction_favourite: Favourite
+        reaction_follow: Follow request
+        reaction_reblog: Boost
+        reaction_vote: Vote
+        status_create: Post
+        status_edit: Edit post
+      title: NG Rule History %{title}
     ng_words:
+      block_unfollow_account_mention: Reject all mentions/references from all accounts that do not have followers on your server
+      block_unfollow_account_mention_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。NGルールで代替してください。
+      deprecated: Will remove settings
+      deprecated_hint: These settings will be removed in the next LTS or kmyblue version 14.0, whichever comes first. Please refer to the description of each setting and replace them with the new settings if possible.
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
+      hide_local_users_for_anonymous_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。サーバー設定の「見つける」にある「公開タイムラインへの未認証のアクセスを許可する」で、完全ではありませんが代替可能です。
+      history_hint: We recommend that you regularly check your NG words to make sure that you have not specified the NG words incorrectly.
+      hold_remote_new_accounts: Hold new remote accounts
       keywords: Reject keywords
-      keywords_for_stranger_mention: Reject keywords when mention/reply from strangers
-      keywords_for_stranger_mention_hint: Currently this words are checked posts from other servers only.
+      keywords_for_stranger_mention: Reject keywords when mention/reply/reference/quote from strangers
+      keywords_for_stranger_mention_hint: This words are checked posts from other servers only.
       keywords_hint: The first character of the line is "?". to use regular expressions
+      permit_new_account_domains: Domain list to automatically approve new users
+      preamble: This setting is very useful when you receive spam or harassment from many servers, or when you encounter other problems that cannot be solved by domain blocking. You can reject posts received from other servers or within your own server that contain specific keywords or too many mentions. Please consider this setting carefully to ensure that posts that are not problematic are not deleted. Rejected posts will be recorded in your history unless they are limited posts. If you need more detailed settings, please use another feature, "NG Rules".
       post_hash_tags_max: Hash tags max for posts
+      post_mentions_max: Mentions max for posts
+      post_stranger_mentions_max: 投稿に設定可能なメンションの最大数 (If the mentions include at least one person who is not a follower of yours)
+      remote_approval_list: List of remote accounts awaiting approval
+      remote_approval_hint: Newly recognized accounts with unspecified domains will be placed in Suspended status. You can review that list and approve them if necessary. If this setting is not enabled, all remote accounts will be approved immediately.
       stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
-      stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
+      stranger_mention_from_local_ng_hint: この設定は削除予定です。設定削除後は、常にチェックをつけている場合と同じ挙動になります。この動作を希望しない場合は、NGルールで代替してください。
       test_error: Testing is returned any errors
       title: NG words and against spams
+      white_list: White list
+      white_list_hint: Unlike a normal whitelist, all previous accounts are marked as trusted, and all newly recognized accounts are placed on hold. Activating the whitelist does not immediately eliminate external attacks, but it can gradually and surely reduce them through moderation. In addition, a periodic remote account approval process is required.
+    ngword_histories:
+      back_to_ng_words: NG words and against spams
+      target_types:
+        account_name: Account name
+        account_note: Account note
+        status: Post
+      title: NG words history
     relationships:
       title: "%{acct}'s relationships"
     relays:
@@ -831,9 +956,13 @@ en:
       title: Server rules
     sensitive_words:
       alert: This post contains sensitive words, so alert added
+      auto_warning_text: Custom warning text
+      auto_warning_text_hint: If not specified, the default warning text is used.
       hint: This keywords is applied to public posts only..
-      keywords: Sensitive keywords
-      keywords_for_all: Sensitive keywords (Contains CW alert)
+      keywords: Sensitive keywords for local only
+      keywords_all: Sensitive keywords for local+remote
+      keywords_all_for_all: Sensitive keywords for local+remote (Contains CW alert)
+      keywords_for_all: Sensitive keywords for local only (Contains CW alert)
       keywords_for_all_hint: The first character of the line is "?". to use regular expressions
       title: Sensitive words and moderation options
     settings:
@@ -858,7 +987,7 @@ en:
         desc_html: Affects all users who have not changed this setting themselves
         title: Opt users out of search engine indexing by default
       discovery:
-        emoji_reactions: Stamp
+        emoji_reactions: Emoji reaction
         follow_recommendations: Follow recommendations
         friend_servers: Friend servers
         preamble: Surfacing interesting content is instrumental in onboarding new users who may not know anyone Mastodon. Control how various discovery features work on your server.
@@ -874,6 +1003,7 @@ en:
         disabled: To no one
         users: To logged-in local users
       registrations:
+        moderation_recommandation: Please make sure you have an adequate and reactive moderation team before you open registrations to everyone!
         preamble: Control who can create an account on your server.
         title: Registrations
       registrations_mode:
@@ -881,6 +1011,7 @@ en:
           approved: Approval required for sign up
           none: Nobody can sign up
           open: Anyone can sign up
+        warning_hint: We recommend using “Approval required for sign up” unless you are confident your moderation team can handle spam and malicious registrations in a timely fashion.
       security:
         authorized_fetch: Require authentication from federated servers
         authorized_fetch_hint: Requiring authentication from federated servers enables stricter enforcement of both user-level and server-level blocks. However, this comes at the cost of a performance penalty, reduces the reach of your replies, and may introduce compatibility issues with some federated services. In addition, this will not prevent dedicated actors from fetching your public posts and accounts.
@@ -903,8 +1034,8 @@ en:
         patch: Patch release — bugfixes and easy to apply changes
       version: Version
     special_instances:
-      emoji_reaction_disallow_domains: Domains we are not permitted stamp
-      emoji_reaction_disallow_domains_hint: If you need to be considerate to your coalition partners, set the domain with a new line separator. It is not possible to put a stamp on a post from a set domain.
+      emoji_reaction_disallow_domains: Domains we are not permitted emoji reaction
+      emoji_reaction_disallow_domains_hint: If you need to be considerate to your coalition partners, set the domain with a new line separator. It is not possible to put an emoji reaction on a post from a set domain.
       title: Special servers
     statuses:
       account: Author
@@ -1087,6 +1218,9 @@ en:
       title: Webhooks
       webhook: Webhook
   admin_mailer:
+    auto_close_registrations:
+      body: Due to a lack of recent moderator activity, registrations on %{instance} have been automatically switched to requiring manual review, to prevent %{instance} from being used as a platform for potential bad actors. You can switch it back to open registrations at any time.
+      subject: Registrations for %{instance} have been automatically switched to requiring approval
     new_appeal:
       actions:
         delete_statuses: to delete their posts
@@ -1192,7 +1326,7 @@ en:
     advanced_web_interface_hint: 'If you want to make use of your entire screen width, the advanced web interface allows you to configure many different columns to see as much information at the same time as you want: Home, notifications, federated timeline, any number of lists and hashtags.'
     animations_and_accessibility: Animations and accessibility
     confirmation_dialogs: Confirmation dialogs
-    custom_emoji_and_emoji_reactions: Custom emoji and stamps
+    custom_emoji_and_emoji_reactions: Custom emoji and emoji reactions
     discovery: Discovery
     localization:
       body: Mastodon is translated by volunteers.
@@ -1264,6 +1398,9 @@ en:
       saml: SAML
     register: Sign up
     registration_closed: "%{instance} is not accepting new members"
+    registration_limit:
+      hint_html: The maximum number of new registrations allowed, or the time of day, is restricted by the administrator. You will not be able to complete authentication while the restriction is in effect. Please contact the administrator or wait until the restriction is lifted. If you have reached the limit, you will need to register again.
+      title: New registrations are currently restricted
     resend_confirmation: Resend confirmation link
     reset_password: Reset password
     rules:
@@ -1420,6 +1557,7 @@ en:
   filters:
     contexts:
       account: Profiles
+      explore: Trends and search results
       home: Home and lists
       notifications: Notifications
       public: Public timelines
@@ -1651,9 +1789,9 @@ en:
       subject: "%{name} favorited your post"
       title: New favorite
     emoji_reaction:
-      body: 'Your post was stamped by %{name}:'
-      subject: "%{name} stamped your post"
-      title: New stamp
+      body: 'Your post was reacted with emoji by %{name}:'
+      subject: "%{name} reacted your post with emoji"
+      title: New emoji reaction
     follow:
       body: "%{name} is now following you!"
       subject: "%{name} is now following you"
@@ -1724,7 +1862,7 @@ en:
     does_not_search: The full-text search feature is not available on this server. Instead, your posts will be searched according to this setting on other kmyblue servers.
     dtl: Deep timeline
     dtl_hint: "You can join deep timeline with #%{tag} tag. Following settings make convenient to use deep timeline."
-    emoji_reaction_permitting: Receiving stamps
+    emoji_reaction_permitting: Receiving emoji reactions
     other: Other
     posting_defaults: Posting defaults
     public_timelines: Public timelines
@@ -1754,10 +1892,13 @@ en:
   reactions:
     errors:
       banned: Banned reaction from the user
-      disabled: Stamp is disabled on this server
+      disabled: Emoji reaction is disabled on this server
       duplication: Cannot react same things
       limit_reached: Limit of different reactions reached
       unrecognized_emoji: is not a recognized emoji
+  redirects:
+    prompt: If you trust this link, click it to continue.
+    title: You are leaving %{instance}.
   relationships:
     activity: Account activity
     confirm_follow_selected_followers: Are you sure you want to follow selected followers?
@@ -1917,14 +2058,20 @@ en:
       public_search_long: You can search all posts permitted to search
       public_unlisted: Local and followers
       public_unlisted_long: Local users and followers can find
+      unset: (Unsupported servers)
     show_more: Show more
     show_newer: Show newer
     show_older: Show older
     show_thread: Show thread
     title: '%{name}: "%{quote}"'
     too_many_hashtags: Too many hashtags
+    too_many_mentions: Too many mentions
+    violate_rules: Violate NG rules
     visibilities:
       direct: Direct
+      limited: Limited
+      login: Login only
+      login_long: Only logined users
       private: Followers-only
       private_long: Only show to followers
       public: Public
@@ -1936,7 +2083,7 @@ en:
     enabled_hint: Automatically deletes your posts once they reach a specified age threshold, unless they match one of the exceptions below
     exceptions: Exceptions
     explanation: Because deleting posts is an expensive operation, this is done slowly over time when the server is not otherwise busy. For this reason, your posts may be deleted a while after they reach the age threshold.
-    ignore_emojis: Ignore stamps
+    ignore_emojis: Ignore emoji reactions
     ignore_favs: Ignore favorites
     ignore_reblogs: Ignore boosts
     interaction_exceptions: Exceptions based on interactions
@@ -1963,8 +2110,8 @@ en:
       '63113904': 2 years
       '7889238': 3 months
     min_age_label: Age threshold
-    min_emojis: Keep posts stamped at least
-    min_emojis_hint: Doesn't delete any of your posts that has received at least this number of stamps. Leave blank to delete posts regardless of their number of emojis
+    min_emojis: Keep posts reacted with emoji at least
+    min_emojis_hint: Doesn't delete any of your posts that has received at least this number of emoji reactions. Leave blank to delete posts regardless of their number of emojis
     min_favs: Keep posts favorited at least
     min_favs_hint: Doesn't delete any of your posts that has received at least this number of favorites. Leave blank to delete posts regardless of their number of favorites
     min_reblogs: Keep posts boosted at least
@@ -2022,6 +2169,12 @@ en:
       extra: It's now ready for download!
       subject: Your archive is ready for download
       title: Archive takeout
+    failed_2fa:
+      details: 'Here are details of the sign-in attempt:'
+      explanation: Someone has tried to sign in to your account but provided an invalid second authentication factor.
+      further_actions_html: If this wasn't you, we recommend that you %{action} immediately as it may be compromised.
+      subject: Second factor authentication failure
+      title: Failed second factor authentication
     suspicious_sign_in:
       change_password: change your password
       details: 'Here are details of the sign-in:'
@@ -2078,6 +2231,7 @@ en:
     go_to_sso_account_settings: Go to your identity provider's account settings
     invalid_otp_token: Invalid two-factor code
     otp_lost_help_html: If you lost access to both, you may get in touch with %{email}
+    rate_limited: Too many authentication attempts, try again later.
     seamless_external_login: You are logged in via an external service, so password and e-mail settings are not available.
     signed_in_as: 'Signed in as:'
   verification:

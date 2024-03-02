@@ -153,7 +153,7 @@ class ActivityPub::TagManager
   end
 
   def cc_for_misskey(status)
-    if (status.account.user&.setting_reject_unlisted_subscription && status.unlisted_visibility?) || (status.account.user&.setting_reject_public_unlisted_subscription && status.public_unlisted_visibility?)
+    if status.sending_maybe_compromised_privacy?
       cc = cc_private_visibility(status)
       cc << uri_for(status.reblog.account) if status.reblog?
       return cc

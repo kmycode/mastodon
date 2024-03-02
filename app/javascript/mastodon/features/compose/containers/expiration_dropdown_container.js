@@ -4,8 +4,7 @@ import { openModal, closeModal } from '../../../actions/modal';
 import { isUserTouching } from '../../../is_mobile';
 import ExpirationDropdown from '../components/expiration_dropdown';
 
-const mapStateToProps = state => ({
-  value: state.getIn(['compose', 'privacy']),
+const mapStateToProps = () => ({
 });
 
 const mapDispatchToProps = (dispatch, { onPickExpiration }) => ({

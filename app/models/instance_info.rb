@@ -30,24 +30,31 @@ class InstanceInfo < ApplicationRecord
     sharkey
   ).freeze
 
-  def self.emoji_reaction_available?(domain)
-    return Setting.enable_emoji_reaction if domain.nil?
+  class << self
+    def emoji_reaction_available?(domain)
+      return Setting.enable_emoji_reaction if domain.nil?
 
-    Rails.cache.fetch("emoji_reaction_available_domain:#{domain}") { fetch_emoji_reaction_available(domain) }
+      Rails.cache.fetch("emoji_reaction_available_domain:#{domain}") { load_emoji_reaction_available(domain) }
+    end
+
+    private
+
+    def load_emoji_reaction_available(domain)
+      info = InstanceInfo.find_by(domain: domain)
+      return false if info.nil?
+      return true if EMOJI_REACTION_AVAILABLE_SOFTWARES.include?(info['software'])
+
+      return false unless info.data.is_a?(Hash)
+      return false unless info.data['metadata'].is_a?(Hash)
+
+      features = info.data.dig('metadata', 'features')
+      return false unless features.is_a?(Array)
+
+      features.include?('emoji_reaction')
+    end
   end
 
-  def self.fetch_emoji_reaction_available(domain)
-    info = InstanceInfo.find_by(domain: domain)
-    return false if info.nil?
-
-    return true if EMOJI_REACTION_AVAILABLE_SOFTWARES.include?(info['software'])
-    return false if info.data['metadata'].nil? || !info.data['metadata'].is_a?(Hash)
-
-    features = info.data.dig('metadata', 'features')
-    return false if features.nil? || !features.is_a?(Array)
-
-    features.include?('emoji_reaction')
-  end
+  private
 
   def reset_cache
     Rails.cache.delete("emoji_reaction_available_domain:#{domain}")

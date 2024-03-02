@@ -15,6 +15,7 @@ describe 'NewStatuses', :sidekiq_inline do
   before do
     as_a_logged_in_user
     visit root_path
+    page.driver.browser.manage.window.resize_to(1600, 1050)
   end
 
   it 'can be posted' do
@@ -24,7 +25,7 @@ describe 'NewStatuses', :sidekiq_inline do
 
     within('.compose-form') do
       fill_in "What's on your mind?", with: status_text
-      click_on 'Publish!'
+      click_on 'Post'
     end
 
     expect(subject).to have_css('.status__content__text', text: status_text)
@@ -37,7 +38,7 @@ describe 'NewStatuses', :sidekiq_inline do
 
     within('.compose-form') do
       fill_in "What's on your mind?", with: status_text
-      click_on 'Publish!'
+      click_on 'Post'
     end
 
     expect(subject).to have_css('.status__content__text', text: status_text)

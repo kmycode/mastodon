@@ -15,6 +15,12 @@ class Form::AdminSettings
     registrations_mode
     closed_registrations_message
     registration_button_message
+    registrations_limit
+    registrations_limit_per_day
+    registrations_start_hour
+    registrations_end_hour
+    registrations_secondary_start_hour
+    registrations_secondary_end_hour
     timeline_preview
     bootstrap_timeline_accounts
     theme
@@ -35,6 +41,7 @@ class Form::AdminSettings
     media_cache_retention_period
     content_cache_retention_period
     backups_retention_period
+    delete_content_cache_without_reaction
     status_page_url
     captcha_enabled
     ng_words
@@ -42,18 +49,27 @@ class Form::AdminSettings
     stranger_mention_from_local_ng
     hide_local_users_for_anonymous
     post_hash_tags_max
+    post_mentions_max
+    post_stranger_mentions_max
     sensitive_words
     sensitive_words_for_full
+    sensitive_words_all
+    sensitive_words_all_for_full
+    auto_warning_text
     authorized_fetch
     receive_other_servers_emoji_reaction
     streaming_other_servers_emoji_reaction
     streaming_local_emoji_reaction
     enable_emoji_reaction
     check_lts_version_only
+    enable_public_visibility
     enable_public_unlisted_visibility
     unlocked_friend
     enable_local_timeline
     emoji_reaction_disallow_domains
+    permit_new_account_domains
+    block_unfollow_account_mention
+    hold_remote_new_accounts
   ).freeze
 
   INTEGER_KEYS = %i(
@@ -61,6 +77,14 @@ class Form::AdminSettings
     content_cache_retention_period
     backups_retention_period
     post_hash_tags_max
+    post_mentions_max
+    post_stranger_mentions_max
+    registrations_limit
+    registrations_limit_per_day
+    registrations_start_hour
+    registrations_end_hour
+    registrations_secondary_start_hour
+    registrations_secondary_end_hour
   ).freeze
 
   BOOLEAN_KEYS = %i(
@@ -82,10 +106,14 @@ class Form::AdminSettings
     streaming_local_emoji_reaction
     enable_emoji_reaction
     check_lts_version_only
+    enable_public_visibility
     enable_public_unlisted_visibility
     unlocked_friend
     stranger_mention_from_local_ng
     enable_local_timeline
+    delete_content_cache_without_reaction
+    block_unfollow_account_mention
+    hold_remote_new_accounts
   ).freeze
 
   UPLOAD_KEYS = %i(
@@ -102,7 +130,10 @@ class Form::AdminSettings
     ng_words_for_stranger_mention
     sensitive_words
     sensitive_words_for_full
+    sensitive_words_all
+    sensitive_words_all_for_full
     emoji_reaction_disallow_domains
+    permit_new_account_domains
   ).freeze
 
   attr_accessor(*KEYS)

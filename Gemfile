@@ -26,7 +26,7 @@ gem 'blurhash', '~> 0.1'
 
 gem 'active_model_serializers', '~> 0.10'
 gem 'addressable', '~> 2.8'
-gem 'bootsnap', '~> 1.17.0', require: false
+gem 'bootsnap', '~> 1.18.0', require: false
 gem 'browser'
 gem 'charlock_holmes', '~> 0.7.7'
 gem 'chewy', '~> 7.3'
@@ -62,8 +62,8 @@ gem 'idn-ruby', require: 'idn'
 gem 'kaminari', '~> 1.2'
 gem 'link_header', '~> 0.0'
 gem 'mime-types', '~> 3.5.0', require: 'mime/types/columnar'
-gem 'nokogiri', '~> 1.15'
-gem 'nsa', github: 'jhawthorn/nsa', ref: 'e020fcc3a54d993ab45b7194d89ab720296c111b'
+gem 'nokogiri', '~> 1.16.2'
+gem 'nsa'
 gem 'oj', '~> 3.14'
 gem 'ox', '~> 2.14'
 gem 'parslet'
@@ -123,13 +123,7 @@ group :test do
   gem 'database_cleaner-active_record'
 
   # Used to mock environment variables
-  gem 'climate_control', '~> 0.2'
-
-  # Generating fake data for specs
-  gem 'faker', '~> 3.2'
-
-  # Generate test objects for specs
-  gem 'fabrication', '~> 2.30'
+  gem 'climate_control'
 
   # Add back helpers functions removed in Rails 5.1
   gem 'rails-controller-testing', '~> 1.0'
@@ -183,6 +177,12 @@ end
 group :development, :test do
   # Interactive Debugging tools
   gem 'debug', '~> 1.8'
+
+  # Generate fake data values
+  gem 'faker', '~> 3.2'
+
+  # Generate factory objects
+  gem 'fabrication', '~> 2.30'
 
   # Profiling tools
   gem 'memory_profiler', require: false

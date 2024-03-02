@@ -39,8 +39,8 @@ class MediaAttachment < ApplicationRecord
   LOCAL_STATUS_ATTACHMENT_MAX_WITH_POLL = 4
   ACTIVITYPUB_STATUS_ATTACHMENT_MAX = 16
 
-  enum type: { image: 0, gifv: 1, video: 2, unknown: 3, audio: 4 }
-  enum processing: { queued: 0, in_progress: 1, complete: 2, failed: 3 }, _prefix: true
+  enum :type, { image: 0, gifv: 1, video: 2, unknown: 3, audio: 4 }
+  enum :processing, { queued: 0, in_progress: 1, complete: 2, failed: 3 }, prefix: true
 
   MAX_DESCRIPTION_LENGTH = 1_500
 
@@ -209,12 +209,14 @@ class MediaAttachment < ApplicationRecord
   validates :file, presence: true, if: :local?
   validates :thumbnail, absence: true, if: -> { local? && !audio_or_video? }
 
-  scope :attached,   -> { where.not(status_id: nil).or(where.not(scheduled_status_id: nil)) }
-  scope :cached,     -> { remote.where.not(file_file_name: nil) }
-  scope :local,      -> { where(remote_url: '') }
-  scope :ordered,    -> { order(id: :asc) }
-  scope :remote,     -> { where.not(remote_url: '') }
+  scope :attached, -> { where.not(status_id: nil).or(where.not(scheduled_status_id: nil)) }
+  scope :cached, -> { remote.where.not(file_file_name: nil) }
+  scope :created_before, ->(value) { where(arel_table[:created_at].lt(value)) }
+  scope :local, -> { where(remote_url: '') }
+  scope :ordered, -> { order(id: :asc) }
+  scope :remote, -> { where.not(remote_url: '') }
   scope :unattached, -> { where(status_id: nil, scheduled_status_id: nil) }
+  scope :updated_before, ->(value) { where(arel_table[:updated_at].lt(value)) }
 
   attr_accessor :skip_download
 

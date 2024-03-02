@@ -9,14 +9,10 @@ RSpec.describe Account do
     let(:bob) { Fabricate(:account, username: 'bob') }
 
     describe '#suspend!' do
-      it 'marks the account as suspended' do
-        subject.suspend!
-        expect(subject.suspended?).to be true
-      end
-
-      it 'creates a deletion request' do
-        subject.suspend!
-        expect(AccountDeletionRequest.where(account: subject).exists?).to be true
+      it 'marks the account as suspended and creates a deletion request' do
+        expect { subject.suspend! }
+          .to change(subject, :suspended?).from(false).to(true)
+          .and(change { AccountDeletionRequest.exists?(account: subject) }.from(false).to(true))
       end
 
       context 'when the account is of a local user' do
@@ -435,6 +431,18 @@ RSpec.describe Account do
       let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
 
       it_behaves_like 'some settings', %i(allow_quote), 'allow'
+    end
+  end
+
+  describe '#approve_remote!' do
+    it 'calls worker' do
+      account = Fabricate(:account, suspended_at: Time.now.utc, suspension_origin: :local, remote_pending: true)
+      allow(ActivateRemoteAccountWorker).to receive(:perform_async)
+
+      account.approve_remote!
+      expect(account.remote_pending).to be false
+      expect(account.suspended?).to be false
+      expect(ActivateRemoteAccountWorker).to have_received(:perform_async).with(account.id)
     end
   end
 
@@ -961,13 +969,13 @@ RSpec.describe Account do
       end
 
       it 'is valid if we are creating an instance actor account with a period' do
-        account = Fabricate.build(:account, id: -99, actor_type: 'Application', locked: true, username: 'example.com')
+        account = Fabricate.build(:account, id: described_class::INSTANCE_ACTOR_ID, actor_type: 'Application', locked: true, username: 'example.com')
         expect(account.valid?).to be true
       end
 
       it 'is valid if we are creating a possibly-conflicting instance actor account' do
         _account = Fabricate(:account, username: 'examplecom')
-        instance_account = Fabricate.build(:account, id: -99, actor_type: 'Application', locked: true, username: 'example.com')
+        instance_account = Fabricate.build(:account, id: described_class::INSTANCE_ACTOR_ID, actor_type: 'Application', locked: true, username: 'example.com')
         expect(instance_account.valid?).to be true
       end
 
@@ -1050,6 +1058,50 @@ RSpec.describe Account do
   end
 
   describe 'scopes' do
+    describe 'matches_uri_prefix' do
+      let!(:alice) { Fabricate :account, domain: 'host.example', uri: 'https://host.example/user/a' }
+      let!(:bob) { Fabricate :account, domain: 'top-level.example', uri: 'https://top-level.example' }
+
+      it 'returns accounts which start with the value' do
+        results = described_class.matches_uri_prefix('https://host.example')
+
+        expect(results.size)
+          .to eq(1)
+        expect(results)
+          .to include(alice)
+          .and not_include(bob)
+      end
+
+      it 'returns accounts which equal the value' do
+        results = described_class.matches_uri_prefix('https://top-level.example')
+
+        expect(results.size)
+          .to eq(1)
+        expect(results)
+          .to include(bob)
+          .and not_include(alice)
+      end
+    end
+
+    describe 'auditable' do
+      let!(:alice) { Fabricate :account }
+      let!(:bob) { Fabricate :account }
+
+      before do
+        2.times { Fabricate :action_log, account: alice }
+      end
+
+      it 'returns distinct accounts with action log records' do
+        results = described_class.auditable
+
+        expect(results.size)
+          .to eq(1)
+        expect(results)
+          .to include(alice)
+          .and not_include(bob)
+      end
+    end
+
     describe 'alphabetic' do
       it 'sorts by alphabetic order of domain and username' do
         matches = [
@@ -1066,18 +1118,18 @@ RSpec.describe Account do
     describe 'matches_display_name' do
       it 'matches display name which starts with the given string' do
         match = Fabricate(:account, display_name: 'pattern and suffix')
-        account = Fabricate(:account, display_name: 'prefix and pattern')
+        Fabricate(:account, display_name: 'prefix and pattern')
 
-        expect(described_class.matches_display_name('pattern')).to contain_exactly(match, account)
+        expect(described_class.matches_display_name('pattern')).to eq [match]
       end
     end
 
     describe 'matches_username' do
       it 'matches display name which starts with the given string' do
         match = Fabricate(:account, username: 'pattern_and_suffix')
-        account = Fabricate(:account, username: 'prefix_and_pattern')
+        Fabricate(:account, username: 'prefix_and_pattern')
 
-        expect(described_class.matches_username('pattern')).to contain_exactly(match, account)
+        expect(described_class.matches_username('pattern')).to eq [match]
       end
     end
 
@@ -1206,18 +1258,9 @@ RSpec.describe Account do
     it 'increments the count in multi-threaded an environment when account_stat is not yet initialized' do
       subject
 
-      increment_by   = 15
-      wait_for_start = true
-
-      threads = Array.new(increment_by) do
-        Thread.new do
-          true while wait_for_start
-          described_class.find(subject.id).increment_count!(:followers_count)
-        end
+      multi_threaded_execution(15) do
+        described_class.find(subject.id).increment_count!(:followers_count)
       end
-
-      wait_for_start = false
-      threads.each(&:join)
 
       expect(subject.reload.followers_count).to eq 15
     end

@@ -767,6 +767,7 @@ es-AR:
         disabled: A nadie
         users: A usuarios locales con sesiones abiertas
       registrations:
+        moderation_recommandation: Por favor, ¡asegurate de tener un equipo de moderación adecuado y reactivo antes de abrir los registros a todos!
         preamble: Controlá quién puede crear una cuenta en tu servidor.
         title: Registros
       registrations_mode:
@@ -774,6 +775,7 @@ es-AR:
           approved: Se requiere aprobación para registrarse
           none: Nadie puede registrarse
           open: Cualquiera puede registrarse
+        warning_hint: Recomendamos el uso de la opción “Se requiere aprobación para registrarse”, a menos que estés seguro de que tu equipo de moderación puede manejar el spam y los registros maliciosos de forma oportuna.
       security:
         authorized_fetch: Requiere autenticación de servidores federados
         authorized_fetch_hint: Requerir autenticación de servidores federados permite un cumplimiento más estricto tanto de los bloques de nivel de usuario como de nivel de servidor. Sin embargo, esto se produce a costa de una penalidad en el rendimiento, reduce el alcance de tus respuestas y puede introducir problemas de compatibilidad con algunos servicios federados. Además, esto no impedirá que actores dedicados obtengan tus mensajes y cuentas públicas.
@@ -966,6 +968,9 @@ es-AR:
       title: Webhooks
       webhook: Webhook
   admin_mailer:
+    auto_close_registrations:
+      body: Debido a la falta de actividad reciente por parte de moderadores, los registros en %{instance} fueron cambiados automáticamente para requerir revisión manual, para evitar que %{instance} se use como una plataforma para potenciales malos actores. Podés volver a cambiar esto para abrir los registros en cualquier momento.
+      subject: Los registros de %{instance} se cambiaron automáticamente para requerir aprobación
     new_appeal:
       actions:
         delete_statuses: para eliminar sus mensajes
@@ -1546,6 +1551,9 @@ es-AR:
     errors:
       limit_reached: Se alcanzó el límite de reacciones diferentes
       unrecognized_emoji: no es un emoji conocido
+  redirects:
+    prompt: Si confiás en este enlace, dale clic o un toque para continuar.
+    title: Estás dejando %{instance}.
   relationships:
     activity: Actividad de la cuenta
     confirm_follow_selected_followers: "¿Estás seguro que querés seguir a los seguidores seleccionados?"
@@ -1790,6 +1798,12 @@ es-AR:
       extra: "¡Ya está lista para descargar!"
       subject: Tu archivo historial está listo para descargar
       title: Descargar archivo historial
+    failed_2fa:
+      details: 'Estos son los detalles del intento de inicio de sesión:'
+      explanation: Alguien intentó iniciar sesión en tu cuenta pero proporcionó un segundo factor de autenticación no válido.
+      further_actions_html: Si vos no fuiste, te recomendamos que %{action} inmediatamente, ya que la seguridad de tu cuenta podría estar comprometida.
+      subject: Fallo de autenticación del segundo factor
+      title: Fallo en la autenticación del segundo factor
     suspicious_sign_in:
       change_password: cambiés tu contraseña
       details: 'Acá están los detalles del inicio de sesión:'
@@ -1843,6 +1857,7 @@ es-AR:
     go_to_sso_account_settings: Andá a la configuración de cuenta de tu proveedor de identidad
     invalid_otp_token: Código de dos factores no válido
     otp_lost_help_html: Si perdiste al acceso a ambos, podés ponerte en contacto con %{email}
+    rate_limited: Demasiados intentos de autenticación; intentá de nuevo más tarde.
     seamless_external_login: Iniciaste sesión desde un servicio externo, así que la configuración de contraseña y correo electrónico no están disponibles.
     signed_in_as: 'Iniciaste sesión como:'
   verification:

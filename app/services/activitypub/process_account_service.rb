@@ -13,7 +13,7 @@ class ActivityPub::ProcessAccountService < BaseService
 
   # Should be called with confirmed valid JSON
   # and WebFinger-resolved username and domain
-  def call(username, domain, json, options = {})
+  def call(username, domain, json, options = {}) # rubocop:disable Metrics/PerceivedComplexity
     return if json['inbox'].blank? || unsupported_uri_scheme?(json['id']) || domain_not_allowed?(domain)
 
     @options     = options
@@ -59,7 +59,7 @@ class ActivityPub::ProcessAccountService < BaseService
     clear_tombstones! if key_changed?
     after_suspension_change! if suspension_changed?
 
-    unless @options[:only_key] || @account.suspended?
+    unless @options[:only_key] || (@account.suspended? && !@account.remote_pending)
       check_featured_collection! if @account.featured_collection_url.present?
       check_featured_tags_collection! if @json['featuredTags'].present?
       check_links! if @account.fields.any?(&:requires_verification?)
@@ -85,6 +85,12 @@ class ActivityPub::ProcessAccountService < BaseService
     @account.silenced_at       = domain_block.created_at if auto_silence?
     @account.searchability     = :direct # not null
 
+    if @account.suspended_at.nil? && blocking_new_account?
+      @account.suspended_at      = Time.now.utc
+      @account.suspension_origin = :local
+      @account.remote_pending    = true
+    end
+
     set_immediate_protocol_attributes!
 
     @account.save!
@@ -96,9 +102,12 @@ class ActivityPub::ProcessAccountService < BaseService
 
     set_suspension!
     set_immediate_protocol_attributes!
-    set_fetchable_key! unless @account.suspended? && @account.suspension_origin_local?
-    set_immediate_attributes! unless @account.suspended?
-    set_fetchable_attributes! unless @options[:only_key] || @account.suspended?
+
+    freeze_data = @account.suspended? && (@account.suspension_origin_remote? || !@account.remote_pending)
+
+    set_fetchable_key! unless @account.suspended? && @account.suspension_origin_local? && !@account.remote_pending
+    set_immediate_attributes! unless freeze_data
+    set_fetchable_attributes! unless @options[:only_key] || freeze_data
 
     @account.save_with_optional_media!
   end
@@ -130,10 +139,21 @@ class ActivityPub::ProcessAccountService < BaseService
     @account.memorial                = @json['memorial'] || false
   end
 
+  def blocking_new_account?
+    return false unless Setting.hold_remote_new_accounts
+
+    permit_new_account_domains.exclude?(@domain)
+  end
+
+  def permit_new_account_domains
+    (Setting.permit_new_account_domains || []).compact_blank
+  end
+
   def valid_account?
-    display_name = @json['name']
-    note = @json['summary']
-    !Admin::NgWord.reject?(display_name) && !Admin::NgWord.reject?(note)
+    display_name = @json['name'] || ''
+    note = @json['summary'] || ''
+    !Admin::NgWord.reject?(display_name, uri: @uri, target_type: :account_name) &&
+      !Admin::NgWord.reject?(note, uri: @uri, target_type: :account_note)
   end
 
   def set_fetchable_key!
@@ -226,10 +246,15 @@ class ActivityPub::ProcessAccountService < BaseService
     value = first_of_value(@json[key])
 
     return if value.nil?
-    return value['url'] if value.is_a?(Hash)
 
-    image = fetch_resource_without_id_validation(value)
-    image['url'] if image
+    if value.is_a?(String)
+      value = fetch_resource_without_id_validation(value)
+      return if value.nil?
+    end
+
+    value = first_of_value(value['url']) if value.is_a?(Hash) && value['type'] == 'Image'
+    value = value['href'] if value.is_a?(Hash)
+    value if value.is_a?(String)
   end
 
   def public_key
@@ -392,12 +417,12 @@ class ActivityPub::ProcessAccountService < BaseService
 
   def moved_account
     account   = ActivityPub::TagManager.instance.uri_to_resource(@json['movedTo'], Account)
-    account ||= ActivityPub::FetchRemoteAccountService.new.call(@json['movedTo'], id: true, break_on_redirect: true, request_id: @options[:request_id])
+    account ||= ActivityPub::FetchRemoteAccountService.new.call(@json['movedTo'], break_on_redirect: true, request_id: @options[:request_id])
     account
   end
 
   def skip_download?
-    @account.suspended? || domain_block&.reject_media?
+    (@account.suspended? && !@account.remote_pending) || domain_block&.reject_media?
   end
 
   def auto_suspend?

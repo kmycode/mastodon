@@ -2,6 +2,7 @@
 
 class ActivityPub::Activity::Create < ActivityPub::Activity
   include FormattingHelper
+  include NgRuleHelper
 
   def perform
     @account.schedule_refresh_if_stale!
@@ -49,6 +50,11 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def create_status
     return reject_payload! if unsupported_object_type? || non_matching_uri_hosts?(@account.uri, object_uri) || tombstone_exists? || !related_to_local_activity?
 
+    if @account.suspended?
+      process_pending_status if @account.remote_pending?
+      return
+    end
+
     with_redis_lock("create:#{object_uri}") do
       return if delete_arrived_first?(object_uri) || poll_vote?
 
@@ -77,14 +83,15 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     @mentions             = []
     @silenced_account_ids = []
     @params               = {}
+    @raw_mention_uris     = []
 
     process_status_params
+    process_sensitive_words
     process_tags
     process_audience
 
     return nil unless valid_status?
-    return nil if (reply_to_local? || reply_to_local_account? || reply_to_local_from_tags?) && reject_reply_to_local?
-    return nil if mention_to_local_but_not_followed? && reject_reply_exclude_followers?
+    return nil if (mention_to_local_stranger? || reference_to_local_stranger?) && reject_reply_exclude_followers?
 
     ApplicationRecord.transaction do
       @status = Status.create!(@params)
@@ -142,12 +149,45 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     }
   end
 
-  def valid_status?
-    valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") && !Admin::NgWord.hashtag_reject?(@tags.size)
+  def process_sensitive_words
+    return unless %i(public public_unlisted login).include?(@params[:visibility].to_sym) && Admin::SensitiveWord.sensitive?(@params[:text], @params[:spoiler_text], local: false)
 
-    valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && mention_to_local_but_not_followed?
+    @params[:text] = Admin::SensitiveWord.modified_text(@params[:text], @params[:spoiler_text])
+    @params[:spoiler_text] = Admin::SensitiveWord.alternative_text
+    @params[:sensitive] = true
+  end
+
+  def valid_status?
+    valid = true
+    valid = false if valid && !valid_status_for_ng_rule?
+    valid = !Admin::NgWord.reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?) if valid
+    valid = !Admin::NgWord.hashtag_reject?(@tags.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid
+    valid = !Admin::NgWord.mention_reject?(@raw_mention_uris.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid
+    valid = !Admin::NgWord.stranger_mention_reject_with_count?(@raw_mention_uris.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?, text: "#{@params[:spoiler_text]}\n#{@params[:text]}") if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
+    valid = !Admin::NgWord.stranger_mention_reject?("#{@params[:spoiler_text]}\n#{@params[:text]}", uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?) if valid && (mention_to_local_stranger? || reference_to_local_stranger?)
+    valid = false if valid && Setting.block_unfollow_account_mention && (mention_to_local_stranger? || reference_to_local_stranger?) && !local_following_sender?
 
     valid
+  end
+
+  def valid_status_for_ng_rule?
+    check_invalid_status_for_ng_rule! @account,
+                                      reaction_type: 'create',
+                                      uri: @params[:uri],
+                                      url: @params[:url],
+                                      spoiler_text: @params[:spoiler_text],
+                                      text: @params[:text],
+                                      tag_names: @tags.map(&:name),
+                                      visibility: @params[:visibility].to_s,
+                                      searchability: @params[:searchability]&.to_s,
+                                      sensitive: @params[:sensitive],
+                                      media_count: @params[:media_attachment_ids]&.size,
+                                      poll_count: @params[:poll]&.options&.size || 0,
+                                      quote: quote,
+                                      reply: in_reply_to_uri.present?,
+                                      mention_count: mentioned_accounts.count,
+                                      reference_count: reference_uris.size,
+                                      mention_to_following: !(mention_to_local_stranger? || reference_to_local_stranger?)
   end
 
   def accounts_in_audience
@@ -251,6 +291,8 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def process_mention(tag)
     return if tag['href'].blank?
 
+    @raw_mention_uris << tag['href']
+
     account = account_from_uri(tag['href'])
     account = ActivityPub::FetchRemoteAccountService.new.call(tag['href'], request_id: @options[:request_id]) if account.nil?
 
@@ -347,6 +389,8 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def poll_vote?
     return false if replied_to_status.nil? || replied_to_status.preloadable_poll.nil? || !replied_to_status.local? || !replied_to_status.preloadable_poll.options.include?(@object['name'])
 
+    return true unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'vote', recipient: replied_to_status.account, target_status: replied_to_status
+
     poll_vote! unless replied_to_status.preloadable_poll.expired?
 
     true
@@ -357,12 +401,26 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     already_voted = true
 
     with_redis_lock("vote:#{replied_to_status.poll_id}:#{@account.id}") do
-      already_voted = poll.votes.where(account: @account).exists?
+      already_voted = poll.votes.exists?(account: @account)
       poll.votes.create!(account: @account, choice: poll.options.index(@object['name']), uri: object_uri)
     end
 
     increment_voters_count! unless already_voted
     ActivityPub::DistributePollUpdateWorker.perform_in(3.minutes, replied_to_status.id) unless replied_to_status.preloadable_poll.hide_totals?
+  end
+
+  def process_pending_status
+    with_redis_lock("pending_status:#{@object['id']}") do
+      return if PendingStatus.exists?(uri: @object['id'])
+
+      fetch_account = as_array(@object['tag'])
+                      .filter_map { |tag| equals_or_includes?(tag['type'], 'Mention') && tag['href'] && ActivityPub::TagManager.instance.local_uri?(tag['href']) && ActivityPub::TagManager.instance.uri_to_resource(tag['href'], Account) }
+                      .first
+      fetch_account ||= (audience_to + audience_cc).filter_map { |uri| ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Account) }.first
+      fetch_account ||= Account.representative
+
+      PendingStatus.create!(account: @account, uri: @object['id'], fetch_account: fetch_account)
+    end
   end
 
   def resolve_thread(status)
@@ -447,43 +505,39 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     @skip_download ||= DomainBlock.reject_media?(@account.domain)
   end
 
-  def reply_to_local_account?
-    accounts_in_audience.any?(&:local?)
-  end
-
-  def reply_to_local_account_following?
-    !reply_to_local_account? || accounts_in_audience.none? { |account| account.local? && !account.following?(@account) }
-  end
-
-  def reply_to_local_from_tags?
-    @mentions.present? && @mentions.any? { |m| m.account.local? }
-  end
-
-  def reply_to_local_from_tags_following?
-    @mentions.nil? || @mentions.none? { |m| m.account.local? && !m.account.following?(@account) }
-  end
-
   def reply_to_local?
     !replied_to_status.nil? && replied_to_status.account.local?
   end
 
-  def reply_to_local_status_following?
-    !reply_to_local? || replied_to_status.account.following?(@account)
+  def mention_to_local_stranger?
+    mentioned_accounts.any? { |account| account.local? && !account.following?(@account) }
   end
 
-  def mention_to_local_but_not_followed?
-    !reply_to_local_account_following? || !reply_to_local_status_following? || !reply_to_local_from_tags_following?
+  def mentioned_accounts
+    return @mentioned_accounts if defined?(@mentioned_accounts)
+
+    @mentioned_accounts = (accounts_in_audience + [replied_to_status&.account] + (@mentions&.map(&:account) || [])).compact.uniq
   end
 
-  def reject_reply_to_local?
-    @reject_reply_to_local ||= DomainBlock.reject_reply?(@account.domain)
+  def reference_to_local_account?
+    local_referred_accounts.any?
+  end
+
+  def reference_to_local_stranger?
+    local_referred_accounts.any? { |account| !account.following?(@account) }
   end
 
   def reject_reply_exclude_followers?
     @reject_reply_exclude_followers ||= DomainBlock.reject_reply_exclude_followers?(@account.domain)
   end
 
+  def local_following_sender?
+    ::Follow.exists?(account: Account.local, target_account: @account)
+  end
+
   def ignore_hashtags?
+    return @ignore_hashtags if defined?(@ignore_hashtags)
+
     @ignore_hashtags ||= DomainBlock.reject_hashtag?(@account.domain)
   end
 
@@ -503,7 +557,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
     return false if local_usernames.empty?
 
-    Account.local.where(username: local_usernames).exists?
+    Account.local.exists?(username: local_usernames)
   end
 
   def tombstone_exists?
@@ -538,10 +592,25 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     retry
   end
 
-  def process_references!
-    references = @object['references'].nil? ? [] : ActivityPub::FetchReferencesService.new.call(@status, @object['references'])
+  def reference_uris
+    return @reference_uris if defined?(@reference_uris)
 
-    ProcessReferencesService.call_service_without_error(@status, [], references, [quote].compact)
+    @reference_uris = @object['references'].nil? ? [] : (ActivityPub::FetchReferencesService.new.call(@account, @object['references']) || []).uniq
+    @reference_uris += ProcessReferencesService.extract_uris(@object['content'] || '', remote: true)
+  end
+
+  def local_referred_accounts
+    return @local_referred_accounts if defined?(@local_referred_accounts)
+
+    local_referred_statuses = reference_uris.filter_map do |uri|
+      ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Status)
+    end.compact
+
+    @local_referred_accounts = local_referred_statuses.map(&:account)
+  end
+
+  def process_references!
+    ProcessReferencesService.call_service_without_error(@status, [], reference_uris, [quote].compact)
   end
 
   def quote_local?

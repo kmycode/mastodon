@@ -41,7 +41,6 @@ ja:
         text: 一度だけ異議を申し立てることができます
       defaults:
         autofollow: 招待から登録した人が自動的にあなたをフォローするようになります
-        avatar: '%{size}までのPNG、GIF、JPGが利用可能です。%{dimensions}pxまで縮小されます'
         bot: このアカウントは主に自動で動作し、人が見ていない可能性があります
         context: フィルターを適用する対象 (複数選択可)
         current_password: 現在のアカウントのパスワードを入力してください
@@ -50,9 +49,6 @@ ja:
         discoverable: レコメンド、トレンド、その他の機能により、あなたのアカウントを他の人から見つけられるようにします。なおkmyblueのローカルユーザーはこの設定をオンにしても全文検索結果には掲載されません。全文検索結果への掲載には、投稿の検索許可設定を変更する必要があります
         discoverable_local: 上記設定を当サーバー内でのみ適用するようにします。他のサーバーの全文検索結果への掲載を回避できますが、レコメンド、トレンドなどその他の機能への掲載も回避されます
         email: 確認のメールが送信されます
-        group: このアカウントに送られたメンションは自動でBTされ、フォローしている全てのアカウントに配信されます
-        group_allow_private_message: 投稿は複製されるため、投稿者が編集・削除することはできません
-        header: '%{size}までのPNG、GIF、JPGが利用可能です。 %{dimensions}pxまで縮小されます'
         inbox_url: 使用したいリレーサーバーのトップページからURLをコピーします
         irreversible: フィルターが後で削除されても、除外された投稿は元に戻せなくなります
         locale: ユーザーインターフェース、メールやプッシュ通知の言語
@@ -60,7 +56,6 @@ ja:
         person: これは人が使用している通常のアカウントです
         phrase: 投稿内容の大文字小文字や閲覧注意に関係なく一致
         scopes: アプリの API に許可するアクセス権を選択してください。最上位のスコープを選択する場合、個々のスコープを選択する必要はありません。
-        setting_send_without_domain_blocks: 管理人が同人コンテンツの配送にふさわしくないと判断したサーバーに、制限に関係なく全ての投稿を配送します。ただし何が起きても自己責任になります
         setting_aggregate_reblogs: 最近ブーストされた投稿が新たにブーストされても表示しません (設定後受信したものにのみ影響)
         setting_always_send_emails: 通常、Mastodon からメール通知は行われません。
         setting_bookmark_category_needed: すべてのカテゴリから削除したとき、ブックマークが自動で外れるようになります
@@ -75,11 +70,12 @@ ja:
         setting_dtl_force_subscribable: 購読拒否設定に関係なく、ディープタイムラインに向けた投稿はアンテナに掲載されます。ディープタイムラインをアンテナ経由で閲覧している人にあなたの発言が届きます
         setting_dtl_force_searchability: "ハッシュタグ #%{tag} をつけて投稿するとき、検索許可を強制的に置き換えるかを設定します"
         setting_dtl_force_visibility: "ハッシュタグ #%{tag} をつけて投稿するとき、公開範囲を強制的に置き換えるかを設定します"
-        setting_emoji_reaction_policy: この設定をしても他のサーバーのユーザーはその投稿に自由にスタンプをつけ、同じサーバーの中で共有できます。単にあなた自身の画面からスタンプを除去したいだけなら、外観設定からスタンプを無効にすることができます
-        setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、スタンプ機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
-        setting_enable_emoji_reaction: この機能を無効にしても、他の人はあなたの投稿にスタンプをつけられます
+        setting_emoji_reaction_policy: この設定をしても他のサーバーのユーザーはその投稿に自由に絵文字をつけ、同じサーバーの中で共有できます。単にあなた自身の画面から絵文字リアクションを除去したいだけなら、外観設定から絵文字リアクションを無効にすることができます
+        setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、絵文字リアクション機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
+        setting_enable_emoji_reaction: この機能を無効にしても、他の人はあなたの投稿に絵文字をつけられます
         setting_hide_network: フォローとフォロワーの情報がプロフィールページで見られないようにします
         setting_public_post_to_unlisted: 未対応のサードパーティアプリからもローカル公開で投稿できますが、公開投稿はWeb以外できなくなります
+        setting_reject_send_limited_to_suspects: これは「相互のみ」投稿に適用されます。サークル投稿は例外なく配送されます。一部のMisskeyサーバーが独自に限定投稿へ対応しましたが、相互のみ投稿を行うとあなたと相互になっているユーザーの一部がMisskeyのユーザーに公開されるため、気になる人向けの設定です
         setting_reject_unlisted_subscription: Misskeyやそのフォークは、フォローしていないアカウントの「非収載」投稿を **購読・検索** することができます。これはkmyblueの挙動と異なります。そのようなサーバーに、指定した公開範囲の投稿を「フォロワーのみ」として配送します。ただし構造上、完璧な対応は困難でたまに非収載として配信されること、ご理解ください
         setting_reverse_search_quote: 検索ワードをダブルクオートで囲って検索した場合、表記ゆれ多めの検索結果になります。Mastodon標準とは逆の挙動となります。
         setting_show_application: 投稿するのに使用したアプリが投稿の詳細ビューに表示されるようになります
@@ -112,11 +108,16 @@ ja:
         custom_css: ウェブ版のMastodonでカスタムスタイルを適用できます。
         enable_local_timeline: 有効にすると気の合ったユーザー同士の交流が捗る反面、内輪の雰囲気が強くなるかもしれません。Mastodonはローカルタイムラインがあるものだと思われているので、無効にする場合はサーバー紹介での注記をおすすめします。
         enable_public_unlisted_visibility: 有効にするとあなたのコミュニティは閉鎖的になるかもしれません。この設定はkmyblueの主要機能の1つであり、無効にする場合は概要などに記載することを強くおすすめします。
+        enable_public_visibility: 無効にすると公開投稿は強制的に「ローカル公開」または「非収載」に置き換えられます。
         mascot: 上級者向けWebインターフェースのイラストを上書きします。
         media_cache_retention_period: 正の値に設定されている場合、ダウンロードされたメディアファイルは指定された日数の後に削除され、リクエストに応じて再ダウンロードされます。
         peers_api_enabled: このサーバーが Fediverse で遭遇したドメイン名のリストです。このサーバーが知っているだけで、特定のサーバーと連合しているかのデータは含まれません。これは一般的に Fediverse に関する統計情報を収集するサービスによって使用されます。
         profile_directory: ディレクトリには、掲載する設定をしたすべてのユーザーが一覧表示されます。
         receive_other_servers_emoji_reaction: 負荷の原因になります。人が少ない場合にのみ有効にすることをおすすめします。
+        registrations_limit: 現在のユーザー数がこれを超過すると、管理者がこの数値を増やさない限り新規登録できません。0を指定すると、この制限を無効化します。
+        registrations_limit_per_day: 本日登録されたユーザー数がこれを超過すると、UTC時刻で翌日0時にならない限り新規登録できません。0を指定すると、この制限を無効化します。
+        registrations_end_hour: 新規登録可能な時間帯の開始時間を指定します。これより前の時間に登録することはできません。終了時間より後にすることはできません。
+        registrations_start_hour: 新規登録可能な時間帯の終了時間を指定します。これより後の時間に登録することはできません。開始時間より前にすることはできません。
         require_invite_text: アカウント登録が承認制の場合、登録の際の申請事由の入力を必須にします
         site_contact_email: 法律またはサポートに関する問い合わせ先
         site_contact_username: マストドンでの連絡方法
@@ -226,7 +227,6 @@ ja:
         expires_in: 有効期限
         fields: プロフィール補足情報
         group: これはグループアカウントです
-        group_allow_private_message: グループアカウントの場合、フォロワーのみ・ダイレクトのメンションを複製する
         header: ヘッダー
         honeypot: "%{label} (入力しない)"
         inbox_url: リレーサーバーの inbox URL
@@ -267,7 +267,7 @@ ja:
         setting_dtl_force_visibility: DTL投稿の公開範囲
         setting_dtl_menu: Webクライアントのメニューにディープタイムラインを追加する
         setting_enable_login_privacy: 公開範囲「ログインユーザーのみ」をWeb UIで選択可能にする
-        setting_emoji_reaction_policy: スタンプ受け入れと表示設定
+        setting_emoji_reaction_policy: 絵文字リアクション受け入れと表示設定
         setting_emoji_reaction_policy_items:
           allow: 全員に許可
           block: 全員禁止
@@ -275,12 +275,12 @@ ja:
           following_only: フォロー中の相手のみ許可
           mutuals_only: 相互のみ許可
           outside_only: フォロー中、またはフォロワーのみに許可
-        setting_emoji_reaction_streaming_notify_impl2: Nyastodon, Catstodon, glitch-soc互換のスタンプ機能を有効にする
-        setting_enable_emoji_reaction: スタンプ機能を使用する
+        setting_emoji_reaction_streaming_notify_impl2: Nyastodon, Catstodon, glitch-soc互換の絵文字リアクション機能を有効にする
+        setting_enable_emoji_reaction: 絵文字リアクション機能を使用する
         setting_expand_spoilers: 閲覧注意としてマークされた投稿を常に展開する
         setting_hide_blocking_quote: ブロックしたユーザーの投稿を引用した投稿を隠す
-        setting_hide_emoji_reaction_count: 各スタンプの数を隠す
-        setting_hide_emoji_reaction_unavailable_server: スタンプに対応していないと思われるサーバーの投稿からスタンプボタンを隠す
+        setting_hide_emoji_reaction_count: 投稿につけられた各絵文字の数を隠す
+        setting_hide_emoji_reaction_unavailable_server: 絵文字リアクションに対応していないと思われるサーバーの投稿から絵文字リアクション機能を隠す
         setting_hide_favourite_menu: 右サイドメニューから「お気に入り」を隠す
         setting_hide_followers_count: フォロワー数を隠す
         setting_hide_following_count: フォロー数を隠す
@@ -294,16 +294,16 @@ ja:
         setting_public_post_to_unlisted: サードパーティから公開範囲「公開」で投稿した場合、「ローカル公開」に変更する
         setting_reduce_motion: アニメーションの動きを減らす
         setting_reject_public_unlisted_subscription: Misskey系サーバーに「ローカル公開」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
+        setting_reject_send_limited_to_suspects: Misskey系サーバーに「相互のみ」投稿を配送しない
         setting_reject_unlisted_subscription: Misskey系サーバーに「非収載」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
         setting_reverse_search_quote: ダブルクオートで囲まず検索した時、単語単位で検索する
-        setting_send_without_domain_blocks: 管理人の設定した配送停止設定を拒否する (非推奨)
         setting_show_application: 送信したアプリを開示する
-        setting_show_emoji_reaction_on_timeline: タイムライン上に他の人のつけたスタンプを表示する
+        setting_show_emoji_reaction_on_timeline: タイムライン上の投稿に他の人のつけた絵文字を表示する
         setting_simple_timeline_menu: タイムライン上でメニューの項目を減らす
         setting_single_ref_to_quote: 参照が１つしかない投稿は、他のサーバーには引用として配信する
-        setting_slip_local_emoji_reaction: ローカルユーザーに限って上記設定を無視してスタンプを許可する
+        setting_slip_local_emoji_reaction: ローカルユーザーに限って上記設定を無視して絵文字リアクションを許可する
         setting_stay_privacy: 投稿時に公開範囲を保存する
-        setting_stop_emoji_reaction_streaming: スタンプのストリーミングを停止する
+        setting_stop_emoji_reaction_streaming: 絵文字リアクションのストリーミングを停止する
         setting_system_font_ui: システムのデフォルトフォントを使う
         setting_theme: サイトテーマ
         setting_translatable_private: 非公開投稿の翻訳を許可する
@@ -332,9 +332,9 @@ ja:
       email_domain_block:
         with_dns_records: ドメインのMXレコードとIPアドレスを含む
       emoji_reactions:
-        deny_from_all: 自分以外すべてのスタンプをブロック
-        must_be_follower: フォロワー以外からのスタンプをブロック
-        must_be_following: フォローしていないユーザーからのスタンプをブロック
+        deny_from_all: 自分以外すべての絵文字リアクションをブロック
+        must_be_follower: フォロワー以外からの絵文字リアクションをブロック
+        must_be_following: フォローしていないユーザーからの絵文字リアクションをブロック
       featured_tag:
         name: ハッシュタグ
       filters:
@@ -354,16 +354,24 @@ ja:
         closed_registrations_message: アカウント作成を停止している時のカスタムメッセージ
         content_cache_retention_period: コンテンツキャッシュの保持期間
         custom_css: カスタムCSS
-        enable_emoji_reaction: スタンプ機能を有効にする
+        delete_content_cache_without_reaction: お気に入り・ブックマークされた投稿を削除対象から除外する
+        enable_emoji_reaction: 絵文字リアクション機能を有効にする
         enable_local_timeline: ローカルタイムラインを有効にする
         enable_public_unlisted_visibility: 公開範囲「ローカル公開」と検索許可「ローカルとフォロワー」を有効にする
+        enable_public_visibility: 公開範囲「公開」を有効にする
         mascot: カスタムマスコット（レガシー）
         media_cache_retention_period: メディアキャッシュの保持期間
         peers_api_enabled: 発見したサーバーのリストをAPIで公開する
         profile_directory: プロフィール一覧を有効にする
-        receive_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけたスタンプを受け入れる
+        receive_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけた絵文字リアクションを受け入れる
         registration_button_message: 新規登録ボタンの直上に表示するメッセージ
+        registrations_limit: 登録ユーザー数上限 (現在 %{count} 名)
+        registrations_limit_per_day: 1日あたり登録ユーザー数上限 (現在 %{count} 名)
         registrations_mode: 新規登録が可能な人
+        registrations_end_hour: 登録受付終了時間 A (UTC 0〜24)
+        registrations_start_hour: 登録受付開始時間 A (UTC 0〜24)
+        registrations_secondary_end_hour: 登録受付終了時間 B (UTC 0〜24) ここで0を指定した場合、時間Bの設定は無効化されます
+        registrations_secondary_start_hour: 登録受付開始時間 B (UTC 0〜24)
         require_invite_text: 申請事由の入力を必須にする
         show_domain_blocks: ドメインブロックを表示
         show_domain_blocks_rationale: ドメインがブロックされた理由を表示
@@ -374,8 +382,8 @@ ja:
         site_terms: プライバシーポリシー
         site_title: サーバーの名前
         status_page_url: サーバーの状態ページのURL
-        streaming_local_emoji_reaction: ローカルユーザーがつけた、またはローカル投稿についたスタンプをストリーミングする
-        streaming_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけたスタンプをストリーミングする
+        streaming_local_emoji_reaction: ローカルユーザーがつけた、またはローカル投稿についた絵文字リアクションをストリーミングする
+        streaming_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけた絵文字リアクションをストリーミングする
         theme: デフォルトテーマ
         thumbnail: サーバーのサムネイル
         timeline_preview: 公開タイムラインへの未認証のアクセスを許可する
@@ -413,7 +421,7 @@ ja:
         software_updates:
           all: すべてのアップデートを通知する
           critical: 緊急のアップデートのみ通知する
-          label: 新しいMastodonバージョンが利用可能です
+          label: 新しいMastodonバージョンが利用可能になった時
           none: 通知しない (非推奨)
           patch: 緊急のアップデートとバグ修正アップデートを通知する
         trending_tag: 新しいトレンドのレビューをする必要がある時

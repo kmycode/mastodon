@@ -71,10 +71,6 @@ module User::HasSettings
     settings['reject_unlisted_subscription']
   end
 
-  def setting_send_without_domain_blocks
-    settings['send_without_domain_blocks']
-  end
-
   def setting_stop_emoji_reaction_streaming
     settings['stop_emoji_reaction_streaming']
   end
@@ -125,6 +121,10 @@ module User::HasSettings
 
   def setting_allow_quote
     settings['allow_quote']
+  end
+
+  def setting_reject_send_limited_to_suspects
+    settings['reject_send_limited_to_suspects']
   end
 
   def setting_noindex

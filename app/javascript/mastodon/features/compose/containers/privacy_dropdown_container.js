@@ -17,11 +17,11 @@ const mapDispatchToProps = dispatch => ({
   },
 
   isUserTouching,
-  onModalOpen: props => dispatch(openModal({
+  onModalOpen: props => dispatch(openModal({  // kmyblue: Do not remove
     modalType: 'ACTIONS',
     modalProps: props,
   })),
-  onModalClose: () => dispatch(closeModal({
+  onModalClose: () => dispatch(closeModal({  // kmyblue: Do not remove
     modalType: undefined,
     ignoreFocus: false,
   })),

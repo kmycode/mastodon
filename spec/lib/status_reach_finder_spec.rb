@@ -379,15 +379,15 @@ describe StatusReachFinder do
       let(:visibility) { :public }
       let(:searchability) { :public }
       let(:dissubscribable) { false }
-      let(:spoiler_text) { '' }
-      let(:status) { Fabricate(:status, account: alice, visibility: visibility, searchability: searchability, spoiler_text: spoiler_text) }
+      let(:sensitive) { false }
+      let(:status) { Fabricate(:status, account: alice, visibility: visibility, searchability: searchability, sensitive: sensitive) }
       let(:alice) { Fabricate(:account, username: 'alice', master_settings: { subscription_policy: dissubscribable ? 'block' : 'allow' }) }
       let(:bob) { Fabricate(:account, username: 'bob', domain: 'example.com', protocol: :activitypub, uri: 'https://example.com/', inbox_url: 'https://example.com/inbox') }
       let(:tom) { Fabricate(:account, username: 'tom', domain: 'tom.com', protocol: :activitypub, uri: 'https://tom.com/', inbox_url: 'https://tom.com/inbox') }
 
       context 'when reject_send_sensitive' do
         let(:properties) { { reject_send_sensitive: true } }
-        let(:spoiler_text) { 'CW' }
+        let(:sensitive) { true }
 
         it 'does not include the inbox of blocked domain' do
           expect(subject.inboxes).to_not include 'https://example.com/inbox'

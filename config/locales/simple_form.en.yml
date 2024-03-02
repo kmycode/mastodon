@@ -39,7 +39,7 @@ en:
         text: You can only appeal a strike once
       defaults:
         autofollow: People who sign up through the invite will automatically follow you
-        avatar: PNG, GIF or JPG. At most %{size}. Will be downscaled to %{dimensions}px
+        avatar: WEBP, PNG, GIF or JPG. At most %{size}. Will be downscaled to %{dimensions}px
         bot: Signal to others that the account mainly performs automated actions and might not be monitored
         context: One or multiple contexts where the filter should apply
         current_password: For security purposes please enter the password of the current account
@@ -48,9 +48,7 @@ en:
         discoverable: Allow your account to be discovered by strangers through recommendations, trends and other features
         discoverable_local: Disable the setting on federated servers. The setting is available this server only for avoiding full-text search on other servers
         email: You will be sent a confirmation e-mail
-        group: Reps sent to this account will be automatically BT'd and distributed to all accounts you follow!
-        group_allow_private_message: Posts are duplicated and cannot be edited or deleted by the post
-        header: PNG, GIF or JPG. At most %{size}. Will be downscaled to %{dimensions}px
+        header: WEBP, PNG, GIF or JPG. At most %{size}. Will be downscaled to %{dimensions}px
         inbox_url: Copy the URL from the frontpage of the relay you want to use
         irreversible: Filtered posts will disappear irreversibly, even if filter is later removed
         locale: The language of the user interface, e-mails and push notifications
@@ -70,7 +68,7 @@ en:
         setting_dtl_force_searchability: "With using #%{tag} tag, your post settings will be changed forcibly"
         setting_dtl_force_visibility: "With using #%{tag} tag, your post settings will be changed forcibly"
         setting_dtl_menu: Show DTL menu on web
-        setting_emoji_reaction_policy: Even with this setting, users on other servers are free to put their stamp on the post and share it within the same server. If you simply want to remove the stamp from your own screen, you can disable it from the appearance settings
+        setting_emoji_reaction_policy: Even with this setting, users on other servers are free to put their emoji reaction on the post and share it within the same server. If you simply want to remove the emoji reaction from your own screen, you can disable it from the appearance settings
         setting_enable_emoji_reaction: If turn off, other users still can react your posts
         setting_reverse_search_quote: Double-quotes will result in a search with a wider range of notation, which is the opposite of Mastodon's default behavior.
         setting_single_ref_to_quote: If this server does not have target post, target server maybe cannot read your quote
@@ -101,6 +99,7 @@ en:
         custom_css: You can apply custom styles on the web version of Mastodon.
         enable_local_timeline: While enabling this feature will allow for interaction between like-minded users, it may also strengthen the internal atmosphere; since Mastodon is supposed to have a local timeline, we recommend annotating it in the server introduction if it is to be disabled.
         enable_public_unlisted_visibility: If true, your community maybe closed-minded. If turn it false, strongly recommend that you disclose that you have disabled this setting!
+        enable_public_visibility: If disabled, public submissions will be forcibly replaced with "Public unlisted" or "Unlisted" submissions.
         mascot: Overrides the illustration in the advanced web interface.
         media_cache_retention_period: Downloaded media files will be deleted after the specified number of days when set to a positive value, and re-downloaded on demand.
         peers_api_enabled: A list of domain names this server has encountered in the fediverse. No data is included here about whether you federate with a given server, just that your server knows about it. This is used by services that collect statistics on federation in a general sense.
@@ -219,7 +218,6 @@ en:
         expires_in: Expire after
         fields: Extra fields
         group: This is a group account
-        group_allow_private_message: For group accounts, duplicate private or direct message
         header: Header picture
         honeypot: "%{label} (do not fill in)"
         inbox_url: URL of the relay inbox
@@ -258,10 +256,10 @@ en:
         setting_dtl_force_subscribable: Ignore your subscribability setting when using the DTL tag
         setting_dtl_force_searchability: Post searchability
         setting_dtl_force_visibility: Post visibility
-        setting_emoji_reaction_streaming_notify_impl2: Enable stamp notification compat with Nyastodon, Catstodon, glitch-soc
-        setting_enable_emoji_reaction: Use stamp function
+        setting_emoji_reaction_streaming_notify_impl2: Enable emoji reaction notification compat with Nyastodon, Catstodon, glitch-soc
+        setting_enable_emoji_reaction: Use emoji reaction function
         setting_enable_login_privacy: Enable login visibility
-        setting_emoji_reaction_policy: Stamp receive/display policy
+        setting_emoji_reaction_policy: Emoji reaction receive/display policy
         setting_emoji_reaction_policy_items:
           allow: Allow all
           block: Block
@@ -271,8 +269,8 @@ en:
           outside_only: Followings or followers only
         setting_expand_spoilers: Always expand posts marked with content warnings
         setting_hide_blocking_quote: Hide posts which have a quote written by the user you are blocking
-        setting_hide_emoji_reaction_count: Hide stamp count
-        setting_hide_emoji_reaction_unavailable_server: Hide stamp button from unavailable server
+        setting_hide_emoji_reaction_count: Hide emoji reaction count
+        setting_hide_emoji_reaction_unavailable_server: Hide emoji reaction button from unavailable server
         setting_hide_favourite_menu: Hide favourite menu
         setting_hide_followers_count: Hide followers count
         setting_hide_following_count: Hide following count
@@ -283,18 +281,18 @@ en:
         setting_public_post_to_unlisted: Convert public post to public unlisted if not using Web app
         setting_reduce_motion: Reduce motion in animations
         setting_reject_public_unlisted_subscription: Reject sending public unlisted visibility/non-public searchability posts to Misskey, Calckey
+        setting_reject_send_limited_to_suspects: Reject sending mutual posts to Misskey
         setting_reject_unlisted_subscription: Reject sending unlisted visibility/non-public searchability posts to Misskey, Calckey
         setting_reverse_search_quote: Perform word-by-word search when search keywords are not enclosed in double quotes
-        setting_send_without_domain_blocks: Send your post to all server with administrator set as rejecting-post-server for protect you [DEPRECATED]
         setting_show_application: Disclose application used to send posts
-        setting_show_emoji_reaction_on_timeline: Show all stamps on timeline
+        setting_show_emoji_reaction_on_timeline: Show all emoji reactions on timeline
         setting_show_quote_in_home: Show quotes in home, list or antenna timelines
         setting_show_quote_in_public: Show quotes in public timelines
         setting_simple_timeline_menu: Reduce post menu on timeline
         setting_single_ref_to_quote: Deliver single reference to other server as quote
         setting_slip_local_emoji_reaction: Allow bypassing emoji reaction from local users
         setting_stay_privacy: Not change privacy after post
-        setting_stop_emoji_reaction_streaming: Disable stamp streamings
+        setting_stop_emoji_reaction_streaming: Disable emoji reaction streamings
         setting_system_font_ui: Use system's default font
         setting_theme: Site theme
         setting_translatable_private: Allow other users translation of your private posts
@@ -323,9 +321,9 @@ en:
       email_domain_block:
         with_dns_records: Include MX records and IPs of the domain
       emoji_reactions:
-        deny_from_all: Block all stamps
-        must_be_follower: Block stamps from non-followers
-        must_be_following: Block stamps from people you don't follow
+        deny_from_all: Block all emoji reactions
+        must_be_follower: Block emoji reactions from non-followers
+        must_be_following: Block emoji reactions from people you don't follow
       featured_tag:
         name: Hashtag
       filters:
@@ -345,16 +343,24 @@ en:
         closed_registrations_message: Custom message when sign-ups are not available
         content_cache_retention_period: Content cache retention period
         custom_css: Custom CSS
-        enable_emoji_reaction: Enable stamp function
+        delete_content_cache_without_reaction: Exclude favorite/bookmarked posts from deletion
+        enable_emoji_reaction: Enable emoji reaction function
         enable_local_timeline: Enable local timeline
         enable_public_unlisted_visibility: Enable public-unlisted visibility / public-unlisted searchability
+        enable_public_visibility: Enable public visibility
         mascot: Custom mascot (legacy)
         media_cache_retention_period: Media cache retention period
         peers_api_enabled: Publish list of discovered servers in the API
         profile_directory: Enable profile directory
-        receive_other_servers_emoji_reaction: Receive stamp between other server users
+        receive_other_servers_emoji_reaction: Receive emoji reaction between other server users
         registration_button_message: Register button message
+        registrations_limit: User registration limit
+        registrations_limit_per_day: User registration limit per day
         registrations_mode: Who can sign-up
+        registrations_end_hour: Registration end hour (UTC 0-24)
+        registrations_start_hour: Registration start hour (UTC 0-24)
+        registrations_secondary_end_hour: Secondary registration end hour (UTC 0-24) If input 0, secondary hour is disabled.
+        registrations_secondary_start_hour: Secondary registration start hour (UTC 0-24)
         require_invite_text: Require a reason to join
         show_domain_blocks: Show domain blocks
         show_domain_blocks_rationale: Show why domains were blocked
@@ -365,8 +371,8 @@ en:
         site_terms: Privacy Policy
         site_title: Server name
         status_page_url: Status page URL
-        streaming_local_emoji_reaction: Streaming stamp related to local users
-        streaming_other_servers_emoji_reaction: Streaming stamp between other server users
+        streaming_local_emoji_reaction: Streaming emoji reactions related to local users
+        streaming_other_servers_emoji_reaction: Streaming emoji reactions between other server users
         theme: Default theme
         thumbnail: Server thumbnail
         timeline_preview: Allow unauthenticated access to public timelines

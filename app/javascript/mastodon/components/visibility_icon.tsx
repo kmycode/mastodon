@@ -6,8 +6,8 @@ import PublicUnlistedIcon from '@/material-icons/400-24px/cloud.svg?react';
 import MutualIcon from '@/material-icons/400-24px/compare_arrows.svg?react';
 import LoginIcon from '@/material-icons/400-24px/key.svg?react';
 import LockIcon from '@/material-icons/400-24px/lock.svg?react';
-import LockOpenIcon from '@/material-icons/400-24px/no_encryption.svg?react';
 import PublicIcon from '@/material-icons/400-24px/public.svg?react';
+import QuietTimeIcon from '@/material-icons/400-24px/quiet_time.svg?react';
 import ReplyIcon from '@/material-icons/400-24px/reply.svg?react';
 import LimitedIcon from '@/material-icons/400-24px/shield.svg?react';
 import PersonalIcon from '@/material-icons/400-24px/sticky_note.svg?react';
@@ -33,23 +33,29 @@ const messages = defineMessages({
     id: 'privacy.public_unlisted.short',
     defaultMessage: 'Public unlisted',
   },
-  login_short: { id: 'privacy.login.short', defaultMessage: 'Login only' },
-  unlisted_short: { id: 'privacy.unlisted.short', defaultMessage: 'Unlisted' },
+  login_short: {
+    id: 'privacy.login.short',
+    defaultMessage: 'Login only',
+  },
+  unlisted_short: {
+    id: 'privacy.unlisted.short',
+    defaultMessage: 'Quiet public',
+  },
   private_short: {
     id: 'privacy.private.short',
-    defaultMessage: 'Followers only',
+    defaultMessage: 'Followers',
   },
   limited_short: {
     id: 'privacy.limited.short',
-    defaultMessage: 'Limited menbers only',
+    defaultMessage: 'Limited',
   },
   mutual_short: {
     id: 'privacy.mutual.short',
-    defaultMessage: 'Mutual only',
+    defaultMessage: 'Mutual',
   },
   circle_short: {
     id: 'privacy.circle.short',
-    defaultMessage: 'Circle members only',
+    defaultMessage: 'Circle',
   },
   reply_short: {
     id: 'privacy.reply.short',
@@ -61,7 +67,7 @@ const messages = defineMessages({
   },
   direct_short: {
     id: 'privacy.direct.short',
-    defaultMessage: 'Mentioned people only',
+    defaultMessage: 'Specific people',
   },
 });
 
@@ -88,7 +94,7 @@ export const VisibilityIcon: React.FC<{ visibility: Visibility }> = ({
     },
     unlisted: {
       icon: 'unlock',
-      iconComponent: LockOpenIcon,
+      iconComponent: QuietTimeIcon,
       text: intl.formatMessage(messages.unlisted_short),
     },
     private: {

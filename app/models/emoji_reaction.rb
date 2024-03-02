@@ -16,11 +16,17 @@
 
 class EmojiReaction < ApplicationRecord
   include Paginable
+  include RateLimitable
 
   EMOJI_REACTION_LIMIT = 32_767
   EMOJI_REACTION_PER_ACCOUNT_LIMIT = ENV.fetch('EMOJI_REACTION_PER_ACCOUNT_LIMIT', 3).to_i
+  EMOJI_REACTION_PER_REMOTE_ACCOUNT_LIMIT = ENV.fetch('EMOJI_REACTION_PER_REMOTE_ACCOUNT_LIMIT', 3).to_i
+
+  rate_limit by: :account, family: :emoji_reactions
 
   update_index('statuses', :status)
+
+  scope :local, -> { where(uri: nil) }
 
   belongs_to :account,       inverse_of: :emoji_reactions
   belongs_to :status,        inverse_of: :emoji_reactions

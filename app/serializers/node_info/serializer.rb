@@ -3,6 +3,7 @@
 class NodeInfo::Serializer < ActiveModel::Serializer
   include RoutingHelper
   include KmyblueCapabilitiesHelper
+  include RegistrationLimitationHelper
 
   attributes :version, :software, :protocols, :services, :usage, :open_registrations, :metadata
 
@@ -35,7 +36,7 @@ class NodeInfo::Serializer < ActiveModel::Serializer
   end
 
   def open_registrations
-    Setting.registrations_mode != 'none' && !Rails.configuration.x.single_user_mode
+    Setting.registrations_mode != 'none' && !reach_registrations_limit? && !Rails.configuration.x.single_user_mode
   end
 
   def metadata

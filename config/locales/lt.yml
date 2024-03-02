@@ -102,14 +102,27 @@ lt:
       public: Viešas
       push_subscription_expires: PuSH prenumeramivas pasibaigė
       redownload: Perkrauti profilį
+      rejected_msg: Sėkmingai patvirtinta %{username} registracijos paraiška
+      remote_suspension_irreversible: Šios paskyros duomenys negrįžtamai ištrinti.
+      remote_suspension_reversible_hint_html: Paskyra jų serveryje buvo sustabdyta, o duomenys bus visiškai pašalinti %{date}. Iki to laiko nuotolinis serveris gali atkurti šią paskyrą be jokių neigiamų pasekmių. Jei norite iš karto pašalinti visus paskyros duomenis, galite tai padaryti toliau.
       remove_avatar: Panaikinti profilio nuotrauką
       remove_header: Panaikinti antraštę
+      removed_header_msg: Sėkmingai pašalintas %{username} antraštės paveikslėlis
       resend_confirmation:
         already_confirmed: Šis vartotojas jau patvirtintas
+        send: Dar kartą išsiųsti patvirtinimo nuorodą
+        success: Patvirtinimo laiškas sėkmingai išsiųstas!
       reset: Iš naujo
       reset_password: Atkurti slaptažodį
       resubscribe: Per prenumeruoti
+      role: Vaidmuo
       search: Ieškoti
+      search_same_email_domain: Kiti tą patį el. pašto domeną turintys naudotojai
+      search_same_ip: Kiti tą patį IP turintys naudotojai
+      security: Apsauga
+      security_measures:
+        only_password: Tik slaptažodis
+        password_and_2fa: Slaptažodis ir 2FA
       sensitized: Pažymėti kaip jautrią informaciją
       shared_inbox_url: Bendroji gautųjų URL
       show:
@@ -120,13 +133,21 @@ lt:
       statuses: Statusai
       subscribe: Prenumeruoti
       suspended: Užrakintas
+      suspension_irreversible: Šios paskyros duomenys negrįžtamai ištrinti. Galite atšaukti paskyros sustabdymą, kad ja būtų galima naudotis, tačiau nebus atkurti jokie anksčiau turėti duomenys.
+      suspension_reversible_hint_html: Paskyra sustabdyta, o duomenys bus visiškai pašalinti %{date}. Iki to laiko paskyrą galima atkurti be jokių neigiamų pasekmių. Jei norite iš karto pašalinti visus paskyros duomenis, galite tai padaryti toliau.
       title: Vartotojai
+      unblock_email: El. pašto adreso atblokavimas
+      unblocked_email_msg: Sėkmingai atblokuotas %{username} el. pašto adresas
       unconfirmed_email: Nepatvirtintas el pašto adresas
       undo_silenced: Atšaukti užtildymą
       undo_suspension: Atšaukti užrakinimą
+      unsilenced_msg: Sėkmingai panaikintas %{username} paskyros apribojimas
       unsubscribe: Nebeprenumeruoti
+      unsuspended_msg: Sėkmingai panaikintas %{username} paskyros apribojimas
       username: Slapyvardis
+      view_domain: Peržiūrėti domeno santrauką
       warn: Įspėti
+      whitelisted: Leidžiama federacijai
     action_logs:
       title: Audito žurnalas
     custom_emojis:
@@ -260,6 +281,8 @@ lt:
         desc_html: Tai priklauso nuo hCaptcha išorinių skriptų, kurie gali kelti susirūpinimą dėl saugumo ir privatumo. Be to, <strong>dėl to registracijos procesas kai kuriems žmonėms (ypač neįgaliesiems) gali būti gerokai sunkiau prieinami</strong>. Dėl šių priežasčių apsvarstyk alternatyvias priemones, pavyzdžiui, patvirtinimu arba kvietimu grindžiamą registraciją.
       domain_blocks:
         all: Visiems
+      registrations:
+        moderation_recommandation: Prieš atidarant registraciją visiems, įsitikink, kad turi tinkamą ir reaguojančią prižiūrėjimo komandą!
     software_updates:
       description: Rekomenduojama nuolat atnaujinti Mastodon diegyklę, kad galėtum naudotis naujausiais pataisymais ir funkcijomis. Be to, kartais labai svarbu laiku naujinti Mastodon, kad būtų išvengta saugumo problemų. Dėl šių priežasčių Mastodon kas 30 minučių tikrina, ar yra atnaujinimų, ir praneša tau apie tai pagal tavo el. pašto pranešimų parinktis.
     statuses:
@@ -283,6 +306,9 @@ lt:
       edit_preset: Keisti įspėjimo nustatymus
       title: Valdyti įspėjimo nustatymus
   admin_mailer:
+    auto_close_registrations:
+      body: Dėl pastarojo meto peržiūrėtojų aktyvumo trūkumo %{instance} registracija buvo automatiškai pakeista į reikalaujančią rankinės būdo peržiūros, kad %{instance} nebūtų naudojama kaip platforma potencialiems blogiems veikėjams. Bet kuriuo metu gali ją vėl perjungti į atvirą registraciją.
+      subject: "%{instance} registracijos automatiškai pakeistos į reikalaujančias patvirtinimo"
     new_report:
       body: "%{reporter} parašė skundą apie %{target}"
       body_remote: Kažkas iš %{domain} parašė skundą apie %{target}
@@ -478,6 +504,9 @@ lt:
     other: Kita
   privacy:
     hint_html: "<strong>Tikrink, kaip nori, kad tavo profilis ir įrašai būtų randami.</strong> Įjungus įvairias Mastodon funkcijas, jos gali padėti pasiekti platesnę auditoriją. Akimirką peržiūrėk šiuos nustatymus, kad įsitikintum, jog jie atitinka tavo naudojimo būdą."
+  redirects:
+    prompt: Jei pasitiki šia nuoroda, spustelėk ją, kad tęstum.
+    title: Palieki %{instance}
   remote_follow:
     missing_resource: Jūsų paskyros nukreipimo URL nerasta
   scheduled_statuses:
@@ -559,6 +588,12 @@ lt:
       extra: Jį jau galima atsisiųsti!
       subject: Jūsų archyvas paruoštas parsisiuntimui
       title: Archyvas išimtas
+    failed_2fa:
+      details: 'Štai išsami informacija apie bandymą prisijungti:'
+      explanation: Kažkas bandė prisijungti prie tavo paskyros, bet nurodė netinkamą antrąjį tapatybės nustatymo veiksnį.
+      further_actions_html: Jei tai buvo ne tu, rekomenduojame nedelsiant imtis %{action}, nes jis gali būti pažeistas.
+      subject: Antrojo veiksnio tapatybės nustatymas nesėkmingai
+      title: Nepavyko atlikti antrojo veiksnio tapatybės nustatymo
     warning:
       subject:
         disable: Jūsų paskyra %{acct} buvo užšaldyta
@@ -584,6 +619,7 @@ lt:
     go_to_sso_account_settings: Eik į savo tapatybės teikėjo paskyros nustatymus
     invalid_otp_token: Netinkamas dviejų veiksnių kodas
     otp_lost_help_html: Jei praradai prieigą prie abiejų, gali susisiek su %{email}
+    rate_limited: Per daug tapatybės nustatymo bandymų. Bandyk dar kartą vėliau.
     seamless_external_login: Esi prisijungęs (-usi) per išorinę paslaugą, todėl slaptažodžio ir el. pašto nustatymai nepasiekiami.
     signed_in_as: 'Prisijungta kaip:'
   verification:

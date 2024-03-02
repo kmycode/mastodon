@@ -45,5 +45,8 @@
     .fields-group
       = ff.input :reject_unlisted_subscription, kmyblue: true, as: :boolean, wrapper: :with_label, label: I18n.t('simple_form.labels.defaults.setting_reject_unlisted_subscription'), hint: I18n.t('simple_form.hints.defaults.setting_reject_unlisted_subscription')
 
+    .fields-group
+      = ff.input :reject_send_limited_to_suspects, kmyblue: true, as: :boolean, wrapper: :with_label, label: I18n.t('simple_form.labels.defaults.setting_reject_send_limited_to_suspects'), hint: I18n.t('simple_form.hints.defaults.setting_reject_send_limited_to_suspects')
+
   .actions
     = f.button :button, t('generic.save_changes'), type: :submit

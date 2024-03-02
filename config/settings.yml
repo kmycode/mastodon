@@ -9,7 +9,13 @@ defaults: &defaults
   site_terms: ''
   site_contact_username: ''
   site_contact_email: ''
-  registrations_mode: 'open'
+  registrations_mode: 'none'
+  registrations_limit: 0
+  registrations_limit_per_day: 0
+  registrations_start_hour: 0
+  registrations_end_hour: 24
+  registrations_secondary_start_hour: 0
+  registrations_secondary_end_hour: 0
   profile_directory: true
   closed_registrations_message: ''
   timeline_preview: true
@@ -37,12 +43,14 @@ defaults: &defaults
   show_domain_blocks_rationale: 'disabled'
   require_invite_text: false
   backups_retention_period: 7
+  delete_content_cache_without_reaction: false
   captcha_enabled: false
   receive_other_servers_emoji_reaction: false
   streaming_other_servers_emoji_reaction: false
   streaming_local_emoji_reaction: true
   enable_emoji_reaction: true
   check_lts_version_only: true
+  enable_public_visibility: true
   enable_public_unlisted_visibility: true
   unlocked_friend: false
   stranger_mention_from_local_ng: true

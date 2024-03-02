@@ -4,6 +4,7 @@
   - [default, 8]
   - [push, 6]
   - [ingress, 4]
+  - [perishable, 4]
   - [mailers, 2]
   - [pull]
   - [scheduler]
@@ -62,4 +63,8 @@
     software_update_check_scheduler:
       interval: 30 minutes
       class: Scheduler::SoftwareUpdateCheckScheduler
+      queue: scheduler
+    auto_close_registrations_scheduler:
+      interval: 1 hour
+      class: Scheduler::AutoCloseRegistrationsScheduler
       queue: scheduler

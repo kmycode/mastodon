@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_29_233617) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -98,7 +98,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "last_status_at", precision: nil
-    t.integer "group_activitypub_count"
     t.index ["account_id"], name: "index_account_stats_on_account_id", unique: true
     t.index ["last_status_at", "account_id"], name: "index_account_stats_on_last_status_at_and_account_id", order: { last_status_at: "DESC NULLS LAST" }
   end
@@ -189,14 +188,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
     t.boolean "trendable"
     t.datetime "reviewed_at", precision: nil
     t.datetime "requested_review_at", precision: nil
-    t.boolean "group_allow_private_message"
     t.integer "searchability", default: 2, null: false
     t.jsonb "settings"
     t.boolean "indexable", default: false, null: false
     t.jsonb "master_settings"
+    t.boolean "remote_pending", default: false, null: false
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), COALESCE(lower((domain)::text), ''::text)", name: "index_accounts_on_username_and_domain_lower", unique: true
     t.index ["domain", "id"], name: "index_accounts_on_domain_and_id"
+    t.index ["id"], name: "index_accounts_on_id", where: "((domain IS NOT NULL) AND remote_pending AND (suspended_at IS NOT NULL))"
     t.index ["moved_to_account_id"], name: "index_accounts_on_moved_to_account_id", where: "(moved_to_account_id IS NOT NULL)"
     t.index ["uri"], name: "index_accounts_on_uri"
     t.index ["url"], name: "index_accounts_on_url", opclass: :text_pattern_ops, where: "(url IS NOT NULL)"
@@ -565,7 +565,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
     t.text "public_comment"
     t.boolean "obfuscate", default: false, null: false
     t.boolean "reject_favourite", default: false, null: false
-    t.boolean "reject_reply", default: false, null: false
     t.boolean "reject_send_sensitive", default: false, null: false
     t.boolean "reject_hashtag", default: false, null: false
     t.boolean "reject_straight_follow", default: false, null: false
@@ -574,6 +573,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
     t.boolean "detect_invalid_subscription", default: false, null: false
     t.boolean "reject_reply_exclude_followers", default: false, null: false
     t.boolean "reject_friend", default: false, null: false
+    t.boolean "block_trends", default: false, null: false
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
   end
 
@@ -597,6 +597,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
     t.index ["account_id"], name: "index_emoji_reactions_on_account_id"
     t.index ["custom_emoji_id"], name: "index_emoji_reactions_on_custom_emoji_id"
     t.index ["status_id"], name: "index_emoji_reactions_on_status_id"
+    t.index ["uri"], name: "index_emoji_reactions_on_uri", unique: true
   end
 
   create_table "encrypted_messages", id: :bigint, default: -> { "timestamp_id('encrypted_messages'::text)" }, force: :cascade do |t|
@@ -618,9 +619,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "account_id", null: false
     t.bigint "status_id", null: false
+    t.string "uri"
     t.index ["account_id", "id"], name: "index_favourites_on_account_id_and_id"
     t.index ["account_id", "status_id"], name: "index_favourites_on_account_id_and_status_id", unique: true
     t.index ["status_id"], name: "index_favourites_on_status_id"
+    t.index ["uri"], name: "index_favourites_on_uri", unique: true
   end
 
   create_table "featured_tags", force: :cascade do |t|
@@ -691,6 +694,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
     t.boolean "delivery_local", default: true, null: false
     t.index ["domain"], name: "index_friend_domains_on_domain", unique: true
     t.index ["inbox_url"], name: "index_friend_domains_on_inbox_url", unique: true
+  end
+
+  create_table "generated_annual_reports", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.integer "year", null: false
+    t.jsonb "data", null: false
+    t.integer "schema_version", null: false
+    t.datetime "viewed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "year"], name: "index_generated_annual_reports_on_account_id_and_year", unique: true
   end
 
   create_table "identities", force: :cascade do |t|
@@ -853,6 +867,79 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
     t.index ["target_account_id"], name: "index_mutes_on_target_account_id"
   end
 
+  create_table "ng_rule_histories", force: :cascade do |t|
+    t.bigint "ng_rule_id", null: false
+    t.bigint "account_id"
+    t.string "text"
+    t.string "uri"
+    t.integer "reason", null: false
+    t.integer "reason_action", null: false
+    t.boolean "local", default: true, null: false
+    t.boolean "hidden", default: false, null: false
+    t.jsonb "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_ng_rule_histories_on_created_at"
+    t.index ["ng_rule_id", "account_id"], name: "index_ng_rule_histories_on_ng_rule_id_and_account_id"
+    t.index ["uri"], name: "index_ng_rule_histories_on_uri"
+  end
+
+  create_table "ng_rules", force: :cascade do |t|
+    t.string "title", default: "", null: false
+    t.boolean "available", default: true, null: false
+    t.boolean "record_history_also_local", default: true, null: false
+    t.string "account_domain", default: "", null: false
+    t.string "account_username", default: "", null: false
+    t.string "account_display_name", default: "", null: false
+    t.string "account_note", default: "", null: false
+    t.string "account_field_name", default: "", null: false
+    t.string "account_field_value", default: "", null: false
+    t.integer "account_avatar_state", default: 0, null: false
+    t.integer "account_header_state", default: 0, null: false
+    t.boolean "account_include_local", default: true, null: false
+    t.boolean "account_allow_followed_by_local", default: false, null: false
+    t.string "status_spoiler_text", default: "", null: false
+    t.string "status_text", default: "", null: false
+    t.string "status_tag", default: "", null: false
+    t.string "status_visibility", default: [], null: false, array: true
+    t.string "status_searchability", default: [], null: false, array: true
+    t.integer "status_media_state", default: 0, null: false
+    t.integer "status_sensitive_state", default: 0, null: false
+    t.integer "status_cw_state", default: 0, null: false
+    t.integer "status_poll_state", default: 0, null: false
+    t.integer "status_quote_state", default: 0, null: false
+    t.integer "status_reply_state", default: 0, null: false
+    t.integer "status_mention_state", default: 0, null: false
+    t.integer "status_reference_state", default: 0, null: false
+    t.integer "status_tag_threshold", default: -1, null: false
+    t.integer "status_media_threshold", default: -1, null: false
+    t.integer "status_poll_threshold", default: -1, null: false
+    t.integer "status_mention_threshold", default: -1, null: false
+    t.boolean "status_allow_follower_mention", default: true, null: false
+    t.integer "status_reference_threshold", default: -1, null: false
+    t.string "reaction_type", default: [], null: false, array: true
+    t.boolean "reaction_allow_follower", default: true, null: false
+    t.string "emoji_reaction_name", default: "", null: false
+    t.string "emoji_reaction_origin_domain", default: "", null: false
+    t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ngword_histories", force: :cascade do |t|
+    t.string "uri", null: false
+    t.integer "target_type", null: false
+    t.integer "reason", null: false
+    t.string "text", null: false
+    t.string "keyword", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "count", default: 0, null: false
+    t.index ["created_at"], name: "index_ngword_histories_on_created_at"
+    t.index ["uri", "keyword", "created_at"], name: "index_ngword_histories_on_uri_and_keyword_and_created_at"
+    t.index ["uri", "reason", "created_at"], name: "index_ngword_histories_on_uri_and_reason_and_created_at"
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.bigint "activity_id", null: false
     t.string "activity_type", null: false
@@ -922,6 +1009,28 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["device_id"], name: "index_one_time_keys_on_device_id"
     t.index ["key_id"], name: "index_one_time_keys_on_key_id"
+  end
+
+  create_table "pending_follow_requests", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "target_account_id", null: false
+    t.string "uri", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "target_account_id"], name: "idx_on_account_id_target_account_id_46f2a00f12", unique: true
+    t.index ["target_account_id"], name: "index_pending_follow_requests_on_target_account_id"
+    t.index ["uri"], name: "index_pending_follow_requests_on_uri", unique: true
+  end
+
+  create_table "pending_statuses", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.bigint "fetch_account_id", null: false
+    t.string "uri", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_pending_statuses_on_account_id"
+    t.index ["fetch_account_id"], name: "index_pending_statuses_on_fetch_account_id"
+    t.index ["uri"], name: "index_pending_statuses_on_uri", unique: true
   end
 
   create_table "pghero_space_stats", force: :cascade do |t|
@@ -1486,6 +1595,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
   add_foreign_key "follow_requests", "accounts", name: "fk_76d644b0e7", on_delete: :cascade
   add_foreign_key "follows", "accounts", column: "target_account_id", name: "fk_745ca29eac", on_delete: :cascade
   add_foreign_key "follows", "accounts", name: "fk_32ed1b5560", on_delete: :cascade
+  add_foreign_key "generated_annual_reports", "accounts"
   add_foreign_key "identities", "users", name: "fk_bea040f377", on_delete: :cascade
   add_foreign_key "imports", "accounts", name: "fk_6db1b6e408", on_delete: :cascade
   add_foreign_key "invites", "users", on_delete: :cascade
@@ -1505,6 +1615,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
   add_foreign_key "mentions", "statuses", on_delete: :cascade
   add_foreign_key "mutes", "accounts", column: "target_account_id", name: "fk_eecff219ea", on_delete: :cascade
   add_foreign_key "mutes", "accounts", name: "fk_b8d8daf315", on_delete: :cascade
+  add_foreign_key "ng_rule_histories", "accounts"
+  add_foreign_key "ng_rule_histories", "ng_rules"
   add_foreign_key "notifications", "accounts", column: "from_account_id", name: "fk_fbd6b0bf9e", on_delete: :cascade
   add_foreign_key "notifications", "accounts", name: "fk_c141c8ee55", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id", name: "fk_34d54b0a33", on_delete: :cascade
@@ -1513,6 +1625,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_17_022353) do
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id", name: "fk_e84df68546", on_delete: :cascade
   add_foreign_key "oauth_applications", "users", column: "owner_id", name: "fk_b0988c7c0a", on_delete: :cascade
   add_foreign_key "one_time_keys", "devices", on_delete: :cascade
+  add_foreign_key "pending_follow_requests", "accounts", column: "target_account_id", on_delete: :cascade
+  add_foreign_key "pending_follow_requests", "accounts", on_delete: :cascade
+  add_foreign_key "pending_statuses", "accounts", column: "fetch_account_id", on_delete: :cascade
+  add_foreign_key "pending_statuses", "accounts", on_delete: :cascade
   add_foreign_key "poll_votes", "accounts", on_delete: :cascade
   add_foreign_key "poll_votes", "polls", on_delete: :cascade
   add_foreign_key "polls", "accounts", on_delete: :cascade

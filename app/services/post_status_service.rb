@@ -4,6 +4,7 @@ class PostStatusService < BaseService
   include Redisable
   include LanguagesHelper
   include DtlHelper
+  include NgRuleHelper
 
   MIN_SCHEDULE_OFFSET = 5.minutes.freeze
 
@@ -68,16 +69,13 @@ class PostStatusService < BaseService
   private
 
   def preprocess_attributes!
-    @sensitive    = (if @options[:sensitive].nil?
-                       @media.any? ? @account.user&.setting_default_sensitive : false
-                     else
-                       @options[:sensitive]
-                     end) || @options[:spoiler_text].present?
+    @sensitive    = (@options[:sensitive].nil? ? @account.user&.setting_default_sensitive : @options[:sensitive]) || @options[:spoiler_text].present?
     @text         = @options.delete(:spoiler_text) if @text.blank? && @options[:spoiler_text].present?
     @visibility   = @options[:visibility]&.to_sym || @account.user&.setting_default_privacy&.to_sym
     @visibility   = :limited if %w(mutual circle reply).include?(@options[:visibility])
     @visibility   = :unlisted if (@visibility == :public || @visibility == :public_unlisted || @visibility == :login) && @account.silenced?
     @visibility   = :public_unlisted if @visibility == :public && !@options[:force_visibility] && !@options[:application]&.superapp && @account.user&.setting_public_post_to_unlisted && Setting.enable_public_unlisted_visibility
+    @visibility   = Setting.enable_public_unlisted_visibility ? :public_unlisted : :unlisted if !Setting.enable_public_visibility && @visibility == :public
     @limited_scope = @options[:visibility]&.to_sym if @visibility == :limited && @options[:visibility] != 'limited'
     @searchability = searchability
     @searchability = :private if @account.silenced? && %i(public public_unlisted).include?(@searchability&.to_sym)
@@ -124,7 +122,8 @@ class PostStatusService < BaseService
   def process_sensitive_words
     if [:public, :public_unlisted, :login].include?(@visibility&.to_sym) && Admin::SensitiveWord.sensitive?(@text, @options[:spoiler_text] || '')
       @text = Admin::SensitiveWord.modified_text(@text, @options[:spoiler_text])
-      @options[:spoiler_text] = I18n.t('admin.sensitive_words.alert')
+      @options[:spoiler_text] = Admin::SensitiveWord.alternative_text
+      @sensitive = true
     end
   end
 
@@ -151,6 +150,7 @@ class PostStatusService < BaseService
     @status = @account.statuses.new(status_attributes)
     process_mentions_service.call(@status, limited_type: @status.limited_visibility? ? @limited_scope : '', circle: @circle, save_records: false)
     safeguard_mentions!(@status)
+    validate_status_ng_rules!
     validate_status_mentions!
 
     @status.limited_scope = :personal if @status.limited_visibility? && !@status.reply_limited? && !process_mentions_service.mentions?
@@ -212,16 +212,63 @@ class PostStatusService < BaseService
 
   def validate_status!
     raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if Admin::NgWord.reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
-    raise Mastodon::ValidationError, I18n.t('statuses.too_many_hashtags') if Admin::NgWord.hashtag_reject_with_extractor?(@options[:text])
+    raise Mastodon::ValidationError, I18n.t('statuses.too_many_hashtags') if Admin::NgWord.hashtag_reject_with_extractor?(@text)
   end
 
   def validate_status_mentions!
-    raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if mention_to_stranger? && Setting.stranger_mention_from_local_ng && Admin::NgWord.stranger_mention_reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
+    raise Mastodon::ValidationError, I18n.t('statuses.too_many_mentions') if Admin::NgWord.mention_reject_with_extractor?(@text)
+    raise Mastodon::ValidationError, I18n.t('statuses.too_many_mentions') if (mention_to_stranger? || reference_to_stranger?) && Admin::NgWord.stranger_mention_reject_with_extractor?(@text)
+    raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if (mention_to_stranger? || reference_to_stranger?) && Setting.stranger_mention_from_local_ng && Admin::NgWord.stranger_mention_reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
+  end
+
+  def validate_status_ng_rules!
+    result = check_invalid_status_for_ng_rule! @account,
+                                               reaction_type: 'create',
+                                               spoiler_text: @options[:spoiler_text] || '',
+                                               text: @text,
+                                               tag_names: Extractor.extract_hashtags(@text) || [],
+                                               visibility: @visibility.to_s,
+                                               searchability: @searchability.to_s,
+                                               sensitive: @sensitive,
+                                               media_count: (@media || []).size,
+                                               poll_count: @options.dig(:poll, 'options')&.size || 0,
+                                               quote: quote_url,
+                                               reply: @in_reply_to.present?,
+                                               mention_count: mention_count,
+                                               reference_count: reference_urls.size,
+                                               mention_to_following: !(mention_to_stranger? || reference_to_stranger?)
+
+    raise Mastodon::ValidationError, I18n.t('statuses.violate_rules') unless result
+  end
+
+  def mention_count
+    @text.gsub(Account::MENTION_RE)&.count || 0
   end
 
   def mention_to_stranger?
-    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @account.id && !mentioned_account.following?(@account) } ||
-      (@in_reply_to && @in_reply_to.account.id != @account.id && !@in_reply_to.account.following?(@account))
+    return @mention_to_stranger if defined?(@mention_to_stranger)
+
+    @mention_to_stranger = @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @account.id && !mentioned_account.following?(@account) } ||
+                           (@in_reply_to && @in_reply_to.account.id != @account.id && !@in_reply_to.account.following?(@account))
+  end
+
+  def reference_to_stranger?
+    referred_statuses.any? { |status| !status.account.following?(@account) }
+  end
+
+  def referred_statuses
+    statuses = reference_urls.filter_map { |uri| ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Status, url: true) }
+    statuses += Status.where(id: @reference_ids) if @reference_ids.present?
+
+    statuses
+  end
+
+  def quote_url
+    ProcessReferencesService.extract_quote(@text)
+  end
+
+  def reference_urls
+    @reference_urls ||= ProcessReferencesService.extract_uris(@text) || []
   end
 
   def validate_media!

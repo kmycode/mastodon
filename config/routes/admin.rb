@@ -33,6 +33,13 @@ namespace :admin do
   resources :action_logs, only: [:index]
   resources :warning_presets, except: [:new, :show]
   resource :ng_words, only: [:show, :create]
+  resources :ngword_histories, only: [:index]
+  resources :ng_rules, except: [:show] do
+    member do
+      post :duplicate
+    end
+  end
+  resources :ng_rule_histories, only: [:show]
   resource :sensitive_words, only: [:show, :create]
   resource :special_instances, only: [:show, :create]
 
@@ -129,6 +136,8 @@ namespace :admin do
       post :memorialize
       post :approve
       post :reject
+      post :approve_remote
+      post :reject_remote
       post :unblock_email
     end
 

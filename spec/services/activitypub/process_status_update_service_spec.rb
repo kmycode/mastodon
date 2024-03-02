@@ -29,7 +29,8 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
       tag: json_tags,
     }
   end
-  let(:json) { Oj.load(Oj.dump(payload)) }
+  let(:payload_override) { {} }
+  let(:json) { Oj.load(Oj.dump(payload.merge(payload_override))) }
 
   let(:alice) { Fabricate(:account) }
   let(:bob) { Fabricate(:account) }
@@ -223,7 +224,8 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
       end
 
       it 'does not update the text, spoiler_text or edited_at' do
-        expect { subject.call(status, json, json) }.to_not(change { s = status.reload; [s.text, s.spoiler_text, s.edited_at] })
+        expect { subject.call(status, json, json) }
+          .to_not(change { status.reload.attributes.slice('text', 'spoiler_text', 'edited_at').values })
       end
     end
 
@@ -307,6 +309,44 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
 
       it 'updates tags' do
         expect(status.tags.reload.map(&:name)).to eq %w(foo)
+      end
+    end
+
+    context 'when reject tags by domain-block' do
+      let(:tags) { [Fabricate(:tag, name: 'hoge'), Fabricate(:tag, name: 'ohagi')] }
+
+      before do
+        Fabricate(:domain_block, domain: 'example.com', severity: :noop, reject_hashtag: true)
+        subject.call(status, json, json)
+      end
+
+      it 'updates tags' do
+        expect(status.tags.reload.map(&:name)).to eq []
+      end
+    end
+
+    context 'when reject mentions to stranger by domain-block' do
+      let(:json_tags) do
+        [
+          { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
+        ]
+      end
+
+      before do
+        Fabricate(:domain_block, domain: 'example.com', reject_reply_exclude_followers: true, severity: :noop)
+      end
+
+      it 'updates mentions' do
+        subject.call(status, json, json)
+
+        expect(status.mentions.reload.map(&:account_id)).to eq []
+      end
+
+      it 'updates mentions when follower' do
+        alice.follow!(status.account)
+        subject.call(status, json, json)
+
+        expect(status.mentions.reload.map(&:account_id)).to eq [alice.id]
       end
     end
 
@@ -493,7 +533,7 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
         end
       end
 
-      context 'when hit ng words for mention' do
+      context 'when hit ng words for mention to local stranger' do
         let(:json_tags) do
           [
             { type: 'Mention', href: ActivityPub::TagManager.instance.uri_for(alice) },
@@ -507,6 +547,15 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
           subject.call(status, json, json)
           expect(status.reload.text).to_not eq content
           expect(status.mentioned_accounts.pluck(:id)).to_not include alice.id
+        end
+
+        it 'update status when following' do
+          Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+          alice.follow!(status.account)
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to eq content
+          expect(status.mentioned_accounts.pluck(:id)).to include alice.id
         end
       end
 
@@ -588,6 +637,49 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
         end
       end
 
+      context 'when hit ng words for reference' do
+        let!(:target_status) { Fabricate(:status, account: alice) }
+        let(:payload_override) do
+          {
+            references: {
+              id: 'target_status',
+              type: 'Collection',
+              first: {
+                type: 'CollectionPage',
+                next: nil,
+                partOf: 'target_status',
+                items: [
+                  ActivityPub::TagManager.instance.uri_for(target_status),
+                ],
+              },
+            },
+          }
+        end
+        let(:content) { 'ng word test' }
+
+        it 'update status' do
+          Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to_not eq content
+          expect(status.references.pluck(:id)).to_not include target_status.id
+        end
+
+        context 'when alice follows sender' do
+          before do
+            alice.follow!(status.account)
+          end
+
+          it 'update status' do
+            Form::AdminSettings.new(ng_words_for_stranger_mention: 'test').save
+
+            subject.call(status, json, json)
+            expect(status.reload.text).to eq content
+            expect(status.references.pluck(:id)).to include target_status.id
+          end
+        end
+      end
+
       context 'when using hashtag under limit' do
         let(:json_tags) do
           [
@@ -620,6 +712,69 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
 
           subject.call(status, json, json)
           expect(status.reload.text).to_not eq content
+        end
+      end
+    end
+
+    describe 'ng rule is set' do
+      context 'when ng rule is match' do
+        before do
+          Fabricate(:ng_rule, account_domain: 'example.com', status_text: 'universe')
+          subject.call(status, json, json)
+        end
+
+        it 'does not update text' do
+          expect(status.reload.text).to eq 'Hello world'
+          expect(status.edits.reload.map(&:text)).to eq []
+        end
+      end
+
+      context 'when ng rule is not match' do
+        before do
+          Fabricate(:ng_rule, account_domain: 'foo.bar', status_text: 'universe')
+          subject.call(status, json, json)
+        end
+
+        it 'updates text' do
+          expect(status.reload.text).to eq 'Hello universe'
+          expect(status.edits.reload.map(&:text)).to eq ['Hello world', 'Hello universe']
+        end
+      end
+    end
+
+    describe 'sensitive word is set' do
+      let(:payload) do
+        {
+          '@context': 'https://www.w3.org/ns/activitystreams',
+          id: 'foo',
+          type: 'Note',
+          content: content,
+          updated: '2021-09-08T22:39:25Z',
+          tag: json_tags,
+        }
+      end
+
+      context 'when hit sensitive words' do
+        let(:content) { 'ng word aiueo' }
+
+        it 'update status' do
+          Form::AdminSettings.new(sensitive_words_all: 'test').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to eq content
+          expect(status.spoiler_text).to eq ''
+        end
+      end
+
+      context 'when not hit sensitive words' do
+        let(:content) { 'ng word test' }
+
+        it 'update status' do
+          Form::AdminSettings.new(sensitive_words_all: 'test').save
+
+          subject.call(status, json, json)
+          expect(status.reload.text).to eq content
+          expect(status.spoiler_text).to_not eq ''
         end
       end
     end

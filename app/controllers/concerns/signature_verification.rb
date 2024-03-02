@@ -12,39 +12,6 @@ module SignatureVerification
 
   class SignatureVerificationError < StandardError; end
 
-  class SignatureParamsParser < Parslet::Parser
-    rule(:token)         { match("[0-9a-zA-Z!#$%&'*+.^_`|~-]").repeat(1).as(:token) }
-    rule(:quoted_string) { str('"') >> (qdtext | quoted_pair).repeat.as(:quoted_string) >> str('"') }
-    # qdtext and quoted_pair are not exactly according to spec but meh
-    rule(:qdtext)        { match('[^\\\\"]') }
-    rule(:quoted_pair)   { str('\\') >> any }
-    rule(:bws)           { match('\s').repeat }
-    rule(:param)         { (token.as(:key) >> bws >> str('=') >> bws >> (token | quoted_string).as(:value)).as(:param) }
-    rule(:comma)         { bws >> str(',') >> bws }
-    # Old versions of node-http-signature add an incorrect "Signature " prefix to the header
-    rule(:buggy_prefix)  { str('Signature ') }
-    rule(:params)        { buggy_prefix.maybe >> (param >> (comma >> param).repeat).as(:params) }
-    root(:params)
-  end
-
-  class SignatureParamsTransformer < Parslet::Transform
-    rule(params: subtree(:param)) do
-      (param.is_a?(Array) ? param : [param]).each_with_object({}) { |(key, value), hash| hash[key] = value }
-    end
-
-    rule(param: { key: simple(:key), value: simple(:val) }) do
-      [key, val]
-    end
-
-    rule(quoted_string: simple(:string)) do
-      string.to_s
-    end
-
-    rule(token: simple(:string)) do
-      string.to_s
-    end
-  end
-
   def require_account_signature!
     render json: signature_verification_failure_reason, status: signature_verification_failure_code unless signed_request_account
   end
@@ -135,12 +102,8 @@ module SignatureVerification
   end
 
   def signature_params
-    @signature_params ||= begin
-      raw_signature = request.headers['Signature']
-      tree          = SignatureParamsParser.new.parse(raw_signature)
-      SignatureParamsTransformer.new.apply(tree)
-    end
-  rescue Parslet::ParseFailed
+    @signature_params ||= SignatureParser.parse(request.headers['Signature'])
+  rescue SignatureParser::ParsingError
     raise SignatureVerificationError, 'Error parsing signature parameters'
   end
 
@@ -266,7 +229,7 @@ module SignatureVerification
       stoplight_wrap_request { ResolveAccountService.new.call(key_id.delete_prefix('acct:'), suppress_errors: false) }
     elsif !ActivityPub::TagManager.instance.local_uri?(key_id)
       account   = ActivityPub::TagManager.instance.uri_to_actor(key_id)
-      account ||= stoplight_wrap_request { ActivityPub::FetchRemoteKeyService.new.call(key_id, id: false, suppress_errors: false) }
+      account ||= stoplight_wrap_request { ActivityPub::FetchRemoteKeyService.new.call(key_id, suppress_errors: false) }
       account
     end
   rescue Mastodon::PrivateNetworkAddressError => e

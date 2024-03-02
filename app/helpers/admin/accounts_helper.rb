@@ -7,6 +7,7 @@ module Admin::AccountsHelper
       [t('admin.accounts.moderation.silenced'), 'silenced'],
       [t('admin.accounts.moderation.disabled'), 'disabled'],
       [t('admin.accounts.moderation.suspended'), 'suspended'],
+      [t('admin.accounts.moderation.remote_pending'), 'remote_pending'],
       [safe_join([t('admin.accounts.moderation.pending'), "(#{pending_user_count_label})"], ' '), 'pending'],
     ]
   end

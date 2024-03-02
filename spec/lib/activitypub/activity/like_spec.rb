@@ -49,6 +49,36 @@ RSpec.describe ActivityPub::Activity::Like do
     it 'creates a favourite from sender to status' do
       expect(sender.favourited?(status)).to be true
     end
+
+    it 'creates a favourite and set uri' do
+      expect(status.favourites.first.uri).to eq 'foo'
+    end
+  end
+
+  context 'when ng rule is existing' do
+    subject { described_class.new(json, sender) }
+
+    context 'when ng rule is match' do
+      before do
+        Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['favourite'])
+        subject.perform
+      end
+
+      it 'does not create a reblog by sender of status' do
+        expect(sender.favourited?(status)).to be false
+      end
+    end
+
+    context 'when ng rule is not match' do
+      before do
+        Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['favourite'])
+        subject.perform
+      end
+
+      it 'creates a reblog by sender of status' do
+        expect(sender.favourited?(status)).to be true
+      end
+    end
   end
 
   describe '#perform when receive emoji reaction' do
@@ -60,8 +90,8 @@ RSpec.describe ActivityPub::Activity::Like do
     before do
       stub_request(:get, 'http://example.com/emoji.png').to_return(body: attachment_fixture('emojo.png'))
       stub_request(:get, 'http://foo.bar/emoji2.png').to_return(body: attachment_fixture('emojo.png'))
-      stub_request(:get, 'https://example.com/aaa').to_return(status: 200, body: Oj.dump(original_emoji))
-      stub_request(:get, 'https://example.com/invalid').to_return(status: 200, body: Oj.dump(original_invalid_emoji))
+      stub_request(:get, 'https://example.com/aaa').to_return(status: 200, body: Oj.dump(original_emoji), headers: { 'Content-Type': 'application/activity+json' })
+      stub_request(:get, 'https://example.com/invalid').to_return(status: 200, body: Oj.dump(original_invalid_emoji), headers: { 'Content-Type': 'application/activity+json' })
     end
 
     let(:json) do
@@ -295,7 +325,7 @@ RSpec.describe ActivityPub::Activity::Like do
         Fabricate(:custom_emoji, domain: nil, shortcode: 'tinking', license: 'Everyone but Ohagi')
       end
 
-      it 'create emoji reaction' do
+      it 'create emoji reaction' do # rubocop:disable RSpec/MultipleExpectations
         expect(subject.count).to eq 1
         expect(subject.first.name).to eq 'tinking'
         expect(subject.first.account).to eq sender
@@ -360,6 +390,47 @@ RSpec.describe ActivityPub::Activity::Like do
       it 'create emoji reaction' do
         expect(subject.count).to eq 0
         expect(sender.favourited?(status)).to be true
+      end
+    end
+
+    context 'when sender is silenced' do
+      let(:content) { '😀' }
+
+      before do
+        sender.silence!
+      end
+
+      it 'does not create emoji reaction' do
+        expect(subject.count).to eq 0
+      end
+    end
+
+    context 'when sender is silenced but following recipient' do
+      let(:content) { '😀' }
+
+      before do
+        recipient.follow!(sender)
+        sender.silence!
+      end
+
+      it 'create emoji reaction' do
+        expect(subject.count).to eq 1
+        expect(subject.first.name).to eq '😀'
+        expect(subject.first.account).to eq sender
+        expect(sender.favourited?(status)).to be false
+      end
+    end
+
+    context 'when sender is silenced but reacted to remote account' do
+      let(:content) { '😀' }
+      let(:recipient) { Fabricate(:account, domain: 'kirakira.com', uri: 'https://kirakira.com/actor') }
+
+      before do
+        sender.silence!
+      end
+
+      it 'does not create emoji reaction' do
+        expect(subject.count).to eq 0
       end
     end
 
@@ -467,6 +538,14 @@ RSpec.describe ActivityPub::Activity::Like do
             expect(sender.favourited?(status)).to be false
           end
         end
+
+        context 'when recipient is remote user' do
+          let(:recipient) { Fabricate(:account, domain: 'foo.bar', uri: 'https://foo.bar/actor') }
+
+          it 'does not create emoji reaction' do
+            expect(subject.count).to eq 0
+          end
+        end
       end
 
       context 'with custom emoji' do
@@ -536,6 +615,30 @@ RSpec.describe ActivityPub::Activity::Like do
             expect(subject.first.custom_emoji.domain).to eq 'example.com'
             expect(sender.favourited?(status)).to be false
           end
+        end
+      end
+    end
+
+    context 'when ng rule is existing' do
+      let(:content) { '😀' }
+
+      context 'when ng rule is match' do
+        before do
+          Fabricate(:ng_rule, account_domain: 'example.com', reaction_type: ['emoji_reaction'])
+        end
+
+        it 'does not create a reblog by sender of status' do
+          expect(subject.count).to eq 0
+        end
+      end
+
+      context 'when ng rule is not match' do
+        before do
+          Fabricate(:ng_rule, account_domain: 'foo.bar', reaction_type: ['emoji_reaction'])
+        end
+
+        it 'creates a reblog by sender of status' do
+          expect(subject.count).to eq 1
         end
       end
     end

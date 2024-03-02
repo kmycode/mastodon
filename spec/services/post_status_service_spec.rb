@@ -32,27 +32,27 @@ RSpec.describe PostStatusService, type: :service do
     let!(:future)          { Time.now.utc + 2.hours }
     let!(:previous_status) { Fabricate(:status, account: account) }
 
-    it 'schedules a status' do
-      status = subject.call(account, text: 'Hi future!', scheduled_at: future)
-      expect(status).to be_a ScheduledStatus
-      expect(status.scheduled_at).to eq future
-      expect(status.params['text']).to eq 'Hi future!'
-    end
-
-    it 'does not immediately create a status' do
+    it 'schedules a status for future creation and does not create one immediately' do
       media = Fabricate(:media_attachment, account: account)
       status = subject.call(account, text: 'Hi future!', media_ids: [media.id], scheduled_at: future)
 
-      expect(status).to be_a ScheduledStatus
-      expect(status.scheduled_at).to eq future
-      expect(status.params['text']).to eq 'Hi future!'
-      expect(status.params['media_ids']).to eq [media.id]
+      expect(status)
+        .to be_a(ScheduledStatus)
+        .and have_attributes(
+          scheduled_at: eq(future),
+          params: include(
+            'text' => eq('Hi future!'),
+            'media_ids' => contain_exactly(media.id)
+          )
+        )
       expect(media.reload.status).to be_nil
       expect(Status.where(text: 'Hi future!')).to_not exist
     end
 
-    it 'does not change statuses count' do
-      expect { subject.call(account, text: 'Hi future!', scheduled_at: future, thread: previous_status) }.to_not(change { [account.statuses_count, previous_status.replies_count] })
+    it 'does not change statuses_count of account or replies_count of thread previous status' do
+      expect { subject.call(account, text: 'Hi future!', scheduled_at: future, thread: previous_status) }
+        .to not_change { account.statuses_count }
+        .and(not_change { previous_status.replies_count })
     end
   end
 
@@ -192,21 +192,48 @@ RSpec.describe PostStatusService, type: :service do
     expect(mention_service).to have_received(:call).with(status, limited_type: '', circle: nil, save_records: false)
   end
 
-  it 'mutual visibility' do
-    account = Fabricate(:account)
-    mutual_account = Fabricate(:account)
-    other_account = Fabricate(:account)
-    text = 'This is an English text.'
+  context 'with mutual visibility' do
+    let(:sender) { Fabricate(:user).account }
+    let(:io_account) { Fabricate(:account, domain: 'misskey.io', uri: 'https://misskey.io/actor') }
+    let(:local_account) { Fabricate(:account) }
+    let(:remote_account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
+    let(:follower) { Fabricate(:account) }
+    let(:followee) { Fabricate(:account) }
 
-    mutual_account.follow!(account)
-    account.follow!(mutual_account)
-    other_account.follow!(account)
-    status = subject.call(account, text: text, visibility: 'mutual')
+    before do
+      Fabricate(:instance_info, domain: 'misskey.io', software: 'misskey')
+      io_account.follow!(sender)
+      local_account.follow!(sender)
+      remote_account.follow!(sender)
+      follower.follow!(sender)
+      sender.follow!(io_account)
+      sender.follow!(local_account)
+      sender.follow!(remote_account)
+      sender.follow!(followee)
+    end
 
-    expect(status.visibility).to eq 'limited'
-    expect(status.limited_scope).to eq 'mutual'
-    expect(status.mentioned_accounts.count).to eq 1
-    expect(status.mentioned_accounts.first.id).to eq mutual_account.id
+    it 'visibility is set' do
+      status = subject.call(sender, text: 'text', visibility: 'mutual')
+
+      expect(status.visibility).to eq 'limited'
+      expect(status.limited_scope).to eq 'mutual'
+    end
+
+    it 'sent to mutuals' do
+      status = subject.call(sender, text: 'text', visibility: 'mutual')
+
+      expect(status.mentioned_accounts.count).to eq 3
+      expect(status.mentioned_accounts.pluck(:id)).to contain_exactly(io_account.id, local_account.id, remote_account.id)
+    end
+
+    it 'sent to mutuals without misskey.io users' do
+      sender.user.update!(settings: { reject_send_limited_to_suspects: true })
+
+      status = subject.call(sender, text: 'text', visibility: 'mutual')
+
+      expect(status.mentioned_accounts.count).to eq 2
+      expect(status.mentioned_accounts.pluck(:id)).to contain_exactly(local_account.id, remote_account.id)
+    end
   end
 
   it 'limited visibility and direct searchability' do
@@ -545,13 +572,7 @@ RSpec.describe PostStatusService, type: :service do
       subject.call(
         account,
         text: 'test status update',
-        media_ids: [
-          Fabricate(:media_attachment, account: account),
-          Fabricate(:media_attachment, account: account),
-          Fabricate(:media_attachment, account: account),
-          Fabricate(:media_attachment, account: account),
-          Fabricate(:media_attachment, account: account),
-        ].map(&:id)
+        media_ids: Array.new(5) { Fabricate(:media_attachment, account: account) }.map(&:id)
       )
     end.to raise_error(
       Mastodon::ValidationError,
@@ -663,6 +684,43 @@ RSpec.describe PostStatusService, type: :service do
       expect(status.text).to eq text
     end
 
+    it 'with a reference' do
+      target_status = Fabricate(:status)
+      account = Fabricate(:account)
+      Fabricate(:account, username: 'ohagi', domain: nil)
+      text = "ref BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+      expect(status.references.pluck(:id)).to include target_status.id
+    end
+
+    it 'hit ng words for reference' do
+      target_status = Fabricate(:status)
+      account = Fabricate(:account)
+      Fabricate(:account, username: 'ohagi', domain: nil)
+      text = "ng word test BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      expect { subject.call(account, text: text) }.to raise_error(Mastodon::ValidationError)
+    end
+
+    it 'hit ng words for reference to follower' do
+      target_status = Fabricate(:status)
+      account = Fabricate(:account)
+      target_status.account.follow!(account)
+      Fabricate(:account, username: 'ohagi', domain: nil)
+      text = "ng word test BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
+      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
     it 'using hashtag under limit' do
       account = Fabricate(:account)
       text = '#a #b'
@@ -679,6 +737,105 @@ RSpec.describe PostStatusService, type: :service do
       account = Fabricate(:account)
       text = '#a #b #c'
       Form::AdminSettings.new(post_hash_tags_max: 2).save
+
+      expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
+    end
+
+    it 'using mentions under limit' do
+      a = Fabricate(:account, username: 'a')
+      b = Fabricate(:account, username: 'b')
+      account = Fabricate(:account)
+      a.follow!(account)
+      b.follow!(account)
+      text = '@a @b'
+      Form::AdminSettings.new(post_mentions_max: 2).save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'using mentions over limit' do
+      a = Fabricate(:account, username: 'a')
+      b = Fabricate(:account, username: 'b')
+      account = Fabricate(:account)
+      a.follow!(account)
+      b.follow!(account)
+      text = '@a @b'
+      Form::AdminSettings.new(post_mentions_max: 1).save
+
+      expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
+    end
+
+    it 'using mentions for stranger under limit' do
+      Fabricate(:account, username: 'a')
+      Fabricate(:account, username: 'b')
+      account = Fabricate(:account)
+      text = '@a @b'
+      Form::AdminSettings.new(post_stranger_mentions_max: 2).save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'using mentions for stranger over limit' do
+      Fabricate(:account, username: 'a')
+      Fabricate(:account, username: 'b')
+      account = Fabricate(:account)
+      text = '@a @b'
+      Form::AdminSettings.new(post_stranger_mentions_max: 1).save
+
+      expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
+    end
+
+    it 'using mentions for stranger over limit but normal setting is under limit' do
+      a = Fabricate(:account, username: 'a')
+      b = Fabricate(:account, username: 'b')
+      account = Fabricate(:account)
+      a.follow!(account)
+      b.follow!(account)
+      text = '@a @b'
+      Form::AdminSettings.new(post_mentions_max: 2, post_stranger_mentions_max: 1).save
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'using mentions for stranger over limit but normal setting is under limit when following one only' do
+      a = Fabricate(:account, username: 'a')
+      b = Fabricate(:account, username: 'b')
+      Fabricate(:account, username: 'c')
+      account = Fabricate(:account)
+      a.follow!(account)
+      b.follow!(account)
+      text = '@a @b @c'
+      Form::AdminSettings.new(post_mentions_max: 3, post_stranger_mentions_max: 2).save
+
+      expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
+    end
+  end
+
+  describe 'ng rule is set' do
+    it 'creates a new status when no rule matches' do
+      Fabricate(:ng_rule, account_username: 'ohagi', status_allow_follower_mention: false)
+      account = Fabricate(:account)
+      text = 'test status update'
+
+      status = subject.call(account, text: text)
+
+      expect(status).to be_persisted
+      expect(status.text).to eq text
+    end
+
+    it 'does not create a new status when a rule matches' do
+      Fabricate(:ng_rule, status_text: 'test', status_allow_follower_mention: false)
+      account = Fabricate(:account)
+      text = 'test status update'
 
       expect { subject.call(account, text: text) }.to raise_error Mastodon::ValidationError
     end

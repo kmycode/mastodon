@@ -4,7 +4,7 @@ import { addPoll, removePoll } from '../../../actions/compose';
 import PollButton from '../components/poll_button';
 
 const mapStateToProps = state => ({
-  unavailable: false,
+  disabled: false,
   active: state.getIn(['compose', 'poll']) !== null,
 });
 

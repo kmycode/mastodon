@@ -12,6 +12,7 @@ ja:
       last_attempt: あと1回失敗するとアカウントがロックされます。
       locked: アカウントはロックされました。
       not_found_in_database: "%{authentication_keys}かパスワードが誤っています。"
+      omniauth_user_creation_failure: 指定されたIDに対応するアカウントを作成できませんでした。
       pending: あなたのアカウントはまだ承認待ちです。
       timeout: セッションの有効期限が切れました。続行するには再度ログインしてください。
       unauthenticated: 続行するにはログインするか、アカウントを作成してください。
@@ -49,12 +50,12 @@ ja:
       two_factor_disabled:
         explanation: メールアドレスとパスワードのみでログイン可能になりました。
         subject: 'Mastodon: 二要素認証が無効になりました'
-        subtitle: 二要素認証が無効になっています。
+        subtitle: 今後、アカウントへのログインに二要素認証を要求しません。
         title: 二要素認証が無効化されました
       two_factor_enabled:
         explanation: ログインには設定済みのTOTPアプリが生成したトークンが必要です。
         subject: 'Mastodon: 二要素認証が有効になりました'
-        subtitle: 二要素認証が有効になりました。
+        subtitle: 今後、アカウントへのログインに二要素認証が必要になります。
         title: 二要素認証が有効化されました
       two_factor_recovery_codes_changed:
         explanation: 以前のリカバリーコードが無効化され、新しいコードが生成されました。
@@ -73,7 +74,7 @@ ja:
           subject: 'Mastodon: セキュリティキーが削除されました'
           title: セキュリティキーが削除されました
       webauthn_disabled:
-        explanation: セキュリティキー認証が無効になっています。
+        explanation: セキュリティキー認証が無効になりました。
         extra: 設定済みのTOTPアプリが生成したトークンのみでログインできるようになりました。
         subject: 'Mastodon: セキュリティキー認証が無効になりました'
         title: セキュリティキーは無効になっています
@@ -93,6 +94,7 @@ ja:
       updated_not_active: パスワードは正常に更新されました。
     registrations:
       destroyed: アカウントの作成はキャンセルされました。またのご利用をお待ちしています。
+      sign_up_failed_because_reach_limit: 制限に到達しているため、アカウントを作成できません。
       signed_up: アカウントの作成が完了しました。Mastodonへようこそ。
       signed_up_but_inactive: アカウントの作成が完了しました。しかし、アカウントが有効化されていないためログインできませんでした。
       signed_up_but_locked: アカウントの作成が完了しました。しかし、アカウントがロックされているためログインできませんでした。

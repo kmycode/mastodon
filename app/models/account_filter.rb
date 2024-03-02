@@ -88,6 +88,8 @@ class AccountFilter
       Account.without_suspended
     when 'pending'
       accounts_with_users.merge(User.pending)
+    when 'remote_pending'
+      Account.remote_pending
     when 'suspended'
       Account.suspended
     when 'disabled'

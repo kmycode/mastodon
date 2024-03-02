@@ -14,6 +14,8 @@
 #
 
 class StatusReference < ApplicationRecord
+  REFERENCES_LIMIT = 5
+
   belongs_to :status
   belongs_to :target_status, class_name: 'Status'
 

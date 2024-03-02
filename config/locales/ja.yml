@@ -31,6 +31,8 @@ ja:
     accounts:
       add_email_domain_block: メールドメインブロックに追加
       approve: 承認
+      approve_domain: ドメインを承認
+      approve_remote: リモートアカウントを承認
       approved_msg: '%{username}さんの登録申請を承認しました'
       are_you_sure: 本当に実行しますか？
       avatar: アイコン
@@ -91,6 +93,7 @@ ja:
         all: すべて
         disabled: 無効化済み
         pending: 承認待ち
+        remote_pending: 承認待ち (リモート)
         silenced: 制限
         suspended: 停止済み
         title: モデレーション
@@ -113,7 +116,9 @@ ja:
       redownload: プロフィールを更新
       redownloaded_msg: '%{username}のプロフィールを正常に更新しました'
       reject: 却下
+      reject_remote: リモートアカウントを却下
       rejected_msg: '%{username}さんの登録申請を却下しました'
+      remote_pending_hint_html: このアカウントは現在保留中で、一時的にサスペンド状態になっています。このサーバーで利用可能にするためには、アカウントを承認する必要があります。
       remote_suspension_irreversible: このアカウントのデータは不可逆的に削除されました。
       remote_suspension_reversible_hint_html: このアカウントは停止されており、データは%{date} 日で完全に削除されます。それまでは悪影響なしにアカウントを復旧させることができます。アカウントを即座に削除したい場合は、以下から行うことができます。
       remove_avatar: アイコンを削除
@@ -227,6 +232,7 @@ ja:
         update_user_role: ロールを更新
       actions:
         approve_appeal_html: "%{name}さんが%{target}さんからの抗議を承認しました"
+        approve_remote_account_html: "%{name}さんが%{target}さんの参加を承認しました"
         approve_user_html: "%{name}さんが%{target}さんからの登録を承認しました"
         assigned_to_self_report_html: "%{name}さんが通報 %{target}を自身の担当に割り当てました"
         change_email_user_html: "%{name}さんが%{target}さんのメールアドレスを変更しました"
@@ -266,6 +272,7 @@ ja:
         memorialize_account_html: "%{name}さんが%{target}さんを追悼アカウントページに登録しました"
         promote_user_html: "%{name}さんが%{target}さんを昇格しました"
         reject_appeal_html: "%{name}さんが%{target}からの抗議を却下しました"
+        reject_remote_account_html: "%{name}さんが%{target}さんの参加を却下しました"
         reject_user_html: "%{name}さんが%{target}さんからの登録を拒否しました"
         remove_avatar_user_html: "%{name}さんが%{target}さんのアイコンを削除しました"
         remove_history_status_html: "%{name}さんが%{target}さんの投稿の編集履歴を削除しました"
@@ -390,6 +397,8 @@ ja:
       undo: 連合許可を外す
     domain_blocks:
       add_new: ドメインブロックを追加
+      block_trends: トレンド掲載を拒否
+      block_trends_hint: 今後の投稿のトレンド掲載を拒否します。反映には時間がかかります。停止とは無関係です
       confirm_suspension:
         cancel: キャンセル
         confirm: 停止
@@ -409,7 +418,7 @@ ja:
       existing_domain_block_html: 既に%{name}に対して、より厳しい制限を課しています。先に<a href="%{unblock_url}">その制限を解除</a>する必要があります。
       export: エクスポート
       headers:
-        disagreement: 政治的な意見の相違からの敏感な投稿の保護
+        disagreement: 意見の相違
         harassment: 嫌がらせまたはスパム
         invalid_privacy: プライバシーが守られていない
         mastodon_default: 本家Mastodonの設定項目
@@ -433,8 +442,8 @@ ja:
       private_comment_hint: このコメントは同じサーバーのモデレーターも閲覧できます。
       public_comment: コメント (公開)
       public_comment_hint: ドメインブロックの公開を有効にしている場合、このコメントも公開されます。
-      reject_favourite: お気に入り、スタンプを拒否
-      reject_favourite_hint: 今後のお気に入り、スタンプを拒否します。停止とは無関係です
+      reject_favourite: お気に入り、絵文字リアクションを拒否
+      reject_favourite_hint: 今後のお気に入り、絵文字リアクションを拒否します。停止とは無関係です
       reject_friend: フレンドサーバー申請を拒否
       reject_friend_hint: 今後のフレンドサーバー申請を全て拒否します。停止とは無関係です
       reject_hashtag: ハッシュタグを拒否
@@ -443,8 +452,7 @@ ja:
       reject_media_hint: ローカルに保存されたメディアファイルを削除し、今後のダウンロードを拒否します。停止とは無関係です
       reject_new_follow: 新規フォローを拒否
       reject_new_follow_hint: 今後の新規フォローを拒否します。停止とは無関係です
-      reject_reply: リプライを拒否
-      reject_reply_exclude_followers: フォロー相手以外からのリプライを拒否
+      reject_reply_exclude_followers: フォロー相手以外からのメンションと参照を拒否
       reject_reply_hint: 今後のリプライを拒否します。停止とは無関係です
       reject_reply_exclude_followers_hint: 今後のリプライを拒否します。停止とは無関係です
       reject_reports: 通報を拒否
@@ -550,14 +558,14 @@ ja:
         description_html: このドメインとそのサブドメインのすべてのアカウントに適用されるコンテンツポリシーを定義できます。
         limited_federation_mode_description_html: このドメインとの連合を許可するかどうかを選択できます。
         policies:
+          block_trends: トレンドへの掲載を拒否
           detect_invalid_subscription: 購読のプライバシーなし
           reject_favourite: お気に入りを拒否
           reject_friend: フレンドサーバー申請を拒否
           reject_hashtag: ハッシュタグを拒否
           reject_media: メディアを拒否する
           reject_new_follow: 新規フォローを拒否
-          reject_reply: リプライを拒否
-          reject_reply_exclude_followers: フォロー相手以外からのリプライを拒否
+          reject_reply_exclude_followers: フォロー相手以外からのメンション・参照を拒否
           reject_reports: 通報を拒否
           reject_send_sensitive: センシティブ投稿配送なし
           reject_straight_follow: フォローを制限
@@ -630,17 +638,140 @@ ja:
       title: IPルール
     media_attachments:
       title: 投稿された画像
+    ng_rules:
+      account_allow_followed_by_local: ローカルユーザーからフォローされていないアカウントのみチェックする
+      account_allow_followed_by_local_hint: 1以上のフォローを持つ全てのローカルユーザーが信頼できる場合にのみこのオプションを使用してください
+      account_avatar_state: アイコンの有無
+      account_display_name: 名前
+      account_domain: ドメイン
+      account_field_name: フィールド名
+      account_field_value: フィールド値
+      account_header_state: ヘッダーの有無
+      account_include_local: ローカルユーザーを含む
+      account_note: アカウントの説明文
+      account_username: ID
+      available: 有効にする
+      copy: 複製
+      copy_error: 複製に失敗しました。
+      edit:
+        headers:
+          account: アカウント
+          options: オプション
+          reaction: リアクション
+          status: 投稿
+        helps:
+          generic: 全ての項目が条件にマッチしている場合のみ、制限が有効になります。
+          textarea_html: <strong>複数行入力可能な箇所</strong>では、改行区切りで条件を入力します。複数行のうちどれか1つが含まれている場合、条件にマッチしたと判断されます。行頭を「?」で始めると正規表現を利用できます。
+          threshold_html: <strong>上限の指定</strong>では、「-1」を指定すると上限チェックが無効になります。「0」を指定した場合、その対象が全く無い状態に限りチェックを通過します。例えばメディア数の上限「0」は、「メディア無し」と等価ではありません。
+        history: このルールが適用された履歴を確認する
+        summary:
+          account: アカウントの条件を設定します。ここでマッチしたアカウントが投稿・リアクションする場合に、このNGルールのチェックが行われます。アカウント作成時のチェックは行いません。初期状態では全てのアカウントが対象になります。
+          reaction: リアクションの条件を設定します。アカウントの条件も同時に一致しなければいけません。初期状態では、「リアクションの種類」を設定しない限り全てのリアクションが該当しませんので、ご注意ください。
+          status: 投稿の条件を設定します。アカウントの条件も同時に一致しなければいけません。初期状態では、「公開範囲」「検索許可」を設定しない限り全ての投稿が該当しませんので、ご注意ください。
+        title: NGルールを編集
+      emoji_reaction_name: 絵文字リアクションで使われる絵文字またはショートコード
+      emoji_reaction_origin_domain: 絵文字リアクションで使われたカスタム絵文字のドメイン
+      emoji_reaction_origin_domain_hint: 他のサーバーの絵文字に相乗りした場合、その絵文字がもともと登録されていたサーバーのドメインが使用されます
+      index:
+        delete: 削除
+        disabled: 無効
+        edit:
+          title: 編集
+        empty: NGルールが空です
+        empty_title: 空のタイトル
+        hit_count: ここ一週間で %{count} 件の検出
+        preamble: 通常のスパムへの対応にはNGワードで十分ですが、中にはどうしても緩すぎる条件を指定しなければならず、他の正常な投稿が規制に巻き込まれやすくなる場合があります。NGルールにおいてアカウントや投稿の特徴などを詳細に指定して、巻き込まれる投稿を少しでも減らすことができます。また、リアクションを使用したスパムの防止もサポートしています。
+        title: NGルール
+      new:
+        save: 新規NGルールを保存
+        title: 新規NGルールを追加
+      reaction_allow_follower: フォロワー以外に対するリアクションのみチェックする
+      reaction_allow_follower_hint: これを有効にすると、他のサーバー同士のリアクションは無条件で許可されます
+      reaction_type: リアクションの種類
+      reaction_types:
+        emoji_reaction: 絵文字リアクション
+        favourite: お気に入り
+        follow: フォロー
+        reblog: ブースト
+        vote: 投票
+      record_history_also_local: ローカルユーザーも履歴記録の対象とする
+      rubular: 正規表現チェッカー
+      states:
+        needed: 有り
+        no_needed: 無し
+        optional: 不問
+      status_allow_follower_mention: フォロワー以外へのメンション・参照を含む場合のみ投稿をチェックする
+      status_allow_follower_mention_hint: これを有効にすると、他のサーバー同士のメンションは無条件で許可されます
+      status_cw_state: 警告文の有無
+      status_media_state: メディアの有無
+      status_media_threshold: メディア数の上限
+      status_mention_state: メンションの有無
+      status_mention_threshold: メンション数の上限
+      status_poll_state: 投票の有無
+      status_poll_threshold: 投票項目数の上限
+      status_quote_state: 引用の有無
+      status_reference_state: 参照の有無
+      status_reference_threshold: 参照数の上限
+      status_reply_state: 返信の有無
+      status_searchability: 検索許可
+      status_sensitive_state: センシティブフラグの有無
+      status_spoiler_text: 投稿警告文
+      status_tag: タグ
+      status_text: 投稿本文
+      status_visibility: 公開範囲
+      test_error: 正規表現の文法が誤っています
+      title: NGルール
+    ng_rule_histories:
+      back_to_ng_rule: NGルール設定に戻る
+      back_to_ng_rules: 一覧に戻る
+      data:
+        media_count: "%{count} のメディア"
+        poll_count: 項目 %{count} の投票
+      from_local_user: ローカルユーザー
+      hidden: 非公開投稿
+      moderate_account: アカウントをモデレートする
+      reason_actions:
+        reaction_emoji_reaction: 絵文字リアクション
+        reaction_favourite: お気に入りに登録
+        reaction_follow: フォローリクエスト
+        reaction_reblog: ブースト
+        reaction_vote: 投票
+        status_create: 投稿
+        status_edit: 投稿を編集
+      title: NGルール「%{title}」の履歴
     ng_words:
+      block_unfollow_account_mention: 自分のサーバーのフォロワーを持たない全てのアカウントからのメンション・参照を全て拒否する
+      block_unfollow_account_mention_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。NGルールで代替してください。
+      deprecated: 新しいバージョンで削除する予定の設定
+      deprecated_hint: これらの設定は、次回のLTS、またはkmyblueバージョン14.0のどちらか早い方で削除する予定です。それぞれの設定の説明を参照して、可能であれば新しい設定に置き換えてください。
       hide_local_users_for_anonymous: ログインしていない状態でローカルユーザーの投稿をタイムラインから取得できないようにする
+      hide_local_users_for_anonymous_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。サーバー設定の「見つける」にある「公開タイムラインへの未認証のアクセスを許可する」で、完全ではありませんが代替可能です。
+      history_hint: 設定されたNGワードによって実際に拒否された投稿などは、履歴より確認できます。NGワードの指定に誤りがないか定期的に確認することをおすすめします。
+      hold_remote_new_accounts: リモートの新規アカウントを保留する
       keywords: 投稿できないキーワード
-      keywords_for_stranger_mention: フォローしていないアカウントへのメンションで利用できないキーワード
-      keywords_for_stranger_mention_hint: フォローしていないアカウントへのメンションにのみ適用されます。現状は外部サーバーから来た投稿のみに適用されます
+      keywords_for_stranger_mention: フォローしていないアカウントへのメンションや参照で利用できないキーワード
+      keywords_for_stranger_mention_hint: フォローしていないアカウントへのメンション、参照、引用にのみ適用されます
       keywords_hint: 行を「?」で始めると、正規表現が使えます
+      permit_new_account_domains: 新規ユーザーを自動承認するドメイン
+      preamble: スパムや嫌がらせを多くのサーバーから受け取った場合など、ドメインブロックで解決できない問題が発生した場合にこの設定が非常に役に立ちます。他のサーバーからの受信や自分のサーバー内で、特定キーワードが含まれていたり、メンション数が多すぎたりする投稿を拒否することができます。問題のない投稿が削除されないよう、設定は慎重に検討してください。拒否された投稿は、限定投稿でない限り履歴に記録されます。さらに細かい設定が必要な場合は、別の機能である「NGルール」をお使いください。
       post_hash_tags_max: 投稿に設定可能なハッシュタグの最大数
+      post_mentions_max: 投稿に設定可能なメンションの最大数
+      post_stranger_mentions_max: 投稿に設定可能なメンションの最大数 (メンション先にフォロワー以外を1人でも含む場合)
+      remote_approval_list: 承認待ちのリモートアカウント一覧
+      remote_approval_hint: 指定されていないドメインで新しく認識されたアカウントはサスペンド状態になります。その一覧を確認し、必要であれば承認を行うことができます。この設定が有効でない場合、全てのリモートアカウントが即座に承認されます。
       stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
-      stranger_mention_from_local_ng_hint: サーバーの登録が承認制でない場合、あなたのサーバーにもスパムが入り込む可能性があります
+      stranger_mention_from_local_ng_hint: この設定は削除予定です。設定削除後は、常にチェックをつけている場合と同じ挙動になります。この動作を希望しない場合は、NGルールで代替してください。
       test_error: NGワードのテストに失敗しました。正規表現のミスが含まれているかもしれません
       title: NGワードとスパム
+      white_list: ホワイトリスト
+      white_list_hint: 通常のホワイトリストとは異なり、これまでのアカウントは全て信頼済としてマークされ、新たに認識されるアカウントが全て保留中となります。ホワイトリストを有効にしたところで外部からの攻撃が即座に消えるわけではありませんが、モデレーションを進めることで徐々に確実に減らすことができます。また、定期的なリモートアカウント承認作業が求められます。
+    ngword_histories:
+      back_to_ng_words: NGワードとスパム
+      target_types:
+        account_name: アカウントの名前
+        account_note: アカウントの説明文
+        status: 投稿
+      title: NGワード検出履歴
     relationships:
       title: "%{acct} さんのフォロー・フォロワー"
     relays:
@@ -821,9 +952,13 @@ ja:
       title: サーバーのルール
     sensitive_words:
       alert: この投稿にはセンシティブなキーワードが含まれるため、警告文が追加されました
+      auto_warning_text: カスタム警告文
+      auto_warning_text_hint: 指定しなかった場合は、各言語のデフォルト警告文が使用されます
       hint: センシティブなキーワードの設定は、当サーバーのローカルユーザーによる公開範囲「公開」「ローカル公開」「ログインユーザーのみ」に対して適用されます。
-      keywords: センシティブなキーワード（警告文は除外）
-      keywords_for_all: センシティブなキーワード（警告文にも適用）
+      keywords: ローカルの投稿に適用するセンシティブなキーワード（警告文は除外）
+      keywords_all: ローカル・リモートの投稿に適用するセンシティブなキーワード（警告文は除外）
+      keywords_all_for_all: ローカル・リモートの投稿に適用するセンシティブなキーワード（警告文にも適用）
+      keywords_for_all: ローカルの投稿に適用するセンシティブなキーワード（警告文にも適用）
       keywords_for_all_hint: ここで指定したキーワードを含む投稿は強制的にCWになります。警告文にも含まれていればCWになります。行が「?」で始まっていれば正規表現が使えます
       keywords_hint: ここで指定したキーワードを含む投稿は強制的にCWになります。ただし警告文に使用していた場合は無視されます
       title: センシティブ単語と設定
@@ -849,7 +984,7 @@ ja:
         desc_html: この設定を自分で変更していない全ユーザーに影響します
         title: デフォルトで検索エンジンによるインデックスを拒否する
       discovery:
-        emoji_reactions: スタンプ
+        emoji_reactions: 絵文字リアクション
         follow_recommendations: おすすめフォロー
         friend_servers: フレンドサーバー
         preamble: Mastodon を知らないユーザーを取り込むには、興味深いコンテンツを浮上させることが重要です。サーバー上で様々なディスカバリー機能がどのように機能するかを制御します。
@@ -865,6 +1000,7 @@ ja:
         disabled: 誰にも許可しない
         users: ログイン済みローカルユーザーのみ許可
       registrations:
+        moderation_recommandation: 登録受付を開始する前に、迅速かつ適切にモデレーションを行うチームを編成しましょう！
         preamble: あなたのサーバー上でアカウントを作成できるユーザーを制御します。
         title: アカウント作成
       registrations_mode:
@@ -872,6 +1008,7 @@ ja:
           approved: 登録には承認が必要
           none: 誰にも許可しない
           open: 誰でも登録可
+        warning_hint: モデレーションチームがスパムや悪意のある登録を迅速に処理できる自信がない限り、サインアップを承認制にすることをお勧めします。
       security:
         authorized_fetch: 連合サーバーによる署名なしでの情報取得を拒否する
         authorized_fetch_hint: ほかの連合サーバーから受け付けるリクエストに署名を必須にすることで、ユーザーによるブロックおよびドメインブロック両方の効果をより強力にします。ただし連合の処理コストが増えてパフォーマンス面で不利になるほか、このサーバーから送られた反応が届く範囲が狭まったり、連合における互換性の問題を招く可能性もあります。また、この機能は公開投稿やプロフィールへのアクセスをブロックした相手から完全に遮断できるものではありません。
@@ -894,8 +1031,8 @@ ja:
         patch: パッチ (バグ修正のみ)
       version: バージョン
     special_instances:
-      emoji_reaction_disallow_domains: 自分がスタンプをつけることを許可しないドメイン
-      emoji_reaction_disallow_domains_hint: 連合先に配慮する必要がある場合、ドメインを改行区切りで設定します。設定されたドメインの投稿にスタンプを付けることはできません。
+      emoji_reaction_disallow_domains: 自分のサーバーが絵文字リアクションをすることを許可しないドメイン
+      emoji_reaction_disallow_domains_hint: 連合先に配慮する必要がある場合、ドメインを改行区切りで設定します。設定されたドメインの投稿に絵文字リアクションを付けることはできません。
       title: 特殊なサーバー
     statuses:
       account: 作成者
@@ -1074,6 +1211,9 @@ ja:
       title: Webhooks
       webhook: Webhook
   admin_mailer:
+    auto_close_registrations:
+      body: "%{instance} のモデレーターによる活動がしばらくなかったため、%{instance} のアカウント作成は手動での承認を必要とするように自動的に変更されました。これには %{instance} が悪意ある者の踏み台として使われることを防ぐ役割があります。アカウント作成は必要に応じていつでも再び開放できます。"
+      subject: "%{instance} のアカウント作成は自動的に承認制に変更されました"
     new_appeal:
       actions:
         delete_statuses: 投稿を削除する
@@ -1180,7 +1320,7 @@ ja:
     advanced_web_interface_hint: 'ディスプレイを幅いっぱいまで活用したい場合、上級者向け UI をおすすめします。ホーム、通知、連合タイムライン、更にはリストやハッシュタグなど、様々な異なるカラムから望む限りの情報を一度に受け取れるような設定が可能になります。'
     animations_and_accessibility: アニメーションとアクセシビリティー
     confirmation_dialogs: 確認ダイアログ
-    custom_emoji_and_emoji_reactions: カスタム絵文字とスタンプ
+    custom_emoji_and_emoji_reactions: カスタム絵文字と絵文字リアクション
     discovery: 見つける
     localization:
       body: Mastodonは有志によって翻訳されています。
@@ -1252,6 +1392,9 @@ ja:
       saml: SAML
     register: 登録する
     registration_closed: "%{instance}は現在、新規登録停止中です"
+    registration_limit:
+      hint_html: 新規登録可能な上限人数、もしくは時間帯は、管理者によって制限されています。制限中は認証を完了することができません。管理者に問い合わせるか、制限が解除されるまでお待ちください。なお認証期限に達した場合は、再度新規登録を行う必要があります。
+      title: 新規登録は現在制限中です
     resend_confirmation: 確認メールを再送
     reset_password: パスワードを再発行
     rules:
@@ -1408,6 +1551,7 @@ ja:
   filters:
     contexts:
       account: プロフィール
+      explore: トレンド・検索
       home: ホームおよびリスト
       notifications: 通知
       public: 公開タイムライン
@@ -1631,9 +1775,9 @@ ja:
       subject: "%{name}さんにお気に入りに登録されました"
       title: 新たなお気に入り登録
     emoji_reaction:
-      body: "%{name}さんにスタンプをつけられた、あなたの投稿があります:"
-      subject: "%{name}さんにスタンプをつけられました"
-      title: 新たなスタンプ
+      body: "%{name}さんに絵文字をつけられた、あなたの投稿があります:"
+      subject: "%{name}さんに絵文字をつけられました"
+      title: 新たな絵文字リアクション
     follow:
       body: "%{name}さんにフォローされています！"
       subject: "%{name}さんにフォローされています"
@@ -1703,7 +1847,7 @@ ja:
     does_not_search: このサーバーでは全文検索機能を利用できません。代わりに、他のkmyblueサーバーであなたの投稿がこの設定に従って検索されます。
     dtl: ディープタイムライン
     dtl_hint: "#%{tag} ハッシュタグに参加することで、ディープタイムラインに投稿できます。ここではディープタイムラインを利用しやすくするための設定ができます。"
-    emoji_reaction_permitting: スタンプの受け入れ
+    emoji_reaction_permitting: 絵文字リアクションの受け入れ
     other: その他
     posting_defaults: デフォルトの投稿設定
     public_timelines: 公開タイムライン
@@ -1733,10 +1877,13 @@ ja:
   reactions:
     errors:
       banned: 指定ユーザーからのリアクションは禁止されています
-      disabled: このサーバーではスタンプ機能は無効になっています
+      disabled: このサーバーでは絵文字リアクション機能は無効になっています
       duplication: 同じリアクションを複数行おうとしました
       limit_reached: リアクションの種類が上限に達しました
       unrecognized_emoji: は絵文字として認識されていません
+  redirects:
+    prompt: リンク先を確かめ、信用できる場合のみリンクをクリックしてください。
+    title: "%{instance} から別のサーバーに移動します。"
   relationships:
     activity: 活動
     confirm_follow_selected_followers: 選択したフォロワーをフォローしてもよろしいですか？
@@ -1890,14 +2037,20 @@ ja:
       public_search_long: 検索が許可された全ての投稿が検索できます
       public_unlisted: ローカルとフォロワー
       public_unlisted_long: ローカル・フォロワー・反応者のみが検索できます
+      unset: (未対応サーバー)
     show_more: もっと見る
     show_newer: 新しいものを表示
     show_older: 古いものを表示
     show_thread: スレッドを表示
     title: '%{name}: "%{quote}"'
     too_many_hashtags: ハッシュタグが多すぎます
+    too_many_mentions: メンションが多すぎます
+    violate_rules: サーバールールに違反するため投稿できません
     visibilities:
       direct: ダイレクト
+      limited: 限定投稿
+      login: ログインユーザーのみ
+      login_long: ログインしたユーザーのみが見ることができます
       private: フォロワー限定
       private_long: フォロワーにのみ表示されます
       public: 公開
@@ -1928,8 +2081,8 @@ ja:
     keep_polls_hint: アンケート付きの投稿を削除せずに残します
     keep_self_bookmark: ブックマークした投稿を保持
     keep_self_bookmark_hint: 自分自身でブックマークした投稿を削除せずに残します
-    keep_self_emoji: スタンプをつけた投稿を保持
-    keep_self_emoji_hint: 自分自身でスタンプをつけた投稿を削除せずに残します
+    keep_self_emoji: 絵文字をつけた投稿を保持
+    keep_self_emoji_hint: 自分自身で絵文字をつけた投稿を削除せずに残します
     keep_self_fav: お気に入りに登録した投稿を保持
     keep_self_fav_hint: 自分自身でお気に入りに登録した投稿を削除せずに残します
     min_age:
@@ -1942,8 +2095,8 @@ ja:
       '63113904': 2年
       '7889238': 3ヶ月
     min_age_label: 投稿を保持する期間
-    min_emojis: スタンプの基準値
-    min_emojis_hint: この数以上、スタンプをつけられた投稿を削除せずに残します。空白にしておくと、数に関わらず投稿を削除します。
+    min_emojis: 絵文字リアクションの基準値
+    min_emojis_hint: この数以上、絵文字をつけられた投稿を削除せずに残します。空白にしておくと、数に関わらず投稿を削除します。
     min_favs: お気に入りの基準値
     min_favs_hint: この数以上、お気に入り登録された投稿を削除せずに残します。空白にしておくと、お気に入りの数に関わらず投稿を削除します。
     min_reblogs: ブーストの基準値
@@ -2002,6 +2155,12 @@ ja:
       extra: ダウンロードの準備ができました！
       subject: アーカイブの準備ができました
       title: アーカイブの取り出し
+    failed_2fa:
+      details: '試行されたログインの詳細は以下のとおりです:'
+      explanation: アカウントへのログインが試行されましたが、二要素認証で不正な回答が送信されました。
+      further_actions_html: このログインに心当たりがない場合は、ただちに%{action}してください。
+      subject: 二要素認証に失敗しました
+      title: 二要素認証に失敗した記録があります
     suspicious_sign_in:
       change_password: パスワードを変更
       details: 'ログインの詳細は以下のとおりです:'
@@ -2058,6 +2217,7 @@ ja:
     go_to_sso_account_settings: 外部サービスアカウントの設定はこちらで行ってください
     invalid_otp_token: 二要素認証コードが間違っています
     otp_lost_help_html: どちらも使用できない場合、%{email}に連絡を取ると解決できるかもしれません
+    rate_limited: 認証に失敗した回数が多すぎます。時間をおいてからログインしてください。
     seamless_external_login: あなたは外部サービスを介してログインしているため、パスワードとメールアドレスの設定は利用できません。
     signed_in_as: '下記でログイン中:'
   verification:

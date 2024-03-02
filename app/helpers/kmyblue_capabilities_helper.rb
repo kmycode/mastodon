@@ -28,6 +28,7 @@ module KmyblueCapabilitiesHelper
     end
     capabilities << :kmyblue_visibility_public_unlisted if Setting.enable_public_unlisted_visibility
     capabilities << :kmyblue_searchability_public_unlisted if Setting.enable_public_unlisted_visibility
+    capabilities << :kmyblue_no_public_visibility unless Setting.enable_public_visibility
     capabilities << :timeline_no_local unless Setting.enable_local_timeline
 
     capabilities

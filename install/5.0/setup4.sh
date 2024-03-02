@@ -6,8 +6,8 @@ Install Ruby
 EOF
 
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install 3.2.2
-rbenv global 3.2.2
+RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install 3.2.3
+rbenv global 3.2.3
 
 cat << EOF
 

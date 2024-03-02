@@ -4,6 +4,7 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   include JsonLdHelper
   include Redisable
   include Lockable
+  include NgRuleHelper
 
   class AbortError < ::StandardError; end
 
@@ -161,16 +162,50 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def valid_status?
-    !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}") && !Admin::NgWord.hashtag_reject?(@raw_tags.size)
+    valid = !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status)
+    valid = !Admin::NgWord.hashtag_reject?(@raw_tags.size) if valid
+    valid = false if valid && Admin::NgWord.mention_reject?(@raw_mentions.size, uri: @status.uri, target_type: :status, text: "#{@status_parser.spoiler_text}\n#{@status_parser.text}")
+    valid = false if valid && (mention_to_local_stranger? || reference_to_local_stranger?) && Admin::NgWord.stranger_mention_reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status)
+    valid = false if valid && (mention_to_local_stranger? || reference_to_local_stranger?) && Admin::NgWord.stranger_mention_reject_with_count?(@raw_mentions.size, uri: @status.uri, target_type: :status, text: "#{@status_parser.spoiler_text}\n#{@status_parser.text}")
+    valid = false if valid && (mention_to_local_stranger? || reference_to_local_stranger?) && reject_reply_exclude_followers?
+
+    valid
   end
 
   def validate_status_mentions!
-    raise AbortError if mention_to_stranger? && Admin::NgWord.stranger_mention_reject?("#{@status.spoiler_text}\n#{@status.text}")
+    raise AbortError unless valid_status_for_ng_rule?
   end
 
-  def mention_to_stranger?
-    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @status.account.id && !mentioned_account.following?(@status.account) } ||
-      (@status.thread.present? && @status.thread.account.id != @status.account.id && !@status.thread.account.following?(@status.account))
+  def valid_status_for_ng_rule?
+    check_invalid_status_for_ng_rule! @account,
+                                      reaction_type: 'edit',
+                                      uri: @status.uri,
+                                      url: @status_parser.url || @status.url,
+                                      spoiler_text: @status.spoiler_text,
+                                      text: @status.text,
+                                      tag_names: @raw_tags,
+                                      visibility: @status.visibility,
+                                      searchability: @status.searchability,
+                                      sensitive: @status.sensitive,
+                                      media_count: @next_media_attachments.size,
+                                      poll_count: @status.poll&.options&.size || 0,
+                                      quote: quote,
+                                      reply: @status.reply?,
+                                      mention_count: @status.mentions.count,
+                                      reference_count: reference_uris.size,
+                                      mention_to_following: !(mention_to_local_stranger? || reference_to_local_stranger?)
+  end
+
+  def mention_to_local_stranger?
+    return @mention_to_local_stranger if defined?(@mention_to_local_stranger)
+
+    @mention_to_local_stranger = @raw_mentions.filter_map { |uri| ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Account) }.any? { |mentioned_account| !mentioned_account.following?(@status.account) }
+    @mention_to_local_stranger ||= @status.thread.present? && @status.thread.account_id != @status.account_id && @status.thread.account.local? && !@status.thread.account.following?(@status.account)
+    @mention_to_local_stranger
+  end
+
+  def reference_to_local_stranger?
+    local_referred_accounts.any? { |account| !account.following?(@account) }
   end
 
   def update_immediate_attributes!
@@ -179,11 +214,21 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
     @status.sensitive    = @account.sensitized? || @status_parser.sensitive || false
     @status.language     = @status_parser.language
 
+    process_sensitive_words
+
     @significant_changes = text_significantly_changed? || @status.spoiler_text_changed? || @media_attachments_changed || @poll_changed
 
     @status.edited_at = @status_parser.edited_at if significant_changes?
 
     @status.save!
+  end
+
+  def process_sensitive_words
+    return unless %i(public public_unlisted login).include?(@status.visibility.to_sym) && Admin::SensitiveWord.sensitive?(@status.text, @status.spoiler_text, local: false)
+
+    @status.text = Admin::SensitiveWord.modified_text(@status.text, @status.spoiler_text)
+    @status.spoiler_text = Admin::SensitiveWord.alternative_text
+    @status.sensitive = true
   end
 
   def read_metadata
@@ -193,7 +238,7 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
 
     as_array(@json['tag']).each do |tag|
       if equals_or_includes?(tag['type'], 'Hashtag')
-        @raw_tags << tag['name'] if tag['name'].present?
+        @raw_tags << tag['name'] if !ignore_hashtags? && tag['name'].present?
       elsif equals_or_includes?(tag['type'], 'Mention')
         @raw_mentions << tag['href'] if tag['href'].present?
       elsif equals_or_includes?(tag['type'], 'Emoji')
@@ -271,10 +316,30 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def update_references!
-    references = @json['references'].nil? ? [] : ActivityPub::FetchReferencesService.new.call(@status, @json['references'])
-    quote = @json['quote'] || @json['quoteUrl'] || @json['quoteURL'] || @json['_misskey_quote']
+    references = reference_uris
 
     ProcessReferencesService.call_service_without_error(@status, [], references, [quote].compact)
+  end
+
+  def reference_uris
+    return @reference_uris if defined?(@reference_uris)
+
+    @reference_uris = @json['references'].nil? ? [] : (ActivityPub::FetchReferencesService.new.call(@status.account, @json['references']) || [])
+    @reference_uris += ProcessReferencesService.extract_uris(@json['content'] || '')
+  end
+
+  def quote
+    @json['quote'] || @json['quoteUrl'] || @json['quoteURL'] || @json['_misskey_quote']
+  end
+
+  def local_referred_accounts
+    return @local_referred_accounts if defined?(@local_referred_accounts)
+
+    local_referred_statuses = reference_uris.filter_map do |uri|
+      ActivityPub::TagManager.instance.local_uri?(uri) && ActivityPub::TagManager.instance.uri_to_resource(uri, Status)
+    end.compact
+
+    @local_referred_accounts = local_referred_statuses.map(&:account)
   end
 
   def expected_type?
@@ -296,6 +361,18 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
     return @skip_download if defined?(@skip_download)
 
     @skip_download ||= DomainBlock.reject_media?(@account.domain)
+  end
+
+  def ignore_hashtags?
+    return @ignore_hashtags if defined?(@ignore_hashtags)
+
+    @ignore_hashtags ||= DomainBlock.reject_hashtag?(@account.domain)
+  end
+
+  def reject_reply_exclude_followers?
+    return @reject_reply_exclude_followers if defined?(@reject_reply_exclude_followers)
+
+    @reject_reply_exclude_followers ||= DomainBlock.reject_reply_exclude_followers?(@account.domain)
   end
 
   def unsupported_media_type?(mime_type)

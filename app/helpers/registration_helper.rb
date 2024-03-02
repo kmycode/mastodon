@@ -3,8 +3,10 @@
 module RegistrationHelper
   extend ActiveSupport::Concern
 
+  include RegistrationLimitationHelper
+
   def allowed_registration?(remote_ip, invite)
-    !Rails.configuration.x.single_user_mode && !omniauth_only? && (registrations_open? || invite&.valid_for_use?) && !ip_blocked?(remote_ip)
+    !Rails.configuration.x.single_user_mode && !omniauth_only? && ((registrations_open? && !reach_registrations_limit?) || invite&.valid_for_use?) && !ip_blocked?(remote_ip)
   end
 
   def registrations_open?

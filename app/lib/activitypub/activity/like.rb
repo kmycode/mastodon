@@ -4,6 +4,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
   include Redisable
   include Lockable
   include JsonLdHelper
+  include NgRuleHelper
 
   def perform
     @original_status = status_from_uri(object_uri)
@@ -25,8 +26,9 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
 
   def process_favourite
     return if @account.favourited?(@original_status)
+    return unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'favourite', recipient: @original_status.account, target_status: @original_status
 
-    favourite = @original_status.favourites.create!(account: @account)
+    favourite = @original_status.favourites.create!(account: @account, uri: @json['id'])
 
     LocalNotificationWorker.perform_async(@original_status.account_id, favourite.id, 'Favourite', 'favourite')
     Trends.statuses.register(@original_status)
@@ -34,7 +36,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
 
   def process_emoji_reaction
     return if !@original_status.account.local? && !Setting.receive_other_servers_emoji_reaction
-    return if silence_domain? && (!@original_status.local? || !@original_status.account.following?(@account))
+    return if (silence_domain? || @account.silenced?) && (!@original_status.local? || !@original_status.account.following?(@account))
 
     # custom emoji
     emoji = nil
@@ -43,10 +45,12 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
       return if emoji.nil?
     end
 
+    return unless check_invalid_reaction_for_ng_rule! @account, uri: @json['id'], reaction_type: 'emoji_reaction', emoji_reaction_name: emoji&.shortcode || shortcode, emoji_reaction_origin_domain: emoji&.domain, recipient: @original_status.account, target_status: @original_status
+
     reaction = nil
 
     with_redis_lock("emoji_reaction:#{@original_status.id}") do
-      return if EmojiReaction.where(account: @account, status: @original_status).count >= EmojiReaction::EMOJI_REACTION_PER_ACCOUNT_LIMIT
+      return if EmojiReaction.where(account: @account, status: @original_status).count >= EmojiReaction::EMOJI_REACTION_PER_REMOTE_ACCOUNT_LIMIT
       return if EmojiReaction.find_by(account: @account, status: @original_status, name: shortcode)
 
       reaction = @original_status.emoji_reactions.create!(account: @account, name: shortcode, custom_emoji: emoji, uri: @json['id'])

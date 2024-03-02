@@ -23,8 +23,8 @@ class FriendDomain < ApplicationRecord
   validates :domain, presence: true, uniqueness: true, if: :will_save_change_to_domain?
   validates :inbox_url, presence: true, uniqueness: true, if: :will_save_change_to_inbox_url?
 
-  enum active_state: { idle: 0, pending: 1, accepted: 2, rejected: 3 }, _prefix: :i_am
-  enum passive_state: { idle: 0, pending: 1, accepted: 2, rejected: 3 }, _prefix: :they_are
+  enum :active_state, { idle: 0, pending: 1, accepted: 2, rejected: 3 }, prefix: :i_am
+  enum :passive_state, { idle: 0, pending: 1, accepted: 2, rejected: 3 }, prefix: :they_are
 
   scope :by_domain_and_subdomains, ->(domain) { where(domain: Instance.by_domain_and_subdomains(domain).select(:domain)) }
   scope :enabled, -> { where(active_state: :accepted).or(FriendDomain.where(passive_state: :accepted)).where(available: true) }

@@ -38,6 +38,7 @@
  * @property {boolean} enable_local_privacy
  * @property {boolean} enable_local_timeline
  * @property {boolean} enable_dtl_menu
+ * @property {boolean} enable_public_privacy
  * @property {boolean=} expand_spoilers
  * @property {HideItemsDefinition[]} hide_items
  * @property {boolean} limited_federation_mode
@@ -48,6 +49,7 @@
  * @property {string=} owner
  * @property {boolean} profile_directory
  * @property {boolean} registrations_open
+ * @property {boolean} registrations_reach_limit
  * @property {boolean} reduce_motion
  * @property {string} repository
  * @property {boolean} search_enabled
@@ -121,6 +123,7 @@ export const domain = getMeta('domain');
 export const dtlTag = getMeta('dtl_tag');
 export const enableEmojiReaction = getMeta('enable_emoji_reaction');
 export const enableLocalPrivacy = getMeta('enable_local_privacy');
+export const enablePublicPrivacy = getMeta('enable_public_privacy');
 export const enableLocalTimeline = getMeta('enable_local_timeline');
 export const enableLoginPrivacy = getMeta('enable_login_privacy');
 export const enableDtlMenu = getMeta('enable_dtl_menu');
@@ -134,6 +137,7 @@ export const owner = getMeta('owner');
 export const profile_directory = getMeta('profile_directory');
 export const reduceMotion = getMeta('reduce_motion');
 export const registrationsOpen = getMeta('registrations_open');
+export const registrationsReachLimit = getMeta('registrations_reach_limit');
 export const repository = getMeta('repository');
 export const searchEnabled = getMeta('search_enabled');
 export const trendsEnabled = getMeta('trends_enabled');
