@@ -111,7 +111,7 @@ class REST::InstanceSerializer < ActiveModel::Serializer
   def registrations
     {
       enabled: registrations_enabled?,
-      approval_required: Setting.registrations_mode == 'approved',
+      approval_required: Setting.registrations_mode == 'approved' || (Setting.registrations_mode == 'open' && !registrations_in_time?),
       limit_reached: Setting.registrations_mode != 'none' && reach_registrations_limit?,
       message: registrations_enabled? ? nil : registrations_message,
       url: ENV.fetch('SSO_ACCOUNT_SIGN_UP', nil),

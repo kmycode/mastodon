@@ -485,18 +485,21 @@ RSpec.describe Auth::RegistrationsController do
               user = User.find_by(email: 'test@example.com')
               expect(user).to_not be_nil
               expect(user.locale).to eq(accept_language)
+              expect(user.approved?).to be true
             end
           else
             it 'does not create user' do
               subject
               user = User.find_by(email: 'test@example.com')
-              expect(user).to be_nil
+              expect(user).to_not be_nil
+              expect(user.approved?).to be false
             end
           end
         end
       end
 
       it_behaves_like 'registration with time', 'time range is not set', 0, 24, 0, 0, true
+      it_behaves_like 'registration with time', 'time range is default values', 0, 0, 0, 0, true
       it_behaves_like 'registration with time', 'time range is set', 9, 12, 0, 0, true
       it_behaves_like 'registration with time', 'time range is out of range', 12, 15, 0, 0, false
       it_behaves_like 'registration with time', 'time range is invalid', 20, 15, 0, 0, true

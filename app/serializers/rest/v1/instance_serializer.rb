@@ -115,7 +115,7 @@ class REST::V1::InstanceSerializer < ActiveModel::Serializer
   end
 
   def approval_required
-    Setting.registrations_mode == 'approved'
+    Setting.registrations_mode == 'approved' || (Setting.registrations_mode == 'open' && !registrations_in_time?)
   end
 
   def invites_enabled

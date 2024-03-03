@@ -357,8 +357,8 @@ en:
         registrations_limit: User registration limit
         registrations_limit_per_day: User registration limit per day
         registrations_mode: Who can sign-up
-        registrations_end_hour: Registration end hour (UTC 0-24)
-        registrations_start_hour: Registration start hour (UTC 0-24)
+        registrations_end_hour: Registration-without-approval end hour (UTC 0-24)
+        registrations_start_hour: Registration-without-approval start hour (UTC 0-24)
         registrations_secondary_end_hour: Secondary registration end hour (UTC 0-24) If input 0, secondary hour is disabled.
         registrations_secondary_start_hour: Secondary registration start hour (UTC 0-24)
         require_invite_text: Require a reason to join

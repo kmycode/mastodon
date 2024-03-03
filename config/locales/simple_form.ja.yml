@@ -116,8 +116,8 @@ ja:
         receive_other_servers_emoji_reaction: 負荷の原因になります。人が少ない場合にのみ有効にすることをおすすめします。
         registrations_limit: 現在のユーザー数がこれを超過すると、管理者がこの数値を増やさない限り新規登録できません。0を指定すると、この制限を無効化します。
         registrations_limit_per_day: 本日登録されたユーザー数がこれを超過すると、UTC時刻で翌日0時にならない限り新規登録できません。0を指定すると、この制限を無効化します。
-        registrations_end_hour: 新規登録可能な時間帯の開始時間を指定します。これより前の時間に登録することはできません。終了時間より後にすることはできません。
-        registrations_start_hour: 新規登録可能な時間帯の終了時間を指定します。これより後の時間に登録することはできません。開始時間より前にすることはできません。
+        registrations_end_hour: 新規登録が承認なしで可能な時間帯の開始時間を指定します。これより前の時間に登録することはできません。終了時間より後にすることはできません。この時間帯から外れた新規登録には、別途承認が必要となります。
+        registrations_start_hour: 新規登録が承認なしで可能な時間帯の終了時間を指定します。これより後の時間に登録することはできません。開始時間より前にすることはできません。この時間帯から外れた新規登録には、別途承認が必要となります。
         require_invite_text: アカウント登録が承認制の場合、登録の際の申請事由の入力を必須にします
         site_contact_email: 法律またはサポートに関する問い合わせ先
         site_contact_username: マストドンでの連絡方法
@@ -368,10 +368,10 @@ ja:
         registrations_limit: 登録ユーザー数上限 (現在 %{count} 名)
         registrations_limit_per_day: 1日あたり登録ユーザー数上限 (現在 %{count} 名)
         registrations_mode: 新規登録が可能な人
-        registrations_end_hour: 登録受付終了時間 A (UTC 0〜24)
-        registrations_start_hour: 登録受付開始時間 A (UTC 0〜24)
-        registrations_secondary_end_hour: 登録受付終了時間 B (UTC 0〜24) ここで0を指定した場合、時間Bの設定は無効化されます
-        registrations_secondary_start_hour: 登録受付開始時間 B (UTC 0〜24)
+        registrations_end_hour: 登録に承認を必要としない時間帯の終了時刻 A (UTC 0〜24)
+        registrations_start_hour: 登録に承認を必要としない時間帯の開始時刻 A (UTC 0〜24)
+        registrations_secondary_end_hour: 登録に承認を必要としない時間帯の終了時刻 B (UTC 0〜24) ここで0を指定した場合、時間Bの設定は無効化されます
+        registrations_secondary_start_hour: 登録に承認を必要としない時間帯の開始時刻 B (UTC 0〜24)
         require_invite_text: 申請事由の入力を必須にする
         show_domain_blocks: ドメインブロックを表示
         show_domain_blocks_rationale: ドメインがブロックされた理由を表示

@@ -171,7 +171,7 @@
   "circles.subheading": "あなたのサークル",
   "closed_registrations.other_server_instructions": "Mastodonは分散型なので他のサーバーにアカウントを作ってもこのサーバーとやり取りできます。",
   "closed_registrations_modal.description": "現在{domain}でアカウント作成はできませんがMastodonは{domain}のアカウントでなくても利用できます。",
-  "closed_registrations_modal.description_when_reaching_limit": "新規登録は現在一時的に制限されています。登録の上限人数に達したか、または登録可能な時間帯の範囲外です。詳細を管理人に問い合わせるか、制限が解除されるまでお待ち下さい。",
+  "closed_registrations_modal.description_when_reaching_limit": "新規登録は現在一時的に制限されています。登録の上限人数に達しています。詳細を管理人に問い合わせるか、制限が解除されるまでお待ち下さい。",
   "closed_registrations_modal.find_another_server": "別のサーバーを探す",
   "closed_registrations_modal.preamble": "Mastodonは分散型なのでどのサーバーでアカウントを作成してもこのサーバーのユーザーを誰でもフォローして交流することができます。また自分でホスティングすることもできます！",
   "closed_registrations_modal.title": "Mastodonでアカウントを作成",

@@ -474,7 +474,7 @@ class User < ApplicationRecord
   end
 
   def open_registrations?
-    Setting.registrations_mode == 'open'
+    Setting.registrations_mode == 'open' && registrations_in_time?
   end
 
   def external?

@@ -177,7 +177,7 @@
   "circles.subheading": "Your circles",
   "closed_registrations.other_server_instructions": "Since Mastodon is decentralized, you can create an account on another server and still interact with this one.",
   "closed_registrations_modal.description": "Creating an account on {domain} is currently not possible, but please keep in mind that you do not need an account specifically on {domain} to use Mastodon.",
-  "closed_registrations_modal.description_when_reaching_limit": "New registrations are currently temporarily restricted. Either the maximum number of registrations has been reached or it is outside the time frame available for registration. Please contact the administrator for more information or wait until the restriction is lifted.",
+  "closed_registrations_modal.description_when_reaching_limit": "New registrations are currently temporarily restricted. Either the maximum number of registrations has been reached for registration. Please contact the administrator for more information or wait until the restriction is lifted.",
   "closed_registrations_modal.find_another_server": "Find another server",
   "closed_registrations_modal.preamble": "Mastodon is decentralized, so no matter where you create your account, you will be able to follow and interact with anyone on this server. You can even self-host it!",
   "closed_registrations_modal.title": "Signing up on Mastodon",
