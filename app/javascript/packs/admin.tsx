@@ -219,7 +219,7 @@ const onChangeRegistrationMode = (target: HTMLSelectElement) => {
 
   const toggleEnabled = (input: HTMLInputElement, value: boolean) => {
     input.disabled = !value;
-    if (enabled) {
+    if (value) {
       let element: HTMLElement | null = input;
       do {
         element.classList.remove('disabled');
