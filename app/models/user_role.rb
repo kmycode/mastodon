@@ -46,7 +46,7 @@ class UserRole < ApplicationRecord
     NONE = 0
     ALL  = FLAGS.values.reduce(&:|)
 
-    DEFAULT = FLAGS[:invite_users]
+    DEFAULT = 0
 
     CATEGORIES = {
       invites: %i(
