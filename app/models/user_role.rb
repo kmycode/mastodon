@@ -41,6 +41,7 @@ class UserRole < ApplicationRecord
   }.freeze
 
   EVERYONE_ROLE_ID = -99
+  NOBODY_POSITION = -1
 
   module Flags
     NONE = 0
@@ -108,7 +109,7 @@ class UserRole < ApplicationRecord
   has_many :users, inverse_of: :role, foreign_key: 'role_id', dependent: :nullify
 
   def self.nobody
-    @nobody ||= UserRole.new(permissions: Flags::NONE, position: -1)
+    @nobody ||= UserRole.new(permissions: Flags::NONE, position: NOBODY_POSITION)
   end
 
   def self.everyone
@@ -177,7 +178,7 @@ class UserRole < ApplicationRecord
   end
 
   def set_position
-    self.position = -1 if everyone?
+    self.position = NOBODY_POSITION if everyone?
   end
 
   def validate_own_role_edition

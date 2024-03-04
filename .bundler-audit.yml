@@ -5,3 +5,4 @@ ignore:
   # factor verification) since Mastodon v3.2.0
   - CVE-2024-0227
   - CVE-2024-27456
+  - CVE-2023-51774
