@@ -86,6 +86,10 @@ describe ApplicationHelper do
   describe 'open_registrations?' do
     it 'returns true when open for registrations' do
       allow(Setting).to receive(:[]).with('registrations_mode').and_return('open')
+      allow(Setting).to receive(:[]).with('registrations_start_hour').and_return(0)
+      allow(Setting).to receive(:[]).with('registrations_end_hour').and_return(0)
+      allow(Setting).to receive(:[]).with('registrations_secondary_start_hour').and_return(0)
+      allow(Setting).to receive(:[]).with('registrations_secondary_end_hour').and_return(0)
 
       expect(helper.open_registrations?).to be true
       expect(Setting).to have_received(:[]).with('registrations_mode')
