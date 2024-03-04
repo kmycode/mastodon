@@ -150,9 +150,9 @@ const onChangeRegistrationMode = (target) => {
     warning_hint.style.display = target.value === 'open' ? 'inline' : 'none';
   });
 
-  document.querySelectorAll('#form_admin_settings_require_invite_text').forEach((input) => {
-    input.disabled = !enabled;
-    if (enabled) {
+  const switchEnabled = (input, enable) => {
+    input.disabled = !enable;
+    if (enable) {
       let element = input;
       do {
         element.classList.remove('disabled');
@@ -165,6 +165,14 @@ const onChangeRegistrationMode = (target) => {
         element = element.parentElement;
       } while (element && !element.classList.contains('fields-group'));
     }
+  };
+
+  document.querySelectorAll('#form_admin_settings_require_invite_text').forEach((input) => {
+    switchEnabled(input, enabled);
+  });
+
+  document.querySelectorAll('#form_admin_settings_registrations_start_hour, #form_admin_settings_registrations_end_hour, #form_admin_settings_registrations_secondary_start_hour, #form_admin_settings_registrations_secondary_end_hour').forEach((input) => {
+    switchEnabled(input, target.value === 'open');
   });
 };
 
