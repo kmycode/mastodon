@@ -135,11 +135,15 @@ RSpec.describe UserRole do
     end
 
     it 'has default permissions' do
-      expect(subject.permissions).to eq UserRole::FLAGS[:invite_users]
+      expect(subject.permissions).to eq 0
     end
 
     it 'has negative position' do
       expect(subject.position).to eq(-1)
+    end
+
+    it 'is able to add invite permission' do
+      expect { subject.update!(permissions: UserRole::FLAGS[:invite_users]) }.to_not raise_error
     end
   end
 

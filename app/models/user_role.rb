@@ -47,6 +47,7 @@ class UserRole < ApplicationRecord
     ALL  = FLAGS.values.reduce(&:|)
 
     DEFAULT = 0
+    EVERYONE_ALLOWED = FLAGS[:invite_users]
 
     CATEGORIES = {
       invites: %i(
@@ -196,6 +197,6 @@ class UserRole < ApplicationRecord
   end
 
   def validate_dangerous_permissions
-    errors.add(:permissions_as_keys, :dangerous) if everyone? && Flags::DEFAULT & permissions != permissions
+    errors.add(:permissions_as_keys, :dangerous) if everyone? && Flags::EVERYONE_ALLOWED & permissions != permissions
   end
 end
