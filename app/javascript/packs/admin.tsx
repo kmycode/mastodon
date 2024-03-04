@@ -238,13 +238,17 @@ const onChangeRegistrationMode = (target: HTMLSelectElement) => {
     .querySelectorAll<HTMLInputElement>(
       'input#form_admin_settings_require_invite_text',
     )
-    .forEach((input) => { toggleEnabled(input, enabled); });
+    .forEach((input) => {
+      toggleEnabled(input, enabled);
+    });
 
   document
     .querySelectorAll<HTMLInputElement>(
       '#form_admin_settings_registrations_start_hour, #form_admin_settings_registrations_end_hour, #form_admin_settings_registrations_secondary_start_hour, #form_admin_settings_registrations_secondary_end_hour',
     )
-    .forEach((input) => { toggleEnabled(input, target.value === 'open'); });
+    .forEach((input) => {
+      toggleEnabled(input, target.value === 'open');
+    });
 };
 
 const convertUTCDateTimeToLocal = (value: string) => {
