@@ -176,6 +176,7 @@ en:
     action_logs:
       action_types:
         approve_appeal: Approve Appeal
+        approve_remote_account: Approve Remote Account
         approve_user: Approve User
         assigned_to_self_report: Assign Report
         change_email_user: Change E-mail for User
@@ -210,9 +211,12 @@ en:
         enable_custom_emoji: Enable Custom Emoji
         enable_sign_in_token_auth_user: Enable E-mail Token Authentication for User
         enable_user: Enable User
+        force_cw_status: Add CW to Post
+        force_sensitive_status: Add Sensitive Flag to Post
         memorialize_account: Memorialize Account
         promote_user: Promote User
         reject_appeal: Reject Appeal
+        reject_remote_account: Reject Remote Account
         reject_user: Reject User
         remove_avatar_user: Remove Avatar
         reopen_report: Reopen Report

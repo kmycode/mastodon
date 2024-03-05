@@ -173,6 +173,7 @@ ja:
     action_logs:
       action_types:
         approve_appeal: 抗議を承認
+        approve_remote_account: リモートアカウントの承認
         approve_user: ユーザーの承認
         assigned_to_self_report: 通報の担当者に設定
         change_email_user: ユーザーのメールアドレスを変更
@@ -207,9 +208,12 @@ ja:
         enable_custom_emoji: カスタム絵文字を有効化
         enable_sign_in_token_auth_user: メールトークンのユーザー認証を有効にする
         enable_user: ユーザーを有効化
+        force_cw_status: 投稿に警告文を追加
+        force_sensitive_status: 投稿を閲覧注意に変更
         memorialize_account: 追悼アカウント化
         promote_user: ユーザーを昇格
         reject_appeal: 抗議を却下
+        reject_remote_account: リモートアカウントを拒否
         reject_user: ユーザーを拒否
         remove_avatar_user: アイコンを削除
         reopen_report: 未解決に戻す
