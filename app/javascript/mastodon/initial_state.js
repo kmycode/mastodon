@@ -2,8 +2,7 @@
 
 
 /**
- * @typedef {
- *   | 'blocking_quote'
+ * @typedef { 'blocking_quote'
  *   | 'emoji_reaction_on_timeline'
  *   | 'emoji_reaction_unavailable_server'
  *   | 'emoji_reaction_count'
