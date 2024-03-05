@@ -46,6 +46,7 @@ class InitialStateSerializer < ActiveModel::Serializer
         object_account_user.setting_show_emoji_reaction_on_timeline ? nil : 'emoji_reaction_on_timeline',
         object_account_user.setting_show_quote_in_home ? nil : 'quote_in_home',
         object_account_user.setting_show_quote_in_public ? nil : 'quote_in_public',
+        object_account_user.setting_show_relationships ? nil : 'relationships',
       ].compact
     else
       store[:auto_play_gif] = Setting.auto_play_gif

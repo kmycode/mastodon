@@ -10,6 +10,7 @@ import { debounce } from 'lodash';
 
 import { TimelineHint } from 'mastodon/components/timeline_hint';
 import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';
+import { isHideItem, me } from 'mastodon/initial_state';
 import { normalizeForLookup } from 'mastodon/reducers/accounts_map';
 import { getAccountHidden } from 'mastodon/selectors';
 
@@ -130,7 +131,8 @@ class Followers extends ImmutablePureComponent {
 
     let emptyMessage;
 
-    const forceEmptyState = blockedBy || suspended || hidden;
+    const isHideRelationships = isHideItem('relationships') && accountId === me;
+    const forceEmptyState = blockedBy || suspended || hidden || isHideRelationships;
 
     if (suspended) {
       emptyMessage = <FormattedMessage id='empty_column.account_suspended' defaultMessage='Account suspended' />;
@@ -142,6 +144,8 @@ class Followers extends ImmutablePureComponent {
       emptyMessage = <FormattedMessage id='empty_column.account_hides_collections' defaultMessage='This user has chosen to not make this information available' />;
     } else if (remote && accountIds.isEmpty()) {
       emptyMessage = <RemoteHint url={remoteUrl} />;
+    } else if (isHideRelationships) {
+      emptyMessage = <FormattedMessage id='account.followers.hidden_from_me' defaultMessage='This information is hidden by your setting.' />;
     } else {
       emptyMessage = <FormattedMessage id='account.followers.empty' defaultMessage='No one follows this user yet.' />;
     }

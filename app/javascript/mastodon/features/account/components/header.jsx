@@ -24,7 +24,7 @@ import { Icon }  from 'mastodon/components/icon';
 import { IconButton } from 'mastodon/components/icon_button';
 import { ShortNumber } from 'mastodon/components/short_number';
 import DropdownMenuContainer from 'mastodon/containers/dropdown_menu_container';
-import { autoPlayGif, me, domain } from 'mastodon/initial_state';
+import { autoPlayGif, me, domain, isShowItem } from 'mastodon/initial_state';
 import { PERMISSION_MANAGE_USERS, PERMISSION_MANAGE_FEDERATION } from 'mastodon/permissions';
 import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
@@ -89,9 +89,9 @@ const titleFromAccount = account => {
 const messageForFollowButton = relationship => {
   if(!relationship) return messages.follow;
 
-  if (relationship.get('following') && relationship.get('followed_by')) {
+  if (relationship.get('following') && relationship.get('followed_by') && isShowItem('relationships')) {
     return messages.mutual;
-  } else if (!relationship.get('following') && relationship.get('followed_by')) {
+  } else if (!relationship.get('following') && relationship.get('followed_by') && isShowItem('relationships')) {
     return messages.followBack;
   } else if (relationship.get('following')) {
     return messages.unfollow;

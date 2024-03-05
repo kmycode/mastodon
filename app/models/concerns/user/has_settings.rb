@@ -119,6 +119,10 @@ module User::HasSettings
     settings['web.hide_blocking_quote']
   end
 
+  def setting_show_relationships
+    settings['web.show_relationships']
+  end
+
   def setting_allow_quote
     settings['allow_quote']
   end

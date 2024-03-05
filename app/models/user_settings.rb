@@ -69,6 +69,7 @@ class UserSettings
     setting :simple_timeline_menu, default: false
     setting :show_quote_in_home, default: true
     setting :show_quote_in_public, default: false
+    setting :show_relationships, default: true
     setting :hide_blocking_quote, default: true
     setting :hide_emoji_reaction_unavailable_server, default: false
     setting :hide_favourite_menu, default: false

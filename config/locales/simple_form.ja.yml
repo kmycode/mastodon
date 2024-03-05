@@ -290,6 +290,7 @@ ja:
         setting_lock_follow_from_bot: botからのフォローを承認制にする
         setting_show_quote_in_home: ホーム・リスト・アンテナなどで引用を表示する
         setting_show_quote_in_public: 公開タイムライン（ローカル・連合）で引用を表示する
+        setting_show_relationships: アカウント詳細ベージで、相手からのフォロー状況を表示する
         setting_stay_privacy: 投稿時に公開範囲を保存する
         setting_public_post_to_unlisted: サードパーティから公開範囲「公開」で投稿した場合、「ローカル公開」に変更する
         setting_reduce_motion: アニメーションの動きを減らす
