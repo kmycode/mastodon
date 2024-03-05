@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
 
-import { FormattedNumber } from 'react-intl';
+import { FormattedNumber, FormattedMessage } from 'react-intl';
 
 import api from 'mastodon/api';
 import { Skeleton } from 'mastodon/components/skeleton';
@@ -21,6 +21,7 @@ export default class Dimension extends PureComponent {
   state = {
     loading: true,
     data: null,
+    empty: false,
   };
 
   componentDidMount () {
@@ -30,6 +31,7 @@ export default class Dimension extends PureComponent {
       this.setState({
         loading: false,
         data: res.data,
+        empty: res.data.length === 0,
       });
     }).catch(err => {
       console.error(err);
@@ -38,7 +40,7 @@ export default class Dimension extends PureComponent {
 
   render () {
     const { label, limit } = this.props;
-    const { loading, data } = this.state;
+    const { loading, data, empty } = this.state;
 
     let content;
 
@@ -57,6 +59,18 @@ export default class Dimension extends PureComponent {
                 </td>
               </tr>
             ))}
+          </tbody>
+        </table>
+      );
+    } else if (empty) {
+      content = (
+        <table>
+          <tbody>
+            <tr className='dimension__item'>
+              <td className='dimension__item__value' colSpan={2}>
+                <FormattedMessage id='admin.dimenssions.disabled_key' defaultMessage='This information is invalid.' />
+              </td>
+            </tr>
           </tbody>
         </table>
       );

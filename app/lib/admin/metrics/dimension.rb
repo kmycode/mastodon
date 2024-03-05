@@ -14,6 +14,8 @@ class Admin::Metrics::Dimension
   }.freeze
 
   def self.retrieve(dimension_keys, start_at, end_at, limit, params)
+    dimension_keys.delete('servers') unless HighLoadHelper.allow_high_load?
+
     Array(dimension_keys).filter_map do |key|
       klass = DIMENSIONS[key.to_sym]
       klass&.new(start_at, end_at, limit, klass.with_params? ? params.require(key.to_sym) : nil)

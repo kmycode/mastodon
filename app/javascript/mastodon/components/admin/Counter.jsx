@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
 
-import { FormattedNumber } from 'react-intl';
+import { FormattedNumber, FormattedMessage } from 'react-intl';
 
 import classNames from 'classnames';
 
@@ -43,6 +43,7 @@ export default class Counter extends PureComponent {
   state = {
     loading: true,
     data: null,
+    empty: false,
   };
 
   componentDidMount () {
@@ -52,6 +53,7 @@ export default class Counter extends PureComponent {
       this.setState({
         loading: false,
         data: res.data,
+        empty: res.data.length === 0,
       });
     }).catch(err => {
       console.error(err);
@@ -60,7 +62,7 @@ export default class Counter extends PureComponent {
 
   render () {
     const { label, href, target } = this.props;
-    const { loading, data } = this.state;
+    const { loading, data, empty } = this.state;
 
     let content;
 
@@ -70,6 +72,12 @@ export default class Counter extends PureComponent {
           <span className='sparkline__value__total'><Skeleton width={43} /></span>
           <span className='sparkline__value__change'><Skeleton width={43} /></span>
         </>
+      );
+    } else if (empty) {
+      content = (
+        <span className='sparkline__value__change'>
+          <FormattedMessage id='admin.dimenssions.disabled_key' defaultMessage='This information is invalid.' />
+        </span>
       );
     } else {
       const measure = data[0];
@@ -94,7 +102,7 @@ export default class Counter extends PureComponent {
         </div>
 
         <div className='sparkline__graph'>
-          {!loading && (
+          {!loading && !empty && (
             <Sparklines width={259} height={55} data={data[0].data.map(x => x.value * 1)}>
               <SparklinesCurve />
             </Sparklines>

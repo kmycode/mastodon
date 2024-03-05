@@ -88,6 +88,7 @@
   "admin.dashboard.retention.average": "平均",
   "admin.dashboard.retention.cohort": "サインアップ月",
   "admin.dashboard.retention.cohort_size": "新しいユーザー",
+  "admin.dimenssions.disabled_key": "この情報は無効です。",
   "admin.impact_report.instance_accounts": "プロフィール情報が削除されるアカウントの数",
   "admin.impact_report.instance_followers": "このサーバーのユーザーが失うフォロワー数",
   "admin.impact_report.instance_follows": "対象のサーバーのユーザーが失うフォロワー数",

@@ -89,6 +89,7 @@
   "admin.dashboard.retention.average": "Average",
   "admin.dashboard.retention.cohort": "Sign-up month",
   "admin.dashboard.retention.cohort_size": "New users",
+  "admin.dimenssions.disabled_key": "This information is invalid.",
   "admin.impact_report.instance_accounts": "Accounts profiles this would delete",
   "admin.impact_report.instance_followers": "Followers our users would lose",
   "admin.impact_report.instance_follows": "Followers their users would lose",

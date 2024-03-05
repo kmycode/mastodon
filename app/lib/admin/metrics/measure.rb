@@ -19,6 +19,8 @@ class Admin::Metrics::Measure
   }.freeze
 
   def self.retrieve(measure_keys, start_at, end_at, params)
+    measure_keys.delete('instance_statuses') unless HighLoadHelper.allow_high_load?
+
     Array(measure_keys).filter_map do |key|
       klass = MEASURES[key.to_sym]
       klass&.new(start_at, end_at, klass.with_params? ? params.require(key.to_sym) : nil)
