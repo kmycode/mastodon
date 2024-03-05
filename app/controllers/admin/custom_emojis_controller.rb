@@ -40,7 +40,7 @@ module Admin
       @custom_emoji.assign_attributes(update_params)
 
       if @custom_emoji.save
-        log_action :create, @custom_emoji
+        log_action :update, @custom_emoji
         redirect_to admin_custom_emojis_path(filter_params), notice: I18n.t('admin.custom_emojis.updated_msg')
       else
         render :new
