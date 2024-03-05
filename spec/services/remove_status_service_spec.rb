@@ -83,6 +83,18 @@ RSpec.describe RemoveStatusService, :sidekiq_inline, type: :service do
     end
   end
 
+  context 'when removed status is null-searchability' do
+    let(:status) { PostStatusService.new.call(alice, visibility: 'unlisted', text: 'Public post') }
+
+    before do
+      status.update!(searchability: nil)
+    end
+
+    it 'does not throw error' do
+      expect { subject.call(status) }.to_not raise_error
+    end
+  end
+
   context 'when removed status is limited' do
     let(:status) { PostStatusService.new.call(alice, visibility: 'mutual', text: 'limited post') }
 

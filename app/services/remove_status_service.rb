@@ -19,6 +19,9 @@ class RemoveStatusService < BaseService
     @account  = status.account
     @options  = options
 
+    @visibility = @status.visibility&.to_sym || :public
+    @searchability = @status.searchability&.to_sym || @status.compute_searchability&.to_sym || :public
+
     with_redis_lock("distribute:#{@status.id}") do
       @status.discard_with_reblogs
 
@@ -146,7 +149,7 @@ class RemoveStatusService < BaseService
       featured_tag.decrement(@status.id)
     end
 
-    return unless %i(public public_unlisted login).include?(@status.visibility.to_sym) || (@status.unlisted_visibility? && %i(public public_unlisted).include?(@status.searchability.to_sym))
+    return unless %i(public public_unlisted login).include?(@visibility) || (@status.unlisted_visibility? && %i(public public_unlisted).include?(@searchability))
 
     return if skip_streaming?
 
@@ -157,7 +160,7 @@ class RemoveStatusService < BaseService
   end
 
   def remove_from_public
-    return unless %i(public public_unlisted login).include?(@status.visibility.to_sym)
+    return unless %i(public public_unlisted login).include?(@visibility)
 
     return if skip_streaming?
 
@@ -166,7 +169,7 @@ class RemoveStatusService < BaseService
   end
 
   def remove_from_media
-    return unless %i(public public_unlisted login).include?(@status.visibility.to_sym)
+    return unless %i(public public_unlisted login).include?(@visibility)
 
     return if skip_streaming?
 
