@@ -278,18 +278,18 @@ ja:
         setting_emoji_reaction_streaming_notify_impl2: Nyastodon, Catstodon, glitch-soc互換の絵文字リアクション機能を有効にする
         setting_enable_emoji_reaction: 絵文字リアクション機能を使用する
         setting_expand_spoilers: 閲覧注意としてマークされた投稿を常に展開する
-        setting_hide_blocking_quote: ブロックしたユーザーの投稿を引用した投稿を隠す
-        setting_hide_emoji_reaction_count: 投稿につけられた各絵文字の数を隠す
         setting_hide_emoji_reaction_unavailable_server: 絵文字リアクションに対応していないと思われるサーバーの投稿から絵文字リアクション機能を隠す
-        setting_hide_favourite_menu: 右サイドメニューから「お気に入り」を隠す
-        setting_hide_followers_count: フォロワー数を隠す
-        setting_hide_following_count: フォロー数を隠す
         setting_hide_network: 繋がりを隠す
-        setting_hide_recent_emojis: 絵文字ピッカーで最近使用した絵文字を隠す（絵文字デッキのみを表示する）
-        setting_hide_statuses_count: 投稿数を隠す
         setting_lock_follow_from_bot: botからのフォローを承認制にする
+        setting_show_blocking_quote: ブロックしたユーザーの投稿を引用した投稿を表示する
+        setting_show_emoji_reaction_count: 投稿につけられた各絵文字の数を表示する
+        setting_show_favourite_menu: 右サイドメニューに「お気に入り」を表示する
+        setting_show_followers_count: フォロワー数を公開する
+        setting_show_following_count: フォロー数を公開する
         setting_show_quote_in_home: ホーム・リスト・アンテナなどで引用を表示する
         setting_show_quote_in_public: 公開タイムライン（ローカル・連合）で引用を表示する
+        setting_show_recent_emojis: 絵文字ピッカーで絵文字デッキと一緒に、絵文字の使用履歴も表示する
+        setting_show_statuses_count: 投稿数を公開する
         setting_stay_privacy: 投稿時に公開範囲を保存する
         setting_public_post_to_unlisted: サードパーティから公開範囲「公開」で投稿した場合、「ローカル公開」に変更する
         setting_reduce_motion: アニメーションの動きを減らす
@@ -345,7 +345,7 @@ ja:
         options:
           exclude_follows: フォロー中のユーザーをフィルターの対象にしない
           exclude_localusers: ローカルユーザーをフィルターの対象にしない
-          with_quote: 引用・参照の内容をフィルターの対象に含める
+          exclude_quote: 引用・参照の内容をフィルターの対象にしない
       form_admin_settings:
         activity_api_enabled: APIでユーザーアクティビティに関する集計統計を公開する
         backups_retention_period: ユーザーアーカイブの保持期間

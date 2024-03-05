@@ -44,6 +44,9 @@ class UserSettings
   setting :reject_send_limited_to_suspects, default: false
 
   setting_inverse_alias :indexable, :noindex
+  setting_inverse_alias :show_statuses_count, :hide_statuses_count
+  setting_inverse_alias :show_following_count, :hide_following_count
+  setting_inverse_alias :show_followers_count, :hide_followers_count
 
   namespace :web do
     setting :advanced_layout, default: false
@@ -73,6 +76,11 @@ class UserSettings
     setting :hide_emoji_reaction_unavailable_server, default: false
     setting :hide_favourite_menu, default: false
     setting :hide_emoji_reaction_count, default: false
+
+    setting_inverse_alias :'web.show_blocking_quote', :'web.hide_blocking_quote'
+    setting_inverse_alias :'web.show_emoji_reaction_count', :'web.hide_emoji_reaction_count'
+    setting_inverse_alias :'web.show_favourite_menu', :'web.hide_favourite_menu'
+    setting_inverse_alias :'web.show_recent_emojis', :'web.hide_recent_emojis'
   end
 
   namespace :notification_emails do

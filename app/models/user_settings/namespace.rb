@@ -18,4 +18,8 @@ class UserSettings::Namespace
       @definitions[s.key] = s
     end
   end
+
+  def setting_inverse_alias(key, original_key)
+    @definitions[key] = @definitions[original_key].inverse_of(key)
+  end
 end

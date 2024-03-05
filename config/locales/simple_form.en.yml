@@ -268,15 +268,8 @@ en:
           mutuals_only: Mutuals only
           outside_only: Followings or followers only
         setting_expand_spoilers: Always expand posts marked with content warnings
-        setting_hide_blocking_quote: Hide posts which have a quote written by the user you are blocking
-        setting_hide_emoji_reaction_count: Hide emoji reaction count
         setting_hide_emoji_reaction_unavailable_server: Hide emoji reaction button from unavailable server
-        setting_hide_favourite_menu: Hide favourite menu
-        setting_hide_followers_count: Hide followers count
-        setting_hide_following_count: Hide following count
         setting_hide_network: Hide your social graph
-        setting_hide_recent_emojis: Hide recent emojis
-        setting_hide_statuses_count: Hide statuses count
         setting_lock_follow_from_bot: Request approval about bot follow
         setting_public_post_to_unlisted: Convert public post to public unlisted if not using Web app
         setting_reduce_motion: Reduce motion in animations
@@ -285,9 +278,16 @@ en:
         setting_reject_unlisted_subscription: Reject sending unlisted visibility/non-public searchability posts to Misskey, Calckey
         setting_reverse_search_quote: Perform word-by-word search when search keywords are not enclosed in double quotes
         setting_show_application: Disclose application used to send posts
+        setting_show_blocking_quote: Show posts which have a quote written by the user you are blocking
+        setting_show_emoji_reaction_count: Show emoji reaction number
         setting_show_emoji_reaction_on_timeline: Show all emoji reactions on timeline
+        setting_show_favourite_menu: Show favourite menu
+        setting_show_followers_count: Show followers count
+        setting_show_following_count: Show following count
         setting_show_quote_in_home: Show quotes in home, list or antenna timelines
         setting_show_quote_in_public: Show quotes in public timelines
+        setting_show_recent_emojis: Show recent emojis
+        setting_show_statuses_count: Show statuses count
         setting_simple_timeline_menu: Reduce post menu on timeline
         setting_single_ref_to_quote: Deliver single reference to other server as quote
         setting_slip_local_emoji_reaction: Allow bypassing emoji reaction from local users
@@ -334,7 +334,7 @@ en:
         options:
           exclude_follows: Exclude following users
           exclude_localusers: Exclude local users
-          with_quote: Also check quote or references
+          exclude_quote: Exclude quote or references
       form_admin_settings:
         activity_api_enabled: Publish aggregate statistics about user activity in the API
         backups_retention_period: User archive retention period
