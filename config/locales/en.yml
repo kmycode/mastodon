@@ -685,7 +685,7 @@ en:
         empty: Empty NG rules
         empty_title: Empty title
         hit_count: "%{count} hits on this week"
-        preamble: While NG words are sufficient to deal with normal spam, some of these words must be specified too loosely, making it easier for other normal postings to get caught up in the restrictions. You can also specify the details of the account and the characteristics of the post in the NG rule. NG rules also support the prevention of spam using reactions.
+        preamble: Some spam inevitably requires specifying conditions that are too loose, making it easier for other normal posts to become involved in the restrictions; NG rules allow you to specify details such as account and posting characteristics to reduce the number of posts that get involved as much as possible. Please consider your settings carefully and check your history regularly to minimize the involvement of normal posts.
         title: NG Rules
       new:
         save: Save new NG rule
@@ -758,7 +758,7 @@ en:
       keywords_for_stranger_mention_hint: This words are checked posts from other servers only.
       keywords_hint: The first character of the line is "?". to use regular expressions
       permit_new_account_domains: Domain list to automatically approve new users
-      preamble: This setting is very useful when you receive spam or harassment from many servers, or when you encounter other problems that cannot be solved by domain blocking. You can reject posts received from other servers or within your own server that contain specific keywords or too many mentions. Please consider this setting carefully to ensure that posts that are not problematic are not deleted. Rejected posts will be recorded in your history unless they are limited posts. If you need more detailed settings, please use another feature, "NG Rules".
+      preamble: This setting is useful for solving problems related to spam that are difficult to address with domain blocking. You can reject posts that contain specific keywords or too many mentions. Please consider your settings carefully to avoid deleting problematic posts. More detailed settings can be made by using "NG Rules".
       post_hash_tags_max: Hash tags max for posts
       post_mentions_max: Mentions max for posts
       post_stranger_mentions_max: 投稿に設定可能なメンションの最大数 (If the mentions include at least one person who is not a follower of yours)
@@ -769,7 +769,7 @@ en:
       test_error: Testing is returned any errors
       title: NG words and against spams
       white_list: White list
-      white_list_hint: Unlike a normal whitelist, all previous accounts are marked as trusted, and all newly recognized accounts are placed on hold. Activating the whitelist does not immediately eliminate external attacks, but it can gradually and surely reduce them through moderation. In addition, a periodic remote account approval process is required.
+      white_list_hint: Whitelisting can be used as a last resort when exposed to severe attacks. External attacks do not disappear immediately, but they can be reduced gradually and reliably through moderation. In addition, a regular remote account approval process is required.
     ngword_histories:
       back_to_ng_words: NG words and against spams
       target_types:
