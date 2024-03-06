@@ -1876,6 +1876,8 @@ ja:
     stop_deliver: 配送制限
     stop_deliver_hint_html: Mastodonの投稿を、他のソフトウェアでは自由に検索することができます。Mastodon内で行ったプライバシーの設定は無視され、あなたの投稿が意図しない人に見つかるおそれがあります。ここでは、他のサーバーやソフトウェアであなたの投稿が見つからないようにする設定が可能です。ただしリスクは伴います。
     title: プライバシー追加設定
+    will_remove_settings: 削除予定の設定
+    will_remove_settings_hint_html: これらの設定は、慎重に検討を重ねた結果、バージョン14または次のLTSのどちらか早い方で削除される予定です。代替の設定はありませんので、ご承知おきください。
   privacy_policy:
     title: プライバシーポリシー
   reactions:
