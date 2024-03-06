@@ -58,9 +58,9 @@
 
   = f.simple_fields_for :settings, current_user.settings do |ff|
     .fields-group
-      = ff.input :hide_statuses_count, as: :boolean, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_hide_statuses_count'), hint: false
-      = ff.input :hide_following_count, as: :boolean, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_hide_following_count'), hint: false
-      = ff.input :hide_followers_count, as: :boolean, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_hide_followers_count'), hint: false
+      = ff.input :show_statuses_count, as: :boolean, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_statuses_count'), hint: false
+      = ff.input :show_following_count, as: :boolean, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_following_count'), hint: false
+      = ff.input :show_followers_count, as: :boolean, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_followers_count'), hint: false
 
     .fields-group
       = ff.input :show_application, wrapper: :with_label

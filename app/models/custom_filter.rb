@@ -66,6 +66,14 @@ class CustomFilter < ApplicationRecord
     hide_action?
   end
 
+  def exclude_quote=(value)
+    self.with_quote = !ActiveModel::Type::Boolean.new.cast(value)
+  end
+
+  def exclude_quote
+    !with_quote
+  end
+
   def self.cached_filters_for(account_id)
     active_filters = Rails.cache.fetch("filters:v3:#{account_id}") do
       filters_hash = {}
