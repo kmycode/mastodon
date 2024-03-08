@@ -28,6 +28,9 @@
 /node_modules/
 /build/
 
+# Ignore elasticsearch config
+/.elasticsearch.yml
+
 # Ignore Vagrant files
 .vagrant/
 
