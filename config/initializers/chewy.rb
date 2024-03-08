@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../app/lib/chewy_config'
+
 enabled         = ENV['ES_ENABLED'] == 'true'
 host            = ENV.fetch('ES_HOST') { 'localhost' }
 port            = ENV.fetch('ES_PORT') { 9200 }
@@ -37,3 +39,6 @@ Chewy.use_after_commit_callbacks = false
 # Mastodon is run with hidden services enabled, because
 # Elasticsearch is *not* supposed to be accessed through a proxy
 Faraday.ignore_env_proxy = true
+
+# Check Elasticsearch config file version
+ChewyConfig.instance.accounts if enabled
