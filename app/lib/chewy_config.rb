@@ -6,6 +6,10 @@ require 'yaml'
 class ChewyConfig
   include Singleton
 
+  class InvalidElasticSearchVersionError < Mastodon::Error; end
+
+  CONFIG_VERSION = 1
+
   def initialize
     custom_config_file = Rails.root.join('.elasticsearch.yml')
     default_config_file = Rails.root.join('config', 'elasticsearch.default.yml')
@@ -15,8 +19,9 @@ class ChewyConfig
     default_config = YAML.load_file(default_config_file)
 
     @config = default_config.merge(custom_config || {})
-
     @config = @config.merge(YAML.load_file(Rails.root.join('config', 'elasticsearch.default-ja-sudachi.yml'))) if Rails.env.test?
+
+    raise InvalidElasticSearchVersionError, "ElasticSearch config version is missmatch. expected version=#{CONFIG_VERSION} actual version=#{@config['version']}" if @config['version'] != CONFIG_VERSION
   end
 
   attr_reader :config

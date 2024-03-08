@@ -1,6 +1,8 @@
 # This is a configuration file for environments that use Japanese and Sudachi plug-ins.
 # To use this file, copy it to the Mastodon root directory and rename the file to ".elasticsearch.yml".
 
+version: 1
+
 accounts:
   filter:
     english_stop:

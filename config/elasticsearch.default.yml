@@ -1,6 +1,8 @@
 # The standard ElasticSearch settings described in the original Mastodon code are stored.
 # This configuration file is overridden by creating a ".elasticsearch.yml" file in the Mastodon root directory.
 
+version: 1
+
 accounts:
   filter:
     english_stop:
