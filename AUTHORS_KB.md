@@ -7,6 +7,7 @@ kmyblueフォークは、以下の方の貢献によって成り立っていま�
 
 - [KMY](https://github.com/kmycode)
 - [S-H-GAMELINKS](https://github.com/S-H-GAMELINKS)
+- [Yuicho](https://github.com/yuicho)
 
 ## 特記
 
