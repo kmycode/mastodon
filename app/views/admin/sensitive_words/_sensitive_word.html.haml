@@ -1,0 +1,8 @@
+%tr{ class: template ? 'template-row' : '' }
+  %td= f.input :keywords, as: :string, input_html: { multiple: true }
+  %td
+    .label_input__wrapper= f.check_box :regexps, { multiple: true, checked: sensitive_word.regexp }, sensitive_word.regexp
+  %td
+    .label_input__wrapper= f.check_box :remotes, { multiple: true, checked: sensitive_word.remote }, sensitive_word.remote
+  %td
+    = link_to safe_join([fa_icon('times'), t('filters.index.delete')]), '', class: 'table-action-link'

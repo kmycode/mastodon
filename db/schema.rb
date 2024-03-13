@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_10_123453) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_12_230204) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1231,6 +1231,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_10_123453) do
     t.jsonb "params"
     t.index ["account_id"], name: "index_scheduled_statuses_on_account_id"
     t.index ["scheduled_at"], name: "index_scheduled_statuses_on_scheduled_at"
+  end
+
+  create_table "sensitive_words", force: :cascade do |t|
+    t.string "keyword", null: false
+    t.boolean "regexp", default: false, null: false
+    t.boolean "remote", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "session_activations", force: :cascade do |t|

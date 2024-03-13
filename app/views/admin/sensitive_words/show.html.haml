@@ -9,6 +9,25 @@
 
   %p.lead= t 'admin.sensitive_words.hint'
 
+  .table-wrapper
+  %table.table.keywords-table
+    %thead
+      %tr
+        %th= t('simple_form.labels.defaults.phrase')
+        %th= t('admin.sensitive_words.phrases.regexp_short')
+        %th= t('admin.sensitive_words.phrases.remote_short')
+        %th
+    %tbody
+      = f.simple_fields_for :sensitive_words_test, @sensitive_words do |keyword|
+        = render partial: 'sensitive_word', collection: @sensitive_words, locals: { f: keyword, template: false }
+
+      = f.simple_fields_for :sensitive_words_test, @sensitive_words do |keyword|
+        = render partial: 'sensitive_word', collection: [SensitiveWord.new], locals: { f: keyword, template: true }
+    %tfoot
+      %tr
+        %td{ colspan: 4 }
+          = link_to safe_join([fa_icon('plus'), t('filters.edit.add_keyword')]), '', class: 'table-action-link'
+
   .fields-group
     = f.input :sensitive_words_for_full, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')
 
