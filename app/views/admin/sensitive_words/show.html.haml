@@ -10,7 +10,7 @@
   %p.lead= t 'admin.sensitive_words.hint'
 
   .table-wrapper
-  %table.table.keywords-table
+  %table.table.keywords-table#sensitive-words-table
     %thead
       %tr
         %th= t('simple_form.labels.defaults.phrase')
@@ -26,7 +26,7 @@
     %tfoot
       %tr
         %td{ colspan: 4 }
-          = link_to safe_join([fa_icon('plus'), t('filters.edit.add_keyword')]), '', class: 'table-action-link'
+          = link_to safe_join([fa_icon('plus'), t('filters.edit.add_keyword')]), '#', class: 'table-action-link add-row-button'
 
   .fields-group
     = f.input :sensitive_words_for_full, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')

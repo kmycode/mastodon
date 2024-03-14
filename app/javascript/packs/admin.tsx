@@ -272,6 +272,52 @@ Rails.delegate(
   },
 );
 
+const addTableRow = (tableId: string) => {
+  const templateElement = document.querySelector(`#${tableId} .template-row`)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+  const tableElement = document.querySelector(`#${tableId} tbody`)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+
+  if (
+    typeof templateElement === 'undefined' ||
+    typeof tableElement === 'undefined'
+  )
+    return;
+
+  const cloned = templateElement.cloneNode(true) as HTMLTableRowElement;
+  cloned.className = '';
+  tableElement.appendChild(cloned);
+};
+
+const removeTableRow = (target: EventTarget | null, tableId: string) => {
+  const tableRowElement = (target as HTMLElement).closest('tr') as Node;
+  const tableElement = document.querySelector(`#${tableId} tbody`)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+
+  if (
+    typeof tableRowElement === 'undefined' ||
+    typeof tableElement === 'undefined'
+  )
+    return;
+
+  tableElement.removeChild(tableRowElement);
+};
+
+Rails.delegate(
+  document,
+  '#sensitive-words-table .add-row-button',
+  'click',
+  () => {
+    addTableRow('sensitive-words-table');
+  },
+);
+
+Rails.delegate(
+  document,
+  '#sensitive-words-table .delete-row-button',
+  'click',
+  ({ target }) => {
+    removeTableRow(target, 'sensitive-words-table');
+  },
+);
+
 async function mountReactComponent(element: Element) {
   const componentName = element.getAttribute('data-admin-component');
   const stringProps = element.getAttribute('data-props');

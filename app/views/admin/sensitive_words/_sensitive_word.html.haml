@@ -5,4 +5,4 @@
   %td
     .label_input__wrapper= f.check_box :remotes, { multiple: true, checked: sensitive_word.remote }, sensitive_word.remote
   %td
-    = link_to safe_join([fa_icon('times'), t('filters.index.delete')]), '', class: 'table-action-link'
+    = link_to safe_join([fa_icon('times'), t('filters.index.delete')]), '#', class: 'table-action-link delete-row-button'
