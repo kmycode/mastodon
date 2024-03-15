@@ -30,21 +30,5 @@ class Admin::SensitiveWord
         text.include?(word.keyword)
       end
     end
-
-    def sensitive_words
-      ::SensitiveWord.caches.filter { |sensitive_word| !sensitive_word.remote && !sensitive_word.spoiler }.map(&:keyword)
-    end
-
-    def sensitive_words_for_full
-      ::SensitiveWord.caches.filter { |sensitive_word| !sensitive_word.remote && sensitive_word.spoiler }.map(&:keyword)
-    end
-
-    def sensitive_words_all
-      ::SensitiveWord.caches.filter { |sensitive_word| sensitive_word.remote && !sensitive_word.spoiler }.map(&:keyword)
-    end
-
-    def sensitive_words_all_for_full
-      ::SensitiveWord.caches.filter { |sensitive_word| sensitive_word.remote && sensitive_word.spoiler }.map(&:keyword)
-    end
   end
 end
