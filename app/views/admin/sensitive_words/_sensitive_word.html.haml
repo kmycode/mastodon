@@ -1,8 +1,12 @@
-%tr{ class: template ? 'template-row' : '' }
-  %td= f.input :keywords, as: :string, input_html: { multiple: true }
+- temporary_id = defined?(@temp_id) ? @temp_id += 1 : @temp_id = 1
+%tr{ class: template ? 'template-row' : nil }
+  %td= f.input :keywords, as: :string, input_html: { multiple: true, value: sensitive_word.keyword }
   %td
-    .label_input__wrapper= f.check_box :regexps, { multiple: true, checked: sensitive_word.regexp }, sensitive_word.regexp
+    .label_input__wrapper= f.check_box :regexps, { multiple: true, checked: sensitive_word.regexp }, temporary_id, nil
   %td
-    .label_input__wrapper= f.check_box :remotes, { multiple: true, checked: sensitive_word.remote }, sensitive_word.remote
+    .label_input__wrapper= f.check_box :remotes, { multiple: true, checked: sensitive_word.remote }, temporary_id, nil
   %td
+    .label_input__wrapper= f.check_box :spoilers, { multiple: true, checked: sensitive_word.spoiler }, temporary_id, nil
+  %td
+    = hidden_field_tag :'form_admin_settings[sensitive_words_test][temporary_ids][]', temporary_id, class: 'temporary_id'
     = link_to safe_join([fa_icon('times'), t('filters.index.delete')]), '#', class: 'table-action-link delete-row-button'

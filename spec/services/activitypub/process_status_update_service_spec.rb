@@ -758,7 +758,7 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
         let(:content) { 'ng word aiueo' }
 
         it 'update status' do
-          Form::AdminSettings.new(sensitive_words_all: 'test').save
+          Fabricate(:sensitive_word, keyword: 'test', remote: true, spoiler: false)
 
           subject.call(status, json, json)
           expect(status.reload.text).to eq content
@@ -770,7 +770,7 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService, type: :service do
         let(:content) { 'ng word test' }
 
         it 'update status' do
-          Form::AdminSettings.new(sensitive_words_all: 'test').save
+          Fabricate(:sensitive_word, keyword: 'test', remote: true, spoiler: false)
 
           subject.call(status, json, json)
           expect(status.reload.text).to eq content

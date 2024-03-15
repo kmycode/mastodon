@@ -51,10 +51,6 @@ class Form::AdminSettings
     post_hash_tags_max
     post_mentions_max
     post_stranger_mentions_max
-    sensitive_words
-    sensitive_words_for_full
-    sensitive_words_all
-    sensitive_words_all_for_full
     auto_warning_text
     authorized_fetch
     receive_other_servers_emoji_reaction
@@ -128,10 +124,6 @@ class Form::AdminSettings
   STRING_ARRAY_KEYS = %i(
     ng_words
     ng_words_for_stranger_mention
-    sensitive_words
-    sensitive_words_for_full
-    sensitive_words_all
-    sensitive_words_all_for_full
     emoji_reaction_disallow_domains
     permit_new_account_domains
   ).freeze

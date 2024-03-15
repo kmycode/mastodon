@@ -963,11 +963,13 @@ en:
       auto_warning_text: Custom warning text
       auto_warning_text_hint: If not specified, the default warning text is used.
       hint: This keywords is applied to public posts only..
-      keywords: Sensitive keywords for local only
-      keywords_all: Sensitive keywords for local+remote
-      keywords_all_for_all: Sensitive keywords for local+remote (Contains CW alert)
-      keywords_for_all: Sensitive keywords for local only (Contains CW alert)
-      keywords_for_all_hint: The first character of the line is "?". to use regular expressions
+      phrases:
+        remote_html: <strong>Rem</strong> ote にチェックの入っている項目は、リモートからの投稿にも適用されます。
+        remote_short: Rem
+        regexp_html: <strong>Reg</strong> Exp にチェックの入っている項目は、正規表現を用いての比較となります。
+        regexp_short: Reg
+        spoiler_html: <strong>War</strong> ning にチェックの入っている項目は、コンテンツ警告文にも適用されます。
+        spoiler_short: War
       title: Sensitive words and moderation options
     settings:
       about:

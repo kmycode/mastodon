@@ -9,36 +9,31 @@
 
   %p.lead= t 'admin.sensitive_words.hint'
 
+  %p= t 'admin.sensitive_words.phrases.regexp_html'
+  %p= t 'admin.sensitive_words.phrases.remote_html'
+  %p= t 'admin.sensitive_words.phrases.spoiler_html'
+
+  %hr/
+
   .table-wrapper
-  %table.table.keywords-table#sensitive-words-table
-    %thead
-      %tr
-        %th= t('simple_form.labels.defaults.phrase')
-        %th= t('admin.sensitive_words.phrases.regexp_short')
-        %th= t('admin.sensitive_words.phrases.remote_short')
-        %th
-    %tbody
-      = f.simple_fields_for :sensitive_words_test, @sensitive_words do |keyword|
-        = render partial: 'sensitive_word', collection: @sensitive_words, locals: { f: keyword, template: false }
+    %table.table.keywords-table#sensitive-words-table
+      %thead
+        %tr
+          %th= t('simple_form.labels.defaults.phrase')
+          %th= t('admin.sensitive_words.phrases.regexp_short')
+          %th= t('admin.sensitive_words.phrases.remote_short')
+          %th= t('admin.sensitive_words.phrases.spoiler_short')
+          %th
+      %tbody
+        = f.simple_fields_for :sensitive_words_test, @sensitive_words do |keyword|
+          = render partial: 'sensitive_word', collection: @sensitive_words, locals: { f: keyword, template: false }
 
-      = f.simple_fields_for :sensitive_words_test, @sensitive_words do |keyword|
-        = render partial: 'sensitive_word', collection: [SensitiveWord.new], locals: { f: keyword, template: true }
-    %tfoot
-      %tr
-        %td{ colspan: 4 }
-          = link_to safe_join([fa_icon('plus'), t('filters.edit.add_keyword')]), '#', class: 'table-action-link add-row-button'
-
-  .fields-group
-    = f.input :sensitive_words_for_full, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')
-
-  .fields-group
-    = f.input :sensitive_words, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords'), hint: t('admin.sensitive_words.keywords_hint')
-
-  .fields-group
-    = f.input :sensitive_words_all_for_full, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords_all_for_all'), hint: t('admin.sensitive_words.keywords_for_all_hint')
-
-  .fields-group
-    = f.input :sensitive_words_all, wrapper: :with_label, as: :text, input_html: { rows: 8 }, label: t('admin.sensitive_words.keywords_all'), hint: t('admin.sensitive_words.keywords_hint')
+        = f.simple_fields_for :sensitive_words_test, @sensitive_words do |keyword|
+          = render partial: 'sensitive_word', collection: [SensitiveWord.new], locals: { f: keyword, template: true }
+      %tfoot
+        %tr
+          %td{ colspan: 4 }
+            = link_to safe_join([fa_icon('plus'), t('filters.edit.add_keyword')]), '#', class: 'table-action-link add-row-button'
 
   .fields-group
     = f.input :auto_warning_text, wrapper: :with_label, input_html: { placeholder: t('admin.sensitive_words.alert') }, label: t('admin.sensitive_words.auto_warning_text'), hint: t('admin.sensitive_words.auto_warning_text_hint')

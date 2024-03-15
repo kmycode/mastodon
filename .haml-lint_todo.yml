@@ -29,3 +29,4 @@ linters:
     exclude:
       - 'app/views/application/_sidebar.html.haml'
       - 'app/views/admin/ng_rules/_ng_rule_fields.html.haml'
+      - 'app/views/admin/sensitive_words/_sensitive_word.html.haml'

@@ -1237,6 +1237,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_12_230204) do
     t.string "keyword", null: false
     t.boolean "regexp", default: false, null: false
     t.boolean "remote", default: false, null: false
+    t.boolean "spoiler", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -2071,7 +2071,8 @@ RSpec.describe ActivityPub::Activity::Create do
         end
 
         before do
-          Form::AdminSettings.new(sensitive_words_all: sensitive_words_all, sensitive_words: 'ipsum').save
+          Fabricate(:sensitive_word, keyword: sensitive_words_all, remote: true, spoiler: false) if sensitive_words_all.present?
+          Fabricate(:sensitive_word, keyword: 'ipsum')
           subject.perform
         end
 

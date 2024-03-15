@@ -5,12 +5,12 @@ class Admin::SensitiveWord
     def sensitive?(text, spoiler_text, local: true)
       exposure_text = spoiler_text.presence || text
 
-      sensitive = (spoiler_text.blank? && sensitive_words_all.any? { |word| include?(text, word) }) ||
-                  sensitive_words_all_for_full.any? { |word| include?(exposure_text, word) }
-      return sensitive if sensitive || !local
+      sensitive_words = ::SensitiveWord.caches
+      sensitive_words.select!(&:remote) unless local
 
-      (spoiler_text.blank? && sensitive_words.any? { |word| include?(text, word) }) ||
-        sensitive_words_for_full.any? { |word| include?(exposure_text, word) }
+      return sensitive_words.filter(&:spoiler).any? { |word| include?(spoiler_text, word) } if spoiler_text.present?
+
+      sensitive_words.any? { |word| include?(exposure_text, word) }
     end
 
     def modified_text(text, spoiler_text)
@@ -24,27 +24,27 @@ class Admin::SensitiveWord
     private
 
     def include?(text, word)
-      if word.start_with?('?') && word.size >= 2
-        text =~ /#{word[1..]}/i
+      if word.regexp
+        text =~ /#{word.keyword}/
       else
-        text.include?(word)
+        text.include?(word.keyword)
       end
     end
 
     def sensitive_words
-      Setting.sensitive_words || []
+      ::SensitiveWord.caches.filter { |sensitive_word| !sensitive_word.remote && !sensitive_word.spoiler }.map(&:keyword)
     end
 
     def sensitive_words_for_full
-      Setting.sensitive_words_for_full || []
+      ::SensitiveWord.caches.filter { |sensitive_word| !sensitive_word.remote && sensitive_word.spoiler }.map(&:keyword)
     end
 
     def sensitive_words_all
-      Setting.sensitive_words_all || []
+      ::SensitiveWord.caches.filter { |sensitive_word| sensitive_word.remote && !sensitive_word.spoiler }.map(&:keyword)
     end
 
     def sensitive_words_all_for_full
-      Setting.sensitive_words_all_for_full || []
+      ::SensitiveWord.caches.filter { |sensitive_word| sensitive_word.remote && sensitive_word.spoiler }.map(&:keyword)
     end
   end
 end

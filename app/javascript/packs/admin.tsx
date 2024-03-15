@@ -282,8 +282,24 @@ const addTableRow = (tableId: string) => {
   )
     return;
 
+  let temporaryId = 0;
+  tableElement
+    .querySelectorAll<HTMLInputElement>('.temporary_id')
+    .forEach((input) => {
+      if (parseInt(input.value) + 1 > temporaryId) {
+        temporaryId = parseInt(input.value) + 1;
+      }
+    });
+
   const cloned = templateElement.cloneNode(true) as HTMLTableRowElement;
   cloned.className = '';
+  cloned.querySelector<HTMLInputElement>('.temporary_id')!.value = // eslint-disable-line @typescript-eslint/no-non-null-assertion
+    temporaryId.toString();
+  cloned
+    .querySelectorAll<HTMLInputElement>('input[type=checkbox]')
+    .forEach((input) => {
+      input.value = temporaryId.toString();
+    });
   tableElement.appendChild(cloned);
 };
 

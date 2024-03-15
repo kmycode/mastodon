@@ -8,32 +8,64 @@
 #  keyword    :string           not null
 #  regexp     :boolean          default(FALSE), not null
 #  remote     :boolean          default(FALSE), not null
+#  spoiler    :boolean          default(TRUE), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
 
 class SensitiveWord < ApplicationRecord
-  attr_accessor :keywords, :regexps, :remotes
-
-  before_save :prepare_cache_invalidation!
-  before_destroy :prepare_cache_invalidation!
-  after_commit :invalidate_cache!
+  attr_accessor :keywords, :regexps, :remotes, :spoilers
 
   class << self
     def caches
-      Rails.cache.fetch('sensitive_words') { SensitiveWord.where.not(id: 0).to_a }
+      Rails.cache.fetch('sensitive_words') { SensitiveWord.where.not(id: 0).order(:keyword).to_a }
     end
 
-    def save_from_hashes(_rows)
+    def save_from_hashes(rows)
+      unmatched = caches
+      matched = []
+
+      SensitiveWord.transaction do
+        rows.filter { |item| item[:keyword].present? }.each do |item|
+          exists = unmatched.find { |i| i.keyword == item[:keyword] }
+
+          if exists.present?
+            unmatched.delete(exists)
+            matched << exists
+
+            next if exists.regexp == item[:regexp] && exists.remote == item[:remote] && exists.spoiler == item[:spoiler]
+
+            exists.update!(regexp: item[:regexp], remote: item[:remote], spoiler: item[:spoiler])
+          elsif matched.none? { |i| i.keyword == item[:keyword] }
+            SensitiveWord.create!(
+              keyword: item[:keyword],
+              regexp: item[:regexp],
+              remote: item[:remote],
+              spoiler: item[:spoiler]
+            )
+          end
+        end
+
+        SensitiveWord.destroy(unmatched.map(&:id))
+      end
+
       true
+      # rescue
+      # false
     end
 
     def save_from_raws(rows)
-      hashes = rows['keywords'].zip(rows['regexps'], rows['remotes']).map do |item|
+      regexps = rows['regexps'] || []
+      remotes = rows['remotes'] || []
+      spoilers = rows['spoilers'] || []
+
+      hashes = (rows['keywords'] || []).zip(rows['temporary_ids'] || []).map do |item|
+        temp_id = item[1]
         {
           keyword: item[0],
-          regexp: item[1] != '0',
-          remote: item[2] != '0',
+          regexp: regexps.include?(temp_id),
+          remote: remotes.include?(temp_id),
+          spoiler: spoilers.include?(temp_id),
         }
       end
 
@@ -43,15 +75,7 @@ class SensitiveWord < ApplicationRecord
 
   private
 
-  def prepare_cache_invalidation!
-    @should_invalidate_cache = true
-  end
-
   def invalidate_cache!
-    return unless @should_invalidate_cache
-
-    @should_invalidate_cache = false
-
     Rails.cache.delete('sensitive_words')
   end
 end

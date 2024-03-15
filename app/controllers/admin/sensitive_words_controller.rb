@@ -6,14 +6,7 @@ module Admin
       authorize :sensitive_words, :show?
 
       @admin_settings = Form::AdminSettings.new
-      @sensitive_words = ::SensitiveWord.caches
-
-      @sensitive_words = [
-        ::SensitiveWord.new(id: 1, regexp: true),
-        ::SensitiveWord.new(id: 2, remote: true),
-        ::SensitiveWord.new(id: 3, regexp: true),
-        ::SensitiveWord.new(id: 4, remote: true),
-      ]
+      @sensitive_words = ::SensitiveWord.caches.presence || [::SensitiveWord.new]
     end
 
     def create
@@ -40,11 +33,8 @@ module Admin
     private
 
     def test_words
-      sensitive_words = settings_params['sensitive_words'].split(/\r\n|\r|\n/)
-      sensitive_words_for_full = settings_params['sensitive_words_for_full'].split(/\r\n|\r|\n/)
-      sensitive_words_all = settings_params['sensitive_words_all'].split(/\r\n|\r|\n/)
-      sensitive_words_all_for_full = settings_params['sensitive_words_all_for_full'].split(/\r\n|\r|\n/)
-      Admin::NgWord.reject_with_custom_words?('Sample text', sensitive_words + sensitive_words_for_full + sensitive_words_all + sensitive_words_all_for_full)
+      sensitive_words = settings_params_test['keywords'].compact.uniq
+      Admin::NgWord.reject_with_custom_words?('Sample text', sensitive_words)
     end
 
     def after_update_redirect_path

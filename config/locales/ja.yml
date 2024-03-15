@@ -959,12 +959,13 @@ ja:
       auto_warning_text: カスタム警告文
       auto_warning_text_hint: 指定しなかった場合は、各言語のデフォルト警告文が使用されます
       hint: センシティブなキーワードの設定は、当サーバーのローカルユーザーによる公開範囲「公開」「ローカル公開」「ログインユーザーのみ」に対して適用されます。
-      keywords: ローカルの投稿に適用するセンシティブなキーワード（警告文は除外）
-      keywords_all: ローカル・リモートの投稿に適用するセンシティブなキーワード（警告文は除外）
-      keywords_all_for_all: ローカル・リモートの投稿に適用するセンシティブなキーワード（警告文にも適用）
-      keywords_for_all: ローカルの投稿に適用するセンシティブなキーワード（警告文にも適用）
-      keywords_for_all_hint: ここで指定したキーワードを含む投稿は強制的にCWになります。警告文にも含まれていればCWになります。行が「?」で始まっていれば正規表現が使えます
-      keywords_hint: ここで指定したキーワードを含む投稿は強制的にCWになります。ただし警告文に使用していた場合は無視されます
+      phrases:
+        remote_html: <strong>リモ</strong> ート にチェックの入っている項目は、リモートからの投稿にも適用されます。
+        remote_short: リモ
+        regexp_html: <strong>正規</strong> 表現 にチェックの入っている項目は、正規表現を用いての比較となります。
+        regexp_short: 正規
+        spoiler_html: <strong>警告</strong> 文 にチェックの入っている項目は、コンテンツ警告文にも適用されます。
+        spoiler_short: 警告
       title: センシティブ単語と設定
     settings:
       about:
