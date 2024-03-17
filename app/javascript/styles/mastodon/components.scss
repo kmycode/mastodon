@@ -4140,6 +4140,10 @@ a.status-card {
   .announcements {
     z-index: 1;
     position: relative;
+
+    .announcements__pagination > * {
+      vertical-align: middle;
+    }
   }
 }
 
