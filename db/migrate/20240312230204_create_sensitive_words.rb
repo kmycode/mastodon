@@ -25,7 +25,7 @@ class CreateSensitiveWords < ActiveRecord::Migration[7.1]
     keyword.start_with?('?') && keyword.size >= 2
   end
 
-  def up # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  def up
     create_table :sensitive_words do |t|
       t.string :keyword, null: false
       t.boolean :regexp, null: false, default: false
@@ -41,10 +41,14 @@ class CreateSensitiveWords < ActiveRecord::Migration[7.1]
     sensitive_words_all = settings.find { |s| s.var == 'sensitive_words_all' }&.value&.compact_blank&.uniq || []
     sensitive_words_all_for_full = settings.find { |s| s.var == 'sensitive_words_all_for_full' }&.value&.compact_blank&.uniq || []
 
-    sensitive_words_all_for_full.each { |s| SensitiveWord.create!(keyword: normalized_keyword(s), regexp: regexp?(s), remote: true, spoiler: true) }
-    sensitive_words_for_full.reject { |w| sensitive_words_all_for_full.include?(w) }.each { |s| SensitiveWord.create!(keyword: normalized_keyword(s), regexp: regexp?(s), remote: false, spoiler: true) }
-    sensitive_words_all.reject { |w| (sensitive_words_all_for_full + sensitive_words_for_full).include?(w) }.each { |s| SensitiveWord.create!(keyword: normalized_keyword(s), regexp: regexp?(s), remote: true, spoiler: false) }
-    sensitive_words.reject { |w| (sensitive_words_all_for_full + sensitive_words_for_full + sensitive_words_all).include?(w) }.each { |s| SensitiveWord.create!(keyword: normalized_keyword(s), regexp: regexp?(s), remote: false, spoiler: false) }
+    (sensitive_words + sensitive_words_for_full + sensitive_words_all + sensitive_words_all_for_full).compact.uniq.each do |word|
+      SensitiveWord.create!(
+        keyword: normalized_keyword(word),
+        regexp: regexp?(word),
+        remote: (sensitive_words_all + sensitive_words_all_for_full).include?(word),
+        spoiler: (sensitive_words_for_full + sensitive_words_all_for_full).include?(word)
+      )
+    end
 
     settings.destroy_all
   end
