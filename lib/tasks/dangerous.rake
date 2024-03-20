@@ -93,6 +93,7 @@ namespace :dangerous do
       20240227222450
       20240227225017
       20240229233617
+      20240312230204
     )
     # Removed: account_groups
     target_tables = %w(
@@ -115,6 +116,7 @@ namespace :dangerous do
       pending_follow_requests
       pending_statuses
       scheduled_expiration_statuses
+      sensitive_words
       status_capability_tokens
       status_references
     )
