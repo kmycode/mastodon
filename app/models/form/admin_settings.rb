@@ -44,8 +44,6 @@ class Form::AdminSettings
     delete_content_cache_without_reaction
     status_page_url
     captcha_enabled
-    ng_words
-    ng_words_for_stranger_mention
     stranger_mention_from_local_ng
     hide_local_users_for_anonymous
     post_hash_tags_max
@@ -122,8 +120,6 @@ class Form::AdminSettings
   }.freeze
 
   STRING_ARRAY_KEYS = %i(
-    ng_words
-    ng_words_for_stranger_mention
     emoji_reaction_disallow_domains
     permit_new_account_domains
   ).freeze

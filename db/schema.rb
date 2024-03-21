@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_12_230204) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_20_231633) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -922,6 +922,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_12_230204) do
     t.string "emoji_reaction_name", default: "", null: false
     t.string "emoji_reaction_origin_domain", default: "", null: false
     t.datetime "expires_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ng_words", force: :cascade do |t|
+    t.string "keyword", null: false
+    t.boolean "regexp", default: false, null: false
+    t.boolean "stranger", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

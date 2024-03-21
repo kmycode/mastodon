@@ -2,30 +2,29 @@
 
 # == Schema Information
 #
-# Table name: sensitive_words
+# Table name: ng_words
 #
 #  id         :bigint(8)        not null, primary key
 #  keyword    :string           not null
 #  regexp     :boolean          default(FALSE), not null
-#  remote     :boolean          default(FALSE), not null
-#  spoiler    :boolean          default(TRUE), not null
+#  stranger   :boolean          default(TRUE), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
 
-class SensitiveWord < ApplicationRecord
-  attr_accessor :keywords, :regexps, :remotes, :spoilers
+class NgWord < ApplicationRecord
+  attr_accessor :keywords, :regexps, :strangers
 
   class << self
     def caches
-      Rails.cache.fetch('sensitive_words') { SensitiveWord.where.not(id: 0).order(:keyword).to_a }
+      Rails.cache.fetch('ng_words') { NgWord.where.not(id: 0).order(:keyword).to_a }
     end
 
     def save_from_hashes(rows)
       unmatched = caches
       matched = []
 
-      SensitiveWord.transaction do
+      NgWord.transaction do
         rows.filter { |item| item[:keyword].present? }.each do |item|
           exists = unmatched.find { |i| i.keyword == item[:keyword] }
 
@@ -33,20 +32,19 @@ class SensitiveWord < ApplicationRecord
             unmatched.delete(exists)
             matched << exists
 
-            next if exists.regexp == item[:regexp] && exists.remote == item[:remote] && exists.spoiler == item[:spoiler]
+            next if exists.regexp == item[:regexp] && exists.stranger == item[:stranger]
 
-            exists.update!(regexp: item[:regexp], remote: item[:remote], spoiler: item[:spoiler])
+            exists.update!(regexp: item[:regexp], stranger: item[:stranger])
           elsif matched.none? { |i| i.keyword == item[:keyword] }
-            SensitiveWord.create!(
+            NgWord.create!(
               keyword: item[:keyword],
               regexp: item[:regexp],
-              remote: item[:remote],
-              spoiler: item[:spoiler]
+              stranger: item[:stranger]
             )
           end
         end
 
-        SensitiveWord.destroy(unmatched.map(&:id))
+        NgWord.destroy(unmatched.map(&:id))
       end
 
       true
@@ -54,16 +52,14 @@ class SensitiveWord < ApplicationRecord
 
     def save_from_raws(rows)
       regexps = rows['regexps'] || []
-      remotes = rows['remotes'] || []
-      spoilers = rows['spoilers'] || []
+      strangers = rows['strangers'] || []
 
       hashes = (rows['keywords'] || []).zip(rows['temporary_ids'] || []).map do |item|
         temp_id = item[1]
         {
           keyword: item[0],
           regexp: regexps.include?(temp_id),
-          remote: remotes.include?(temp_id),
-          spoiler: spoilers.include?(temp_id),
+          stranger: strangers.include?(temp_id),
         }
       end
 
@@ -74,6 +70,6 @@ class SensitiveWord < ApplicationRecord
   private
 
   def invalidate_cache!
-    Rails.cache.delete('sensitive_words')
+    Rails.cache.delete('ng_words')
   end
 end

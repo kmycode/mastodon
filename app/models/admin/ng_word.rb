@@ -4,14 +4,14 @@ class Admin::NgWord
   class << self
     def reject?(text, **options)
       text = PlainTextFormatter.new(text, false).to_s if options[:uri].present?
-      hit_word = ng_words.detect { |word| include?(text, word) ? word : nil }
+      hit_word = ng_words.detect { |word| include?(text, word) ? word : nil }&.keyword
       record!(:ng_words, text, hit_word, options) if hit_word.present?
       hit_word.present?
     end
 
     def stranger_mention_reject?(text, **options)
       text = PlainTextFormatter.new(text, false).to_s if options[:uri].present?
-      hit_word = ng_words_for_stranger_mention.detect { |word| include?(text, word) ? word : nil }
+      hit_word = ng_words_for_stranger_mention.detect { |word| include?(text, word) ? word : nil }&.keyword
       record!(:ng_words_for_stranger_mention, text, hit_word, options) if hit_word.present?
       hit_word.present?
     end
@@ -53,19 +53,25 @@ class Admin::NgWord
     private
 
     def include?(text, word)
-      if word.start_with?('?') && word.size >= 2
-        text =~ /#{word[1..]}/i
+      if word.is_a?(String)
+        if word.start_with?('?') && word.size >= 2
+          text =~ /#{word[1..]}/i
+        else
+          text.include?(word)
+        end
+      elsif word.regexp
+        text =~ /#{word.keyword}/
       else
-        text.include?(word)
+        text.include?(word.keyword)
       end
     end
 
     def ng_words
-      Setting.ng_words || []
+      ::NgWord.caches.filter { |n| !n.stranger }
     end
 
     def ng_words_for_stranger_mention
-      Setting.ng_words_for_stranger_mention || []
+      ::NgWord.caches.filter(&:stranger)
     end
 
     def post_hash_tags_max

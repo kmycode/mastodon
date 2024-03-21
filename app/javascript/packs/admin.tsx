@@ -334,6 +334,19 @@ Rails.delegate(
   },
 );
 
+Rails.delegate(document, '#ng-words-table .add-row-button', 'click', () => {
+  addTableRow('ng-words-table');
+});
+
+Rails.delegate(
+  document,
+  '#ng-words-table .delete-row-button',
+  'click',
+  ({ target }) => {
+    removeTableRow(target, 'ng-words-table');
+  },
+);
+
 async function mountReactComponent(element: Element) {
   const componentName = element.getAttribute('data-admin-component');
   const stringProps = element.getAttribute('data-props');

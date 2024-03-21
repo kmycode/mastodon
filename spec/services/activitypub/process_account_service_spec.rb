@@ -425,7 +425,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     it 'creates account when ng word is not set' do
-      Setting.ng_words = ['Amazon']
+      Fabricate(:ng_word, keyword: 'Amazon', stranger: false)
       subject
       expect(account.reload.display_name).to eq 'Ohagi'
 
@@ -434,7 +434,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     it 'does not create account when ng word is set' do
-      Setting.ng_words = ['Ohagi']
+      Fabricate(:ng_word, keyword: 'Ohagi', stranger: false)
       subject
       expect(account.reload.display_name).to_not eq 'Ohagi'
 

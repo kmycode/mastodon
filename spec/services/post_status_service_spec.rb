@@ -613,7 +613,7 @@ RSpec.describe PostStatusService do
     it 'hit ng words' do
       account = Fabricate(:account)
       text = 'ng word test'
-      Form::AdminSettings.new(ng_words: 'test').save
+      Fabricate(:ng_word, keyword: 'test', stranger: false)
 
       expect { subject.call(account, text: text) }.to raise_error(Mastodon::ValidationError)
     end
@@ -621,7 +621,7 @@ RSpec.describe PostStatusService do
     it 'not hit ng words' do
       account = Fabricate(:account)
       text = 'ng word aiueo'
-      Form::AdminSettings.new(ng_words: 'test').save
+      Fabricate(:ng_word, keyword: 'test', stranger: false)
 
       status = subject.call(account, text: text)
 
@@ -633,7 +633,8 @@ RSpec.describe PostStatusService do
       account = Fabricate(:account)
       Fabricate(:account, username: 'ohagi', domain: nil)
       text = 'ng word test @ohagi'
-      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+      Form::AdminSettings.new(stranger_mention_from_local_ng: '1').save
+      Fabricate(:ng_word, keyword: 'test', stranger: true)
 
       expect { subject.call(account, text: text) }.to raise_error(Mastodon::ValidationError)
     end
@@ -642,7 +643,8 @@ RSpec.describe PostStatusService do
       account = Fabricate(:account)
       Fabricate(:account, username: 'ohagi', domain: nil)
       text = 'ng word test @ohagi'
-      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '0').save
+      Form::AdminSettings.new(stranger_mention_from_local_ng: '0').save
+      Fabricate(:ng_word, keyword: 'test', stranger: true)
 
       status = subject.call(account, text: text)
 
@@ -655,7 +657,8 @@ RSpec.describe PostStatusService do
       mentioned = Fabricate(:account, username: 'ohagi', domain: nil)
       mentioned.follow!(account)
       text = 'ng word test @ohagi'
-      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+      Form::AdminSettings.new(stranger_mention_from_local_ng: '1').save
+      Fabricate(:ng_word, keyword: 'test', stranger: true)
 
       status = subject.call(account, text: text)
 
@@ -666,7 +669,8 @@ RSpec.describe PostStatusService do
     it 'hit ng words for reply' do
       account = Fabricate(:account)
       text = 'ng word test'
-      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+      Form::AdminSettings.new(stranger_mention_from_local_ng: '1').save
+      Fabricate(:ng_word, keyword: 'test', stranger: true)
 
       expect { subject.call(account, text: text, thread: Fabricate(:status)) }.to raise_error(Mastodon::ValidationError)
     end
@@ -676,7 +680,8 @@ RSpec.describe PostStatusService do
       mentioned = Fabricate(:account, username: 'ohagi', domain: nil)
       mentioned.follow!(account)
       text = 'ng word test'
-      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+      Form::AdminSettings.new(stranger_mention_from_local_ng: '1').save
+      Fabricate(:ng_word, keyword: 'test', stranger: true)
 
       status = subject.call(account, text: text)
 
@@ -702,7 +707,8 @@ RSpec.describe PostStatusService do
       account = Fabricate(:account)
       Fabricate(:account, username: 'ohagi', domain: nil)
       text = "ng word test BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
-      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+      Form::AdminSettings.new(stranger_mention_from_local_ng: '1').save
+      Fabricate(:ng_word, keyword: 'test', stranger: true)
 
       expect { subject.call(account, text: text) }.to raise_error(Mastodon::ValidationError)
     end
@@ -713,7 +719,8 @@ RSpec.describe PostStatusService do
       target_status.account.follow!(account)
       Fabricate(:account, username: 'ohagi', domain: nil)
       text = "ng word test BT: #{ActivityPub::TagManager.instance.uri_for(target_status)}"
-      Form::AdminSettings.new(ng_words_for_stranger_mention: 'test', stranger_mention_from_local_ng: '1').save
+      Form::AdminSettings.new(stranger_mention_from_local_ng: '1').save
+      Fabricate(:ng_word, keyword: 'test', stranger: true)
 
       status = subject.call(account, text: text)
 
