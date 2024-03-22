@@ -11,13 +11,7 @@ module Admin
     def create
       authorize :ng_words, :create?
 
-      begin
-        test_words
-      rescue
-        flash[:alert] = I18n.t('admin.ng_words.test_error')
-        redirect_to after_update_redirect_path
-        return
-      end
+      return unless validate
 
       @admin_settings = Form::AdminSettings.new(settings_params)
 
@@ -29,19 +23,24 @@ module Admin
       end
     end
 
-    private
+    protected
 
-    def test_words
-      ng_words = "#{settings_params['ng_words']}\n#{settings_params['ng_words_for_stranger_mention']}".split(/\r\n|\r|\n/).filter(&:present?)
-      Admin::NgWord.reject_with_custom_words?('Sample text', ng_words)
+    def validate
+      true
     end
 
     def after_update_redirect_path
       admin_ng_words_path
     end
 
+    private
+
     def settings_params
       params.require(:form_admin_settings).permit(*Form::AdminSettings::KEYS)
+    end
+
+    def settings_params_test
+      params.require(:form_admin_settings)[:ng_words_test]
     end
   end
 end

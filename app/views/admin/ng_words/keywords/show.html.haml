@@ -1,0 +1,40 @@
+- content_for :page_title do
+  = t('admin.ng_words.title')
+
+- content_for :header_tags do
+  = javascript_pack_tag 'admin', async: true, crossorigin: 'anonymous'
+
+- content_for :heading do
+  %h2= t('admin.ng_words.title')
+  = render partial: 'admin/ng_words/shared/links'
+
+= simple_form_for @admin_settings, url: admin_ng_words_keywords_path, html: { method: :post } do |f|
+  = render 'shared/error_messages', object: @admin_settings
+
+  %p.lead= t('admin.ng_words.preamble')
+
+  %p.hint
+    = t 'admin.ng_words.history_hint'
+    = link_to t('admin.ngword_histories.title'), admin_ngword_histories_path
+
+  .table-wrapper
+    %table.table.keywords-table#ng-words-table
+      %thead
+        %tr
+          %th= t('simple_form.labels.defaults.phrase')
+          %th= t('admin.sensitive_words.phrases.regexp_short')
+          %th= t('admin.sensitive_words.phrases.remote_short')
+          %th
+      %tbody
+        = f.simple_fields_for :ng_words_test, @ng_words do |keyword|
+          = render partial: 'ng_word', collection: @ng_words, locals: { f: keyword, template: false }
+
+        = f.simple_fields_for :ng_words_test, @ng_words do |keyword|
+          = render partial: 'ng_word', collection: [NgWord.new], locals: { f: keyword, template: true }
+      %tfoot
+        %tr
+          %td{ colspan: 4 }
+            = link_to safe_join([fa_icon('plus'), t('filters.edit.add_keyword')]), '#', class: 'table-action-link add-row-button'
+
+  .actions
+    = f.button :button, t('generic.save_changes'), type: :submit

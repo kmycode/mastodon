@@ -32,7 +32,11 @@ namespace :admin do
 
   resources :action_logs, only: [:index]
   resources :warning_presets, except: [:new, :show]
-  resource :ng_words, only: [:show, :create]
+  namespace :ng_words do
+    resource :keywords, only: [:show, :create], controller: 'keywords'
+    resource :white_list, only: [:show, :create], controller: 'white_list'
+    resource :settings, only: [:show, :create], controller: 'settings'
+  end
   resources :ngword_histories, only: [:index]
   resources :ng_rules, except: [:show] do
     member do

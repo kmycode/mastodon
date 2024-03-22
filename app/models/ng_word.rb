@@ -15,6 +15,8 @@
 class NgWord < ApplicationRecord
   attr_accessor :keywords, :regexps, :strangers
 
+  validate :check_regexp
+
   class << self
     def caches
       Rails.cache.fetch('ng_words') { NgWord.where.not(id: 0).order(:keyword).to_a }
@@ -71,5 +73,15 @@ class NgWord < ApplicationRecord
 
   def invalidate_cache!
     Rails.cache.delete('ng_words')
+  end
+
+  def check_regexp
+    return if keyword.blank? || !regexp
+
+    begin
+      Admin::NgWord.reject_with_custom_words?('Sample text', keyword)
+    rescue
+      raise Mastodon::ValidationError, I18n.t('admin.ng_words.test_error')
+    end
   end
 end

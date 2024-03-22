@@ -16,6 +16,8 @@
 class SensitiveWord < ApplicationRecord
   attr_accessor :keywords, :regexps, :remotes, :spoilers
 
+  validate :check_regexp
+
   class << self
     def caches
       Rails.cache.fetch('sensitive_words') { SensitiveWord.where.not(id: 0).order(:keyword).to_a }
@@ -75,5 +77,15 @@ class SensitiveWord < ApplicationRecord
 
   def invalidate_cache!
     Rails.cache.delete('sensitive_words')
+  end
+
+  def check_regexp
+    return if keyword.blank? || !regexp
+
+    begin
+      Admin::NgWord.reject_with_custom_words?('Sample text', keyword)
+    rescue
+      raise Mastodon::ValidationError, I18n.t('admin.ng_words.test_error')
+    end
   end
 end

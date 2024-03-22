@@ -320,7 +320,8 @@ Rails.delegate(
   document,
   '#sensitive-words-table .add-row-button',
   'click',
-  () => {
+  (ev) => {
+    ev.preventDefault();
     addTableRow('sensitive-words-table');
   },
 );
@@ -329,12 +330,14 @@ Rails.delegate(
   document,
   '#sensitive-words-table .delete-row-button',
   'click',
-  ({ target }) => {
-    removeTableRow(target, 'sensitive-words-table');
+  (ev) => {
+    ev.preventDefault();
+    removeTableRow(ev.target, 'sensitive-words-table');
   },
 );
 
-Rails.delegate(document, '#ng-words-table .add-row-button', 'click', () => {
+Rails.delegate(document, '#ng-words-table .add-row-button', 'click', (ev) => {
+  ev.preventDefault();
   addTableRow('ng-words-table');
 });
 
@@ -342,8 +345,9 @@ Rails.delegate(
   document,
   '#ng-words-table .delete-row-button',
   'click',
-  ({ target }) => {
-    removeTableRow(target, 'ng-words-table');
+  (ev) => {
+    ev.preventDefault();
+    removeTableRow(ev.target, 'ng-words-table');
   },
 );
 
