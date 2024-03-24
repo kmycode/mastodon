@@ -79,7 +79,7 @@ class NgWord < ApplicationRecord
     return if keyword.blank? || !regexp
 
     begin
-      Admin::NgWord.reject_with_custom_words?('Sample text', keyword)
+      Admin::NgWord.reject_with_custom_word?('Sample text', keyword)
     rescue
       raise Mastodon::ValidationError, I18n.t('admin.ng_words.test_error')
     end

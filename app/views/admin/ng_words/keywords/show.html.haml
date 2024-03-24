@@ -11,19 +11,22 @@
 = simple_form_for @admin_settings, url: admin_ng_words_keywords_path, html: { method: :post } do |f|
   = render 'shared/error_messages', object: @admin_settings
 
-  %p.lead= t('admin.ng_words.preamble')
-
-  %p.hint
-    = t 'admin.ng_words.history_hint'
+  %p.lead
+    = t('admin.ng_words.preamble')
     = link_to t('admin.ngword_histories.title'), admin_ngword_histories_path
+
+  %p= t 'admin.ng_words.phrases.regexp_html'
+  %p= t 'admin.ng_words.phrases.stranger_html'
+
+  %hr/
 
   .table-wrapper
     %table.table.keywords-table#ng-words-table
       %thead
         %tr
           %th= t('simple_form.labels.defaults.phrase')
-          %th= t('admin.sensitive_words.phrases.regexp_short')
-          %th= t('admin.sensitive_words.phrases.remote_short')
+          %th= t('admin.ng_words.phrases.regexp_short')
+          %th= t('admin.ng_words.phrases.stranger_short')
           %th
       %tbody
         = f.simple_fields_for :ng_words_test, @ng_words do |keyword|

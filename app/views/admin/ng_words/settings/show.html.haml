@@ -11,8 +11,6 @@
 = simple_form_for @admin_settings, url: admin_ng_words_settings_path, html: { method: :post } do |f|
   = render 'shared/error_messages', object: @admin_settings
 
-  %p.lead= t('admin.ng_words.preamble')
-
   .fields-group
     = f.input :post_hash_tags_max, wrapper: :with_label, as: :integer, label: t('admin.ng_words.post_hash_tags_max')
 

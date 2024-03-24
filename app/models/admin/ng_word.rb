@@ -4,9 +4,16 @@ class Admin::NgWord
   class << self
     def reject?(text, **options)
       text = PlainTextFormatter.new(text, false).to_s if options[:uri].present?
-      hit_word = ng_words.detect { |word| include?(text, word) ? word : nil }&.keyword
-      record!(:ng_words, text, hit_word, options) if hit_word.present?
-      hit_word.present?
+
+      if options.delete(:stranger)
+        ::NgWord.caches.detect { |word| include?(text, word) ? word : nil }&.keyword.tap do |hit_word|
+          record!(:ng_words_for_stranger_mention, text, hit_word, options) if hit_word.present?
+        end.present?
+      else
+        ::NgWord.caches.filter { |w| !w.stranger }.detect { |word| include?(text, word) ? word : nil }&.keyword.tap do |hit_word|
+          record!(:ng_words, text, hit_word, options) if hit_word.present?
+        end.present?
+      end
     end
 
     def stranger_mention_reject?(text, **options)
@@ -16,8 +23,8 @@ class Admin::NgWord
       hit_word.present?
     end
 
-    def reject_with_custom_words?(text, custom_ng_words)
-      custom_ng_words.any? { |word| include?(text, word) }
+    def reject_with_custom_word?(text, word)
+      include?(text, word)
     end
 
     def hashtag_reject?(hashtag_count, **options)

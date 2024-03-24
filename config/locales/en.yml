@@ -751,19 +751,21 @@ en:
       deprecated_hint: These settings will be removed in the next LTS or kmyblue version 14.0, whichever comes first. Please refer to the description of each setting and replace them with the new settings if possible.
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
       hide_local_users_for_anonymous_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。サーバー設定の「見つける」にある「公開タイムラインへの未認証のアクセスを許可する」で、完全ではありませんが代替可能です。
-      history_hint: We recommend that you regularly check your NG words to make sure that you have not specified the NG words incorrectly.
       hold_remote_new_accounts: Hold new remote accounts
       keywords: Reject keywords
-      keywords_for_stranger_mention: Reject keywords when mention/reply/reference/quote from strangers
-      keywords_for_stranger_mention_hint: This words are checked posts from other servers only.
-      keywords_hint: The first character of the line is "?". to use regular expressions
       permit_new_account_domains: Domain list to automatically approve new users
-      preamble: This setting is useful for solving problems related to spam that are difficult to address with domain blocking. You can reject posts that contain specific keywords or too many mentions. Please consider your settings carefully to avoid deleting problematic posts. More detailed settings can be made by using "NG Rules".
+      preamble: This setting is useful for solving problems related to spam that are difficult to address with domain blocking. You can reject posts that meet certain criteria, such as the inclusion of specific keywords. Please consider your settings carefully and check your history regularly to ensure that problem-free submissions are not deleted.
       post_hash_tags_max: Hash tags max for posts
       post_mentions_max: Mentions max for posts
       post_stranger_mentions_max: 投稿に設定可能なメンションの最大数 (If the mentions include at least one person who is not a follower of yours)
+      phrases:
+        regexp_html: <strong>正規</strong> 表現 にチェックの入っている項目は、正規表現を用いての比較となります。
+        regexp_short: 正規
+        stranger_html: <strong>無関</strong> 係のフォロワーからのメンション にチェックの入っている項目は、フォロー関係にないアカウントからのメンション、返信、参照などのみに適用されます。
+        stranger_short: 無関
       remote_approval_list: List of remote accounts awaiting approval
       remote_approval_hint: Newly recognized accounts with unspecified domains will be placed in Suspended status. You can review that list and approve them if necessary. If this setting is not enabled, all remote accounts will be approved immediately.
+      settings: Settings
       stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
       stranger_mention_from_local_ng_hint: この設定は削除予定です。設定削除後は、常にチェックをつけている場合と同じ挙動になります。この動作を希望しない場合は、NGルールで代替してください。
       test_error: Testing is returned any errors

@@ -162,10 +162,9 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def valid_status?
-    valid = !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status)
+    valid = !Admin::NgWord.reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status, stranger: mention_to_local_stranger? || reference_to_local_stranger?)
     valid = !Admin::NgWord.hashtag_reject?(@raw_tags.size) if valid
     valid = false if valid && Admin::NgWord.mention_reject?(@raw_mentions.size, uri: @status.uri, target_type: :status, text: "#{@status_parser.spoiler_text}\n#{@status_parser.text}")
-    valid = false if valid && (mention_to_local_stranger? || reference_to_local_stranger?) && Admin::NgWord.stranger_mention_reject?("#{@status_parser.spoiler_text}\n#{@status_parser.text}", uri: @status.uri, target_type: :status)
     valid = false if valid && (mention_to_local_stranger? || reference_to_local_stranger?) && Admin::NgWord.stranger_mention_reject_with_count?(@raw_mentions.size, uri: @status.uri, target_type: :status, text: "#{@status_parser.spoiler_text}\n#{@status_parser.text}")
     valid = false if valid && (mention_to_local_stranger? || reference_to_local_stranger?) && reject_reply_exclude_followers?
 
