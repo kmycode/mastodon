@@ -9,6 +9,7 @@ import {
   changeComposeSpoilerText,
   insertEmojiCompose,
   insertExpirationCompose,
+  insertFeaturedTagCompose,
   uploadCompose,
 } from '../../../actions/compose';
 import ComposeForm from '../components/compose_form';
@@ -70,6 +71,10 @@ const mapDispatchToProps = (dispatch) => ({
 
   onPickExpiration (position, data) {
     dispatch(insertExpirationCompose(position, data));
+  },
+
+  onPickFeaturedTag (position, data) {
+    dispatch(insertFeaturedTagCompose(position, data));
   },
 
 });

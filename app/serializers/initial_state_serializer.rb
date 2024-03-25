@@ -48,6 +48,7 @@ class InitialStateSerializer < ActiveModel::Serializer
         object_account_user.setting_show_quote_in_public ? nil : 'quote_in_public',
         object_account_user.setting_show_relationships ? nil : 'relationships',
       ].compact
+      store[:featured_tags] = object.current_account.featured_tags.pluck(:name)
     else
       store[:auto_play_gif] = Setting.auto_play_gif
       store[:display_media] = Setting.display_media

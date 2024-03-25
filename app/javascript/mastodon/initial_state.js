@@ -41,6 +41,7 @@
  * @property {boolean} enable_dtl_menu
  * @property {boolean} enable_public_privacy
  * @property {boolean=} expand_spoilers
+ * @property {string[]} featured_tags
  * @property {HideItemsDefinition[]} hide_items
  * @property {boolean} limited_federation_mode
  * @property {string} locale
@@ -129,6 +130,7 @@ export const enableLocalTimeline = getMeta('enable_local_timeline');
 export const enableLoginPrivacy = getMeta('enable_login_privacy');
 export const enableDtlMenu = getMeta('enable_dtl_menu');
 export const expandSpoilers = getMeta('expand_spoilers');
+export const featuredTags = getMeta('featured_tags') || [];
 export const forceSingleColumn = !getMeta('advanced_layout');
 export const limitedFederationMode = getMeta('limited_federation_mode');
 export const mascot = getMeta('mascot');

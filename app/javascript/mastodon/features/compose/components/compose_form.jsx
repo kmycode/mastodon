@@ -19,6 +19,7 @@ import { Button } from '../../../components/button';
 import CircleDropdownContainer from '../containers/circle_dropdown_container';
 import EmojiPickerDropdown from '../containers/emoji_picker_dropdown_container';
 import ExpirationDropdownContainer from '../containers/expiration_dropdown_container';
+import FeaturedTagsDropdownContainer from '../containers/featured_tags_dropdown_container';
 import LanguageDropdown from '../containers/language_dropdown_container';
 import MarkdownButtonContainer from '../containers/markdown_button_container';
 import PollButtonContainer from '../containers/poll_button_container';
@@ -71,6 +72,7 @@ class ComposeForm extends ImmutablePureComponent {
     onPaste: PropTypes.func.isRequired,
     onPickEmoji: PropTypes.func.isRequired,
     onPickExpiration: PropTypes.func.isRequired,
+    onPickFeaturedTag: PropTypes.func.isRequired,
     autoFocus: PropTypes.bool,
     withoutNavigation: PropTypes.bool,
     anyMedia: PropTypes.bool,
@@ -238,6 +240,12 @@ class ComposeForm extends ImmutablePureComponent {
     this.props.onPickExpiration(position, data);
   };
 
+  handleFeaturedTagPick = (data) => {
+    const position     = this.textareaRef.current.selectionStart;
+
+    this.props.onPickExpiration(position, data);
+  };
+
   render () {
     const { intl, onPaste, autoFocus, withoutNavigation, maxChars } = this.props;
     const { highlighted } = this.state;
@@ -311,6 +319,7 @@ class ComposeForm extends ImmutablePureComponent {
             <div className='compose-form__dropdowns compose-form__dropdowns__second'>
               <SearchabilityDropdownContainer disabled={this.props.isEditing} />
               <ExpirationDropdownContainer onPickExpiration={this.handleExpirationPick} />
+              <FeaturedTagsDropdownContainer onPickTag={this.handleFeaturedTagPick} />
             </div>
 
             <div className='compose-form__actions'>

@@ -861,6 +861,7 @@
   "status.emoji_reactions": "{count, plural, one {reaction} other {reactions}}",
   "status.favourite": "Favorite",
   "status.favourites": "{count, plural, one {favorite} other {favorites}}",
+  "status.featured_tags.add": "Add your featured tag",
   "status.filter": "Filter this post",
   "status.filtered": "Filtered",
   "status.hide": "Hide post",

@@ -806,6 +806,7 @@
   "status.expiration.7_days": "7 日後に削除",
   "status.expiration.add": "時限投稿を設定",
   "status.favourite": "お気に入り",
+  "status.featured_tags.add": "おすすめハッシュタグを追加",
   "status.filter": "この投稿をフィルターする",
   "status.filtered": "フィルターされました",
   "status.hide": "投稿を非表示",

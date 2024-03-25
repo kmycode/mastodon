@@ -36,6 +36,7 @@ import {
   COMPOSE_COMPOSING_CHANGE,
   COMPOSE_EMOJI_INSERT,
   COMPOSE_EXPIRATION_INSERT,
+  COMPOSE_FEATURED_TAG_INSERT,
   COMPOSE_REFERENCE_INSERT,
   COMPOSE_UPLOAD_CHANGE_REQUEST,
   COMPOSE_UPLOAD_CHANGE_SUCCESS,
@@ -263,6 +264,8 @@ const insertExpiration = (state, position, data) => {
     idempotencyKey: uuid(),
   });
 };
+
+const insertFeaturedTag = insertExpiration;
 
 const insertReference = (state, url, attributeType) => {
   const oldText = state.get('text');
@@ -560,6 +563,8 @@ export default function compose(state = initialState, action) {
     return insertEmoji(state, action.position, action.emoji, action.needsSpace);
   case COMPOSE_EXPIRATION_INSERT:
     return insertExpiration(state, action.position, action.data);
+  case COMPOSE_FEATURED_TAG_INSERT:
+    return insertFeaturedTag(state, action.position, action.data);
   case COMPOSE_REFERENCE_INSERT:
     return insertReference(state, action.url, action.attributeType);
   case COMPOSE_UPLOAD_CHANGE_SUCCESS:

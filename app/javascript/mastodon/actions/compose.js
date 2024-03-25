@@ -64,6 +64,7 @@ export const COMPOSE_LANGUAGE_CHANGE     = 'COMPOSE_LANGUAGE_CHANGE';
 
 export const COMPOSE_EMOJI_INSERT = 'COMPOSE_EMOJI_INSERT';
 export const COMPOSE_EXPIRATION_INSERT = 'COMPOSE_EXPIRATION_INSERT';
+export const COMPOSE_FEATURED_TAG_INSERT = 'COMPOSE_FEATURED_TAG_INSERT';
 export const COMPOSE_REFERENCE_INSERT = 'COMPOSE_REFERENCE_INSERT';
 
 export const COMPOSE_UPLOAD_CHANGE_REQUEST     = 'COMPOSE_UPLOAD_UPDATE_REQUEST';
@@ -802,6 +803,14 @@ export function insertEmojiCompose(position, emoji, needsSpace) {
 export function insertExpirationCompose(position, data) {
   return {
     type: COMPOSE_EXPIRATION_INSERT,
+    position,
+    data,
+  };
+}
+
+export function insertFeaturedTagCompose(position, data) {
+  return {
+    type: COMPOSE_FEATURED_TAG_INSERT,
     position,
     data,
   };
