@@ -25,7 +25,7 @@ class CreateNgWords < ActiveRecord::Migration[7.1]
     keyword.start_with?('?') && keyword.size >= 2
   end
 
-  def change
+  def up
     create_table :ng_words do |t|
       t.string :keyword, null: false
       t.boolean :regexp, null: false, default: false
