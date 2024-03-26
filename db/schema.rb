@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_26_231854) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -853,6 +853,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
     t.datetime "thumbnail_updated_at", precision: nil
     t.string "thumbnail_remote_url"
     t.index ["account_id", "status_id"], name: "index_media_attachments_on_account_id_and_status_id", order: { status_id: :desc }
+    t.index ["id"], name: "index_media_attachments_vacuum", where: "((file_file_name IS NOT NULL) AND ((remote_url)::text <> ''::text))"
     t.index ["scheduled_status_id"], name: "index_media_attachments_on_scheduled_status_id", where: "(scheduled_status_id IS NOT NULL)"
     t.index ["shortcode"], name: "index_media_attachments_on_shortcode", unique: true, opclass: :text_pattern_ops, where: "(shortcode IS NOT NULL)"
     t.index ["status_id"], name: "index_media_attachments_on_status_id"
@@ -1178,6 +1179,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
     t.integer "link_type"
     t.datetime "published_at"
     t.string "image_description", default: "", null: false
+    t.index ["id"], name: "index_preview_cards_vacuum", where: "((image_file_name IS NOT NULL) AND ((image_file_name)::text <> ''::text))"
     t.index ["url"], name: "index_preview_cards_on_url", unique: true
   end
 

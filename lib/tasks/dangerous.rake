@@ -95,6 +95,7 @@ namespace :dangerous do
       20240229233617
       20240312230204
       20240320231633
+      20240326231854
     )
     # Removed: account_groups
     target_tables = %w(
@@ -177,6 +178,8 @@ namespace :dangerous do
     target_indices = %w(
       index_statuses_on_url
       index_statuses_on_conversation_id
+      index_preview_cards_vacuum
+      index_media_attachments_vacuum
     )
 
     prompt.say 'Processing...'
