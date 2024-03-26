@@ -170,6 +170,9 @@ en:
         fields:
           name: Label
           value: Content
+        fields_example:
+          name_1: ex) GitHub
+          value_1: ex) https://github.com/xxxxxx
         indexable: Include public posts in search results
         indexable_kmyblue: Enable indexable
         searchability_kmyblue: Default searchability
