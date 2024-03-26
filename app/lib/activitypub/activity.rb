@@ -169,7 +169,8 @@ class ActivityPub::Activity
   end
 
   def requested_through_relay?
-    @options[:relayed_through_actor] && Relay.find_by(inbox_url: @options[:relayed_through_actor].inbox_url)&.enabled?
+    @options[:relayed_through_actor] &&
+      (Relay.find_by(inbox_url: @options[:relayed_through_actor].inbox_url)&.enabled? || FriendDomain.free_receivings.exists?(inbox_url: @options[:relayed_through_actor].inbox_url))
   end
 
   def reject_payload!
