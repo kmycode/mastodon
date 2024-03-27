@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_26_231854) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_27_234026) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -276,7 +276,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_26_231854) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_antenna_accounts_on_account_id"
     t.index ["antenna_id", "account_id"], name: "index_antenna_accounts_on_antenna_id_and_account_id", unique: true
-    t.index ["antenna_id"], name: "index_antenna_accounts_on_antenna_id"
     t.index ["exclude"], name: "index_antenna_accounts_on_exclude"
   end
 
@@ -287,7 +286,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_26_231854) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["antenna_id", "name"], name: "index_antenna_domains_on_antenna_id_and_name", unique: true
-    t.index ["antenna_id"], name: "index_antenna_domains_on_antenna_id"
     t.index ["exclude"], name: "index_antenna_domains_on_exclude"
     t.index ["name"], name: "index_antenna_domains_on_name"
   end
@@ -299,7 +297,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_26_231854) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["antenna_id", "tag_id"], name: "index_antenna_tags_on_antenna_id_and_tag_id", unique: true
-    t.index ["antenna_id"], name: "index_antenna_tags_on_antenna_id"
     t.index ["exclude"], name: "index_antenna_tags_on_exclude"
     t.index ["tag_id"], name: "index_antenna_tags_on_tag_id"
   end
@@ -390,7 +387,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_26_231854) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["bookmark_category_id", "status_id"], name: "index_bc_statuses", unique: true
-    t.index ["bookmark_category_id"], name: "index_bookmark_category_statuses_on_bookmark_category_id"
     t.index ["bookmark_id"], name: "index_bookmark_category_statuses_on_bookmark_id"
     t.index ["status_id"], name: "index_bookmark_category_statuses_on_status_id"
   end
@@ -446,7 +442,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_26_231854) do
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_circle_accounts_on_account_id"
     t.index ["circle_id", "account_id"], name: "index_circle_accounts_on_circle_id_and_account_id", unique: true
-    t.index ["circle_id"], name: "index_circle_accounts_on_circle_id"
     t.index ["follow_id"], name: "index_circle_accounts_on_follow_id"
   end
 
@@ -456,7 +451,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_26_231854) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["circle_id", "status_id"], name: "index_circle_statuses_on_circle_id_and_status_id", unique: true
-    t.index ["circle_id"], name: "index_circle_statuses_on_circle_id"
     t.index ["status_id"], name: "index_circle_statuses_on_status_id"
   end
 
@@ -792,7 +786,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_26_231854) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["list_id", "status_id"], name: "index_list_statuses_on_list_id_and_status_id", unique: true
-    t.index ["list_id"], name: "index_list_statuses_on_list_id"
     t.index ["status_id"], name: "index_list_statuses_on_status_id"
   end
 
