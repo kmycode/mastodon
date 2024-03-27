@@ -16,6 +16,7 @@ class NgWord < ApplicationRecord
   attr_accessor :keywords, :regexps, :strangers
 
   validate :check_regexp
+  after_commit :invalidate_cache!
 
   class << self
     def caches
