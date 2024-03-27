@@ -37,6 +37,7 @@ const makeMapStateToProps = () => {
     account: getAccount(state, accountId),
     domain: state.getIn(['meta', 'domain']),
     hidden: getAccountHidden(state, accountId),
+    featuredTags: state.getIn(['user_lists', 'featured_tags', accountId, 'items']),
   });
 
   return mapStateToProps;

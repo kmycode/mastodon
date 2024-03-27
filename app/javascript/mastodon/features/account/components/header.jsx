@@ -20,6 +20,7 @@ import { Badge, AutomatedBadge, GroupBadge } from 'mastodon/components/badge';
 import { Button } from 'mastodon/components/button';
 import { CopyIconButton } from 'mastodon/components/copy_icon_button';
 import { FollowersCounter, FollowingCounter, StatusesCounter } from 'mastodon/components/counters';
+import { getFeaturedHashtagBar } from 'mastodon/components/hashtag_bar';
 import { Icon }  from 'mastodon/components/icon';
 import { IconButton } from 'mastodon/components/icon_button';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
@@ -115,6 +116,7 @@ class Header extends ImmutablePureComponent {
 
   static propTypes = {
     account: ImmutablePropTypes.record,
+    featuredTags: PropTypes.array,
     identity_props: ImmutablePropTypes.list,
     onFollow: PropTypes.func.isRequired,
     onBlock: PropTypes.func.isRequired,
@@ -215,6 +217,16 @@ class Header extends ImmutablePureComponent {
     }
   };
 
+  handleFeaturedHashtagClick = e => {
+    const { history, account } = this.props;
+    const value = e.currentTarget.textContent.replace(/^#/, '');
+
+    if (history && e.button === 0 && !(e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      history.push(`/@${account.get('acct')}/tagged/${value}`);
+    }
+  };
+
   handleMentionClick = e => {
     const { history, onOpenURL } = this.props;
 
@@ -244,7 +256,11 @@ class Header extends ImmutablePureComponent {
       link = links[i];
 
       if (link.textContent[0] === '#' || (link.previousSibling && link.previousSibling.textContent && link.previousSibling.textContent[link.previousSibling.textContent.length - 1] === '#')) {
-        link.addEventListener('click', this.handleHashtagClick, false);
+        if (link.href && link.href.includes('/tagged/')) {
+          link.addEventListener('click', this.handleFeaturedHashtagClick, false);
+        } else {
+          link.addEventListener('click', this.handleHashtagClick, false);
+        }
       } else if (link.classList.contains('mention')) {
         link.addEventListener('click', this.handleMentionClick, false);
       }
@@ -409,6 +425,8 @@ class Header extends ImmutablePureComponent {
     const username        = account.get('acct').split('@')[0];
     const domain          = isLocal ? localDomain : account.get('acct').split('@')[1];
     const isIndexable     = !account.get('noindex');
+    const featuredTagsArr = this.props.featuredTags?.map((tag) => tag.get('name')).toArray() || [];
+    const featuredTags    = getFeaturedHashtagBar(account.get('acct'), featuredTagsArr);
 
     const badges = [];
 
@@ -471,6 +489,12 @@ class Header extends ImmutablePureComponent {
                 {(account.get('id') !== me && signedIn) && <AccountNoteContainer account={account} />}
 
                 {account.get('note').length > 0 && account.get('note') !== '<p></p>' && <div className='account__header__content translate' dangerouslySetInnerHTML={content} />}
+
+                {featuredTagsArr.length > 0 && (
+                  <div className='account__header__featured-tags'>
+                    {featuredTags}
+                  </div>
+                )}
 
                 <div className='account__header__fields'>
                   <dl>

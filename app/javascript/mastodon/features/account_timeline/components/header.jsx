@@ -18,6 +18,7 @@ class Header extends ImmutablePureComponent {
 
   static propTypes = {
     account: ImmutablePropTypes.record,
+    featuredTags: PropTypes.array,
     onFollow: PropTypes.func.isRequired,
     onBlock: PropTypes.func.isRequired,
     onMention: PropTypes.func.isRequired,
@@ -123,7 +124,7 @@ class Header extends ImmutablePureComponent {
   };
 
   render () {
-    const { account, hidden, hideTabs } = this.props;
+    const { account, featuredTags, hidden, hideTabs } = this.props;
 
     if (account === null) {
       return null;
@@ -136,6 +137,7 @@ class Header extends ImmutablePureComponent {
 
         <InnerHeader
           account={account}
+          featuredTags={featuredTags}
           onFollow={this.handleFollow}
           onBlock={this.handleBlock}
           onMention={this.handleMention}

@@ -196,9 +196,14 @@ export function getHashtagBarForStatus(status: StatusLike) {
   };
 }
 
+export function getFeaturedHashtagBar(acct: string, tags: string[]) {
+  return <HashtagBar acct={acct} hashtags={tags} />;
+}
+
 const HashtagBar: React.FC<{
   hashtags: string[];
-}> = ({ hashtags }) => {
+  acct?: string;
+}> = ({ hashtags, acct }) => {
   const [expanded, setExpanded] = useState(false);
   const handleClick = useCallback(() => {
     setExpanded(true);
@@ -215,7 +220,10 @@ const HashtagBar: React.FC<{
   return (
     <div className='hashtag-bar'>
       {revealedHashtags.map((hashtag) => (
-        <Link key={hashtag} to={`/tags/${hashtag}`}>
+        <Link
+          key={hashtag}
+          to={acct ? `/@${acct}/tagged/${hashtag}` : `/tags/${hashtag}`}
+        >
           #<span>{hashtag}</span>
         </Link>
       ))}
