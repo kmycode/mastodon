@@ -171,14 +171,16 @@ class AntennaTimeline extends PureComponent {
           pinned={pinned}
           multiColumn={multiColumn}
         >
-          <div className='column-settings__row column-header__links'>
-            <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditClick}>
-              <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='antennas.edit' defaultMessage='Edit antenna' />
-            </button>
+          <div className='column-settings'>
+            <section className='column-header__links'>
+              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditClick}>
+                <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='antennas.edit' defaultMessage='Edit antenna' />
+              </button>
 
-            <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
-              <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='antennas.delete' defaultMessage='Delete antenna' />
-            </button>
+              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
+                <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='antennas.delete' defaultMessage='Delete antenna' />
+              </button>
+            </section>
           </div>
         </ColumnHeader>
 

@@ -329,19 +329,23 @@ class AntennaSetting extends PureComponent {
     if (!isStl && !isLtl) {
       columnSettings = (
         <>
-          <div className='setting-toggle'>
-            <Toggle id={`antenna-${id}-mediaonly`} checked={isMediaOnly} onChange={this.onMediaOnlyToggle} />
-            <label htmlFor={`antenna-${id}-mediaonly`} className='setting-toggle__label'>
-              <FormattedMessage id='antennas.media_only' defaultMessage='Media only' />
-            </label>
-          </div>
+          <section className='similar-row'>
+            <div className='setting-toggle'>
+              <Toggle id={`antenna-${id}-mediaonly`} checked={isMediaOnly} onChange={this.onMediaOnlyToggle} />
+              <label htmlFor={`antenna-${id}-mediaonly`} className='setting-toggle__label'>
+                <FormattedMessage id='antennas.media_only' defaultMessage='Media only' />
+              </label>
+            </div>
+          </section>
 
-          <div className='setting-toggle'>
-            <Toggle id={`antenna-${id}-ignorereblog`} checked={isIgnoreReblog} onChange={this.onIgnoreReblogToggle} />
-            <label htmlFor={`antenna-${id}-ignorereblog`} className='setting-toggle__label'>
-              <FormattedMessage id='antennas.ignore_reblog' defaultMessage='Exclude boosts' />
-            </label>
-          </div>
+          <section className='similar-row'>
+            <div className='setting-toggle'>
+              <Toggle id={`antenna-${id}-ignorereblog`} checked={isIgnoreReblog} onChange={this.onIgnoreReblogToggle} />
+              <label htmlFor={`antenna-${id}-ignorereblog`} className='setting-toggle__label'>
+                <FormattedMessage id='antennas.ignore_reblog' defaultMessage='Exclude boosts' />
+              </label>
+            </div>
+          </section>
         </>
       );
     }
@@ -379,6 +383,9 @@ class AntennaSetting extends PureComponent {
       return { value: list[1].get('id'), label: list[1].get('title') };
     });
 
+    const isShowStlToggle = !isLtl && (enableLocalTimeline || isStl);
+    const isShowLtlToggle = !isStl && (enableLocalTimeline || isLtl);
+
     return (
       <Column bindToDocument={!multiColumn} ref={this.setRef} label={title}>
         <ColumnHeader
@@ -391,46 +398,54 @@ class AntennaSetting extends PureComponent {
           pinned={pinned}
           multiColumn={multiColumn}
         >
-          <div className='column-settings__row column-header__links'>
-            <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditAntennaClick}>
-              <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='antennas.edit_static' defaultMessage='Edit antenna' />
-            </button>
+          <div className='column-settings'>
+            <section className='column-header__links'>
+              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditAntennaClick}>
+                <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='antennas.edit_static' defaultMessage='Edit antenna' />
+              </button>
 
-            <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
-              <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='antennas.delete' defaultMessage='Delete antenna' />
-            </button>
+              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
+                <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='antennas.delete' defaultMessage='Delete antenna' />
+              </button>
 
-            <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleTimelineClick}>
-              <Icon id='wifi' icon={AntennaIcon} /> <FormattedMessage id='antennas.go_timeline' defaultMessage='Go to antenna timeline' />
-            </button>
+              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleTimelineClick}>
+                <Icon id='wifi' icon={AntennaIcon} /> <FormattedMessage id='antennas.go_timeline' defaultMessage='Go to antenna timeline' />
+              </button>
+            </section>
+
+            {isShowStlToggle && (
+              <section>
+                <div className='setting-toggle'>
+                  <Toggle id={`antenna-${id}-stl`} checked={isStl} onChange={this.onStlToggle} />
+                  <label htmlFor={`antenna-${id}-stl`} className='setting-toggle__label'>
+                    <FormattedMessage id='antennas.stl' defaultMessage='STL mode' />
+                  </label>
+                </div>
+              </section>
+            )}
+
+            {isShowLtlToggle && (
+              <section className={isShowStlToggle && 'similar-row'}>
+                <div className='setting-toggle'>
+                  <Toggle id={`antenna-${id}-ltl`} checked={isLtl} onChange={this.onLtlToggle} />
+                  <label htmlFor={`antenna-${id}-ltl`} className='setting-toggle__label'>
+                    <FormattedMessage id='antennas.ltl' defaultMessage='LTL mode' />
+                  </label>
+                </div>
+              </section>
+            )}
+
+            <section className={(isShowStlToggle || isShowLtlToggle) && 'similar-row'}>
+              <div className='setting-toggle'>
+                <Toggle id={`antenna-${id}-noinsertfeeds`} checked={isInsertFeeds} onChange={this.onNoInsertFeedsToggle} />
+                <label htmlFor={`antenna-${id}-noinsertfeeds`} className='setting-toggle__label'>
+                  <FormattedMessage id='antennas.insert_feeds' defaultMessage='Insert to feeds' />
+                </label>
+              </div>
+            </section>
+
+            {columnSettings}
           </div>
-
-          {!isLtl && (enableLocalTimeline || isStl) && (
-            <div className='setting-toggle'>
-              <Toggle id={`antenna-${id}-stl`} checked={isStl} onChange={this.onStlToggle} />
-              <label htmlFor={`antenna-${id}-stl`} className='setting-toggle__label'>
-                <FormattedMessage id='antennas.stl' defaultMessage='STL mode' />
-              </label>
-            </div>
-          )}
-
-          {!isStl && (enableLocalTimeline || isLtl) && (
-            <div className='setting-toggle'>
-              <Toggle id={`antenna-${id}-ltl`} checked={isLtl} onChange={this.onLtlToggle} />
-              <label htmlFor={`antenna-${id}-ltl`} className='setting-toggle__label'>
-                <FormattedMessage id='antennas.ltl' defaultMessage='LTL mode' />
-              </label>
-            </div>
-          )}
-
-          <div className='setting-toggle'>
-            <Toggle id={`antenna-${id}-noinsertfeeds`} checked={isInsertFeeds} onChange={this.onNoInsertFeedsToggle} />
-            <label htmlFor={`antenna-${id}-noinsertfeeds`} className='setting-toggle__label'>
-              <FormattedMessage id='antennas.insert_feeds' defaultMessage='Insert to feeds' />
-            </label>
-          </div>
-
-          {columnSettings}
         </ColumnHeader>
 
         {stlAlert}
