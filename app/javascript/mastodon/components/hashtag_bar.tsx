@@ -197,13 +197,14 @@ export function getHashtagBarForStatus(status: StatusLike) {
 }
 
 export function getFeaturedHashtagBar(acct: string, tags: string[]) {
-  return <HashtagBar acct={acct} hashtags={tags} />;
+  return <HashtagBar acct={acct} hashtags={tags} defaultExpanded />;
 }
 
 const HashtagBar: React.FC<{
   hashtags: string[];
   acct?: string;
-}> = ({ hashtags, acct }) => {
+  defaultExpanded?: boolean;
+}> = ({ hashtags, acct, defaultExpanded }) => {
   const [expanded, setExpanded] = useState(false);
   const handleClick = useCallback(() => {
     setExpanded(true);
@@ -213,9 +214,10 @@ const HashtagBar: React.FC<{
     return null;
   }
 
-  const revealedHashtags = expanded
-    ? hashtags
-    : hashtags.slice(0, VISIBLE_HASHTAGS);
+  const revealedHashtags =
+    expanded || defaultExpanded
+      ? hashtags
+      : hashtags.slice(0, VISIBLE_HASHTAGS);
 
   return (
     <div className='hashtag-bar'>
@@ -228,7 +230,7 @@ const HashtagBar: React.FC<{
         </Link>
       ))}
 
-      {!expanded && hashtags.length > VISIBLE_HASHTAGS && (
+      {!expanded && !defaultExpanded && hashtags.length > VISIBLE_HASHTAGS && (
         <button className='link-button' onClick={handleClick}>
           <FormattedMessage
             id='hashtags.and_other'
