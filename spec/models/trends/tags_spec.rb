@@ -23,6 +23,33 @@ RSpec.describe Trends::Tags do
     end
   end
 
+  describe '#register' do
+    let(:tag) { Fabricate(:tag, usable: true) }
+    let(:account) { Fabricate(:account) }
+    let(:status) { Fabricate(:status, account: account, tags: [tag], created_at: at_time, updated_at: at_time) }
+
+    it 'records history' do
+      subject.register(status, at_time)
+      expect(tag.history.get(at_time).accounts).to eq 1
+      expect(tag.history.get(at_time).uses).to eq 1
+      expect(subject.send(:recently_used_ids, at_time)).to eq [tag.id]
+    end
+
+    context 'when account is rejected appending trends' do
+      let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
+
+      before do
+        Fabricate(:domain_block, domain: 'example.com', block_trends: true, severity: :noop)
+      end
+
+      it 'does not record history' do
+        subject.register(status, at_time)
+        expect(tag.history.get(at_time).accounts).to eq 0
+        expect(tag.history.get(at_time).uses).to eq 0
+      end
+    end
+  end
+
   describe '#query' do
     it 'returns a composable query scope' do
       expect(subject.query).to be_a Trends::Query
