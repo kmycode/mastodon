@@ -30,7 +30,7 @@ class ActivityPub::FetchInstanceInfoWorker
     update_info!(link)
 
     true
-  rescue Mastodon::UnexpectedResponseError
+  rescue
     true
   end
 
