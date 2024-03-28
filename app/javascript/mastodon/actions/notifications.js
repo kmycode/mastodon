@@ -94,12 +94,11 @@ export const loadPending = () => ({
   type: NOTIFICATIONS_LOAD_PENDING,
 });
 
-export function updateEmojiReactions(emoji_reaction, accountId) {
+export function updateEmojiReactions(emoji_reaction) {
   return (dispatch) =>
     dispatch({
       type: STATUS_EMOJI_REACTION_UPDATE,
       emoji_reaction,
-      accountId,
     });
 }
 

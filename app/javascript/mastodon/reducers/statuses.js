@@ -1,5 +1,7 @@
 import { Map as ImmutableMap, List as ImmutableList, fromJS } from 'immutable';
 
+import { me } from 'mastodon/initial_state';
+
 import {
   BOOKMARK_CATEGORY_EDITOR_ADD_REQUEST,
   BOOKMARK_CATEGORY_EDITOR_ADD_FAIL,
@@ -47,8 +49,8 @@ const deleteStatus = (state, id, references) => {
   return state.delete(id);
 };
 
-const updateStatusEmojiReaction = (state, emoji_reaction, myId) => {
-  emoji_reaction.me = emoji_reaction.account_ids ? emoji_reaction.account_ids.indexOf(myId) >= 0 : false;
+const updateStatusEmojiReaction = (state, emoji_reaction) => {
+  emoji_reaction.me = emoji_reaction.account_ids ? emoji_reaction.account_ids.indexOf(me) >= 0 : false;
 
   const status = state.get(emoji_reaction.status_id);
   if (!status) return state;
@@ -56,18 +58,22 @@ const updateStatusEmojiReaction = (state, emoji_reaction, myId) => {
   let emoji_reactions = Array.from(status.get('emoji_reactions') || []);
 
   if (emoji_reaction.count > 0) {
-    const old_emoji = emoji_reactions.find((er) => er.get('name') === emoji_reaction.name && (!er.get('domain') || er.get('domain') === emoji_reaction.domain));
+    const old_emoji = emoji_reactions.find((er) => er.get('name') === emoji_reaction.name);
     if (old_emoji) {
       const index = emoji_reactions.indexOf(old_emoji);
-      emoji_reactions[index] = old_emoji.merge({ account_ids: emoji_reaction.account_ids, count: emoji_reaction.count, me: emoji_reaction.me });
+      emoji_reactions[index] = old_emoji.merge({ account_ids: ImmutableList(emoji_reaction.account_ids), count: emoji_reaction.count, me: emoji_reaction.me });
     } else {
       emoji_reactions.push(ImmutableMap(emoji_reaction));
     }
   } else {
-    emoji_reactions = emoji_reactions.filter((er) => er.get('name') !== emoji_reaction.name || er.get('domain') !== emoji_reaction.domain);
+    emoji_reactions = emoji_reactions.filter((er) => er.get('name') !== emoji_reaction.name);
   }
 
-  return state.setIn([emoji_reaction.status_id, 'emoji_reactions'], ImmutableList(emoji_reactions));
+  const emoji_reactions_count = emoji_reactions.reduce((prev, current) => prev + current.get('account_ids').count(), 0);
+
+  return state
+    .setIn([emoji_reaction.status_id, 'emoji_reactions'], ImmutableList(emoji_reactions))
+    .setIn([emoji_reaction.status_id, 'emoji_reactions_count'], emoji_reactions_count);
 };
 
 const statusTranslateSuccess = (state, id, translation) => {
@@ -160,7 +166,7 @@ export default function statuses(state = initialState, action) {
   case STATUS_TRANSLATE_UNDO:
     return statusTranslateUndo(state, action.id);
   case STATUS_EMOJI_REACTION_UPDATE:
-    return updateStatusEmojiReaction(state, action.emoji_reaction, action.accountId);
+    return updateStatusEmojiReaction(state, action.emoji_reaction);
   default:
     return state;
   }
