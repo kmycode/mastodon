@@ -156,16 +156,18 @@ class BookmarkCategoryStatuses extends ImmutablePureComponent {
           pinned={pinned}
           multiColumn={multiColumn}
         >
-          <div className='column-settings__row column-header__links'>
-            <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditClick}>
-              <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='bookmark_categories.edit' defaultMessage='Edit category' />
-            </button>
+          <div className='column-settings'>
+            <section className='column-header__links'>
+              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditClick}>
+                <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='bookmark_categories.edit' defaultMessage='Edit category' />
+              </button>
 
-            <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
-              <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='bookmark_categories.delete' defaultMessage='Delete category' />
-            </button>
+              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
+                <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='bookmark_categories.delete' defaultMessage='Delete category' />
+              </button>
 
-            {editor}
+              {editor}
+            </section>
           </div>
         </ColumnHeader>
 
