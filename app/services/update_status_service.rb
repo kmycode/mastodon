@@ -84,6 +84,7 @@ class UpdateStatusService < BaseService
   end
 
   def validate_status!
+    return if @options[:bypass_validation]
     raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if Admin::NgWord.reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
     raise Mastodon::ValidationError, I18n.t('statuses.too_many_hashtags') if Admin::NgWord.hashtag_reject_with_extractor?(@options[:text] || '')
     raise Mastodon::ValidationError, I18n.t('statuses.too_many_mentions') if Admin::NgWord.mention_reject_with_extractor?(@options[:text] || '')
@@ -91,10 +92,13 @@ class UpdateStatusService < BaseService
   end
 
   def validate_status_mentions!
+    return if @options[:bypass_validation]
     raise Mastodon::ValidationError, I18n.t('statuses.contains_ng_words') if (mention_to_stranger? || reference_to_stranger?) && Setting.stranger_mention_from_local_ng && Admin::NgWord.stranger_mention_reject?("#{@options[:spoiler_text]}\n#{@options[:text]}")
   end
 
   def validate_status_ng_rules!
+    return if @options[:bypass_validation]
+
     result = check_invalid_status_for_ng_rule! @status.account,
                                                reaction_type: 'edit',
                                                spoiler_text: @options.key?(:spoiler_text) ? (@options[:spoiler_text] || '') : @status.spoiler_text,

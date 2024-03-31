@@ -277,6 +277,13 @@ RSpec.describe UpdateStatusService do
       expect { subject.call(status, status.account_id, text: text) }.to raise_error(Mastodon::ValidationError)
     end
 
+    it 'bypass ng words' do
+      text = 'ng word test'
+      Fabricate(:ng_word, keyword: 'test', stranger: false)
+
+      expect { subject.call(status, status.account_id, text: text, bypass_validation: true) }.to_not raise_error
+    end
+
     it 'not hit ng words' do
       text = 'ng word aiueo'
       Fabricate(:ng_word, keyword: 'test', stranger: false)

@@ -83,7 +83,7 @@ class Admin::StatusBatchAction
       authorize([:admin, status], :update?)
 
       if target_account.local?
-        UpdateStatusService.new.call(status, representative_account.id, sensitive: true)
+        UpdateStatusService.new.call(status, representative_account.id, sensitive: true, bypass_validation: true)
       else
         status.update(sensitive: true)
       end
@@ -119,7 +119,7 @@ class Admin::StatusBatchAction
       status_text = "#{status.spoiler_text}\n\n#{status_text}" if status.spoiler_text
 
       if target_account.local?
-        UpdateStatusService.new.call(status, representative_account.id, spoiler_text: 'CW', text: status_text)
+        UpdateStatusService.new.call(status, representative_account.id, spoiler_text: 'CW', text: status_text, bypass_validation: true)
       else
         status.update(spoiler_text: 'CW', text: status_text)
       end
