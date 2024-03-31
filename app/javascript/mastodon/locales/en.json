@@ -600,7 +600,7 @@
   "notification.status": "{name} just posted",
   "notification.status_reference": "{name} refered your post",
   "notification.update": "{name} edited a post",
-  "notification.warning": "You have been warned and \"{action}\" has been executed. Check your mailbox",
+  "notification.warning": "You have been warned and did something. Check your mailbox",
   "notifications.clear": "Clear notifications",
   "notifications.clear_confirmation": "Are you sure you want to permanently clear all your notifications?",
   "notifications.column_settings.admin.report": "New reports:",

@@ -3,6 +3,8 @@
 class REST::NotificationSerializer < ActiveModel::Serializer
   attributes :id, :type, :created_at
 
+  has_many :statuses, serializer: REST::StatusSerializer, if: :warning_type?
+
   belongs_to :from_account_web, key: :account, serializer: REST::AccountSerializer
   belongs_to :target_status, key: :status, if: :status_type?, serializer: REST::StatusSerializer
   belongs_to :report, if: :report_type?, serializer: REST::ReportSerializer
@@ -41,5 +43,9 @@ class REST::NotificationSerializer < ActiveModel::Serializer
 
   def relationship_severance_event?
     object.type == :severed_relationships
+  end
+
+  def statuses
+    Status.where(id: object.account_warning.status_ids).to_a
   end
 end
