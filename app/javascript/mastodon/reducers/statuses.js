@@ -69,7 +69,7 @@ const updateStatusEmojiReaction = (state, emoji_reaction) => {
     emoji_reactions = emoji_reactions.filter((er) => er.get('name') !== emoji_reaction.name);
   }
 
-  const emoji_reactions_count = emoji_reactions.reduce((prev, current) => prev + current.get('account_ids').count(), 0);
+  const emoji_reactions_count = emoji_reactions.map((er) => Array.from(er.get('account_ids') || [])).reduce((prev, current) => prev + current.length, 0);
 
   return state
     .setIn([emoji_reaction.status_id, 'emoji_reactions'], ImmutableList(emoji_reactions))
