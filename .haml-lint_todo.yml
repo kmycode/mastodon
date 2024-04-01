@@ -32,4 +32,5 @@ linters:
       - 'app/views/application/_sidebar.html.haml'
       - 'app/views/admin/ng_rules/_ng_rule_fields.html.haml'
       - 'app/views/admin/ng_words/keywords/_ng_word.html.haml'
+      - 'app/views/admin/ng_words/white_list/_specified_domain.html.haml'
       - 'app/views/admin/sensitive_words/_sensitive_word.html.haml'

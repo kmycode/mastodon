@@ -61,7 +61,6 @@ class Form::AdminSettings
     unlocked_friend
     enable_local_timeline
     emoji_reaction_disallow_domains
-    permit_new_account_domains
     block_unfollow_account_mention
     hold_remote_new_accounts
   ).freeze
@@ -121,7 +120,6 @@ class Form::AdminSettings
 
   STRING_ARRAY_KEYS = %i(
     emoji_reaction_disallow_domains
-    permit_new_account_domains
   ).freeze
 
   attr_accessor(*KEYS)

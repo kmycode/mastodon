@@ -316,40 +316,21 @@ const removeTableRow = (target: EventTarget | null, tableId: string) => {
   tableElement.removeChild(tableRowElement);
 };
 
-Rails.delegate(
-  document,
-  '#sensitive-words-table .add-row-button',
-  'click',
-  (ev) => {
+const setupTableList = (id: string) => {
+  Rails.delegate(document, `#${id} .add-row-button`, 'click', (ev) => {
     ev.preventDefault();
-    addTableRow('sensitive-words-table');
-  },
-);
+    addTableRow(id);
+  });
 
-Rails.delegate(
-  document,
-  '#sensitive-words-table .delete-row-button',
-  'click',
-  (ev) => {
+  Rails.delegate(document, `#${id} .delete-row-button`, 'click', (ev) => {
     ev.preventDefault();
-    removeTableRow(ev.target, 'sensitive-words-table');
-  },
-);
+    removeTableRow(ev.target, id);
+  });
+};
 
-Rails.delegate(document, '#ng-words-table .add-row-button', 'click', (ev) => {
-  ev.preventDefault();
-  addTableRow('ng-words-table');
-});
-
-Rails.delegate(
-  document,
-  '#ng-words-table .delete-row-button',
-  'click',
-  (ev) => {
-    ev.preventDefault();
-    removeTableRow(ev.target, 'ng-words-table');
-  },
-);
+setupTableList('sensitive-words-table');
+setupTableList('ng-words-table');
+setupTableList('white-list-table');
 
 async function mountReactComponent(element: Element) {
   const componentName = element.getAttribute('data-admin-component');

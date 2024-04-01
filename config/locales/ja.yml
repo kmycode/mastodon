@@ -752,7 +752,6 @@ ja:
       hide_local_users_for_anonymous_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。サーバー設定の「見つける」にある「公開タイムラインへの未認証のアクセスを許可する」で、完全ではありませんが代替可能です。
       hold_remote_new_accounts: リモートの新規アカウントを保留する
       keywords: 拒否するキーワード
-      permit_new_account_domains: 新規ユーザーを自動承認するドメイン
       phrases:
         regexp_html: <strong>正規</strong> 表現 にチェックの入っている項目は、正規表現を用いての比較となります。
         regexp_short: 正規

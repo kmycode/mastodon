@@ -753,7 +753,6 @@ en:
       hide_local_users_for_anonymous_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。サーバー設定の「見つける」にある「公開タイムラインへの未認証のアクセスを許可する」で、完全ではありませんが代替可能です。
       hold_remote_new_accounts: Hold new remote accounts
       keywords: Reject keywords
-      permit_new_account_domains: Domain list to automatically approve new users
       preamble: This setting is useful for solving problems related to spam that are difficult to address with domain blocking. You can reject posts that meet certain criteria, such as the inclusion of specific keywords. Please consider your settings carefully and check your history regularly to ensure that problem-free submissions are not deleted.
       post_hash_tags_max: Hash tags max for posts
       post_mentions_max: Mentions max for posts
