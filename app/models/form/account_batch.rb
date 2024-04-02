@@ -98,7 +98,7 @@ class Form::AccountBatch
 
   def approve_remote_domain!
     domains = accounts.group_by(&:domain).pluck(0)
-    (domains - SpecifiedDomain.where(domain: domains).pluck(:domain)).each do |domain|
+    (domains - SpecifiedDomain.where(domain: domains, table: 0).pluck(:domain)).each do |domain|
       SpecifiedDomain.create!(domain: domain, table: 0)
     end
 
