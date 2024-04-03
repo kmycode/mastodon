@@ -1044,6 +1044,14 @@ en:
         minor: Minor release
         patch: Patch release — bugfixes and easy to apply changes
       version: Version
+    special_domains:
+      stop_fetch_activity_domains:
+        preamble: WebとActivityでドメインの異なるサーバーでは、WebにアクセスしてもActivityが取得できない場合があります。参照において、投稿本文内でそのようなURLが指定された場合のフェッチを抑止します。多くの場合、この設定を利用する機会はほとんどありません。
+        title: Domains do not fetch for references
+      stop_link_preview_domains:
+        preamble: 多くのアクセスがあったIPアドレスからの接続を一時的に制限するサイトがある場合、自分のサーバーが不利に扱われる場合があります。そのようなサイトにアクセスしてリンクプレビューを生成する処理を抑制します。多くの場合、この設定を利用する機会はほとんどありません。
+        title: Domains do not fetch for link previews
+      title: Special domains
     special_instances:
       emoji_reaction_disallow_domains: Domains we are not permitted emoji reaction
       emoji_reaction_disallow_domains_hint: If you need to be considerate to your coalition partners, set the domain with a new line separator. It is not possible to put an emoji reaction on a post from a set domain.

@@ -46,6 +46,7 @@ namespace :admin do
   resources :ng_rule_histories, only: [:show]
   resource :sensitive_words, only: [:show, :create]
   resource :special_instances, only: [:show, :create]
+  resource :special_domains, only: [:show, :create]
 
   resources :announcements, except: [:show] do
     member do

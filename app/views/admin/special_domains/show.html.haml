@@ -1,0 +1,17 @@
+- content_for :page_title do
+  = t('admin.special_domains.title')
+
+- content_for :header_tags do
+  = javascript_pack_tag 'admin', async: true, crossorigin: 'anonymous'
+
+= simple_form_for @admin_settings, url: admin_special_domains_path, html: { method: :post } do |f|
+  = render 'shared/error_messages', object: @admin_settings
+
+  .fields-group
+    = f.input :stop_fetch_activity_domains, wrapper: :with_label, as: :text, input_html: { rows: 6 }, label: t('admin.special_domains.stop_fetch_activity_domains.title'), hint: t('admin.special_domains.stop_fetch_activity_domains.preamble')
+
+  .fields-group
+    = f.input :stop_link_preview_domains, wrapper: :with_label, as: :text, input_html: { rows: 6 }, label: t('admin.special_domains.stop_link_preview_domains.title'), hint: t('admin.special_domains.stop_link_preview_domains.preamble')
+
+  .actions
+    = f.button :button, t('generic.save_changes'), type: :submit

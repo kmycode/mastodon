@@ -284,6 +284,20 @@ RSpec.describe FetchLinkCardService do
         expect(status.preview_card.title).to eq 'Hello world'
       end
     end
+
+    context 'when URL domain is blocked by admin' do
+      let(:status) { Fabricate(:status, text: 'http://example.com/html') }
+      let(:custom_before) { true }
+
+      before do
+        Setting.stop_link_preview_domains = ['example.com']
+      end
+
+      it 'creates preview card' do
+        subject.call(status)
+        expect(status.preview_card).to be_nil
+      end
+    end
   end
 
   context 'with a remote status' do

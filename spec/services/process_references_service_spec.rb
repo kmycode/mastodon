@@ -175,6 +175,33 @@ RSpec.describe ProcessReferencesService, type: :service do
       end
     end
 
+    context 'with fetch is blocked by admin' do
+      let(:text) { 'Hello RT https://web.example.com/note' }
+
+      before do
+        Setting.stop_fetch_activity_domains = ['web.example.com']
+        stub_request(:get, 'https://web.example.com/note').to_return(status: 404)
+      end
+
+      context 'when the post is known' do
+        let(:target_status) { Fabricate(:status, uri: 'https://example.com/note', url: 'https://web.example.com/note') }
+
+        it 'post status', :sidekiq_inline do
+          expect(subject.size).to eq 1
+          expect(subject.pluck(0)).to include target_status.id
+          expect(subject.pluck(1)).to include 'RT'
+          expect(notify?).to be true
+        end
+      end
+
+      context 'when the post is unknown' do
+        it 'post status', :sidekiq_inline do
+          expect(subject.size).to eq 0
+          expect(a_request(:get, 'https://web.example.com/note')).to_not have_been_made
+        end
+      end
+    end
+
     context 'when unfetched remote post' do
       let(:account) { Fabricate(:account, followers_url: 'http://example.com/followers', domain: 'example.com', uri: 'https://example.com/actor') }
       let(:object_json) do

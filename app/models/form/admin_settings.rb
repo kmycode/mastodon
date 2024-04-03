@@ -64,6 +64,8 @@ class Form::AdminSettings
     permit_new_account_domains
     block_unfollow_account_mention
     hold_remote_new_accounts
+    stop_fetch_activity_domains
+    stop_link_preview_domains
   ).freeze
 
   INTEGER_KEYS = %i(
@@ -122,6 +124,8 @@ class Form::AdminSettings
   STRING_ARRAY_KEYS = %i(
     emoji_reaction_disallow_domains
     permit_new_account_domains
+    stop_fetch_activity_domains
+    stop_link_preview_domains
   ).freeze
 
   attr_accessor(*KEYS)

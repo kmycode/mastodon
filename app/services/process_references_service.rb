@@ -153,8 +153,14 @@ class ProcessReferencesService < BaseService
 
   def url_to_status(url)
     status   = ActivityPub::TagManager.instance.uri_to_resource(url, Status, url: true)
-    status ||= ResolveURLService.new.call(url, on_behalf_of: @status.account) if @fetch_remote && @no_fetch_urls.exclude?(url)
+    status ||= ResolveURLService.new.call(url, on_behalf_of: @status.account) unless bad_url_to_fetch?(url)
     referrable?(status) ? status : nil
+  end
+
+  def bad_url_to_fetch?(url)
+    uri = Addressable::URI.parse(url).normalize
+
+    !@fetch_remote || @no_fetch_urls.include?(url) || uri.host.blank? || Setting.stop_fetch_activity_domains&.include?(uri.host)
   end
 
   def referrable?(target_status)
