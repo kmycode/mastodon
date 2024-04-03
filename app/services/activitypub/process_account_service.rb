@@ -142,11 +142,7 @@ class ActivityPub::ProcessAccountService < BaseService
   def blocking_new_account?
     return false unless Setting.hold_remote_new_accounts
 
-    permit_new_account_domains.exclude?(@domain)
-  end
-
-  def permit_new_account_domains
-    (Setting.permit_new_account_domains || []).compact_blank
+    SpecifiedDomain.white_list_domain_caches.none? { |item| item.domain == @domain }
   end
 
   def valid_account?

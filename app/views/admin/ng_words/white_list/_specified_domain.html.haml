@@ -1,0 +1,6 @@
+- temporary_id = defined?(@temp_id) ? @temp_id += 1 : @temp_id = 1
+%tr{ class: template ? 'template-row' : nil }
+  %td= f.input :domains, as: :string, input_html: { multiple: true, value: specified_domain.domain }
+  %td
+    = hidden_field_tag :'form_admin_settings[specified_domains][temporary_ids][]', temporary_id, class: 'temporary_id'
+    = link_to safe_join([fa_icon('times'), t('filters.index.delete')]), '#', class: 'table-action-link delete-row-button'

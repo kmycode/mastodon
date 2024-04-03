@@ -218,6 +218,7 @@ en:
         discoverable: Suggest account to others
         discoverable_local: Disallow suggesting account on other servers
         display_name: Display name
+        domain: Domain
         email: E-mail address
         expires_in: Expire after
         fields: Extra fields

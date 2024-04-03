@@ -229,6 +229,7 @@ ja:
         discoverable: ディレクトリに掲載する
         discoverable_local: 他サーバーのディレクトリに掲載しない
         display_name: 表示名
+        domain: ドメイン
         email: メールアドレス
         expires_in: 有効期限
         fields: プロフィール補足情報

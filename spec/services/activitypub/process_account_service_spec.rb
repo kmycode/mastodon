@@ -13,7 +13,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
     subject { described_class.new.call('alice', 'example.com', payload) }
 
     let(:hold_remote_new_accounts) { true }
-    let(:permit_new_account_domains) { nil }
+    let(:permit_domain) { nil }
     let(:payload) do
       {
         id: 'https://foo.test',
@@ -26,7 +26,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
 
     before do
       Setting.hold_remote_new_accounts = hold_remote_new_accounts
-      Setting.permit_new_account_domains = permit_new_account_domains
+      Fabricate(:specified_domain, domain: permit_domain, table: 0) if permit_domain
     end
 
     it 'creates pending account in a simple case' do
@@ -37,7 +37,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     context 'when is blocked' do
-      let(:permit_new_account_domains) { ['foo.bar'] }
+      let(:permit_domain) { 'foo.bar' }
 
       it 'creates pending account' do
         expect(subject).to_not be_nil
@@ -98,7 +98,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     context 'when is in whitelist' do
-      let(:permit_new_account_domains) { ['example.com'] }
+      let(:permit_domain) { 'example.com' }
 
       it 'does not create account' do
         expect(subject).to_not be_nil

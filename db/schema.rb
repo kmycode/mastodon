@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_27_234026) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_01_222541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -1326,6 +1326,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_27_234026) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["version"], name: "index_software_updates_on_version", unique: true
+  end
+
+  create_table "specified_domains", force: :cascade do |t|
+    t.string "domain", null: false
+    t.integer "table", default: 0, null: false
+    t.jsonb "options", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["domain", "table"], name: "index_specified_domains_on_domain_and_table", unique: true
   end
 
   create_table "status_capability_tokens", force: :cascade do |t|

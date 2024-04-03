@@ -98,10 +98,10 @@ class Form::AccountBatch
 
   def approve_remote_domain!
     domains = accounts.group_by(&:domain).pluck(0)
-    if (Setting.permit_new_account_domains || []).compact_blank.present?
-      list = ((Setting.permit_new_account_domains || []) + domains).compact_blank.uniq.join("\n")
-      Form::AdminSettings.new(permit_new_account_domains: list).save
+    (domains - SpecifiedDomain.where(domain: domains, table: 0).pluck(:domain)).each do |domain|
+      SpecifiedDomain.create!(domain: domain, table: 0)
     end
+
     Account.where(domain: domains, remote_pending: true).find_each do |account|
       approve_remote_account(account)
     end
