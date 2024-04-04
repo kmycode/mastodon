@@ -1353,10 +1353,11 @@ en:
       body: Mastodon is translated by volunteers.
       guide_link: https://crowdin.com/project/mastodon
       guide_link_text: Everyone can contribute.
+    media: Media
     quotes: Quotes
     saved_posts: Saving posts
     sensitive_content: Sensitive content
-    timelines: Timelines
+    status_action_bar: Post menu
   application_mailer:
     notification_preferences: Change e-mail preferences
     salutation: "%{name},"

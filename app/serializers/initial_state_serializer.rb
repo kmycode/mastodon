@@ -36,6 +36,7 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:show_trends]       = Setting.trends && object_account_user.setting_trends
       store[:bookmark_category_needed] = object_account_user.setting_bookmark_category_needed
       store[:simple_timeline_menu] = object_account_user.setting_simple_timeline_menu
+      store[:boost_menu] = object_account_user.setting_boost_menu
       store[:hide_items] = [
         object_account_user.setting_hide_favourite_menu ? 'favourite_menu' : nil,
         object_account_user.setting_hide_recent_emojis ? 'recent_emojis' : nil,

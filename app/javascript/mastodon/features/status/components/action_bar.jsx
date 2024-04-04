@@ -28,7 +28,7 @@ import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import { IconButton } from '../../../components/icon_button';
 import DropdownMenuContainer from '../../../containers/dropdown_menu_container';
-import { enableEmojiReaction , bookmarkCategoryNeeded, me, isHideItem } from '../../../initial_state';
+import { enableEmojiReaction , bookmarkCategoryNeeded, me, isHideItem, boostMenu } from '../../../initial_state';
 import EmojiPickerDropdown from '../../compose/containers/emoji_picker_dropdown_container';
 
 const messages = defineMessages({
@@ -40,6 +40,7 @@ const messages = defineMessages({
   mentions: { id: 'status.mentions', defaultMessage: 'Mentioned users' },
   reply: { id: 'status.reply', defaultMessage: 'Reply' },
   reblog: { id: 'status.reblog', defaultMessage: 'Boost' },
+  reblog_with_detail: { id: 'status.reblog_with_detail', defaultMessage: 'Boost with visibility' },
   cancel_reblog: { id: 'status.cancel_reblog_private', defaultMessage: 'Unboost' },
   reblog_private: { id: 'status.reblog_private', defaultMessage: 'Boost with original visibility' },
   cancel_reblog_private: { id: 'status.cancel_reblog_private', defaultMessage: 'Unboost' },
@@ -272,17 +273,18 @@ class ActionBar extends PureComponent {
     if (signedIn) {
       menu.push(null);
 
-      if (status.get('visibility_ex') !== 'limited') {
-        menu.push({ text: intl.formatMessage(status.get('reblogged') ? messages.cancel_reblog : messages.reblog), action: this.handleReblogForceModalClick });
-      }
+      if (!boostMenu) {
+        menu.push({ text: intl.formatMessage(status.get('reblogged') ? messages.cancel_reblog : messages.reblog), action: this.handleReblogForceModalClick, tag: 'reblog' });
 
-      if (publicStatus) {
-        if (allowQuote) {
-          menu.push({ text: intl.formatMessage(messages.quote), action: this.handleQuote });
+        if (publicStatus) {
+          if (allowQuote) {
+            menu.push({ text: intl.formatMessage(messages.quote), action: this.handleQuote, tag: 'reblog' });
+          }
+  
+          menu.push({ text: intl.formatMessage(messages.reference), action: this.handleReference, tag: 'reblog' });
         }
-
-        menu.push({ text: intl.formatMessage(messages.reference), action: this.handleReference });
       }
+
       menu.push({ text: intl.formatMessage(messages.bookmark_category), action: this.handleBookmarkCategoryAdderClick });
 
       if (writtenByMe) {
@@ -344,6 +346,24 @@ class ActionBar extends PureComponent {
       }
     }
 
+    let reblogMenu = [];
+
+    if (boostMenu) {
+      reblogMenu.push({ text: intl.formatMessage(status.get('reblogged') ? messages.cancel_reblog : messages.reblog), action: this.handleReblogClick });
+
+      if (!status.get('reblogged')) {
+        reblogMenu.push({ text: intl.formatMessage(messages.reblog_with_detail), action: this.handleReblogForceModalClick });
+      }
+  
+      if (publicStatus) {
+        if (allowQuote) {
+          reblogMenu.push({ text: intl.formatMessage(messages.quote), action: this.handleQuote });
+        }
+  
+        reblogMenu.push({ text: intl.formatMessage(messages.reference), action: this.handleReference });
+      }
+    }
+
     let replyIcon;
     let replyIconComponent;
 
@@ -371,6 +391,8 @@ class ActionBar extends PureComponent {
     } else {
       reblogTitle = intl.formatMessage(messages.cannot_reblog);
       reblogIconComponent = RepeatDisabledIcon;
+      menu = menu.filter((item) => !item?.tag || item.tag !== 'reblog');
+      reblogMenu = [];
     }
 
     const emojiReactionAvailableServer = !isHideItem('emoji_reaction_unavailable_server') || account.get('emoji_reaction_available_server');
@@ -393,7 +415,23 @@ class ActionBar extends PureComponent {
     return (
       <div className='detailed-status__action-bar'>
         <div className='detailed-status__button'><IconButton title={intl.formatMessage(messages.reply)} icon={status.get('in_reply_to_account_id') === status.getIn(['account', 'id']) ? 'reply' : replyIcon} iconComponent={status.get('in_reply_to_account_id') === status.getIn(['account', 'id']) ? ReplyIcon : replyIconComponent}  onClick={this.handleReplyClick} /></div>
-        <div className='detailed-status__button'><IconButton className={classNames({ reblogPrivate })} disabled={!publicStatus && !reblogPrivate} active={status.get('reblogged')} title={reblogTitle} icon='retweet' iconComponent={reblogIconComponent} onClick={this.handleReblogClick} /></div>
+        {reblogMenu.length === 0 ? (
+          <div className='detailed-status__button'><IconButton className={classNames({ reblogPrivate })} disabled={!publicStatus && !reblogPrivate} active={status.get('reblogged')} title={reblogTitle} icon='retweet' iconComponent={reblogIconComponent} onClick={this.handleReblogClick} /></div>
+        ) : (
+          <div className='detailed-status__button'>
+            <DropdownMenuContainer
+              className={classNames({ reblogPrivate })}
+              icon='retweet'
+              iconComponent={reblogIconComponent}
+              status={status}
+              items={reblogMenu}
+              direction='left'
+              title={reblogTitle}
+              active={status.get('reblogged')}
+              disabled={!publicStatus && !reblogPrivate}
+            />
+          </div>
+        )}
         <div className='detailed-status__button'><IconButton className='star-icon' animate active={status.get('favourited')} title={intl.formatMessage(messages.favourite)} icon='star' iconComponent={status.get('favourited') ? StarIcon : StarBorderIcon} onClick={this.handleFavouriteClick} /></div>
         <div className='detailed-status__button'><IconButton className='bookmark-icon' disabled={!signedIn} active={status.get('bookmarked')} title={intl.formatMessage(messages.bookmark)} icon='bookmark' iconComponent={status.get('bookmarked') ? BookmarkIcon : BookmarkBorderIcon} onClick={this.handleBookmarkClick} /></div>
         {emojiPickerDropdown}

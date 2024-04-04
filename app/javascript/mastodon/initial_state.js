@@ -56,7 +56,8 @@
  * @property {string} repository
  * @property {boolean} search_enabled
  * @property {boolean} trends_enabled
- * @property {string} simple_timeline_menu
+ * @property {boolean} simple_timeline_menu
+ * @property {boolean} boost_menu
  * @property {boolean} single_user_mode
  * @property {string} source_url
  * @property {string} streaming_api_base_url
@@ -145,6 +146,7 @@ export const searchEnabled = getMeta('search_enabled');
 export const trendsEnabled = getMeta('trends_enabled');
 export const showTrends = getMeta('show_trends');
 export const simpleTimelineMenu = getMeta('simple_timeline_menu');
+export const boostMenu = getMeta('boost_menu');
 export const singleUserMode = getMeta('single_user_mode');
 export const source_url = getMeta('source_url');
 export const timelinePreview = getMeta('timeline_preview');

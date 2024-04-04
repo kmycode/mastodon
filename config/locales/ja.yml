@@ -1346,10 +1346,11 @@ ja:
       body: Mastodonは有志によって翻訳されています。
       guide_link: https://ja.crowdin.com/project/mastodon
       guide_link_text: 誰でも参加することができます。
+    media: メディア
     quotes: 引用
     saved_posts: 投稿の記録
     sensitive_content: 閲覧注意コンテンツ
-    timelines: タイムライン
+    status_action_bar: 投稿のメニュー
   application_mailer:
     notification_preferences: メール設定の変更
     salutation: "%{name}さん"

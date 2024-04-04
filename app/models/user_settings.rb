@@ -69,6 +69,7 @@ class UserSettings
     setting :display_media_expand, default: true
     setting :auto_play, default: true
     setting :simple_timeline_menu, default: false
+    setting :boost_menu, default: false
     setting :show_quote_in_home, default: true
     setting :show_quote_in_public, default: false
     setting :show_relationships, default: true
