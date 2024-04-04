@@ -59,6 +59,7 @@ ja:
         phrase: 投稿内容の大文字小文字や閲覧注意に関係なく一致
         scopes: アプリの API に許可するアクセス権を選択してください。最上位のスコープを選択する場合、個々のスコープを選択する必要はありません。
         setting_aggregate_reblogs: 最近ブーストされた投稿が新たにブーストされても表示しません (設定後受信したものにのみ影響)
+        setting_allow_quote: ひかえめな引用はこの設定に関わらず可能です。kmyblue以外からは自由に引用できます
         setting_always_send_emails: 通常、Mastodon からメール通知は行われません。
         setting_bookmark_category_needed: すべてのカテゴリから削除したとき、ブックマークが自動で外れるようになります
         setting_boost_modal: ブーストの公開範囲が指定できるようになります
@@ -81,7 +82,6 @@ ja:
         setting_reject_unlisted_subscription: Misskeyやそのフォークは、フォローしていないアカウントの「非収載」投稿を **購読・検索** することができます。これはkmyblueの挙動と異なります。そのようなサーバーに、指定した公開範囲の投稿を「フォロワーのみ」として配送します。ただし構造上、完璧な対応は困難でたまに非収載として配信されること、ご理解ください
         setting_reverse_search_quote: 検索ワードをダブルクオートで囲って検索した場合、表記ゆれ多めの検索結果になります。Mastodon標準とは逆の挙動となります。
         setting_show_application: 投稿するのに使用したアプリが投稿の詳細ビューに表示されるようになります
-        setting_single_ref_to_quote: 当サーバーがまだ対象投稿を取り込んでいない場合、引用が相手に正常に認識されない場合があります
         setting_stop_emoji_reaction_streaming: 通信容量の節約に役立ちます
         setting_use_blurhash: ぼかしはメディアの色を元に生成されますが、細部は見えにくくなっています
         setting_use_pending_items: 新着があってもタイムラインを自動的にスクロールしないようにします
@@ -293,8 +293,8 @@ ja:
         setting_show_favourite_menu: 右サイドメニューに「お気に入り」を表示する
         setting_show_followers_count: フォロワー数を公開する
         setting_show_following_count: フォロー数を公開する
-        setting_show_quote_in_home: ホーム・リスト・アンテナなどで引用を表示する
-        setting_show_quote_in_public: 公開タイムライン（ローカル・連合）で引用を表示する
+        setting_show_quote_in_home: ホーム・リスト・アンテナなどで引用された投稿を表示する
+        setting_show_quote_in_public: 公開タイムライン（ローカル・連合）で引用された投稿を表示する
         setting_show_recent_emojis: 絵文字ピッカーで絵文字デッキと一緒に、絵文字の使用履歴も表示する
         setting_show_relationships: アカウント詳細ベージで、相手からのフォロー状況を表示する
         setting_show_statuses_count: 投稿数を公開する
@@ -308,7 +308,6 @@ ja:
         setting_show_application: 送信したアプリを開示する
         setting_show_emoji_reaction_on_timeline: タイムライン上の投稿に他の人のつけた絵文字を表示する
         setting_simple_timeline_menu: タイムライン上でメニューの項目を減らす
-        setting_single_ref_to_quote: 参照が１つしかない投稿は、他のサーバーには引用として配信する
         setting_slip_local_emoji_reaction: ローカルユーザーに限って上記設定を無視して絵文字リアクションを許可する
         setting_stay_privacy: 投稿時に公開範囲を保存する
         setting_stop_emoji_reaction_streaming: 絵文字リアクションのストリーミングを停止する
@@ -353,7 +352,7 @@ ja:
         options:
           exclude_follows: フォロー中のユーザーをフィルターの対象にしない
           exclude_localusers: ローカルユーザーをフィルターの対象にしない
-          exclude_quote: 引用・参照の内容をフィルターの対象にしない
+          exclude_quote: 引用の内容をフィルターの対象にしない
       form_admin_settings:
         activity_api_enabled: APIでユーザーアクティビティに関する集計統計を公開する
         backups_retention_period: ユーザーアーカイブの保持期間

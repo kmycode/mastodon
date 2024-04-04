@@ -57,6 +57,7 @@ en:
         phrase: Will be matched regardless of casing in text or content warning of a post
         scopes: Which APIs the application will be allowed to access. If you select a top-level scope, you don't need to select individual ones.
         setting_aggregate_reblogs: Do not show new boosts for posts that have been recently boosted (only affects newly-received boosts)
+        setting_allow_quote: Subdued quotes are allowed regardless of this setting; you can quote freely from any source except kmyblue!
         setting_always_send_emails: Normally e-mail notifications won't be sent when you are actively using Mastodon
         setting_bookmark_category_needed: When removing from all category, unbookmarked automatically
         setting_default_searchability: kmyblue・Fedibirdでは検索許可設定に基づき検索されます。Misskeyでは当設定に関係なく、全ての公開・ローカル公開・未収載投稿が検索されます。Mastodon・Firefishでは検索許可の代わりにプロフィール設定の「公開投稿を他のサーバーで自由に検索できるようにする」設定が適用されます
@@ -71,7 +72,6 @@ en:
         setting_emoji_reaction_policy: Even with this setting, users on other servers are free to put their emoji reaction on the post and share it within the same server. If you simply want to remove the emoji reaction from your own screen, you can disable it from the appearance settings
         setting_enable_emoji_reaction: If turn off, other users still can react your posts
         setting_reverse_search_quote: Double-quotes will result in a search with a wider range of notation, which is the opposite of Mastodon's default behavior.
-        setting_single_ref_to_quote: If this server does not have target post, target server maybe cannot read your quote
         setting_use_blurhash: Gradients are based on the colors of the hidden visuals but obfuscate any details
         setting_use_pending_items: Hide timeline updates behind a click instead of automatically scrolling the feed
         subscription_policy: Your post is not picked by antenna
@@ -295,7 +295,6 @@ en:
         setting_show_relationships: Show relationships on account page
         setting_show_statuses_count: Show statuses count
         setting_simple_timeline_menu: Reduce post menu on timeline
-        setting_single_ref_to_quote: Deliver single reference to other server as quote
         setting_slip_local_emoji_reaction: Allow bypassing emoji reaction from local users
         setting_stay_privacy: Not change privacy after post
         setting_stop_emoji_reaction_streaming: Disable emoji reaction streamings

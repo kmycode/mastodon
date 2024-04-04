@@ -616,7 +616,7 @@ class Status extends ImmutablePureComponent {
 
     const withLimited = status.get('visibility_ex') === 'limited' && status.get('limited_scope') ? <span className='status__visibility-icon'><Icon id='get-pocket' icon={LimitedIcon} title={intl.formatMessage(messages.limited_short)} /></span> : null;
     const withQuote = status.get('quote_id') ? <span className='status__visibility-icon'><Icon id='quote-right' icon={QuoteIcon} title='Quote' /></span> : null;
-    const withReference = (!withQuote && status.get('status_references_count') > 0) ? <span className='status__visibility-icon'><Icon id='link' icon={ReferenceIcon} title='Reference' /></span> : null;
+    const withReference = (!withQuote && status.get('status_references_count') > 0) ? <span className='status__visibility-icon'><Icon id='link' icon={ReferenceIcon} title='Quiet quote' /></span> : null;
     const withExpiration = status.get('expires_at') ? <span className='status__visibility-icon'><Icon id='clock-o' icon={TimerIcon} title='Expiration' /></span> : null;
 
     const quote = !muted && status.get('quote_id') && (['public', 'community'].includes(contextType) ? isShowItem('quote_in_public') : isShowItem('quote_in_home')) && <CompactedStatusContainer id={status.get('quote_id')} history={this.props.history} />;

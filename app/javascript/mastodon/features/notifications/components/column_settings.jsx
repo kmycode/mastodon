@@ -203,7 +203,7 @@ export default class ColumnSettings extends PureComponent {
 
         <section>
           <div role='group' aria-labelledby='notifications-status_reference'>
-            <h3 id='notifications-status_reference'><FormattedMessage id='notifications.column_settings.status_reference' defaultMessage='References:' /></h3>
+            <h3 id='notifications-status_reference'><FormattedMessage id='notifications.column_settings.status_reference' defaultMessage='Quotes:' /></h3>
 
             <div className='column-settings__row'>
               <SettingToggle disabled={browserPermission === 'denied'} prefix='notifications_desktop' settings={settings} settingPath={['alerts', 'status_reference']} onChange={onChange} label={alertStr} />

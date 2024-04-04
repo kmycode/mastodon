@@ -287,7 +287,7 @@ class DetailedStatus extends ImmutablePureComponent {
           <span className='detailed-status__favorites'>
             <AnimatedNumber value={status.get('emoji_reactions_count')} />
           </span>
-          <FormattedMessage id='status.emoji_reactions' defaultMessage='{count, plural, one {reaction} other {reactions}}' values={{ count: status.get('emoji_reactions_count') }} />
+          <FormattedMessage id='status.emoji_reactions' defaultMessage='{count, plural, one {emoji} other {emojis}}' values={{ count: status.get('emoji_reactions_count') }} />
         </Link>
       );
     } else {
@@ -296,7 +296,7 @@ class DetailedStatus extends ImmutablePureComponent {
           <span className='detailed-status__favorites'>
             <AnimatedNumber value={status.get('emoji_reactions_count')} />
           </span>
-          <FormattedMessage id='status.emoji_reactions' defaultMessage='{count, plural, one {reaction} other {reactions}}' values={{ count: status.get('emoji_reactions_count') }} />
+          <FormattedMessage id='status.emoji_reactions' defaultMessage='{count, plural, one {emoji} other {emojis}}' values={{ count: status.get('emoji_reactions_count') }} />
         </a>
       );
     }
@@ -307,7 +307,7 @@ class DetailedStatus extends ImmutablePureComponent {
           <span className='detailed-status__favorites'>
             <AnimatedNumber value={status.get('status_referred_by_count')} />
           </span>
-          <FormattedMessage id='status.status_references' defaultMessage='{count, plural, one {ref} other {refs}}' values={{ count: status.get('status_referred_by_count') }} />
+          <FormattedMessage id='status.status_references' defaultMessage='{count, plural, one {quote} other {quotes}}' values={{ count: status.get('status_referred_by_count') }} />
         </Link>
       );
     } else {
@@ -316,7 +316,7 @@ class DetailedStatus extends ImmutablePureComponent {
           <span className='detailed-status__favorites'>
             <AnimatedNumber value={status.get('status_referred_by_count')} />
           </span>
-          <FormattedMessage id='status.status_references' defaultMessage='{count, plural, one {ref} other {refs}}' values={{ count: status.get('status_referred_by_count') }} />
+          <FormattedMessage id='status.status_references' defaultMessage='{count, plural, one {quote} other {quotes}}' values={{ count: status.get('status_referred_by_count') }} />
         </a>
       );
     }

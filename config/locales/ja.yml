@@ -456,7 +456,7 @@ ja:
       reject_media_hint: ローカルに保存されたメディアファイルを削除し、今後のダウンロードを拒否します。停止とは無関係です
       reject_new_follow: 新規フォローを拒否
       reject_new_follow_hint: 今後の新規フォローを拒否します。停止とは無関係です
-      reject_reply_exclude_followers: フォロー相手以外からのメンションと参照を拒否
+      reject_reply_exclude_followers: フォロー相手以外からのメンションと引用を拒否
       reject_reply_hint: 今後のリプライを拒否します。停止とは無関係です
       reject_reply_exclude_followers_hint: 今後のリプライを拒否します。停止とは無関係です
       reject_reports: 通報を拒否
@@ -569,7 +569,7 @@ ja:
           reject_hashtag: ハッシュタグを拒否
           reject_media: メディアを拒否する
           reject_new_follow: 新規フォローを拒否
-          reject_reply_exclude_followers: フォロー相手以外からのメンション・参照を拒否
+          reject_reply_exclude_followers: フォロー相手以外からのメンション・引用を拒否
           reject_reports: 通報を拒否
           reject_send_sensitive: センシティブ投稿配送なし
           reject_straight_follow: フォローを制限
@@ -704,7 +704,7 @@ ja:
         needed: 有り
         no_needed: 無し
         optional: 不問
-      status_allow_follower_mention: フォロワー以外へのメンション・参照を含む場合のみ投稿をチェックする
+      status_allow_follower_mention: フォロワー以外へのメンション・引用を含む場合のみ投稿をチェックする
       status_allow_follower_mention_hint: これを有効にすると、他のサーバー同士のメンションは無条件で許可されます
       status_cw_state: 警告文の有無
       status_media_state: メディアの有無
@@ -714,8 +714,8 @@ ja:
       status_poll_state: 投票の有無
       status_poll_threshold: 投票項目数の上限
       status_quote_state: 引用の有無
-      status_reference_state: 参照の有無
-      status_reference_threshold: 参照数の上限
+      status_reference_state: ひかえめな引用の有無
+      status_reference_threshold: ひかえめな引用数の上限
       status_reply_state: 返信の有無
       status_searchability: 検索許可
       status_sensitive_state: センシティブフラグの有無
@@ -744,7 +744,7 @@ ja:
         status_edit: 投稿を編集
       title: NGルール「%{title}」の履歴
     ng_words:
-      block_unfollow_account_mention: 自分のサーバーのフォロワーを持たない全てのアカウントからのメンション・参照を全て拒否する
+      block_unfollow_account_mention: 自分のサーバーのフォロワーを持たない全てのアカウントからのメンション・引用を全て拒否する
       block_unfollow_account_mention_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。NGルールで代替してください。
       deprecated: 新しいバージョンで削除する予定の設定
       deprecated_hint: これらの設定は、次回のLTS、またはkmyblueバージョン14.0のどちらか早い方で削除する予定です。それぞれの設定の説明を参照して、可能であれば新しい設定に置き換えてください。
@@ -757,7 +757,7 @@ ja:
       phrases:
         regexp_html: <strong>正規</strong> 表現 にチェックの入っている項目は、正規表現を用いての比較となります。
         regexp_short: 正規
-        stranger_html: <strong>無関</strong> 係のフォロワーからのメンション にチェックの入っている項目は、フォロー関係にないアカウントからのメンション、返信、参照などのみに適用されます。
+        stranger_html: <strong>無関</strong> 係のフォロワーからのメンション にチェックの入っている項目は、フォロー関係にないアカウントからのメンション、返信、引用などのみに適用されます。
         stranger_short: 無関
       preamble: ドメインブロックでは対処の難しいスパムに関する問題の解決に、この設定が役に立ちます。特定キーワードが含まれているなどの条件を満たした投稿を拒否することができます。問題のない投稿が削除されないよう設定は慎重に検討し、定期的に履歴を確認してください。
       post_hash_tags_max: 投稿に設定可能なハッシュタグの最大数
@@ -1044,8 +1044,8 @@ ja:
       version: バージョン
     special_domains:
       stop_fetch_activity_domains:
-        preamble: WebとActivityでドメインの異なるサーバーでは、WebにアクセスしてもActivityが取得できない場合があります。参照において、投稿本文内でそのようなURLが指定された場合のフェッチを抑止します。ドメインは改行区切りで複数指定できます。多くの場合、この設定を利用する機会はほとんどありません。
-        title: 参照でフェッチを行わないドメイン
+        preamble: WebとActivityでドメインの異なるサーバーでは、WebにアクセスしてもActivityが取得できない場合があります。引用において、投稿本文内でそのようなURLが指定された場合のフェッチを抑止します。ドメインは改行区切りで複数指定できます。多くの場合、この設定を利用する機会はほとんどありません。
+        title: 引用でフェッチを行わないドメイン
       stop_link_preview_domains:
         preamble: 多くのアクセスがあったIPアドレスからの接続を一時的に制限するサイトがある場合、自分のサーバーが不利に扱われる場合があります。そのようなサイトにアクセスしてリンクプレビューを生成する処理を抑制します。ドメインは改行区切りで複数指定できます。多くの場合、この設定を利用する機会はほとんどありません。
         title: リンクのプレビューを行わないドメイン

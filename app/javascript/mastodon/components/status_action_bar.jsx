@@ -68,8 +68,8 @@ const messages = defineMessages({
   admin_status: { id: 'status.admin_status', defaultMessage: 'Open this post in the moderation interface' },
   admin_domain: { id: 'status.admin_domain', defaultMessage: 'Open moderation interface for {domain}' },
   copy: { id: 'status.copy', defaultMessage: 'Copy link to post' },
-  reference: { id: 'status.reference', defaultMessage: 'Add reference' },
-  quote: { id: 'status.quote', defaultMessage: 'Add ref (quote in other servers)' },
+  reference: { id: 'status.reference', defaultMessage: 'Quiet quote' },
+  quote: { id: 'status.quote', defaultMessage: 'Quote' },
   hide: { id: 'status.hide', defaultMessage: 'Hide post' },
   blockDomain: { id: 'account.block_domain', defaultMessage: 'Block domain {domain}' },
   unblockDomain: { id: 'account.unblock_domain', defaultMessage: 'Unblock domain {domain}' },
@@ -350,11 +350,11 @@ class StatusActionBar extends ImmutablePureComponent {
       }
 
       if (publicStatus) {
-        menu.push({ text: intl.formatMessage(messages.reference), action: this.handleReference });
-
         if (allowQuote) {
           menu.push({ text: intl.formatMessage(messages.quote), action: this.handleQuote });
         }
+
+        menu.push({ text: intl.formatMessage(messages.reference), action: this.handleReference });
       }
 
       menu.push({ text: intl.formatMessage(status.get('bookmarked') ? messages.removeBookmark : messages.bookmark), action: this.handleBookmarkClickOriginal });

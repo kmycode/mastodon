@@ -461,7 +461,7 @@ en:
       reject_media_hint: Removes locally stored media files and refuses to download any in the future. Irrelevant for suspensions
       reject_new_follow: Reject follows
       reject_new_follow_hint: Reject follows in the future
-      reject_reply_exclude_followers: Reject mentions/references exclude followers
+      reject_reply_exclude_followers: Reject mentions/quotes exclude followers
       reject_reply_hint: Reject replies in the future
       reject_reply_exclude_followers_hint: Reject replies exclude followers in the future
       reject_reports: Reject reports
@@ -577,7 +577,7 @@ en:
           reject_media: Reject media
           reject_new_follow: Reject follows
           reject_straight_follow: Reject straight follow
-          reject_reply_exclude_followers: Reject reply/reference exclude followers
+          reject_reply_exclude_followers: Reject reply/quote exclude followers
           reject_reports: Reject reports
           silence: Limit
           suspend: Suspend
@@ -705,7 +705,7 @@ en:
         needed: have
         no_needed: Should not have
         optional: Optional
-      status_allow_follower_mention: Check posts only if they contain mentions/references to non-followers
+      status_allow_follower_mention: Check posts only if they contain mentions/quotes to non-followers
       status_allow_follower_mention_hint: If enabled, mentions between other servers are unconditionally allowed
       status_cw_state: Has warning or not
       status_media_state: Has media or not
@@ -715,8 +715,8 @@ en:
       status_poll_state: Has poll or not
       status_poll_threshold: Poll items limit
       status_quote_state: Has quote or not
-      status_reference_state: Has reference or not
-      status_reference_threshold: Has reference or not
+      status_reference_state: Has quiet quote or not
+      status_reference_threshold: Has quiet quote or not
       status_reply_state: Is reply or not
       status_searchability: Searchability
       status_sensitive_state: Is sensitive or not
@@ -745,7 +745,7 @@ en:
         status_edit: Edit post
       title: NG Rule History %{title}
     ng_words:
-      block_unfollow_account_mention: Reject all mentions/references from all accounts that do not have followers on your server
+      block_unfollow_account_mention: Reject all mentions/quotes from all accounts that do not have followers on your server
       block_unfollow_account_mention_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。NGルールで代替してください。
       deprecated: Will remove settings
       deprecated_hint: These settings will be removed in the next LTS or kmyblue version 14.0, whichever comes first. Please refer to the description of each setting and replace them with the new settings if possible.
@@ -762,7 +762,7 @@ en:
       phrases:
         regexp_html: <strong>正規</strong> 表現 にチェックの入っている項目は、正規表現を用いての比較となります。
         regexp_short: 正規
-        stranger_html: <strong>無関</strong> 係のフォロワーからのメンション にチェックの入っている項目は、フォロー関係にないアカウントからのメンション、返信、参照などのみに適用されます。
+        stranger_html: <strong>無関</strong> 係のフォロワーからのメンション にチェックの入っている項目は、フォロー関係にないアカウントからのメンション、返信、引用などのみに適用されます。
         stranger_short: 無関
       remote_approval_list: List of remote accounts awaiting approval
       remote_approval_hint: Newly recognized accounts with unspecified domains will be placed in Suspended status. You can review that list and approve them if necessary. If this setting is not enabled, all remote accounts will be approved immediately.
@@ -1048,8 +1048,8 @@ en:
       version: Version
     special_domains:
       stop_fetch_activity_domains:
-        preamble: WebとActivityでドメインの異なるサーバーでは、WebにアクセスしてもActivityが取得できない場合があります。参照において、投稿本文内でそのようなURLが指定された場合のフェッチを抑止します。多くの場合、この設定を利用する機会はほとんどありません。
-        title: Domains do not fetch for references
+        preamble: WebとActivityでドメインの異なるサーバーでは、WebにアクセスしてもActivityが取得できない場合があります。引用において、投稿本文内でそのようなURLが指定された場合のフェッチを抑止します。多くの場合、この設定を利用する機会はほとんどありません。
+        title: Domains do not fetch for quotes
       stop_link_preview_domains:
         preamble: 多くのアクセスがあったIPアドレスからの接続を一時的に制限するサイトがある場合、自分のサーバーが不利に扱われる場合があります。そのようなサイトにアクセスしてリンクプレビューを生成する処理を抑制します。多くの場合、この設定を利用する機会はほとんどありません。
         title: Domains do not fetch for link previews
