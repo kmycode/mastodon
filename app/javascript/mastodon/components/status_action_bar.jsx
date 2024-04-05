@@ -29,7 +29,7 @@ import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import DropdownMenuContainer from '../containers/dropdown_menu_container';
 import EmojiPickerDropdown from '../features/compose/containers/emoji_picker_dropdown_container';
-import { enableEmojiReaction , bookmarkCategoryNeeded, simpleTimelineMenu, me, isHideItem, boostMenu } from '../initial_state';
+import { enableEmojiReaction , bookmarkCategoryNeeded, simpleTimelineMenu, me, isHideItem, boostMenu, boostModal } from '../initial_state';
 
 import { IconButton } from './icon_button';
 
@@ -434,7 +434,7 @@ class StatusActionBar extends ImmutablePureComponent {
     if (boostMenu) {
       reblogMenu.push({ text: intl.formatMessage(status.get('reblogged') ? messages.cancelReblog : messages.reblog), action: this.handleReblogClick });
 
-      if (!status.get('reblogged')) {
+      if (!status.get('reblogged') && !boostModal) {
         reblogMenu.push({ text: intl.formatMessage(messages.reblog_with_detail), action: this.handleReblogForceModalClick });
       }
   

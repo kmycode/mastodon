@@ -28,7 +28,7 @@ import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import { IconButton } from '../../../components/icon_button';
 import DropdownMenuContainer from '../../../containers/dropdown_menu_container';
-import { enableEmojiReaction , bookmarkCategoryNeeded, me, isHideItem, boostMenu } from '../../../initial_state';
+import { enableEmojiReaction , bookmarkCategoryNeeded, me, isHideItem, boostMenu, boostModal } from '../../../initial_state';
 import EmojiPickerDropdown from '../../compose/containers/emoji_picker_dropdown_container';
 
 const messages = defineMessages({
@@ -351,7 +351,7 @@ class ActionBar extends PureComponent {
     if (boostMenu) {
       reblogMenu.push({ text: intl.formatMessage(status.get('reblogged') ? messages.cancel_reblog : messages.reblog), action: this.handleReblogClick });
 
-      if (!status.get('reblogged')) {
+      if (!status.get('reblogged') && !boostModal) {
         reblogMenu.push({ text: intl.formatMessage(messages.reblog_with_detail), action: this.handleReblogForceModalClick });
       }
   
