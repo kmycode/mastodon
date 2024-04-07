@@ -130,6 +130,7 @@ class Status extends ImmutablePureComponent {
       available: PropTypes.bool,
     }),
     withoutEmojiReactions: PropTypes.bool,
+    withoutQuote: PropTypes.bool,
     ...WithOptionalRouterPropTypes,
   };
 
@@ -362,7 +363,7 @@ class Status extends ImmutablePureComponent {
   };
 
   render () {
-    const { intl, hidden, featured, unread, muted, showThread, scrollKey, pictureInPicture, previousId, nextInReplyToId, rootId } = this.props;
+    const { intl, hidden, featured, unread, muted, showThread, scrollKey, pictureInPicture, previousId, nextInReplyToId, rootId, withoutQuote } = this.props;
 
     let { status, account, ...other } = this.props;
     
@@ -619,7 +620,7 @@ class Status extends ImmutablePureComponent {
     const withReference = (!withQuote && status.get('status_references_count') > 0) ? <span className='status__visibility-icon'><Icon id='link' icon={ReferenceIcon} title='Quiet quote' /></span> : null;
     const withExpiration = status.get('expires_at') ? <span className='status__visibility-icon'><Icon id='clock-o' icon={TimerIcon} title='Expiration' /></span> : null;
 
-    const quote = !muted && status.get('quote_id') && (['public', 'community'].includes(contextType) ? isShowItem('quote_in_public') : isShowItem('quote_in_home')) && <CompactedStatusContainer id={status.get('quote_id')} history={this.props.history} />;
+    const quote = !muted && !withoutQuote && status.get('quote_id') && (['public', 'community'].includes(contextType) ? isShowItem('quote_in_public') : isShowItem('quote_in_home')) && <CompactedStatusContainer id={status.get('quote_id')} history={this.props.history} />;
 
     return (
       <HotKeys handlers={handlers}>
