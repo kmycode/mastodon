@@ -72,7 +72,7 @@ export function importFetchedStatuses(statuses) {
         processStatus(status.reblog);
       }
 
-      if (status.quote && status.quote.id) {
+      if (status.quote && status.quote.id && !getState().getIn(['statuses', status.id])) {
         processStatus(status.quote);
       }
 
