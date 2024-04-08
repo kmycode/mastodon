@@ -249,12 +249,12 @@ class PostStatusService < BaseService
   def mention_to_stranger?
     return @mention_to_stranger if defined?(@mention_to_stranger)
 
-    @mention_to_stranger = @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @account.id && !mentioned_account.following?(@account) } ||
-                           (@in_reply_to && @in_reply_to.account.id != @account.id && !@in_reply_to.account.following?(@account))
+    @mention_to_stranger = @status.mentions.map(&:account).to_a.any? { |mentioned_account| !mentioned_account.following_or_self?(@account) } ||
+                           (@in_reply_to && !@in_reply_to.account.following_or_self?(@account))
   end
 
   def reference_to_stranger?
-    referred_statuses.any? { |status| !status.account.following?(@account) }
+    referred_statuses.any? { |status| !status.account.following_or_self?(@account) }
   end
 
   def referred_statuses

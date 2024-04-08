@@ -123,12 +123,12 @@ class UpdateStatusService < BaseService
   end
 
   def mention_to_stranger?
-    @status.mentions.map(&:account).to_a.any? { |mentioned_account| mentioned_account.id != @status.account.id && !mentioned_account.following?(@status.account) } ||
-      (@status.thread.present? && @status.thread.account.id != @status.account.id && !@status.thread.account.following?(@status.account))
+    @status.mentions.map(&:account).to_a.any? { |mentioned_account| !mentioned_account.following_or_self?(@status.account) } ||
+      (@status.thread.present? && !@status.thread.account.following_or_self?(@status.account))
   end
 
   def reference_to_stranger?
-    referred_statuses.any? { |status| !status.account.following?(@status.account) }
+    referred_statuses.any? { |status| !status.account.following_or_self?(@status.account) }
   end
 
   def referred_statuses

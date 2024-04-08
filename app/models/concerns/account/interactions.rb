@@ -191,6 +191,10 @@ module Account::Interactions
     active_relationships.exists?(target_account: other_account)
   end
 
+  def following_or_self?(other_account)
+    id == other_account.id || following?(other_account)
+  end
+
   def following_anyone?
     active_relationships.exists?
   end
