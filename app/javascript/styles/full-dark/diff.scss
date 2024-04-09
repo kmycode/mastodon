@@ -1,6 +1,7 @@
 input[type='text']:not(#cw-spoiler-input),
 input[type='search'],
 input[type='number'],
+textarea#upload-modal__description, 
 input:not([type]) {
   background: $ui-base-color !important;
   color: $primary-text-color !important;
