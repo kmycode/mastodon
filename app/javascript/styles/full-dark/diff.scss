@@ -25,6 +25,7 @@ input:not([type]) {
   color: $classic-secondary-color !important;
 }
 
+.compose-form__warning,
 .modal-root__modal {
   background: lighten($classic-base-color, 12%);
 }
