@@ -21,7 +21,7 @@ class SpecifiedDomain < ApplicationRecord
 
   class << self
     def white_list_domain_caches
-      Rails.cache.fetch('specified_domains:white_list') { white_list_domains.to_a }
+      Rails.cache.fetch('specified_domains:white_list') { white_list_domains.order(:domain).to_a }
     end
 
     def save_from_hashes(rows, type, caches)
