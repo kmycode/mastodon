@@ -19,7 +19,7 @@ const messages = defineMessages({
   public_short: { id: 'searchability.public.short', defaultMessage: 'Public' },
   public_unlisted_short: {
     id: 'searchability.public_unlisted.short',
-    defaultMessage: 'Public unlisted',
+    defaultMessage: 'Local public',
   },
   private_short: {
     id: 'searchability.unlisted.short',

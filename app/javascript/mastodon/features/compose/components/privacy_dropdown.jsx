@@ -27,7 +27,7 @@ const messages = defineMessages({
   public_long: { id: 'privacy.public.long', defaultMessage: 'Anyone on and off Mastodon' },
   unlisted_short: { id: 'privacy.unlisted.short', defaultMessage: 'Quiet public' },
   unlisted_long: { id: 'privacy.unlisted.long', defaultMessage: 'Fewer algorithmic fanfares' },
-  public_unlisted_short: { id: 'privacy.public_unlisted.short', defaultMessage: 'Public unlisted' },
+  public_unlisted_short: { id: 'privacy.public_unlisted.short', defaultMessage: 'Local public' },
   public_unlisted_long: { id: 'privacy.public_unlisted.long', defaultMessage: 'Visible for all without GTL' },
   login_short: { id: 'privacy.login.short', defaultMessage: 'Login only' },
   login_long: { id: 'privacy.login.long', defaultMessage: 'Login user only' },

@@ -421,8 +421,8 @@ en:
         undo_relationships: This will undo any follow relationship between accounts of these servers and yours.
       created_msg: Domain block is now being processed
       destroyed_msg: Domain block has been undone
-      detect_invalid_subscription: 不正な購読を行うサーバーとしてマークする
-      detect_invalid_subscription_hint: Misskey、Calckeyなどは購読機能で未フォローユーザーの未収載投稿を拾います。これをマークしたサーバーは、ユーザーが任意で配送を拒否できます。停止とは無関係です
+      detect_invalid_subscription: Mark as a server with unauthorized subscriptions
+      detect_invalid_subscription_hint: Misskey, Calckey, and others pick up unfollowed posts from unfollowed users with the subscribe feature. Servers that mark these can refuse delivery at the user's discretion. This has nothing to do with suspension.
       domain: Domain
       edit: Edit domain block
       existing_domain_block: You have already imposed stricter limits on %{name}.
@@ -466,8 +466,8 @@ en:
       reject_reply_exclude_followers_hint: Reject replies exclude followers in the future
       reject_reports: Reject reports
       reject_reports_hint: Ignore all reports coming from this domain. Irrelevant for suspensions
-      reject_send_sensitive: センシティブな投稿を配送しない
-      reject_send_sensitive_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
+      reject_send_sensitive: Do not deliver sensitive postings
+      reject_send_sensitive_hint: Fetches from the other server may not be prevented. It has nothing to do with outages.
       reject_straight_follow: Reject straight follow
       reject_straight_follow_hint: The server accounts must be authenticated when follow our accounts
       undo: Undo domain block
@@ -520,21 +520,21 @@ en:
       accept: Accept
       add_new: Add and make a new application
       delete: Delete
-      description_html: <strong>フレンドサーバー</strong>とは、お互いのローカル公開・ローカル検索許可の投稿をそのまま交換するシステムです。
+      description_html: <strong>Friend server</strong> is a system for exchanging posts with each other's local public and local search permissions as they are.
       disabled: Disabled
       domain: Domain
       edit:
         allow_all_posts: Receive all posts
-        allow_all_posts_hint: 通常は自分のサーバーの誰もフォローしていないアカウントの投稿は例外を除き受け入れがブロックされます。そのブロックを解除します。スパムが発生した場合など、いつでもブロックを再開できます。
+        allow_all_posts_hint: Normally, posts from accounts that are not following anyone on your server will be blocked from acceptance, with one exception. You can unblock that block. You can reactivate the block at any time, e.g., if spam occurs.
         available: Available
         delivery_local: Deliver without changing public unlisted visibility and searchability
-        delivery_local_hint: Public unlisted posts will be added the friend's global timeline
-        description: フレンドサーバーは、登録と同時に相手方のサーバーへ申請されます。
+        delivery_local_hint: Local public posts will be added the friend's global timeline
+        description: A friend server is applied to the other server at the same time as registration.
         domain: Domain
         inbox_url: Friend server inbox URL
         inbox_url_hint: Default value is https://domain/inbox if you input empty (For example, https://example.com/inbox)
         pseudo_relay: Send all public or searchable posts
-        pseudo_relay_hint: お互いに有効で、かつ相手側で「このサーバーからの投稿を無条件で受け入れる」が有効になっている必要があります
+        pseudo_relay_hint: Must be valid for both parties and "Accept submissions from this server unconditionally" must be enabled on the other side
         unlocked: Approve automatically receiving new request
       edit_friend: Edit
       enabled: Enabled
@@ -544,7 +544,7 @@ en:
       reject: Reject
       save_and_enable: Save and enable
       setup: Add and make a new application
-      signatures_not_enabled: セキュアモードまたは連合制限モードが有効の場合、フレンドサーバーの動作を確認していないため正常に動作しない可能性があります
+      signatures_not_enabled: If Secure Mode or Federation Restricted Mode is enabled, the friend server may not work properly because it has not been checked
       status: Status
       title: Friend server
       unfollow: Cancel request
@@ -746,29 +746,29 @@ en:
       title: NG Rule History %{title}
     ng_words:
       block_unfollow_account_mention: Reject all mentions/quotes from all accounts that do not have followers on your server
-      block_unfollow_account_mention_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。NGルールで代替してください。
+      block_unfollow_account_mention_hint: This setting will be removed. After the setting is removed, the behavior will always be the same as if it were unchecked; please use NG rules instead.
       deprecated: Will remove settings
       deprecated_hint: These settings will be removed in the next LTS or kmyblue version 14.0, whichever comes first. Please refer to the description of each setting and replace them with the new settings if possible.
       edit:
         add_domain: Add domain
       hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
-      hide_local_users_for_anonymous_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。サーバー設定の「見つける」にある「公開タイムラインへの未認証のアクセスを許可する」で、完全ではありませんが代替可能です。
+      hide_local_users_for_anonymous_hint: This setting will be removed. After the setting is removed, the behavior will always be the same as if it were unchecked. It can be replaced, though not completely, by "Allow unauthorized access to public timelines" in the "Find" section of the server settings.
       hold_remote_new_accounts: Hold new remote accounts
       keywords: Reject keywords
-      preamble: This setting is useful for solving problems related to spam that are difficult to address with domain blocking. You can reject posts that meet certain criteria, such as the inclusion of specific keywords. Please consider your settings carefully and check your history regularly to ensure that problem-free submissions are not deleted.
-      post_hash_tags_max: Hash tags max for posts
-      post_mentions_max: Mentions max for posts
-      post_stranger_mentions_max: 投稿に設定可能なメンションの最大数 (If the mentions include at least one person who is not a follower of yours)
+      preamble: This setting is useful for solving problems related to spam that are difficult to address with domain blocking. You can reject posts that meet certain criteria, such as the inclusion of specific keywords. Please consider your settings carefully and check your history regularly to ensure that problem-free posts are not deleted.
+      post_hash_tags_max: Hash tags limit of a post
+      post_mentions_max: Mentions limit of a post
+      post_stranger_mentions_max: Mentions limit of a post
       phrases:
-        regexp_html: <strong>正規</strong> 表現 にチェックの入っている項目は、正規表現を用いての比較となります。
-        regexp_short: 正規
-        stranger_html: <strong>無関</strong> 係のフォロワーからのメンション にチェックの入っている項目は、フォロー関係にないアカウントからのメンション、返信、引用などのみに適用されます。
-        stranger_short: 無関
+        regexp_html: <strong>Reg</strong> - If the <strong>Reg</strong> checkbox is checked, the comparison is performed using regular expressions.
+        regexp_short: Reg
+        stranger_html: <strong>UE</strong> - Items checked under <strong>Uem</strong> apply only to mentions, replies, quotes, etc. from accounts with which you have no follow relationship.
+        stranger_short: Uem
       remote_approval_list: List of remote accounts awaiting approval
       remote_approval_hint: Newly recognized accounts with unspecified domains will be placed in Suspended status. You can review that list and approve them if necessary. If this setting is not enabled, all remote accounts will be approved immediately.
       settings: Settings
-      stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
-      stranger_mention_from_local_ng_hint: この設定は削除予定です。設定削除後は、常にチェックをつけている場合と同じ挙動になります。この動作を希望しない場合は、NGルールで代替してください。
+      stranger_mention_from_local_ng: NG words for Mention to accounts you do not follow are also applied to posts by local users.
+      stranger_mention_from_local_ng_hint: This setting will be removed. After the setting is removed, the behavior will be the same as if it is always checked. If you do not wish this behavior, please use NG rules instead.
       test_error: Testing is returned any errors
       title: NG words and against spams
       white_list: White list
@@ -971,13 +971,13 @@ en:
       auto_warning_text_hint: If not specified, the default warning text is used.
       hint: This keywords is applied to public posts only..
       phrases:
-        remote_html: <strong>Rem</strong> ote にチェックの入っている項目は、リモートからの投稿にも適用されます。
+        remote_html: <strong>Rem</strong> ote checked applies to remote posts as well.
         remote_short: Rem
-        regexp_html: <strong>Reg</strong> Exp にチェックの入っている項目は、正規表現を用いての比較となります。
+        regexp_html: <strong>Reg</strong> Exp checked items are compared using regular expressions.
         regexp_short: Reg
-        spoiler_html: <strong>War</strong> ning にチェックの入っている項目は、コンテンツ警告文にも適用されます。
+        spoiler_html: <strong>War</strong> ning checked will also be applied to the content warning statement.
         spoiler_short: War
-      title: Sensitive words and moderation options
+      title: Sensitive words
     settings:
       about:
         manage_rules: Manage server rules
@@ -1048,10 +1048,10 @@ en:
       version: Version
     special_domains:
       stop_fetch_activity_domains:
-        preamble: WebとActivityでドメインの異なるサーバーでは、WebにアクセスしてもActivityが取得できない場合があります。引用において、投稿本文内でそのようなURLが指定された場合のフェッチを抑止します。多くの場合、この設定を利用する機会はほとんどありません。
+        preamble: On servers with different domains for Web and Activity, you may not be able to retrieve Activity even if you access Web. In citations, this setting suppresses fetching when such a URL is specified in the body of a post. In most cases, this setting is rarely used.
         title: Domains do not fetch for quotes
       stop_link_preview_domains:
-        preamble: 多くのアクセスがあったIPアドレスからの接続を一時的に制限するサイトがある場合、自分のサーバーが不利に扱われる場合があります。そのようなサイトにアクセスしてリンクプレビューを生成する処理を抑制します。多くの場合、この設定を利用する機会はほとんどありません。
+        preamble: If a site temporarily restricts connections from IP addresses that have received many hits, your server may be treated unfavorably. This setting suppresses the process of accessing such sites and generating link previews. In most cases, this setting is rarely used.
         title: Domains do not fetch for link previews
       title: Special domains
     special_instances:
@@ -1304,27 +1304,9 @@ en:
         tags: 登録できるタグ数の上限に達しています
       too_short_keyword: Too short keyword! must 2 and more letters
     edit:
-      accounts_hint: \@askyq or @askyq@example.com
-      accounts_raw: Account list
       available: Available
-      description: アンテナは、サーバーが認識した全ての公開・ローカル公開投稿のうち、検索許可が「公開」または明示的に設定されていないもの(検索許可システムに対応していないサーバーからの投稿)、かつ購読を拒否していないすべてのアカウントからの投稿が対象です。検出された投稿は、指定したリストに追加されます。
-      domains_hint: ドメインとは、アカウントIDやサイトのURLのうち「kmy.blue」「example.com」に該当する部分です。自身のサーバーを指定することはできません
-      domains_raw: Domain list
-      exclude_accounts_raw: Excluding account list
-      exclude_domains_raw: Excluding domain list
-      exclude_keywords_raw: Excluding keyword list
-      exclude_tags_raw: Excluding hashtag list
-      hint: 下のリストに、絞り込み条件・除外条件を入力します。条件は複数指定することができます。1行につき1つずつ入力してください。空行、コメント、重複を含めることはできません。
-      ignore_reblog: Ignore BTs
-      insert_feeds: Insert home/list timeline (Destination list setting is NOT available if this checkbox is NOT set)
-      keywords_hint: キーワードは1つあたり最低2文字です。キーワードによる絞り込みを指定した場合、検索許可に対応しているサーバーからの投稿は、検索許可が「公開」以外のものは掲載されなくなります
-      keywords_raw: Keyword list
-      list: Destination list
-      stl: Enable stl (Social timeline) mode
-      stl_hint: All of under settings will be ignored, but rejecting subscription settings are ignored
-      tags_raw: Hashtag list
+      description: Antenna is for all public and local public posts recognized by the server, from all accounts that have not refused to subscribe. Detected posts will be added to the specified list.
       title: Edit antenna
-      with_media_only: With media only
     errors:
       deprecated_api_multiple_keywords: These parameters cannot be changed from this application because they apply to more than one filter keyword. Use a more recent application or the web interface.
       empty_contexts: No contexts! You must set any context filters
@@ -1903,10 +1885,10 @@ en:
     title: Privacy and reach
   privacy_extra:
     hint_html: These settings are kmyblue original. You will receive additional privacy benefits by doing this setting.
-    post_processing_hint_html: 投稿された情報に対して、システムが追加で行うことができる操作を制御します。これらには、第三者のサイトへあなたの投稿に関する情報の送信を伴う設定も含まれます。
-    post_processing: 投稿の処理
-    stop_deliver: 配送停止
-    stop_deliver_hint_html: Mastodonの投稿を、他のソフトウェアでは自由に検索することができます。Mastodon内で行ったプライバシーの設定は無視され、あなたの投稿が意図しない人に見つかるおそれがあります。ここでは、他のサーバーやソフトウェアであなたの投稿が見つからないようにする設定が可能です。ただしリスクは伴います。
+    post_processing_hint_html: Controls additional operations that the system may perform on the information you post. These include settings that involve sending information about your submission to third party sites.
+    post_processing: Processing posts
+    stop_deliver: Stop delivery
+    stop_deliver_hint_html: Mastodon posts can be freely searched by other software; privacy settings made within Mastodon will be ignored and your posts may be found by unintended people. Here, you can set up your posts so that they will not be found by other servers or software. However, there is a risk involved.
     title: Privacy extra settings
     will_remove_settings: This function will be removed
     will_remove_settings_hint_html: This function will be removed kb14.0 or next LTS.
@@ -2103,14 +2085,18 @@ en:
     visibilities:
       direct: Direct
       limited: Limited
-      login: Login only
+      login: Login-only
       login_long: Only logined users
       private: Followers-only
       private_long: Only show to followers
       public: Public
       public_long: Everyone can see
+      public_unlisted: Local-public
+      public_unlisted_long: Everyone can see, but not listed on public timelines of other servers
       unlisted: Unlisted
       unlisted_long: Everyone can see, but not listed on public timelines
+      unset: Default
+      unset_long: Following Mastodon default behavior
   statuses_cleanup:
     enabled: Automatically delete old posts
     enabled_hint: Automatically deletes your posts once they reach a specified age threshold, unless they match one of the exceptions below
@@ -2131,6 +2117,8 @@ en:
     keep_polls_hint: Doesn't delete any of your polls
     keep_self_bookmark: Keep posts you bookmarked
     keep_self_bookmark_hint: Doesn't delete your own posts if you have bookmarked them
+    keep_self_emoji: Keep posts you reacted with emoji
+    keep_self_emoji_hint: Doesn't delete your own posts if you have reacted them with emoji
     keep_self_fav: Keep posts you favorited
     keep_self_fav_hint: Doesn't delete your own posts if you have favorited them
     min_age:

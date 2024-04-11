@@ -60,18 +60,21 @@ en:
         setting_allow_quote: Subdued quotes are allowed regardless of this setting; you can quote freely from any source except kmyblue!
         setting_always_send_emails: Normally e-mail notifications won't be sent when you are actively using Mastodon
         setting_bookmark_category_needed: When removing from all category, unbookmarked automatically
-        setting_default_searchability: kmyblue・Fedibirdでは検索許可設定に基づき検索されます。Misskeyでは当設定に関係なく、全ての公開・ローカル公開・未収載投稿が検索されます。Mastodon・Firefishでは検索許可の代わりにプロフィール設定の「公開投稿を他のサーバーで自由に検索できるようにする」設定が適用されます
+        setting_default_searchability:  On kmyblue and Fedibird, the search is based on the search permission setting; on Misskey, all public, local public, and non-public posts are searched regardless of this setting; on Mastodon and Firefish, instead of search permission, the "Make public posts freely searchable on other servers" setting in the profile settings is applied. In Mastodon and Firefish, the "Make public posts freely searchable on other servers" setting in the profile settings is applied instead of the search permission.
         setting_default_sensitive: Sensitive media is hidden by default and can be revealed with a click
         setting_display_media_default: Hide media marked as sensitive
+        setting_display_media_expand: Misskey and others can submit more than 4. The additions will be displayed up to 16. kmyblue will not allow uploading from kmyblue.
         setting_display_media_hide_all: Always hide media
         setting_display_media_show_all: Always show media
         setting_dtl_force_subscribable: Your post can be detected local user's antenna to subscribe deep timeline
         setting_dtl_force_searchability: "With using #%{tag} tag, your post settings will be changed forcibly"
         setting_dtl_force_visibility: "With using #%{tag} tag, your post settings will be changed forcibly"
-        setting_dtl_menu: Show DTL menu on web
         setting_emoji_reaction_policy: Even with this setting, users on other servers are free to put their emoji reaction on the post and share it within the same server. If you simply want to remove the emoji reaction from your own screen, you can disable it from the appearance settings
         setting_enable_emoji_reaction: If turn off, other users still can react your posts
+        setting_reject_send_limited_to_suspects: This applies to "Mutual Only" posts. Circle posts will be delivered without exception. Some Misskey servers have independently supported limited posting, but this is a setting for those who are concerned about it, as mutual-only posting exposes some of the users you are mutual with to Misskey users!
+        setting_reject_unlisted_subscription: Misskey and its forks can **subscribe and search** for "non-following" posts from accounts they do not follow. This differs from kmyblue's behavior. It delivers posts in the specified public range to such servers as "followers only". Please understand, however, that due to its structure, it is difficult to handle perfectly and will occasionally be delivered as non-subscribed.
         setting_reverse_search_quote: Double-quotes will result in a search with a wider range of notation, which is the opposite of Mastodon's default behavior.
+        setting_stop_emoji_reaction_streaming: Helps to save communication capacity.
         setting_use_blurhash: Gradients are based on the colors of the hidden visuals but obfuscate any details
         setting_use_pending_items: Hide timeline updates behind a click instead of automatically scrolling the feed
         subscription_policy: Your post is not picked by antenna
@@ -99,7 +102,7 @@ en:
         custom_css: You can apply custom styles on the web version of Mastodon.
         enable_local_timeline: While enabling this feature will allow for interaction between like-minded users, it may also strengthen the internal atmosphere; since Mastodon is supposed to have a local timeline, we recommend annotating it in the server introduction if it is to be disabled.
         enable_public_unlisted_visibility: If true, your community maybe closed-minded. If turn it false, strongly recommend that you disclose that you have disabled this setting!
-        enable_public_visibility: If disabled, public submissions will be forcibly replaced with "Public unlisted" or "Unlisted" submissions.
+        enable_public_visibility: If disabled, public posts will be forcibly replaced with "Local public" or "Unlisted" posts.
         mascot: Overrides the illustration in the advanced web interface.
         media_cache_retention_period: Downloaded media files will be deleted after the specified number of days when set to a positive value, and re-downloaded on demand.
         peers_api_enabled: A list of domain names this server has encountered in the fediverse. No data is included here about whether you federate with a given server, just that your server knows about it. This is used by services that collect statistics on federation in a general sense.
@@ -262,6 +265,7 @@ en:
         setting_dtl_force_subscribable: Ignore your subscribability setting when using the DTL tag
         setting_dtl_force_searchability: Post searchability
         setting_dtl_force_visibility: Post visibility
+        setting_dtl_menu: Show DTL menu on web
         setting_emoji_reaction_streaming_notify_impl2: Enable emoji reaction notification compat with Nyastodon, Catstodon, glitch-soc
         setting_enable_emoji_reaction: Use emoji reaction function
         setting_enable_login_privacy: Enable login visibility
@@ -297,7 +301,7 @@ en:
         setting_show_statuses_count: Show statuses count
         setting_simple_timeline_menu: Reduce post menu on timeline
         setting_slip_local_emoji_reaction: Allow bypassing emoji reaction from local users
-        setting_stay_privacy: Not change privacy after post
+        setting_stay_privacy: Keep visibility after post
         setting_stop_emoji_reaction_streaming: Disable emoji reaction streamings
         setting_system_font_ui: Use system's default font
         setting_theme: Site theme
@@ -321,7 +325,7 @@ en:
         unchange: Unchange
       dtl_force_visibility:
         public: Public
-        public_unlisted: Public unlisted
+        public_unlisted: Local public
         unchange: Unchange
         unlisted: Unlisted
       email_domain_block:
@@ -365,7 +369,8 @@ en:
         registrations_mode: Who can sign-up
         registrations_end_hour: Registration-without-approval end hour (UTC 0-24)
         registrations_start_hour: Registration-without-approval start hour (UTC 0-24)
-        registrations_secondary_end_hour: Secondary registration end hour (UTC 0-24) If input 0, secondary hour is disabled.
+        registrations_secondary_end_hour: Secondary registration end hour (UTC 0-24)
+        registrations_secondary_end_hour_hint: If input 0, secondary hour is disabled.
         registrations_secondary_start_hour: Secondary registration start hour (UTC 0-24)
         require_invite_text: Require a reason to join
         show_domain_blocks: Show domain blocks
@@ -410,7 +415,7 @@ en:
         follow_request: Someone requested to follow you
         mention: Someone mentioned you
         pending_account: New account needs review
-        pending_friend_server: New friend server needs review
+        pending_friend_server: New friend server requires review
         reblog: Someone boosted your post
         report: New report is submitted
         software_updates:

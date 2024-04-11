@@ -50,13 +50,17 @@
   .fields-group
     = f.input :registrations_limit_per_day, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }, label: I18n.t('simple_form.labels.form_admin_settings.registrations_limit_per_day', count: @current_users_count_today)
 
-  .fields-group
-    = f.input :registrations_start_hour, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }
-    = f.input :registrations_end_hour, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }
+  .fields-row
+    .fields-row__column.fields-row__column-6.fields-group
+      = f.input :registrations_start_hour, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }
+    .fields-row__column.fields-row__column-6.fields-group
+      = f.input :registrations_end_hour, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }
 
-  .fields-group
-    = f.input :registrations_secondary_start_hour, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }
-    = f.input :registrations_secondary_end_hour, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }
+  .fields-row
+    .fields-row__column.fields-row__column-6.fields-group
+      = f.input :registrations_secondary_start_hour, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }
+    .fields-row__column.fields-row__column-6.fields-group
+      = f.input :registrations_secondary_end_hour, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }, hint: I18n.t('simple_form.labels.form_admin_settings.registrations_secondary_end_hour_hint')
 
   .actions
     = f.button :button, t('generic.save_changes'), type: :submit

@@ -719,7 +719,7 @@
   "privacy.public.long": "Anyone on and off Mastodon",
   "privacy.public.short": "Public",
   "privacy.public_unlisted.long": "Visible for all without GTL",
-  "privacy.public_unlisted.short": "Public unlisted",
+  "privacy.public_unlisted.short": "Local public",
   "privacy.reply.long": "Reply to limited post",
   "privacy.reply.short": "Reply",
   "privacy.unlisted.additional": "This behaves exactly like public, except the post will not appear in live feeds or hashtags, explore, or Mastodon search, even if you are opted-in account-wide.",

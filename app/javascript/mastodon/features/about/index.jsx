@@ -34,7 +34,7 @@ const messages = defineMessages({
   silencedExplanation: { id: 'about.domain_blocks.silenced.explanation', defaultMessage: 'You will generally not see profiles and content from this server, unless you explicitly look it up or opt into it by following.' },
   suspended: { id: 'about.domain_blocks.suspended.title', defaultMessage: 'Suspended' },
   suspendedExplanation: { id: 'about.domain_blocks.suspended.explanation', defaultMessage: 'No data from this server will be processed, stored or exchanged, making any interaction or communication with users from this server impossible.' },
-  publicUnlistedVisibility: { id: 'privacy.public_unlisted.short', defaultMessage: 'Public unlisted' },
+  publicUnlistedVisibility: { id: 'privacy.public_unlisted.short', defaultMessage: 'Local public' },
   publicVisibility: { id: 'about.public_visibility', defaultMessage: 'Public visibility' },
   emojiReaction: { id: 'status.emoji_reaction', defaultMessage: 'Emoji reaction' },
   enabled: { id: 'about.enabled', defaultMessage: 'Enabled' },

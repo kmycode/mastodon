@@ -20,7 +20,7 @@ import { enableLocalPrivacy } from 'mastodon/initial_state';
 const messages = defineMessages({
   public_short: { id: 'searchability.public.short', defaultMessage: 'Public' },
   public_long: { id: 'searchability.public.long', defaultMessage: 'Anyone can find' },
-  public_unlisted_short: { id: 'searchability.public_unlisted.short', defaultMessage: 'Public unlisted' },
+  public_unlisted_short: { id: 'searchability.public_unlisted.short', defaultMessage: 'Local public' },
   public_unlisted_long: { id: 'searchability.public_unlisted.long', defaultMessage: 'Local users and followers can find' },
   private_short: { id: 'searchability.unlisted.short', defaultMessage: 'Followers' },
   private_long: { id: 'searchability.unlisted.long', defaultMessage: 'Your followers can find' },

@@ -462,7 +462,7 @@ ja:
       reject_reports: 通報を拒否
       reject_reports_hint: このドメインからの通報をすべて無視します。停止とは無関係です
       reject_send_sensitive: センシティブな投稿を配送しない
-      reject_send_sensitive_hint: 相手サーバーからのフェッチは防げません。停止とは無関係です
+      reject_send_sensitive_hint: 相手サーバーからのフェッチは防げない可能性があります。停止とは無関係です
       reject_straight_follow: フォローを強制的に審査制にする
       reject_straight_follow_hint: 相手からのフォローは当サーバーのアカウントの承認が必須になります
       undo: ドメインブロックを戻す
@@ -1297,27 +1297,9 @@ ja:
       over_stl_limit: 所持できるSTLモード付きアンテナ数 (ホーム/リストそれぞれにつき%{limit}) を超えています
       too_short_keyword: キーワードが短すぎます
     edit:
-      accounts_hint: ローカルアカウントの場合は「@info」、リモートアカウントの場合は「@info@example.com」の形式で指定します。サーバーが認識していないアカウントは保存時に自動的に削除されます。
-      accounts_raw: 絞り込むアカウント
       available: 有効
       description: アンテナは、サーバーが認識した全ての公開・ローカル公開投稿のうち、購読を拒否していないすべてのアカウントからの投稿が対象です。検出された投稿は、指定したリストに追加されます。
-      domains_hint: ドメインとは、アカウントIDやサイトのURLのうち「kmy.blue」「example.com」に該当する部分です
-      domains_raw: 絞り込むドメイン
-      exclude_accounts_raw: 除外するアカウント
-      exclude_domains_raw: 除外するドメイン
-      exclude_keywords_raw: 除外するキーワード
-      exclude_tags_raw: 除外するハッシュタグ
-      hint: 下のリストに、絞り込み条件・除外条件を入力します。条件は複数指定することができます。1行につき1つずつ入力してください。空行、コメント、重複を含めることはできません。絞り込み条件（除外条件ではない）は最低1つ設定しなければいけません。
-      ignore_reblog: ブーストを含めない
-      insert_feeds: 投稿をホーム・リストに流す（投稿配置先リストの設定を有効にするには、この設定を有効にする必要があります）
-      keywords_hint: キーワードは1つあたり最低2文字です。キーワードによる絞り込みを指定した場合、検索許可に対応しているサーバーからの投稿は、検索許可が「公開」以外のものは掲載されなくなります
-      keywords_raw: 絞り込むキーワード
-      list: 投稿配置先リスト
-      stl: STL(ソーシャルタイムライン)モードを有効にする
-      stl_hint: STLモードが有効になったアンテナは、全てのフォロワーとローカルタイムラインの発言を流します。STLが有効になっていると、これより下の設定が例外なく全て何もかも無視されます。その代わり購読拒否設定は無視されます。
-      tags_raw: 絞り込むハッシュタグ
       title: アンテナを編集
-      with_media_only: メディアのみ
     index:
       accounts:
         other: "%{count}件のアカウント"

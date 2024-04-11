@@ -19,7 +19,7 @@ const messages = defineMessages({
   public_short: { id: 'privacy.public.short', defaultMessage: 'Public' },
   public_unlisted_short: {
     id: 'privacy.public_unlisted.short',
-    defaultMessage: 'Public unlisted',
+    defaultMessage: 'Local public',
   },
   login_short: {
     id: 'privacy.login.short',
