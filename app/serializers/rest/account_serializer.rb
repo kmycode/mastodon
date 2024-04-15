@@ -8,7 +8,8 @@ class REST::AccountSerializer < ActiveModel::Serializer
 
   attributes :id, :username, :acct, :display_name, :locked, :bot, :discoverable, :indexable, :group, :created_at,
              :note, :url, :uri, :avatar, :avatar_static, :header, :header_static, :subscribable, :emoji_reaction_available_server,
-             :followers_count, :following_count, :statuses_count, :last_status_at, :hide_collections, :other_settings, :noindex
+             :followers_count, :following_count, :statuses_count, :last_status_at, :hide_collections, :other_settings, :noindex,
+             :server_features
 
   has_one :moved_to_account, key: :moved, serializer: REST::AccountSerializer, if: :moved_and_not_nested?
 
@@ -120,9 +121,11 @@ class REST::AccountSerializer < ActiveModel::Serializer
   end
 
   def emoji_reaction_available_server
-    return Setting.enable_emoji_reaction if object.local?
+    server_features[:emoji_reaction]
+  end
 
-    InstanceInfo.emoji_reaction_available?(object.domain)
+  def server_features
+    InstanceInfo.available_features(object.domain)
   end
 
   def moved_to_account

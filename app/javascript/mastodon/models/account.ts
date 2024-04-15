@@ -8,6 +8,7 @@ import type {
   ApiAccountRoleJSON,
   ApiAccountOtherSettingsJSON,
   ApiAccountJSON,
+  ApiServerFeaturesJSON,
 } from 'mastodon/api_types/accounts';
 import type { ApiCustomEmojiJSON } from 'mastodon/api_types/custom_emoji';
 import emojify from 'mastodon/features/emoji/emoji';
@@ -61,6 +62,18 @@ const AccountOtherSettingsFactory = ImmutableRecord<AccountOtherSettingsShape>({
   subscription_policy: 'allow',
 });
 
+// ServerFeatures
+export type AccountServerFeaturesShape = ApiServerFeaturesJSON;
+export type AccountServerFeatures = RecordOf<AccountServerFeaturesShape>;
+
+const AccountServerFeaturesFactory =
+  ImmutableRecord<AccountServerFeaturesShape>({
+    circle: false,
+    emoji_reaction: false,
+    quote: false,
+    status_reference: false,
+  });
+
 // Account
 export interface AccountShape
   extends Required<
@@ -88,6 +101,7 @@ export const accountDefaultValues: AccountShape = {
   indexable: false,
   display_name: '',
   display_name_html: '',
+  server_features: AccountServerFeaturesFactory(),
   emoji_reaction_available_server: false,
   emojis: List<CustomEmoji>(),
   fields: List<AccountField>(),

@@ -31,6 +31,13 @@ export interface ApiAccountOtherSettingsJSON {
   subscription_policy: 'allow' | 'followers_only' | 'block';
 }
 
+export interface ApiServerFeaturesJSON {
+  circle: boolean;
+  emoji_reaction: boolean;
+  quote: boolean;
+  status_reference: boolean;
+}
+
 // See app/serializers/rest/account_serializer.rb
 export interface ApiAccountJSON {
   acct: string;
@@ -56,6 +63,7 @@ export interface ApiAccountJSON {
   note: string;
   other_settings: ApiAccountOtherSettingsJSON;
   roles?: ApiAccountJSON[];
+  server_features: ApiServerFeaturesJSON;
   subscribable: boolean;
   statuses_count: number;
   uri: string;

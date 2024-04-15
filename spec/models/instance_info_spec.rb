@@ -3,8 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe InstanceInfo do
-  describe '.emoji_reaction_availables_map' do
-    subject { described_class.emoji_reaction_available?('example.com') }
+  describe '.available_features' do
+    subject { described_class.available_features('example.com')[:emoji_reaction] }
+
+    it 'availables if local account' do
+      expect(described_class.available_features(nil)[:emoji_reaction]).to be true
+    end
 
     it 'availables if features contains emoji_reaction' do
       Fabricate(:instance_info, domain: 'example.com', software: 'mastodon', data: { metadata: { features: ['emoji_reaction'] } })

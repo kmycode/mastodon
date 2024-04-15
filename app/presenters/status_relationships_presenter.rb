@@ -4,7 +4,7 @@ class StatusRelationshipsPresenter
   PINNABLE_VISIBILITIES = %w(public public_unlisted unlisted login private).freeze
 
   attr_reader :reblogs_map, :favourites_map, :mutes_map, :pins_map, :blocks_map, :domain_blocks_map,
-              :bookmarks_map, :filters_map, :attributes_map, :emoji_reaction_allows_map, :emoji_reaction_availables_map
+              :bookmarks_map, :filters_map, :attributes_map, :emoji_reaction_allows_map
 
   def initialize(statuses, current_account_id = nil, **options)
     @current_account_id = current_account_id

@@ -460,8 +460,8 @@ RSpec.describe Status do
     end
   end
 
-  describe '.emoji_reaction_availables_map' do
-    subject { described_class.emoji_reaction_availables_map(domains) }
+  describe '.available_features_map' do
+    subject { described_class.available_features_map(domains)[:emoji_reaction] }
 
     let(:domains) { %w(features_available.com mastodon.com misskey.com) }
 
