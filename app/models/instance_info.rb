@@ -92,5 +92,6 @@ class InstanceInfo < ApplicationRecord
 
   def reset_cache
     Rails.cache.delete("emoji_reaction_available_domain:#{domain}")
+    Rails.cache.delete("domain_available_features:#{domain}")
   end
 end
