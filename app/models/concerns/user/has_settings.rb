@@ -263,6 +263,14 @@ module User::HasSettings
     settings['web.hide_emoji_reaction_unavailable_server']
   end
 
+  def setting_hide_quote_unavailable_server
+    settings['web.hide_quote_unavailable_server']
+  end
+
+  def setting_hide_status_reference_unavailable_server
+    settings['web.hide_status_reference_unavailable_server']
+  end
+
   def setting_hide_emoji_reaction_count
     settings['web.hide_emoji_reaction_count']
   end

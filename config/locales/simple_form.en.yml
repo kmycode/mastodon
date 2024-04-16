@@ -280,6 +280,8 @@ en:
         setting_expand_spoilers: Always expand posts marked with content warnings
         setting_hide_emoji_reaction_unavailable_server: Hide emoji reaction button from unavailable server
         setting_hide_network: Hide your social graph
+        setting_hide_quote_unavailable_server: Hide quote menu from unavailable server
+        setting_hide_status_reference_unavailable_server: Hide quiet quote (reference named by Fedibird) menu from unavailable server
         setting_lock_follow_from_bot: Request approval about bot follow
         setting_public_post_to_unlisted: Convert public post to public unlisted if not using Web app
         setting_reduce_motion: Reduce motion in animations

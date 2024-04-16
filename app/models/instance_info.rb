@@ -31,11 +31,11 @@ class InstanceInfo < ApplicationRecord
     sharkey
   ).freeze
 
-  QUOTE_AVAILABLE_SOFTWARES = EMOJI_REACTION_AVAILABLE_SOFTWARES + %w(kmyblue)
+  QUOTE_AVAILABLE_SOFTWARES = EMOJI_REACTION_AVAILABLE_SOFTWARES
 
-  STATUS_REFERENCE_AVAILABLE_SOFTWARES = %w(fedibird kmyblue).freeze
+  STATUS_REFERENCE_AVAILABLE_SOFTWARES = %w(fedibird).freeze
 
-  CIRCLE_AVAILABLE_SOFTWARES = %w(fedibird kmyblue).freeze
+  CIRCLE_AVAILABLE_SOFTWARES = %w(fedibird).freeze
 
   class << self
     def emoji_reaction_available?(domain)

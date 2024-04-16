@@ -287,6 +287,8 @@ ja:
         setting_expand_spoilers: 閲覧注意としてマークされた投稿を常に展開する
         setting_hide_emoji_reaction_unavailable_server: 絵文字リアクションに対応していないと思われるサーバーの投稿から絵文字リアクション機能を隠す
         setting_hide_network: 繋がりを隠す
+        setting_hide_quote_unavailable_server: 引用に対応していないと思われるサーバーの投稿からメニューを隠す
+        setting_hide_status_reference_unavailable_server: ひかえめな引用（Fedibirdの参照）に対応していないと思われるサーバーの投稿からメニューを隠す
         setting_lock_follow_from_bot: botからのフォローを承認制にする
         setting_show_blocking_quote: ブロックしたユーザーの投稿を引用した投稿を表示する
         setting_show_emoji_reaction_count: 投稿につけられた各絵文字の数を表示する

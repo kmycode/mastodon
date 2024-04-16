@@ -9,8 +9,10 @@
  *   | 'favourite_menu'
  *   | 'quote_in_home'
  *   | 'quote_in_public'
+ *   | 'quote_unavailable_server'
  *   | 'recent_emojis'
  *   | 'relationships'
+ *   | 'status_reference_unavailable_server'
  * } HideItemsDefinition
  */
 

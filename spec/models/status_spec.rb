@@ -461,7 +461,7 @@ RSpec.describe Status do
   end
 
   describe '.available_features_map' do
-    subject { described_class.available_features_map(domains)[:emoji_reaction] }
+    subject { described_class.available_features_map(domains) }
 
     let(:domains) { %w(features_available.com mastodon.com misskey.com) }
 
@@ -472,15 +472,15 @@ RSpec.describe Status do
     end
 
     it 'availables if features contains emoji_reaction' do
-      expect(subject['features_available.com']).to be true
+      expect(subject['features_available.com'][:emoji_reaction]).to be true
     end
 
     it 'unavailables if mastodon server' do
-      expect(subject['mastodon.com']).to be false
+      expect(subject['mastodon.com'][:emoji_reaction]).to be false
     end
 
     it 'availables if misskey server' do
-      expect(subject['misskey.com']).to be true
+      expect(subject['misskey.com'][:emoji_reaction]).to be true
     end
   end
 

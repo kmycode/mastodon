@@ -75,6 +75,8 @@ class UserSettings
     setting :show_relationships, default: true
     setting :hide_blocking_quote, default: true
     setting :hide_emoji_reaction_unavailable_server, default: false
+    setting :hide_quote_unavailable_server, default: false
+    setting :hide_status_reference_unavailable_server, default: false
     setting :hide_favourite_menu, default: false
     setting :hide_emoji_reaction_count, default: false
 
