@@ -19,6 +19,7 @@ module KmyblueCapabilitiesHelper
       kmyblue_searchability_limited
       kmyblue_circle_history
       kmyblue_list_notification
+      kmyblue_server_features
     )
 
     capabilities << :full_text_search if Chewy.enabled?

@@ -62,7 +62,7 @@ class Announcement < ApplicationRecord
     @statuses ||= if status_ids.nil?
                     []
                   else
-                    Status.where(id: status_ids, visibility: [:public, :unlisted, :public_unlisted])
+                    Status.where(id: status_ids).distributable_visibility_for_anonymous
                   end
   end
 

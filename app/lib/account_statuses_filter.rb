@@ -49,7 +49,7 @@ class AccountStatusesFilter
     if blocked?
       Status.none
     elsif anonymous?
-      account.statuses.where(visibility: %i(public unlisted public_unlisted))
+      account.statuses.distributable_visibility_for_anonymous
     elsif author?
       account.statuses.all # NOTE: #merge! does not work without the #all
     else

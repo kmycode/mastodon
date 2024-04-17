@@ -29,6 +29,7 @@ class InstanceInfo < ApplicationRecord
     pleroma
     rosekey
     sharkey
+    tanukey
   ).freeze
 
   QUOTE_AVAILABLE_SOFTWARES = EMOJI_REACTION_AVAILABLE_SOFTWARES
