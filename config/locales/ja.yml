@@ -2049,16 +2049,19 @@ ja:
     too_many_mentions: メンションが多すぎます
     violate_rules: サーバールールに違反するため投稿できません
     visibilities:
+      circle: サークル限定
       direct: ダイレクト
       limited: 限定投稿
       login: ログインユーザーのみ
       login_long: ログインしたユーザーのみが見ることができます
+      mutual: 相互限定
       private: フォロワー限定
       private_long: フォロワーにのみ表示されます
       public: 公開
       public_long: 誰でも見ることができ、かつ公開タイムラインに表示されます
       public_unlisted: ローカル公開
       public_unlisted_long: 誰でも見ることができますが、他のサーバーの連合タイムラインには表示されません
+      reply: 返信
       unlisted: 非収載
       unlisted_long: 誰でも見ることができますが、公開タイムラインには表示されません
       unset: 設定なし

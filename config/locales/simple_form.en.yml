@@ -71,6 +71,7 @@ en:
         setting_dtl_force_visibility: "With using #%{tag} tag, your post settings will be changed forcibly"
         setting_emoji_reaction_policy: Even with this setting, users on other servers are free to put their emoji reaction on the post and share it within the same server. If you simply want to remove the emoji reaction from your own screen, you can disable it from the appearance settings
         setting_enable_emoji_reaction: If turn off, other users still can react your posts
+        setting_enabled_visibilities: If turn off, you cannot select and post the privacy.
         setting_reject_send_limited_to_suspects: This applies to "Mutual Only" posts. Circle posts will be delivered without exception. Some Misskey servers have independently supported limited posting, but this is a setting for those who are concerned about it, as mutual-only posting exposes some of the users you are mutual with to Misskey users!
         setting_reject_unlisted_subscription: Misskey and its forks can **subscribe and search** for "non-following" posts from accounts they do not follow. This differs from kmyblue's behavior. It delivers posts in the specified public range to such servers as "followers only". Please understand, however, that due to its structure, it is difficult to handle perfectly and will occasionally be delivered as non-subscribed.
         setting_reverse_search_quote: Double-quotes will result in a search with a wider range of notation, which is the opposite of Mastodon's default behavior.
@@ -268,7 +269,7 @@ en:
         setting_dtl_menu: Show DTL menu on web
         setting_emoji_reaction_streaming_notify_impl2: Enable emoji reaction notification compat with Nyastodon, Catstodon, glitch-soc
         setting_enable_emoji_reaction: Use emoji reaction function
-        setting_enable_login_privacy: Enable login visibility
+        setting_enabled_visibilities: Enabled visibilities
         setting_emoji_reaction_policy: Emoji reaction receive/display policy
         setting_emoji_reaction_policy_items:
           allow: Allow all

@@ -23,6 +23,7 @@ class UserSettings
   setting :default_privacy, default: nil, in: %w(public public_unlisted login unlisted private)
   setting :stay_privacy, default: false
   setting :default_reblog_privacy, default: nil
+  setting :disabled_visibilities, default: %w()
   setting :default_searchability, default: :direct, in: %w(public private direct limited public_unlisted)
   setting :default_searchability_of_search, default: :public, in: %w(public private direct limited)
   setting :use_public_index, default: true
@@ -47,6 +48,7 @@ class UserSettings
   setting_inverse_alias :show_statuses_count, :hide_statuses_count
   setting_inverse_alias :show_following_count, :hide_following_count
   setting_inverse_alias :show_followers_count, :hide_followers_count
+  setting_inverse_array :enabled_visibilities, :disabled_visibilities, %w(public public_unlisted login unlisted private mutual circle reply personal direct)
 
   namespace :web do
     setting :advanced_layout, default: false
@@ -57,7 +59,6 @@ class UserSettings
     setting :bookmark_category_needed, default: false
     setting :disable_swiping, default: false
     setting :delete_modal, default: true
-    setting :enable_login_privacy, default: false
     setting :enable_dtl_menu, default: false
     setting :hide_recent_emojis, default: false
     setting :enable_emoji_reaction, default: true

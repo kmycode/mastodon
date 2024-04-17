@@ -14,7 +14,7 @@ import LockIcon from '@/material-icons/400-24px/lock.svg?react';
 import LockOpenIcon from '@/material-icons/400-24px/no_encryption.svg?react';
 import PublicIcon from '@/material-icons/400-24px/public.svg?react';
 import { Icon }  from 'mastodon/components/icon';
-import { enableLocalPrivacy } from 'mastodon/initial_state';
+import { enabledVisibilites } from 'mastodon/initial_state';
 
 
 const messages = defineMessages({
@@ -236,7 +236,7 @@ class SearchabilityDropdown extends PureComponent {
       { icon: 'at', iconComponent: AlternateEmailIcon, value: 'limited', text: formatMessage(messages.limited_short), meta: formatMessage(messages.limited_long) },
     ];
 
-    if (!enableLocalPrivacy) {
+    if (!enabledVisibilites.includes('public_unlisted')) {
       this.options = this.options.filter((opt) => opt.value !== 'public_unlisted');
     }
   }

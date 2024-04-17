@@ -75,6 +75,7 @@ ja:
         setting_emoji_reaction_policy: この設定をしても他のサーバーのユーザーはその投稿に自由に絵文字をつけ、同じサーバーの中で共有できます。単にあなた自身の画面から絵文字リアクションを除去したいだけなら、外観設定から絵文字リアクションを無効にすることができます
         setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、絵文字リアクション機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
         setting_enable_emoji_reaction: この機能を無効にしても、他の人はあなたの投稿に絵文字をつけられます
+        setting_enabled_visibilities: チェックを外した公開範囲は投稿することができなくなります。投稿しようとするとエラーが出ます
         setting_hide_network: フォローとフォロワーの情報がプロフィールページで見られないようにします
         setting_public_post_to_unlisted: 未対応のサードパーティアプリからもローカル公開で投稿できますが、公開投稿はWeb以外できなくなります
         setting_reject_send_limited_to_suspects: これは「相互のみ」投稿に適用されます。サークル投稿は例外なく配送されます。一部のMisskeyサーバーが独自に限定投稿へ対応しましたが、相互のみ投稿を行うとあなたと相互になっているユーザーの一部がMisskeyのユーザーに公開されるため、気になる人向けの設定です
@@ -273,7 +274,7 @@ ja:
         setting_dtl_force_searchability: DTL投稿の検索許可
         setting_dtl_force_visibility: DTL投稿の公開範囲
         setting_dtl_menu: Webクライアントのメニューにディープタイムラインを追加する
-        setting_enable_login_privacy: 公開範囲「ログインユーザーのみ」をWeb UIで選択可能にする
+        setting_enabled_visibilities: 投稿を有効にする公開範囲
         setting_emoji_reaction_policy: 絵文字リアクション受け入れと表示設定
         setting_emoji_reaction_policy_items:
           allow: 全員に許可

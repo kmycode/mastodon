@@ -32,16 +32,14 @@
  * @property {boolean=} delete_modal
  * @property {boolean=} disable_swiping
  * @property {string=} disabled_account_id
+ * @property {string[]} enabled_visibilities
  * @property {string} display_media
  * @property {boolean} display_media_expand
  * @property {string} domain
  * @property {string} dtl_tag
  * @property {boolean} enable_emoji_reaction
- * @property {boolean} enable_login_privacy
- * @property {boolean} enable_local_privacy
  * @property {boolean} enable_local_timeline
  * @property {boolean} enable_dtl_menu
- * @property {boolean} enable_public_privacy
  * @property {boolean=} expand_spoilers
  * @property {string[]} featured_tags
  * @property {HideItemsDefinition[]} hide_items
@@ -121,15 +119,13 @@ export const boostModal = getMeta('boost_modal');
 export const deleteModal = getMeta('delete_modal');
 export const disableSwiping = getMeta('disable_swiping');
 export const disabledAccountId = getMeta('disabled_account_id');
+export const enabledVisibilites = getMeta('enabled_visibilities');
 export const displayMedia = getMeta('display_media');
 export const displayMediaExpand = getMeta('display_media_expand');
 export const domain = getMeta('domain');
 export const dtlTag = getMeta('dtl_tag');
 export const enableEmojiReaction = getMeta('enable_emoji_reaction');
-export const enableLocalPrivacy = getMeta('enable_local_privacy');
-export const enablePublicPrivacy = getMeta('enable_public_privacy');
 export const enableLocalTimeline = getMeta('enable_local_timeline');
-export const enableLoginPrivacy = getMeta('enable_login_privacy');
 export const enableDtlMenu = getMeta('enable_dtl_menu');
 export const expandSpoilers = getMeta('expand_spoilers');
 export const featuredTags = getMeta('featured_tags') || [];

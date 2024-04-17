@@ -14,6 +14,10 @@ module UserSettings::DSL
       @definitions[key] = @definitions[original_key].inverse_of(key)
     end
 
+    def setting_inverse_array(key, original_key, reverse_array)
+      @definitions[key] = @definitions[original_key].array_inverse_of(key, reverse_array)
+    end
+
     def namespace(key, &block)
       @definitions ||= {}
 

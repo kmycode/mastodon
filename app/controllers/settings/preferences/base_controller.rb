@@ -19,6 +19,16 @@ class Settings::Preferences::BaseController < Settings::BaseController
   end
 
   def user_params
+    original_user_params.tap do |params|
+      params[:settings_attributes].merge!(disabled_visibilities_params[:settings_attributes])
+    end
+  end
+
+  def original_user_params
     params.require(:user).permit(:locale, :time_zone, chosen_languages: [], settings_attributes: UserSettings.keys)
+  end
+
+  def disabled_visibilities_params
+    params.require(:user).permit(settings_attributes: { enabled_visibilities: [] })
   end
 end

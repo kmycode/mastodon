@@ -26,7 +26,6 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:display_media_expand] = object_account_user.setting_display_media_expand
       store[:expand_spoilers] = object_account_user.setting_expand_spoilers
       store[:enable_emoji_reaction] = object_account_user.setting_enable_emoji_reaction && Setting.enable_emoji_reaction
-      store[:enable_login_privacy] = object_account_user.setting_enable_login_privacy
       store[:enable_dtl_menu]   = object_account_user.setting_enable_dtl_menu
       store[:reduce_motion]     = object_account_user.setting_reduce_motion
       store[:disable_swiping]   = object_account_user.setting_disable_swiping
@@ -50,6 +49,7 @@ class InitialStateSerializer < ActiveModel::Serializer
         object_account_user.setting_show_quote_in_public ? nil : 'quote_in_public',
         object_account_user.setting_show_relationships ? nil : 'relationships',
       ].compact
+      store[:enabled_visibilities] = enabled_visibilities
       store[:featured_tags] = object.current_account.featured_tags.pluck(:name)
     else
       store[:auto_play_gif] = Setting.auto_play_gif
@@ -112,6 +112,13 @@ class InitialStateSerializer < ActiveModel::Serializer
     LanguagesHelper::SUPPORTED_LOCALES.map { |(key, value)| [key, value[0], value[1]] }
   end
 
+  def enabled_visibilities
+    vs = object_account_user.setting_enabled_visibilities
+    vs -= %w(public_unlisted) unless Setting.enable_public_unlisted_visibility
+    vs -= %w(public) unless Setting.enable_public_visibility
+    vs
+  end
+
   private
 
   def default_meta_store
@@ -121,8 +128,6 @@ class InitialStateSerializer < ActiveModel::Serializer
       admin: object.admin&.id&.to_s,
       domain: Addressable::IDNA.to_unicode(instance_presenter.domain),
       dtl_tag: dtl_enabled? ? dtl_tag_name : nil,
-      enable_local_privacy: Setting.enable_public_unlisted_visibility,
-      enable_public_privacy: Setting.enable_public_visibility,
       enable_local_timeline: Setting.enable_local_timeline,
       limited_federation_mode: Rails.configuration.x.limited_federation_mode,
       locale: I18n.locale,

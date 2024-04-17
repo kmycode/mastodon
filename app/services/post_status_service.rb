@@ -71,11 +71,7 @@ class PostStatusService < BaseService
   def preprocess_attributes!
     @sensitive    = (@options[:sensitive].nil? ? @account.user&.setting_default_sensitive : @options[:sensitive]) || @options[:spoiler_text].present?
     @text         = @options.delete(:spoiler_text) if @text.blank? && @options[:spoiler_text].present?
-    @visibility   = @options[:visibility]&.to_sym || @account.user&.setting_default_privacy&.to_sym
-    @visibility   = :limited if %w(mutual circle reply).include?(@options[:visibility])
-    @visibility   = :unlisted if (@visibility == :public || @visibility == :public_unlisted || @visibility == :login) && @account.silenced?
-    @visibility   = :public_unlisted if @visibility == :public && !@options[:force_visibility] && !@options[:application]&.superapp && @account.user&.setting_public_post_to_unlisted && Setting.enable_public_unlisted_visibility
-    @visibility   = Setting.enable_public_unlisted_visibility ? :public_unlisted : :unlisted if !Setting.enable_public_visibility && @visibility == :public
+    @visibility   = visibility
     @limited_scope = @options[:visibility]&.to_sym if @visibility == :limited && @options[:visibility] != 'limited'
     @searchability = searchability
     @searchability = :private if @account.silenced? && %i(public public_unlisted).include?(@searchability&.to_sym)
@@ -84,6 +80,7 @@ class PostStatusService < BaseService
     @scheduled_at = nil if scheduled_in_the_past?
     @reference_ids = (@options[:status_reference_ids] || []).map(&:to_i).filter(&:positive?)
     raise ArgumentError if !Setting.enable_public_unlisted_visibility && (@visibility == :public_unlisted || @searchability == :public_unlisted)
+    raise ArgumentError if @account.user&.setting_disabled_visibilities&.include?((@limited_scope || @visibility).to_s)
 
     if @in_reply_to.present? && ((@options[:visibility] == 'limited' && @options[:circle_id].nil?) || @limited_scope == :reply)
       @visibility = :limited
@@ -95,6 +92,15 @@ class PostStatusService < BaseService
     process_sensitive_words
   rescue ArgumentError
     raise ActiveRecord::RecordInvalid
+  end
+
+  def visibility
+    v = @options[:visibility]&.to_sym || @account.user&.setting_default_privacy&.to_sym
+    v = :limited if %w(mutual circle reply).include?(@options[:visibility])
+    v = :unlisted if (@visibility == :public || @visibility == :public_unlisted || @visibility == :login) && @account.silenced?
+    v = :public_unlisted if @visibility == :public && !@options[:force_visibility] && !@options[:application]&.superapp && @account.user&.setting_public_post_to_unlisted && Setting.enable_public_unlisted_visibility
+    v = Setting.enable_public_unlisted_visibility ? :public_unlisted : :unlisted if !Setting.enable_public_visibility && @visibility == :public
+    v
   end
 
   def load_circle

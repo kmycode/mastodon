@@ -494,7 +494,11 @@ class Status < ApplicationRecord
 
   class << self
     def selectable_visibilities
-      vs = visibilities.keys - %w(direct limited)
+      selectable_all_visibilities - %w(mutual circle reply direct)
+    end
+
+    def selectable_all_visibilities
+      vs = %w(public public_unlisted login unlisted private mutual circle reply direct)
       vs -= %w(public_unlisted) unless Setting.enable_public_unlisted_visibility
       vs -= %w(public) unless Setting.enable_public_visibility
       vs

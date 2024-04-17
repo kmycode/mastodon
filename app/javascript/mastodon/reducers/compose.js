@@ -58,7 +58,7 @@ import {
 import { REDRAFT } from '../actions/statuses';
 import { STORE_HYDRATE } from '../actions/store';
 import { TIMELINE_DELETE } from '../actions/timelines';
-import { enableLocalPrivacy, enableLoginPrivacy, enablePublicPrivacy, me } from '../initial_state';
+import { enabledVisibilites, me } from '../initial_state';
 import { unescapeHTML } from '../utils/html';
 import { uuid } from '../uuid';
 
@@ -143,9 +143,6 @@ function clearAll(state) {
     if (state.get('stay_privacy') && !state.get('in_reply_to')) {
       map.set('default_privacy', state.get('privacy'));
     }
-    if ((map.get('privacy') === 'login' && !enableLoginPrivacy) || (map.get('privacy') === 'public_unlisted' && !enableLocalPrivacy)) {
-      map.set('privacy', enablePublicPrivacy ? 'public' : 'unlisted');
-    }
     if (!state.get('in_reply_to')) {
       map.set('posted_on_this_session', true);
     }
@@ -153,7 +150,7 @@ function clearAll(state) {
     map.set('limited_scope', null);
     map.set('id', null);
     map.set('in_reply_to', null);
-    if (state.get('default_searchability') === 'public_unlisted' && !enableLocalPrivacy) {
+    if (state.get('default_searchability') === 'public_unlisted' && !enabledVisibilites.includes('public_unlisted')) {
       map.set('searchability', 'public');
     } else {
       map.set('searchability', state.get('default_searchability'));
@@ -163,6 +160,7 @@ function clearAll(state) {
     map.update('media_attachments', list => list.clear());
     map.set('poll', null);
     map.set('idempotencyKey', uuid());
+    normalizePrivacy(map);
   });
 }
 
@@ -241,6 +239,22 @@ const sortHashtagsByUse = (state, tags) => {
   });
   sorted.forEach(tag => delete tag.lowerName);
   return sorted;
+};
+
+const normalizePrivacy = (map, last) => {
+  if (!enabledVisibilites) {
+    return;
+  }
+
+  const current = map.get('privacy');
+  const invalid = !enabledVisibilites.includes(current);
+
+  if (invalid) {
+    if (enabledVisibilites.length > 0) {
+      const index = last ? enabledVisibilites.length - 1 : 0;
+      map.set('privacy', enabledVisibilites[index]);
+    }
+  }
 };
 
 const insertEmoji = (state, position, emojiData, needsSpace) => {
@@ -467,6 +481,8 @@ export default function compose(state = initialState, action) {
         map.set('spoiler', false);
         map.set('spoiler_text', '');
       }
+
+      normalizePrivacy(map);
     });
   case COMPOSE_SUBMIT_REQUEST:
     return state.set('is_submitting', true);
@@ -532,6 +548,7 @@ export default function compose(state = initialState, action) {
     return state.withMutations(map => {
       map.update('text', text => [text.trim(), `@${action.account.get('acct')} `].filter((str) => str.length !== 0).join(' '));
       map.set('privacy', 'direct');
+      normalizePrivacy(map, true);
       map.set('focusDate', new Date());
       map.set('caretPosition', null);
       map.set('idempotencyKey', uuid());
@@ -584,6 +601,7 @@ export default function compose(state = initialState, action) {
       map.set('text', action.raw_text || unescapeHTML(expandMentions(action.status)));
       map.set('in_reply_to', action.status.get('in_reply_to_id'));
       map.set('privacy', action.status.get('visibility_ex'));
+      normalizePrivacy(map);
       map.set('reply_to_limited', action.status.get('limited_scope') === 'reply');
       map.set('limited_scope', null);
       map.set('media_attachments', action.status.get('media_attachments').map((media) => media.set('unattached', true)));
@@ -621,6 +639,7 @@ export default function compose(state = initialState, action) {
       } else {
         map.set('privacy', action.status.get('limited_scope') || 'circle');
       }
+      normalizePrivacy(map);
       map.set('reply_to_limited', action.status.get('limited_scope') === 'reply');
       map.set('limited_scope', action.status.get('limited_scope'));
       map.set('media_attachments', action.status.get('media_attachments'));

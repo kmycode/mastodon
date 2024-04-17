@@ -2084,16 +2084,19 @@ en:
     too_many_mentions: Too many mentions
     violate_rules: Violate NG rules
     visibilities:
+      circle: Circle-only
       direct: Direct
       limited: Limited
       login: Login-only
       login_long: Only logined users
+      mutual: Mutual-only
       private: Followers-only
       private_long: Only show to followers
       public: Public
       public_long: Everyone can see
       public_unlisted: Local-public
       public_unlisted_long: Everyone can see, but not listed on public timelines of other servers
+      reply: Reply
       unlisted: Unlisted
       unlisted_long: Everyone can see, but not listed on public timelines
       unset: Default

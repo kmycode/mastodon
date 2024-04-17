@@ -40,7 +40,18 @@
         = ff.input :public_post_to_unlisted, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_public_post_to_unlisted'), hint: I18n.t('simple_form.hints.defaults.setting_public_post_to_unlisted')
 
     .fields-group
-      = ff.input :'web.enable_login_privacy', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_enable_login_privacy'), hint: false
+      = ff.input :enabled_visibilities,
+                 as: :check_boxes,
+                 collection_wrapper_tag: 'ul',
+                 collection: Status.selectable_all_visibilities,
+                 hint: I18n.t('simple_form.hints.defaults.setting_enabled_visibilities'),
+                 include_blank: false,
+                 item_wrapper_tag: 'li',
+                 kmyblue: true,
+                 label: I18n.t('simple_form.labels.defaults.setting_enabled_visibilities'),
+                 label_method: ->(visibility) { I18n.t("statuses.visibilities.#{visibility}") },
+                 required: false,
+                 wrapper: :with_block_label
 
     %h4= t 'preferences.searchability'
 

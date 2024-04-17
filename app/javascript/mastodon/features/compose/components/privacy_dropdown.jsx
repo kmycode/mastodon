@@ -18,7 +18,7 @@ import QuietTimeIcon from '@/material-icons/400-24px/quiet_time.svg?react';
 import ReplyIcon from '@/material-icons/400-24px/reply.svg?react';
 import LimitedIcon from '@/material-icons/400-24px/shield.svg?react';
 import { Icon }  from 'mastodon/components/icon';
-import { enableLoginPrivacy, enableLocalPrivacy, enablePublicPrivacy } from 'mastodon/initial_state';
+import { enabledVisibilites } from 'mastodon/initial_state';
 
 import { PrivacyDropdownMenu } from './privacy_dropdown_menu';
 
@@ -151,16 +151,14 @@ class PrivacyDropdown extends PureComponent {
       this.options = this.options.filter((opt) => !['mutual', 'circle'].includes(opt.value));
     }
 
-    if (!enableLoginPrivacy) {
-      this.options = this.options.filter((opt) => opt.value !== 'login');
+    if (enabledVisibilites) {
+      this.options = this.options.filter((opt) => enabledVisibilites.includes(opt.value));
     }
 
-    if (!enableLocalPrivacy) {
-      this.options = this.options.filter((opt) => opt.value !== 'public_unlisted');
-    }
-
-    if (!enablePublicPrivacy) {
-      this.options = this.options.filter((opt) => opt.value !== 'public');
+    if (this.options.length === 0) {
+      this.options.push(
+        { icon: 'at', iconComponent: AlternateEmailIcon, value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
+      );
     }
 
     this.selectableOptions = [...this.options];

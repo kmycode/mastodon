@@ -105,12 +105,17 @@ code {
 
       .overridden,
       .recommended,
-      .not_recommended,
-      .kmyblue {
+      .not_recommended {
         position: absolute;
         margin: 0 4px;
         margin-top: -2px;
       }
+    }
+
+    .kmyblue {
+      position: absolute;
+      margin: 0 4px;
+      margin-top: -2px;
     }
   }
 

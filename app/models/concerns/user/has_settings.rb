@@ -27,10 +27,6 @@ module User::HasSettings
     settings['reaction_deck']
   end
 
-  def setting_enable_login_privacy
-    settings['web.enable_login_privacy']
-  end
-
   def setting_enable_dtl_menu
     settings['web.enable_dtl_menu']
   end
@@ -233,6 +229,14 @@ module User::HasSettings
 
   def setting_default_reblog_privacy
     settings['default_reblog_privacy'] || 'unset'
+  end
+
+  def setting_enabled_visibilities
+    settings['enabled_visibilities']
+  end
+
+  def setting_disabled_visibilities
+    settings['disabled_visibilities']
   end
 
   def setting_default_searchability
