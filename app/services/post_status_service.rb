@@ -97,9 +97,9 @@ class PostStatusService < BaseService
   def visibility
     v = @options[:visibility]&.to_sym || @account.user&.setting_default_privacy&.to_sym
     v = :limited if %w(mutual circle reply).include?(@options[:visibility])
-    v = :unlisted if (@visibility == :public || @visibility == :public_unlisted || @visibility == :login) && @account.silenced?
-    v = :public_unlisted if @visibility == :public && !@options[:force_visibility] && !@options[:application]&.superapp && @account.user&.setting_public_post_to_unlisted && Setting.enable_public_unlisted_visibility
-    v = Setting.enable_public_unlisted_visibility ? :public_unlisted : :unlisted if !Setting.enable_public_visibility && @visibility == :public
+    v = :unlisted if %i(public public_unlisted login).include?(v) && @account.silenced?
+    v = :public_unlisted if v == :public && !@options[:force_visibility] && !@options[:application]&.superapp && @account.user&.setting_public_post_to_unlisted && Setting.enable_public_unlisted_visibility
+    v = Setting.enable_public_unlisted_visibility ? :public_unlisted : :unlisted if !Setting.enable_public_visibility && v == :public
     v
   end
 
