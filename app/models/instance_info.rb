@@ -27,7 +27,6 @@ class InstanceInfo < ApplicationRecord
     meisskey
     misskey
     pleroma
-    rosekey
     sharkey
     tanukey
   ).freeze
