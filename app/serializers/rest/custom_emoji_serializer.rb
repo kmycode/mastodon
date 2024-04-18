@@ -6,6 +6,7 @@ class REST::CustomEmojiSerializer < REST::CustomEmojiSlimSerializer
   # Please update `app/javascript/mastodon/api_types/custom_emoji.ts` when making changes to the attributes
 
   attribute :aliases
+  attribute :license
 
   def aliases
     if object.respond_to?(:aliases) && object.aliases.present?
