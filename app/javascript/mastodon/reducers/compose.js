@@ -639,7 +639,6 @@ export default function compose(state = initialState, action) {
       } else {
         map.set('privacy', action.status.get('limited_scope') || 'circle');
       }
-      normalizePrivacy(map);
       map.set('reply_to_limited', action.status.get('limited_scope') === 'reply');
       map.set('limited_scope', action.status.get('limited_scope'));
       map.set('media_attachments', action.status.get('media_attachments'));

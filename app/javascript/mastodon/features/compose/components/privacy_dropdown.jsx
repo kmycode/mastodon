@@ -9,6 +9,7 @@ import Overlay from 'react-overlays/Overlay';
 
 import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';
 import AlternateEmailIcon from '@/material-icons/400-24px/alternate_email.svg?react';
+import BlockIcon from '@/material-icons/400-24px/block.svg?react';
 import PublicUnlistedIcon from '@/material-icons/400-24px/cloud.svg?react';
 import MutualIcon from '@/material-icons/400-24px/compare_arrows.svg?react';
 import LoginIcon from '@/material-icons/400-24px/key.svg?react';
@@ -42,6 +43,8 @@ const messages = defineMessages({
   reply_long: { id: 'privacy.reply.long', defaultMessage: 'Reply to limited post' },
   direct_short: { id: 'privacy.direct.short', defaultMessage: 'Specific people' },
   direct_long: { id: 'privacy.direct.long', defaultMessage: 'Everyone mentioned in the post' },
+  banned_short: { id: 'privacy.banned.short', defaultMessage: 'No posting' },
+  banned_long: { id: 'privacy.banned.long', defaultMessage: 'All public range submissions are disabled. User settings need to be modified.' },
   change_privacy: { id: 'privacy.change', defaultMessage: 'Change post privacy' },
   unlisted_extra: { id: 'privacy.unlisted.additional', defaultMessage: 'This behaves exactly like public, except the post will not appear in live feeds or hashtags, explore, or Mastodon search, even if you are opted-in account-wide.' },
 });
@@ -131,7 +134,12 @@ class PrivacyDropdown extends PureComponent {
   UNSAFE_componentWillMount () {
     const { intl: { formatMessage } } = this.props;
 
-    this.options = [
+    this.dynamicOptions = [
+      { icon: 'reply', iconComponent: ReplyIcon, value: 'reply', text: formatMessage(messages.reply_short), meta: formatMessage(messages.reply_long), extra: formatMessage(messages.limited_short), extraIcomComponent: LimitedIcon },
+      { icon: 'ban', iconComponent: BlockIcon, value: 'banned', text: formatMessage(messages.banned_short), meta: formatMessage(messages.banned_long) },
+    ];
+
+    this.originalOptions = [
       { icon: 'globe', iconComponent: PublicIcon, value: 'public', text: formatMessage(messages.public_short), meta: formatMessage(messages.public_long) },
       { icon: 'cloud', iconComponent: PublicUnlistedIcon, value: 'public_unlisted', text: formatMessage(messages.public_unlisted_short), meta: formatMessage(messages.public_unlisted_long) },
       { icon: 'key', iconComponent: LoginIcon, value: 'login', text: formatMessage(messages.login_short), meta: formatMessage(messages.login_long) },
@@ -139,12 +147,14 @@ class PrivacyDropdown extends PureComponent {
       { icon: 'lock', iconComponent: LockIcon, value: 'private', text: formatMessage(messages.private_short), meta: formatMessage(messages.private_long) },
       { icon: 'exchange', iconComponent: MutualIcon, value: 'mutual', text: formatMessage(messages.mutual_short), meta: formatMessage(messages.mutual_long), extra: formatMessage(messages.limited_short), extraIcomComponent: LimitedIcon },
       { icon: 'user-circle', iconComponent: CircleIcon, value: 'circle', text: formatMessage(messages.circle_short), meta: formatMessage(messages.circle_long), extra: formatMessage(messages.limited_short), extraIcomComponent: LimitedIcon },
+      { icon: 'at', iconComponent: AlternateEmailIcon, value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
+      ...this.dynamicOptions,
     ];
 
-    if (!this.props.noDirect) {
-      this.options.push(
-        { icon: 'at', iconComponent: AlternateEmailIcon, value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
-      );
+    this.options = [...this.originalOptions];
+
+    if (this.props.noDirect) {
+      this.options = this.options.filter((opt) => opt.value !== 'direct');
     }
 
     if (this.props.noLimited) {
@@ -156,12 +166,9 @@ class PrivacyDropdown extends PureComponent {
     }
 
     if (this.options.length === 0) {
-      this.options.push(
-        { icon: 'at', iconComponent: AlternateEmailIcon, value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
-      );
+      this.options.push(this.dynamicOptions.find((opt) => opt.value === 'banned'));
+      this.props.onChange('banned');
     }
-
-    this.selectableOptions = [...this.options];
   }
 
   setTargetRef = c => {
@@ -181,18 +188,16 @@ class PrivacyDropdown extends PureComponent {
     const { open, placement } = this.state;
 
     if (replyToLimited) {
-      if (!this.selectableOptions.some((op) => op.value === 'reply')) {
-        this.selectableOptions.unshift(
-          { icon: 'reply', iconComponent: ReplyIcon, value: 'reply', text: intl.formatMessage(messages.reply_short), meta: intl.formatMessage(messages.reply_long), extra: intl.formatMessage(messages.limited_short), extraIcomComponent: LimitedIcon },
-        );
+      if (!this.options.some((op) => op.value === 'reply')) {
+        this.options.unshift(this.dynamicOptions.find((opt) => opt.value === 'reply'));
       }
     } else {
-      if (this.selectableOptions.some((op) => op.value === 'reply')) {
-        this.selectableOptions = this.selectableOptions.filter((op) => op.value !== 'reply');
+      if (this.options.some((op) => op.value === 'reply')) {
+        this.options = this.options.filter((op) => op.value !== 'reply');
       }
     }
 
-    const valueOption = this.selectableOptions.find(item => item.value === value) || this.selectableOptions[0];
+    const valueOption = (disabled ? this.originalOptions : this.options).find(item => item.value === value) || this.options[0];
 
     return (
       <div ref={this.setTargetRef} onKeyDown={this.handleKeyDown}>
@@ -215,7 +220,7 @@ class PrivacyDropdown extends PureComponent {
             <div {...props}>
               <div className={`dropdown-animation privacy-dropdown__dropdown ${placement}`}>
                 <PrivacyDropdownMenu
-                  items={this.selectableOptions}
+                  items={this.options}
                   value={value}
                   onClose={this.handleClose}
                   onChange={this.handleChange}

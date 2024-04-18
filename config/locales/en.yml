@@ -2097,7 +2097,7 @@ en:
       public_unlisted: Local-public
       public_unlisted_long: Everyone can see, but not listed on public timelines of other servers
       reply: Reply
-      unlisted: Unlisted
+      unlisted: Quiet Public (Unlisted)
       unlisted_long: Everyone can see, but not listed on public timelines
       unset: Default
       unset_long: Following Mastodon default behavior

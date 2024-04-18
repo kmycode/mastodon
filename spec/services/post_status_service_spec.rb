@@ -192,6 +192,20 @@ RSpec.describe PostStatusService do
     expect(mention_service).to have_received(:call).with(status, limited_type: '', circle: nil, save_records: false)
   end
 
+  it 'self-banned visibility is set' do
+    user = Fabricate(:user)
+    user.settings.update(disabled_visibilities: ['public_unlisted'])
+
+    expect { subject.call(user.account, text: 'text', visibility: 'public_unlisted') }.to raise_error ActiveRecord::RecordInvalid
+  end
+
+  it 'self-banned visibility is not set' do
+    user = Fabricate(:user)
+    user.settings.update(disabled_visibilities: ['public_unlisted'])
+
+    expect { subject.call(user.account, text: 'text', visibility: 'unlisted') }.to_not raise_error
+  end
+
   context 'with mutual visibility' do
     let(:sender) { Fabricate(:user).account }
     let(:io_account) { Fabricate(:account, domain: 'misskey.io', uri: 'https://misskey.io/actor') }

@@ -712,6 +712,8 @@
   "poll.votes": "{votes, plural, one {# vote} other {# votes}}",
   "poll_button.add_poll": "Add a poll",
   "poll_button.remove_poll": "Remove poll",
+  "privacy.banned.long": "All public range submissions are disabled. User settings need to be modified.",
+  "privacy.banned.short": "No posting",
   "privacy.change": "Change post privacy",
   "privacy.circle.long": "Circle members only",
   "privacy.circle.short": "Circle",

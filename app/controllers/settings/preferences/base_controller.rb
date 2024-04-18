@@ -20,7 +20,7 @@ class Settings::Preferences::BaseController < Settings::BaseController
 
   def user_params
     original_user_params.tap do |params|
-      params[:settings_attributes].merge!(disabled_visibilities_params[:settings_attributes])
+      params[:settings_attributes]&.merge!(disabled_visibilities_params[:settings_attributes] || {})
     end
   end
 
