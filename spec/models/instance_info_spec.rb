@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe InstanceInfo do
-  describe '.available_features' do
+  describe '.available_features#emoji_reaction' do
     subject { described_class.available_features('example.com')[:emoji_reaction] }
 
     it 'availables if local account' do
@@ -43,6 +43,20 @@ RSpec.describe InstanceInfo do
     it 'unavailables if old mastodon server' do
       Fabricate(:instance_info, domain: 'example.com', software: 'mastodon', data: { metadata: [] })
       expect(subject).to be false
+    end
+  end
+
+  describe '.available_features#circle' do
+    subject { described_class.available_features('example.com')[:circle] }
+
+    it 'does not available if misskey server' do
+      Fabricate(:instance_info, domain: 'example.com', software: 'misskey')
+      expect(subject).to be false
+    end
+
+    it 'availables if misskey server with features' do
+      Fabricate(:instance_info, domain: 'example.com', software: 'misskey', data: { metadata: { features: ['circle'] } })
+      expect(subject).to be true
     end
   end
 end

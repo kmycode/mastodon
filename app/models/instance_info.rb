@@ -77,15 +77,18 @@ class InstanceInfo < ApplicationRecord
 
     def feature_available?(info, softwares, feature_name)
       return false if info.nil?
-      return true if softwares.include?(info['software'])
 
-      return false unless info.data.is_a?(Hash)
-      return false unless info.data['metadata'].is_a?(Hash)
+      softwares.include?(software_name(info)) || metadata_features(info)&.include?(feature_name) || false
+    end
 
-      features = info.data.dig('metadata', 'features')
-      return false unless features.is_a?(Array)
+    def metadata_features(info)
+      return nil unless info.data.is_a?(Hash) && info.data['metadata'].is_a?(Hash) && info.data['metadata']['features'].is_a?(Array)
 
-      features.include?(feature_name)
+      info.data['metadata']['features']
+    end
+
+    def software_name(info)
+      info.software
     end
   end
 
