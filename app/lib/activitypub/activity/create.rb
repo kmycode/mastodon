@@ -634,7 +634,18 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def quote
-    @quote ||= @object['quote'] || @object['quoteUrl'] || @object['quoteURL'] || @object['_misskey_quote']
+    @quote ||= quote_from_tags || @object['quote'] || @object['quoteUrl'] || @object['quoteURL'] || @object['_misskey_quote']
+  end
+
+  LINK_MEDIA_TYPES = ['application/activity+json', 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"'].freeze
+
+  def quote_from_tags
+    return @quote_from_tags if defined?(@quote_from_tags)
+
+    hit_tag = as_array(@object['tag']).first do |tag|
+      equals_or_includes?(tag['type'], 'Link') && LINK_MEDIA_TYPES.include?(tag['mediaType']) && tag['href'].present?
+    end
+    @quote_from_tags = hit_tag && hit_tag['href']
   end
 
   def join_group!

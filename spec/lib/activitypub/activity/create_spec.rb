@@ -1636,6 +1636,35 @@ RSpec.describe ActivityPub::Activity::Create do
         end
       end
 
+      context 'with quote as feb-e232 object links' do
+        let(:recipient) { Fabricate(:account) }
+        let!(:target_status) { Fabricate(:status, account: Fabricate(:account, domain: nil)) }
+
+        let(:object_json) do
+          {
+            id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+            type: 'Note',
+            content: 'Lorem ipsum',
+            tag: [
+              {
+                type: 'Link',
+                mediaType: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
+                href: ActivityPub::TagManager.instance.uri_for(target_status),
+              },
+            ],
+          }
+        end
+
+        it 'creates status' do
+          status = sender.statuses.first
+
+          expect(status).to_not be_nil
+          expect(status.references.pluck(:id)).to eq [target_status.id]
+          expect(status.quote).to_not be_nil
+          expect(status.quote.id).to eq target_status.id
+        end
+      end
+
       context 'with references and quote' do
         let(:recipient) { Fabricate(:account) }
         let!(:target_status) { Fabricate(:status, account: Fabricate(:account, domain: nil)) }
