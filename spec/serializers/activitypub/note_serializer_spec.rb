@@ -106,7 +106,7 @@ describe ActivityPub::NoteSerializer do
     end
 
     it 'has a quote as feb-e232 object link' do
-      tag = subject['tag'].first { |t| t['type'] == 'Link' }
+      tag = subject['tag'].detect { |t| t['type'] == 'Link' }
       expect(tag).to_not be_nil
       expect(tag['mediaType']).to eq 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"'
       expect(tag['href']).to eq ActivityPub::TagManager.instance.uri_for(quote)

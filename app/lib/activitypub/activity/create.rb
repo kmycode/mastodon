@@ -642,7 +642,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def quote_from_tags
     return @quote_from_tags if defined?(@quote_from_tags)
 
-    hit_tag = as_array(@object['tag']).first do |tag|
+    hit_tag = as_array(@object['tag']).detect do |tag|
       equals_or_includes?(tag['type'], 'Link') && LINK_MEDIA_TYPES.include?(tag['mediaType']) && tag['href'].present?
     end
     @quote_from_tags = hit_tag && hit_tag['href']
