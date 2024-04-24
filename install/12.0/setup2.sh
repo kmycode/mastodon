@@ -40,10 +40,6 @@ bundle config deployment 'true'
 bundle config without 'development test'
 bundle install -j$(getconf _NPROCESSORS_ONLN)
 
-rm ~/setup2.sh
-rm ~/setup3.sh
-rm ~/setup4.sh
-
 # ---------------------------------------------------
 
 cat << EOF

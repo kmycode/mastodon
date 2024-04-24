@@ -154,6 +154,7 @@ EOF
 
 # kmyblueのリポジトリをチェックアウト
 cd /home/mastodon/live
+git config --global --add safe.directory /home/mastodon/live
 if [ "$KMYBLUE_VERSION" == "debug" ]; then
   echo 'DEBUG'
 elif [ "$KMYBLUE_VERSION" == "newest" ] || [ "$KMYBLUE_VERSION" == "latest" ]; then
@@ -162,6 +163,7 @@ else
   # LTS
   sudo -u mastodon git checkout $(git tag -l | grep -E '^kb[0-9].*lts$' | grep -v 'rc[0-9]*$' | sort -V | tail -n 1)
 fi
+git config --global --unset safe.directory /home/mastodon/live
 
 cat << EOF
 
@@ -174,7 +176,7 @@ EOF
 su - mastodon <<EOF
 git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 cd ~/.rbenv && src/configure && make -C src
-echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+echo 'export PATH="/home/mastodon/.rbenv/bin:$PATH"' >> ~/.bashrc
 echo 'eval "$(rbenv init -)"' >> ~/.bashrc
 EOF
 
