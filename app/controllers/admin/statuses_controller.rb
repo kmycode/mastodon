@@ -125,7 +125,7 @@ module Admin
       return @edit_account_id || @account.id if @edit_account_checked
 
       @edit_account_checked = true
-      @edit_account_id = Account.local.find_by(username: 'official')&.id || @account.id
+      @edit_account_id = Account.representative.id
     end
 
     def filter_params
