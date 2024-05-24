@@ -276,7 +276,7 @@ class Status extends ImmutablePureComponent {
 
   handleEmojiReact = (status, emoji) => {
     const { dispatch } = this.props;
-    const { signedIn } = this.context.identity;
+    const { signedIn } = this.props.identity;
 
     if (signedIn) {
       dispatch(emojiReact(status, emoji));

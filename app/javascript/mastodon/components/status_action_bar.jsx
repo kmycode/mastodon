@@ -159,7 +159,7 @@ class StatusActionBar extends ImmutablePureComponent {
   };
 
   handleEmojiPick = (data) => {
-    const { signedIn } = this.context.identity;
+    const { signedIn } = this.props.identity;
 
     if (signedIn) {
       this.props.onEmojiReact(this.props.status, data);
