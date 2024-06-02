@@ -141,8 +141,10 @@ class Rack::Attack
     req.session[:attempt_user_id] || req.params.dig('user', 'email').presence if req.post? && req.path_matches?('/auth/sign_in')
   end
 
+  API_CREATE_EMOJI_REACTION_REGEX = %r{\A/api/v1/statuses/\d+/emoji_reactions}
+
   throttle('throttle_password_change/account', limit: 10, period: 10.minutes) do |req|
-    req.warden_user_id if req.put? || (req.patch? && req.path_matches?('/auth'))
+    req.warden_user_id if (req.put? && !req.path.match?(API_CREATE_EMOJI_REACTION_REGEX)) || (req.patch? && req.path_matches?('/auth'))
   end
 
   self.throttled_responder = lambda do |request|
