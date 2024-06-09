@@ -62,7 +62,7 @@
     %h4= t 'appearance.custom_emoji_and_emoji_reactions'
 
     .fields-group
-      = ff.input :'web.hide_recent_emojis', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_recent_emojis'), hint: false
+      = ff.input :'web.show_recent_emojis', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_recent_emojis'), hint: false
       - if Setting.enable_emoji_reaction
         = ff.input :'web.enable_emoji_reaction', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_enable_emoji_reaction'), hint: I18n.t('simple_form.hints.defaults.setting_enable_emoji_reaction')
         = ff.input :'web.show_emoji_reaction_on_timeline', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_emoji_reaction_on_timeline')
