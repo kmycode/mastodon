@@ -221,14 +221,16 @@ describe StatusesSearchService do
 
     let(:search_keyword) { 'ohagi' }
     let(:status_text) { 'I ate an apple.' }
+    let(:searchability) { :public }
 
     let(:alice) { Fabricate(:user).account }
     let(:account) { alice }
-    let!(:status) { Fabricate(:status, text: status_text, account: alice, searchability: :public) }
+    let!(:status) { Fabricate(:status, text: status_text, account: alice, searchability: searchability) }
 
     before do
       alice.update!(username: 'alice')
       StatusesIndex.import!
+      PublicStatusesIndex.import!
     end
 
     shared_examples 'hit status' do |name, keyword|
@@ -262,6 +264,22 @@ describe StatusesSearchService do
     it_behaves_like 'does not hit status', 'when double quote search with multiple letter in word but does not contain half', 'q p'
     it_behaves_like 'hit status', 'when specify user name', 'apple from:alice'
     it_behaves_like 'does not hit status', 'when specify not existing user name', 'apple from:ohagi'
+
+    context 'when indexable is enabled' do
+      let(:account) { Fabricate(:user).account }
+      let(:alice) { Fabricate(:user, account: Fabricate(:account, indexable: true)).account }
+      let(:searchability) { nil }
+
+      it_behaves_like 'hit status', 'when scope is all statuses', 'apple'
+      it_behaves_like 'does not hit status', 'when in:library is specified', 'apple in:library'
+      it_behaves_like 'hit status', 'when in:public is specified', 'apple in:public'
+
+      context 'with public searchability' do
+        let(:searchability) { :public }
+
+        it_behaves_like 'hit status', 'when scope is all public_searchability statuses', 'apple in:library'
+      end
+    end
 
     context 'when in:following is specified' do
       let(:following) { Fabricate(:user).account }
