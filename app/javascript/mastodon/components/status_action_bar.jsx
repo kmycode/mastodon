@@ -290,11 +290,11 @@ class StatusActionBar extends ImmutablePureComponent {
   };
 
   handleReference = () => {
-    this.props.onReference(this.props.status);
+    this.props.onReference(this.props.status, this.props.history);
   };
 
   handleQuote = () => {
-    this.props.onQuote(this.props.status);
+    this.props.onQuote(this.props.status, this.props.history);
   };
 
   handleHideClick = () => {

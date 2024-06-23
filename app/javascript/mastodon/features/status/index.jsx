@@ -368,12 +368,12 @@ class Status extends ImmutablePureComponent {
     this.handleReblogClick(status, e, true);
   };
 
-  handleReference = (status) => {
-    this.props.dispatch(insertReferenceCompose(0, status.get('url'), 'BT'));
+  handleReference = (status, router) => {
+    this.props.dispatch(insertReferenceCompose(0, status.get('url'), 'BT', router));
   };
 
-  handleQuote = (status) => {
-    this.props.dispatch(insertReferenceCompose(0, status.get('url'), 'QT'));
+  handleQuote = (status, router) => {
+    this.props.dispatch(insertReferenceCompose(0, status.get('url'), 'QT', router));
   };
 
   handleBookmarkClick = (status) => {

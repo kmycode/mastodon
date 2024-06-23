@@ -203,12 +203,12 @@ const mapDispatchToProps = (dispatch, { intl, contextType }) => ({
     });
   },
 
-  onReference (status) {
-    dispatch(insertReferenceCompose(0, status.get('url'), 'BT'));
+  onReference (status, router) {
+    dispatch(insertReferenceCompose(0, status.get('url'), 'BT', router));
   },
 
-  onQuote (status) {
-    dispatch(insertReferenceCompose(0, status.get('url'), 'QT'));
+  onQuote (status, router) {
+    dispatch(insertReferenceCompose(0, status.get('url'), 'QT', router));
   },
 
   onTranslate (status) {

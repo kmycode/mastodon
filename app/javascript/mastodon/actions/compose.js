@@ -817,12 +817,16 @@ export function insertFeaturedTagCompose(position, data) {
   };
 }
 
-export function insertReferenceCompose(position, url, attributeType) {
-  return {
-    type: COMPOSE_REFERENCE_INSERT,
-    position,
-    url,
-    attributeType,
+export function insertReferenceCompose(position, url, attributeType, routerHistory) {
+  return (dispatch, getState) => {
+    dispatch({
+      type: COMPOSE_REFERENCE_INSERT,
+      position,
+      url,
+      attributeType,
+    });
+
+    ensureComposeIsVisible(getState, routerHistory);
   };
 }
 

@@ -225,11 +225,11 @@ class ActionBar extends PureComponent {
   };
 
   handleReference = () => {
-    this.props.onReference(this.props.status);
+    this.props.onReference(this.props.status, this.props.history);
   };
 
   handleQuote = () => {
-    this.props.onQuote(this.props.status);
+    this.props.onQuote(this.props.status, this.props.history);
   };
 
   handleEmojiPick = (data) => {
