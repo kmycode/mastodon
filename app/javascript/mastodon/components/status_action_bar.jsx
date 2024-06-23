@@ -503,12 +503,12 @@ class StatusActionBar extends ImmutablePureComponent {
 
     const isReply = status.get('in_reply_to_account_id') === status.getIn(['account', 'id']);
 
+    const reblogButton = <IconButton className={classNames('status__action-bar__button', { reblogPrivate })} disabled={!publicStatus && !reblogPrivate} active={status.get('reblogged')} title={reblogTitle} icon='retweet' iconComponent={reblogIconComponent} onClick={this.handleReblogClick} counter={withCounters ? status.get('reblogs_count') : undefined} />;
+
     return (
       <div className='status__action-bar'>
         <IconButton className='status__action-bar__button' title={replyTitle} icon={isReply ? 'reply' : replyIcon} iconComponent={isReply ? ReplyIcon : replyIconComponent} onClick={this.handleReplyClick} counter={status.get('replies_count')} />
-        {reblogMenu.length === 0 ? (
-          <IconButton className={classNames('status__action-bar__button', { reblogPrivate })} disabled={!publicStatus && !reblogPrivate} active={status.get('reblogged')} title={reblogTitle} icon='retweet' iconComponent={reblogIconComponent} onClick={this.handleReblogClick} counter={withCounters ? status.get('reblogs_count') : undefined} />
-        ) : (
+        {reblogMenu.length === 0 ? reblogButton : (
           <DropdownMenuContainer
             className={classNames('status__action-bar__button', { reblogPrivate })}
             scrollKey={scrollKey}
@@ -520,7 +520,9 @@ class StatusActionBar extends ImmutablePureComponent {
             title={reblogTitle}
             active={status.get('reblogged')}
             disabled={!publicStatus && !reblogPrivate}
-          />
+          >
+            {reblogButton}
+          </DropdownMenuContainer>
         )}
         <IconButton className='status__action-bar__button star-icon' animate active={status.get('favourited')} title={intl.formatMessage(messages.favourite)} icon='star' iconComponent={status.get('favourited') ? StarIcon : StarBorderIcon} onClick={this.handleFavouriteClick} counter={withCounters ? status.get('favourites_count') : undefined} />
         <IconButton className='status__action-bar__button bookmark-icon' disabled={!signedIn} active={status.get('bookmarked')} title={intl.formatMessage(messages.bookmark)} icon='bookmark' iconComponent={status.get('bookmarked') ? BookmarkIcon : BookmarkBorderIcon} onClick={this.handleBookmarkClick} />
