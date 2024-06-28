@@ -16,8 +16,8 @@ const enterDelay = 650;
 const leaveDelay = 250;
 const popperConfig = { strategy: 'fixed' } as UsePopperOptions;
 
-const isHoverCardAnchor = (element: HTMLElement) =>
-  element.matches('[data-hover-card-account]');
+const isHoverCardAnchor = (/*element: HTMLElement*/) => false; // set false until original is fixed some problem about this hover
+// element.matches('[data-hover-card-account]');
 
 export const HoverCardController: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -32,7 +32,7 @@ export const HoverCardController: React.FC = () => {
     (e: MouseEvent) => {
       const { target } = e;
 
-      if (target instanceof HTMLElement && isHoverCardAnchor(target)) {
+      if (target instanceof HTMLElement && isHoverCardAnchor(/*target*/)) {
         cancelLeaveTimeout();
 
         setEnterTimeout(() => {
