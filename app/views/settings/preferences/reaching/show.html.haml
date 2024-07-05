@@ -33,7 +33,7 @@
                    wrapper: :with_label
 
     .fields-group
-      = ff.input :stay_privacy, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_stay_privacy')
+      = ff.input :stay_privacy, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_stay_privacy'), hint: I18n.t('simple_form.hints.defaults.setting_stay_privacy')
 
     - if Setting.enable_public_unlisted_visibility
       .fields-group

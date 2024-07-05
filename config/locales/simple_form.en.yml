@@ -82,6 +82,7 @@ en:
         setting_reject_unlisted_subscription: Misskey and its forks can **subscribe and search** for "non-following" posts from accounts they do not follow. This differs from kmyblue's behavior. It delivers posts in the specified public range to such servers as "followers only". Please understand, however, that due to its structure, it is difficult to handle perfectly and will occasionally be delivered as non-subscribed.
         setting_reverse_search_quote: Double-quotes will result in a search with a wider range of notation, which is the opposite of Mastodon's default behavior.
         setting_show_application: 投稿するのに使用したアプリが投稿の詳細ビューに表示されるようになります
+        setting_stay_privacy: If you choose to enable this setting, please consider manually setting the visibility of the boost
         setting_stop_emoji_reaction_streaming: Helps to save communication capacity.
         setting_use_blurhash: Gradients are based on the colors of the hidden visuals but obfuscate any details
         setting_use_pending_items: Hide timeline updates behind a click instead of automatically scrolling the feed

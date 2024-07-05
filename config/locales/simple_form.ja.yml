@@ -82,6 +82,7 @@ ja:
         setting_reject_unlisted_subscription: Misskeyやそのフォークは、フォローしていないアカウントの「非収載」投稿を **購読・検索** することができます。これはkmyblueの挙動と異なります。そのようなサーバーに、指定した公開範囲の投稿を「フォロワーのみ」として配送します。ただし構造上、完璧な対応は困難でたまに非収載として配信されること、ご理解ください
         setting_reverse_search_quote: 検索ワードをダブルクオートで囲って検索した場合、表記ゆれ多めの検索結果になります。Mastodon標準とは逆の挙動となります。
         setting_show_application: 投稿するのに使用したアプリが投稿の詳細ビューに表示されるようになります
+        setting_stay_privacy: この設定を有効にする場合、ブーストの公開範囲を手動で設定されることもご検討ください
         setting_stop_emoji_reaction_streaming: 通信容量の節約に役立ちます
         setting_use_blurhash: ぼかしはメディアの色を元に生成されますが、細部は見えにくくなっています
         setting_use_pending_items: 新着があってもタイムラインを自動的にスクロールしないようにします
