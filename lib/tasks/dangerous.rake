@@ -14,6 +14,7 @@ namespace :dangerous do
     end
 
     target_migrations = %w(
+      20240709063700
       20240426233435
       20240426000034
       20240401222541
@@ -149,6 +150,7 @@ namespace :dangerous do
       %w(custom_emojis license),
       %w(custom_filters exclude_follows),
       %w(custom_filters exclude_localusers),
+      %w(custom_filters with_profile),
       %w(custom_filters with_quote),
       %w(domain_blocks block_trends),
       %w(domain_blocks detect_invalid_subscription),

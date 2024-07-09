@@ -76,6 +76,14 @@ class CustomFilter < ApplicationRecord
     !with_quote
   end
 
+  def exclude_profile=(value)
+    self.with_profile = !ActiveModel::Type::Boolean.new.cast(value)
+  end
+
+  def exclude_profile
+    !with_profile
+  end
+
   def self.cached_filters_for(account_id)
     active_filters = Rails.cache.fetch("filters:v3:#{account_id}") do
       filters_hash = {}
@@ -111,6 +119,7 @@ class CustomFilter < ApplicationRecord
 
       if rules[:keywords].present?
         match = rules[:keywords].match(status.proper.searchable_text)
+        match = rules[:keywords].match([status.account.display_name, status.account.note].join("\n\n")) if !match && filter.with_profile
         if match.nil? && filter.with_quote && status.proper.reference_objects.exists?
           references_text_cache = status.proper.references.pluck(:text).join("\n\n") if references_text_cache.nil?
           references_spoiler_text_cache = status.proper.references.pluck(:spoiler_text).join("\n\n") if references_spoiler_text_cache.nil?

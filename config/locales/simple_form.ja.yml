@@ -358,6 +358,7 @@ ja:
         options:
           exclude_follows: フォロー中のユーザーをフィルターの対象にしない
           exclude_localusers: ローカルユーザーをフィルターの対象にしない
+          exclude_profile: アカウント名および紹介文をフィルターの対象にしない
           exclude_quote: 引用の内容をフィルターの対象にしない
       form_admin_settings:
         activity_api_enabled: APIでユーザーアクティビティに関する集計統計を公開する

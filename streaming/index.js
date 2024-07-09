@@ -934,7 +934,7 @@ const startServer = async () => {
         // @ts-ignore
         if (!payload.filtered && !req.cachedFilters) {
           // @ts-ignore
-          queries.push(client.query('SELECT filter.id AS id, filter.phrase AS title, filter.context AS context, filter.expires_at AS expires_at, filter.action AS filter_action, filter.with_quote AS with_quote, keyword.keyword AS keyword, keyword.whole_word AS whole_word, filter.exclude_follows AS exclude_follows, filter.exclude_localusers AS exclude_localusers FROM custom_filter_keywords keyword JOIN custom_filters filter ON keyword.custom_filter_id = filter.id WHERE filter.account_id = $1 AND (filter.expires_at IS NULL OR filter.expires_at > NOW())', [req.accountId]));
+          queries.push(client.query('SELECT filter.id AS id, filter.phrase AS title, filter.context AS context, filter.expires_at AS expires_at, filter.action AS filter_action, filter.with_quote AS with_quote, filter.with_profile AS with_profile, keyword.keyword AS keyword, keyword.whole_word AS whole_word, filter.exclude_follows AS exclude_follows, filter.exclude_localusers AS exclude_localusers FROM custom_filter_keywords keyword JOIN custom_filters filter ON keyword.custom_filter_id = filter.id WHERE filter.account_id = $1 AND (filter.expires_at IS NULL OR filter.expires_at > NOW())', [req.accountId]));
         }
         if (!payload.filtered) {
           // @ts-ignore
@@ -989,6 +989,7 @@ const startServer = async () => {
                     filter_action: filter.filter_action === 2 ? 'warn' : ['warn', 'hide', 'half_warn'][filter.filter_action],
                     filter_action_ex: ['warn', 'hide', 'half_warn'][filter.filter_action],
                     with_quote: filter.with_quote,
+                    withAccountName: filter.with_profile,
                     excludeFollows: filter.exclude_follows,
                     excludeLocalusers: filter.exclude_localusers,
                   },
@@ -1032,6 +1033,7 @@ const startServer = async () => {
             // @ts-ignore
             const searchableContent = ([status.spoiler_text || '', status.content, ...(reference_texts || [])].concat((status.poll && status.poll.options) ? status.poll.options.map(option => option.title) : [])).concat(status.media_attachments.map(att => att.description)).join('\n\n').replace(/<br\s*\/?>/g, '\n').replace(/<\/p><p>/g, '\n\n');
             const searchableTextContent = JSDOM.fragment(searchableContent).textContent;
+            const searchableAccountContent = JSDOM.fragment([status.account.display_name, status.account.note].join('\n\n')).textContent;
 
             const now = new Date();
             // @ts-ignore
@@ -1054,7 +1056,8 @@ const startServer = async () => {
                 return results;
               }
 
-              const keyword_matches = searchableTextContent.match(cachedFilter.regexp);
+              const keyword_matches = searchableTextContent.match(cachedFilter.regexp) ||
+                ((cachedFilter.withAccountName && searchableAccountContent) ? searchableAccountContent.match(cachedFilter.regexp) : null);
               if (keyword_matches) {
                 // results is an Array of FilterResult; status_matches is always
                 // null as we only are only applying the keyword-based custom

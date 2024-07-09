@@ -54,6 +54,7 @@ RSpec.describe 'Filters' do
           filter_action: 'hide',
           exclude_follows: true,
           exclude_localusers: true,
+          with_profile: true,
           keywords_attributes: [keyword: 'magic', whole_word: true],
         }
       end
@@ -75,6 +76,7 @@ RSpec.describe 'Filters' do
         expect(json[:keywords].map { |keyword| keyword.slice(:keyword, :whole_word) }).to eq [{ keyword: 'magic', whole_word: true }]
         expect(json[:exclude_follows]).to be true
         expect(json[:exclude_localusers]).to be true
+        expect(json[:with_profile]).to be true
       end
 
       it 'creates a filter', :aggregate_failures do
@@ -87,6 +89,7 @@ RSpec.describe 'Filters' do
         expect(filter.context).to eq %w(home)
         expect(filter.exclude_follows).to be true
         expect(filter.exclude_localusers).to be true
+        expect(filter.with_profile).to be true
         expect(filter.irreversible?).to be true
         expect(filter.expires_at).to be_nil
       end
@@ -175,7 +178,7 @@ RSpec.describe 'Filters' do
 
     context 'when updating filter parameters' do
       context 'with valid params' do
-        let(:params) { { title: 'updated', context: %w(home public), exclude_follows: true, exclude_localusers: true } }
+        let(:params) { { title: 'updated', context: %w(home public), exclude_follows: true, exclude_localusers: true, exclude_profile: true } }
 
         it 'updates the filter successfully', :aggregate_failures do
           subject
@@ -187,6 +190,7 @@ RSpec.describe 'Filters' do
           expect(filter.reload.context).to eq %w(home public)
           expect(filter.exclude_follows).to be true
           expect(filter.exclude_localusers).to be true
+          expect(filter.exclude_profile).to be true
         end
       end
 

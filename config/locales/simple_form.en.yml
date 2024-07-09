@@ -362,6 +362,7 @@ en:
         options:
           exclude_follows: Exclude following users
           exclude_localusers: Exclude local users
+          exclude_profile: Exclude account name and bio
           exclude_quote: Exclude quote or references
       form_admin_settings:
         activity_api_enabled: Publish aggregate statistics about user activity in the API
