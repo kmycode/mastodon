@@ -15,6 +15,7 @@
 #  exclude_follows    :boolean          default(FALSE), not null
 #  exclude_localusers :boolean          default(FALSE), not null
 #  with_quote         :boolean          default(TRUE), not null
+#  with_profile       :boolean          default(FALSE), not null
 #
 
 class CustomFilter < ApplicationRecord
