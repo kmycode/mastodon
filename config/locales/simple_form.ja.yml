@@ -84,7 +84,6 @@ ja:
         setting_stop_emoji_reaction_streaming: 通信容量の節約に役立ちます
         setting_use_blurhash: ぼかしはメディアの色を元に生成されますが、細部は見えにくくなっています
         setting_use_pending_items: 新着があってもタイムラインを自動的にスクロールしないようにします
-        subscription_policy: あなたの投稿はこの設定の範囲外にあるアカウントのアンテナに掲載されなくなります。Misskeyのアンテナを拒否することはできません。Mastodonの一部のサーバーもこの設定に対応しますが、挙動が一部kmyblueと異なる場合があります
         username: アルファベット大文字と小文字、数字、アンダーバー「_」が使えます
         whole_word: キーワードまたはフレーズが英数字のみの場合、単語全体と一致する場合のみ適用されるようになります
       domain_allow:

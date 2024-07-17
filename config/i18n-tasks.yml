@@ -43,6 +43,7 @@ ignore_missing:
   - 'application_mailer.salutation'
   - 'errors.500'
   - 'auth.providers.*'
+  - 'antennas.index.{accounts,domains,keywords,tags}'
 
 ignore_unused:
   - 'activemodel.errors.*'
