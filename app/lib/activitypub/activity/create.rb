@@ -104,7 +104,6 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     process_references!
     distribute
     forward_for_reply
-    join_group!
   end
 
   def distribute
@@ -646,9 +645,5 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       equals_or_includes?(tag['type'], 'Link') && LINK_MEDIA_TYPES.include?(tag['mediaType']) && tag['href'].present?
     end
     @quote_from_tags = hit_tag && hit_tag['href']
-  end
-
-  def join_group!
-    GroupReblogService.new.call(@status)
   end
 end

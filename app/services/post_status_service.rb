@@ -214,7 +214,6 @@ class PostStatusService < BaseService
     DistributionWorker.perform_async(@status.id)
     ActivityPub::DistributionWorker.perform_async(@status.id) unless @status.personal_limited?
     PollExpirationNotifyWorker.perform_at(@status.poll.expires_at, @status.poll.id) if @status.poll
-    GroupReblogService.new.call(@status) unless @status.personal_limited?
   end
 
   def validate_status!
