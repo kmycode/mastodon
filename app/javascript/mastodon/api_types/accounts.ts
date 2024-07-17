@@ -48,7 +48,6 @@ export interface ApiAccountJSON {
   discoverable: boolean;
   indexable: boolean;
   display_name: string;
-  emoji_reaction_available_server: boolean;
   emojis: ApiCustomEmojiJSON[];
   fields: ApiAccountFieldJSON[];
   followers_count: number;

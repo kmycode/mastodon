@@ -7,7 +7,7 @@ class REST::AccountSerializer < ActiveModel::Serializer
   # Please update `app/javascript/mastodon/api_types/accounts.ts` when making changes to the attributes
 
   attributes :id, :username, :acct, :display_name, :locked, :bot, :discoverable, :indexable, :group, :created_at,
-             :note, :url, :uri, :avatar, :avatar_static, :header, :header_static, :subscribable, :emoji_reaction_available_server,
+             :note, :url, :uri, :avatar, :avatar_static, :header, :header_static, :subscribable,
              :followers_count, :following_count, :statuses_count, :last_status_at, :hide_collections, :other_settings, :noindex,
              :server_features
 
@@ -118,10 +118,6 @@ class REST::AccountSerializer < ActiveModel::Serializer
 
   def indexable
     object.unavailable? ? false : object.indexable
-  end
-
-  def emoji_reaction_available_server
-    server_features[:emoji_reaction]
   end
 
   def server_features
