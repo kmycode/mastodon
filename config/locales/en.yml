@@ -1908,8 +1908,6 @@ en:
     stop_deliver: Stop delivery
     stop_deliver_hint_html: Mastodon posts can be freely searched by other software; privacy settings made within Mastodon will be ignored and your posts may be found by unintended people. Here, you can set up your posts so that they will not be found by other servers or software. However, there is a risk involved.
     title: Privacy extra settings
-    will_remove_settings: This function will be removed
-    will_remove_settings_hint_html: This function will be removed kb14.0 or next LTS.
   privacy_policy:
     title: Privacy Policy
   reactions:

@@ -143,10 +143,6 @@ module User::HasSettings
     settings['dtl_force_searchability']&.to_sym || :unchange
   end
 
-  def setting_dtl_force_subscribable
-    settings['dtl_force_subscribable']
-  end
-
   def setting_hide_statuses_count
     settings['hide_statuses_count']
   end

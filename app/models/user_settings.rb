@@ -39,7 +39,6 @@ class UserSettings
   setting :slip_local_emoji_reaction, default: false
   setting :dtl_force_visibility, default: :unchange, in: %w(unchange public public_unlisted unlisted)
   setting :dtl_force_searchability, default: :unchange, in: %w(unchange public public_unlisted)
-  setting :dtl_force_subscribable, default: false
   setting :lock_follow_from_bot, default: false
   setting :allow_quote, default: true
   setting :reject_send_limited_to_suspects, default: false

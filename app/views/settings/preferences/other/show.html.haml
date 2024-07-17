@@ -90,9 +90,6 @@
                    label_method: ->(item) { safe_join([t("simple_form.labels.dtl_force_searchability.#{item}")]) },
                    wrapper: :with_floating_label
 
-      .fields-group
-        = ff.input :dtl_force_subscribable, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_dtl_force_subscribable'), hint: I18n.t('simple_form.hints.defaults.setting_dtl_force_subscribable')
-
   %h4= t 'preferences.public_timelines'
 
   .fields-group

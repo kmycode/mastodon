@@ -7,14 +7,14 @@ class ActivityPub::ActorSerializer < ActivityPub::Serializer
   context :security
 
   context_extensions :manually_approves_followers, :featured, :also_known_as,
-                     :moved_to, :property_value, :discoverable, :olm, :suspended, :searchable_by, :subscribable_by,
+                     :moved_to, :property_value, :discoverable, :olm, :suspended, :searchable_by,
                      :other_setting, :memorial, :indexable
 
   attributes :id, :type, :following, :followers,
              :inbox, :outbox, :featured, :featured_tags,
              :preferred_username, :name, :summary,
              :url, :manually_approves_followers,
-             :discoverable, :indexable, :published, :memorial, :searchable_by, :subscribable_by, :other_setting
+             :discoverable, :indexable, :published, :memorial, :searchable_by, :other_setting
 
   has_one :public_key, serializer: ActivityPub::PublicKeySerializer
 
@@ -177,10 +177,6 @@ class ActivityPub::ActorSerializer < ActivityPub::Serializer
 
   def searchable_by
     ActivityPub::TagManager.instance.account_searchable_by(object)
-  end
-
-  def subscribable_by
-    ActivityPub::TagManager.instance.subscribable_by(object)
   end
 
   def other_setting

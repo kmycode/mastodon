@@ -69,7 +69,6 @@ en:
         setting_display_media_hide_all: Always hide media
         setting_display_media_show_all: Always show media
         setting_dtl_force_searchability: 'With using #%{tag} tag, your post settings will be changed forcibly'
-        setting_dtl_force_subscribable: Your post can be detected local user's antenna to subscribe deep timeline
         setting_dtl_force_visibility: 'With using #%{tag} tag, your post settings will be changed forcibly'
         setting_emoji_reaction_policy: Even with this setting, users on other servers are free to put their emoji reaction on the post and share it within the same server. If you simply want to remove the emoji reaction from your own screen, you can disable it from the appearance settings
         setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、絵文字リアクション機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
@@ -85,7 +84,6 @@ en:
         setting_stop_emoji_reaction_streaming: Helps to save communication capacity.
         setting_use_blurhash: Gradients are based on the colors of the hidden visuals but obfuscate any details
         setting_use_pending_items: Hide timeline updates behind a click instead of automatically scrolling the feed
-        subscription_policy: Your post is not picked by antenna
         username: You can use letters, numbers, and underscores
         whole_word: When the keyword or phrase is alphanumeric only, it will only be applied if it matches the whole word
       domain_allow:
@@ -162,10 +160,6 @@ en:
       settings:
         indexable: Your profile page may appear in search results on Google, Bing, and others.
         show_application: You will always be able to see which app published your post regardless.
-      subscription_policy:
-        allow: Allow
-        block: Block
-        followers_only: Followers only
       tag:
         name: You can only change the casing of the letters, for example, to make it more readable
       user:
@@ -278,7 +272,6 @@ en:
         setting_display_media_hide_all: Hide all
         setting_display_media_show_all: Show all
         setting_dtl_force_searchability: Post searchability
-        setting_dtl_force_subscribable: Ignore your subscribability setting when using the DTL tag
         setting_dtl_force_visibility: Post visibility
         setting_dtl_menu: Show DTL menu on web
         setting_emoji_reaction_policy: Emoji reaction receive/display policy
@@ -330,7 +323,6 @@ en:
         setting_use_public_index: Include permitted accounts post to results of search
         severity: Severity
         sign_in_token_attempt: Security code
-        subscription_policy: Subscribability
         title: Title
         type: Import type
         username: Username
@@ -451,10 +443,6 @@ en:
       settings:
         indexable: Include profile page in search engines
         show_application: Display from which app you sent a post
-      subscription_policy:
-        allow: 全員に許可
-        block: 全員拒否
-        followers_only: フォロワーにのみ許可
       tag:
         listable: Allow this hashtag to appear in searches and suggestions
         name: Hashtag

@@ -242,17 +242,6 @@ class ActivityPub::TagManager
     end
   end
 
-  def subscribable_by(account)
-    case account.subscription_policy
-    when :allow
-      [COLLECTIONS[:public]]
-    when :followers_only
-      [account_followers_url(account)]
-    else
-      []
-    end
-  end
-
   def searchable_by(status)
     searchable_by =
       case status.compute_searchability_activitypub

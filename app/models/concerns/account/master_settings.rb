@@ -5,6 +5,8 @@ module Account::MasterSettings
 
   included do
     def subscription_policy
+      return :allow if local?
+
       return master_settings['subscription_policy']&.to_sym || :allow if master_settings.present?
 
       # allow, followers_only, block
