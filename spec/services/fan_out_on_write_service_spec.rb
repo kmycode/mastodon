@@ -146,27 +146,39 @@ RSpec.describe FanOutOnWriteService do
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
 
-      context 'when subscription is blocked' do
-        let(:subscription_policy) { :block }
+      context 'with subscription policy' do
+        context 'when subscription is blocked' do
+          let(:subscription_policy) { :block }
+          let(:alice) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/alice', subscription_policy: subscription_policy) }
 
-        it 'is not added to the antenna feed', :inline_jobs do
-          expect(antenna_feed_of(antenna)).to_not include status.id
-        end
-      end
-
-      context 'when subscription is allowed followers only' do
-        let(:subscription_policy) { :followers_only }
-        let!(:antenna) { antenna_with_account(ohagi, alice) }
-
-        it 'is not added to the antenna feed', :inline_jobs do
-          expect(antenna_feed_of(antenna)).to_not include status.id
+          it 'is not added to the antenna feed', :inline_jobs do
+            expect(antenna_feed_of(antenna)).to_not include status.id
+          end
         end
 
-        context 'with following' do
-          let!(:antenna) { antenna_with_account(bob, alice) }
+        context 'when local user subscription policy is disabled' do
+          let(:subscription_policy) { :block }
 
           it 'is added to the antenna feed', :inline_jobs do
             expect(antenna_feed_of(antenna)).to include status.id
+          end
+        end
+
+        context 'when subscription is allowed followers only' do
+          let(:subscription_policy) { :followers_only }
+          let!(:antenna) { antenna_with_account(ohagi, alice) }
+          let(:alice) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/alice', subscription_policy: subscription_policy) }
+
+          it 'is not added to the antenna feed', :inline_jobs do
+            expect(antenna_feed_of(antenna)).to_not include status.id
+          end
+
+          context 'with following' do
+            let!(:antenna) { antenna_with_account(bob, alice) }
+
+            it 'is added to the antenna feed', :inline_jobs do
+              expect(antenna_feed_of(antenna)).to include status.id
+            end
           end
         end
       end
@@ -185,29 +197,6 @@ RSpec.describe FanOutOnWriteService do
             expect(antenna_feed_of(antenna)).to include status.id
           end
         end
-
-        context 'with listening tag but sender is limiting subscription' do
-          let(:subscription_policy) { :block }
-
-          it 'does not add to the antenna feed', :inline_jobs do
-            expect(antenna_feed_of(antenna)).to_not include status.id
-          end
-        end
-
-        context 'with listening tag but sender is limiting subscription but permit dtl only' do
-          let(:subscription_policy) { :block }
-          let(:custom_before) { true }
-
-          before do
-            alice.user.settings['dtl_force_subscribable'] = true
-            alice.user.save!
-            subject.call(status)
-          end
-
-          it 'is added to the antenna feed', :inline_jobs do
-            expect(antenna_feed_of(antenna)).to include status.id
-          end
-        end
       end
     end
 
@@ -218,14 +207,6 @@ RSpec.describe FanOutOnWriteService do
       it 'is added to the antenna feed of antenna follower', :inline_jobs do
         expect(antenna_feed_of(antenna)).to include status.id
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
-      end
-
-      context 'when subscription is blocked' do
-        let(:subscription_policy) { :block }
-
-        it 'is added to the antenna feed', :inline_jobs do
-          expect(antenna_feed_of(antenna)).to include status.id
-        end
       end
 
       context 'when local timeline is disabled' do
@@ -245,14 +226,6 @@ RSpec.describe FanOutOnWriteService do
       it 'is added to the antenna feed of antenna follower', :inline_jobs do
         expect(antenna_feed_of(antenna)).to include status.id
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
-      end
-
-      context 'when subscription is blocked' do
-        let(:subscription_policy) { :block }
-
-        it 'is added to the antenna feed', :inline_jobs do
-          expect(antenna_feed_of(antenna)).to include status.id
-        end
       end
 
       context 'when local timeline is disabled' do
@@ -481,14 +454,6 @@ RSpec.describe FanOutOnWriteService do
         expect(antenna_feed_of(antenna)).to include status.id
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
       end
-
-      context 'when subscription is blocked' do
-        let(:subscription_policy) { :block }
-
-        it 'is not added to the antenna feed', :inline_jobs do
-          expect(antenna_feed_of(antenna)).to_not include status.id
-        end
-      end
     end
 
     context 'with STL antenna' do
@@ -498,14 +463,6 @@ RSpec.describe FanOutOnWriteService do
       it 'is added to the antenna feed of antenna follower', :inline_jobs do
         expect(antenna_feed_of(antenna)).to include status.id
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
-      end
-
-      context 'when subscription is blocked' do
-        let(:subscription_policy) { :block }
-
-        it 'is added to the antenna feed', :inline_jobs do
-          expect(antenna_feed_of(antenna)).to include status.id
-        end
       end
 
       context 'when local timeline is disabled' do
@@ -525,14 +482,6 @@ RSpec.describe FanOutOnWriteService do
       it 'is added to the antenna feed of antenna follower', :inline_jobs do
         expect(antenna_feed_of(antenna)).to include status.id
         expect(antenna_feed_of(empty_antenna)).to_not include status.id
-      end
-
-      context 'when subscription is blocked' do
-        let(:subscription_policy) { :block }
-
-        it 'is added to the antenna feed', :inline_jobs do
-          expect(antenna_feed_of(antenna)).to include status.id
-        end
       end
 
       context 'when local timeline is disabled' do
