@@ -16,8 +16,8 @@ const enterDelay = 750;
 const leaveDelay = 150;
 const popperConfig = { strategy: 'fixed' } as UsePopperOptions;
 
-const isHoverCardAnchor = (/*element: HTMLElement*/) => false; // set false until original is fixed some problem about this hover
-// element.matches('[data-hover-card-account]');
+const isHoverCardAnchor = (element: HTMLElement) =>
+  element.matches('[data-hover-card-account]');
 
 export const HoverCardController: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -70,7 +70,7 @@ export const HoverCardController: React.FC = () => {
       }
 
       // We've entered an anchor
-      if (!isScrolling && isHoverCardAnchor(/*target*/)) {
+      if (!isScrolling && isHoverCardAnchor(target)) {
         cancelLeaveTimeout();
 
         currentAnchor?.removeAttribute('aria-describedby');
