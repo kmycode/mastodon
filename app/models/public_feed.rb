@@ -26,7 +26,7 @@ class PublicFeed
     scope.merge!(without_replies_scope) unless with_replies?
     scope.merge!(without_reblogs_scope) unless with_reblogs?
     scope.merge!(local_only_scope) if local_only?
-    scope.merge!(remote_only_scope) if remote_only? || hide_local_users?
+    scope.merge!(remote_only_scope) if remote_only?
     scope.merge!(account_filters_scope) if account?
     scope.merge!(media_only_scope) if media_only?
     scope.merge!(language_scope) if account&.chosen_languages.present?
@@ -54,10 +54,6 @@ class PublicFeed
 
   def remote_only?
     options[:remote] && !options[:local] && Setting.enable_local_timeline
-  end
-
-  def hide_local_users?
-    @account.nil? && Setting.hide_local_users_for_anonymous
   end
 
   def account?

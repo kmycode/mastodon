@@ -45,7 +45,6 @@ class Form::AdminSettings
     status_page_url
     captcha_enabled
     stranger_mention_from_local_ng
-    hide_local_users_for_anonymous
     post_hash_tags_max
     post_mentions_max
     post_stranger_mentions_max
@@ -61,7 +60,6 @@ class Form::AdminSettings
     unlocked_friend
     enable_local_timeline
     emoji_reaction_disallow_domains
-    block_unfollow_account_mention
     hold_remote_new_accounts
     stop_fetch_activity_domains
     stop_link_preview_domains
@@ -96,7 +94,6 @@ class Form::AdminSettings
     noindex
     require_invite_text
     captcha_enabled
-    hide_local_users_for_anonymous
     authorized_fetch
     receive_other_servers_emoji_reaction
     streaming_other_servers_emoji_reaction
@@ -109,7 +106,6 @@ class Form::AdminSettings
     stranger_mention_from_local_ng
     enable_local_timeline
     delete_content_cache_without_reaction
-    block_unfollow_account_mention
     hold_remote_new_accounts
   ).freeze
 

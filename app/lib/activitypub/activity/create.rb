@@ -166,7 +166,6 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
       valid = !Admin::NgWord.stranger_mention_reject_with_count?(@raw_mention_uris.size, uri: @params[:uri], target_type: :status, public: @status_parser.distributable_visibility?,
                                                                                          text: "#{@params[:spoiler_text]}\n#{@params[:text]}")
     end
-    valid = false if valid && Setting.block_unfollow_account_mention && (mention_to_local_stranger? || reference_to_local_stranger?) && !local_following_sender?
 
     valid
   end

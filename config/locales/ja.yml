@@ -741,14 +741,8 @@ ja:
       test_error: 正規表現の文法が誤っています
       title: NGルール
     ng_words:
-      block_unfollow_account_mention: 自分のサーバーのフォロワーを持たない全てのアカウントからのメンション・引用を全て拒否する
-      block_unfollow_account_mention_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。NGルールで代替してください。
-      deprecated: 新しいバージョンで削除する予定の設定
-      deprecated_hint: これらの設定は、次回のLTS、またはkmyblueバージョン14.0のどちらか早い方で削除する予定です。それぞれの設定の説明を参照して、可能であれば新しい設定に置き換えてください。
       edit:
         add_domain: ドメインを追加
-      hide_local_users_for_anonymous: ログインしていない状態でローカルユーザーの投稿をタイムラインから取得できないようにする
-      hide_local_users_for_anonymous_hint: この設定は削除予定です。設定削除後は、常にチェックをつけていない場合と同じ挙動になります。サーバー設定の「見つける」にある「公開タイムラインへの未認証のアクセスを許可する」で、完全ではありませんが代替可能です。
       hold_remote_new_accounts: リモートの新規アカウントを保留する
       keywords: 拒否するキーワード
       phrases:
@@ -764,7 +758,7 @@ ja:
       remote_approval_list: 承認待ちのリモートアカウント一覧
       settings: 詳細設定
       stranger_mention_from_local_ng: フォローしていないアカウントへのメンションのNGワードを、ローカルユーザーによる投稿にも適用する
-      stranger_mention_from_local_ng_hint: この設定は削除予定です。設定削除後は、常にチェックをつけている場合と同じ挙動になります。この動作を希望しない場合は、NGルールで代替してください。
+      stranger_mention_from_local_ng_hint: 自分のサーバーにスパムアカウントが入り込んでいる可能性がある場合に利用します。
       test_error: NGワードのテストに失敗しました。正規表現のミスが含まれているかもしれません
       title: NGワードとスパム
       white_list: ホワイトリスト

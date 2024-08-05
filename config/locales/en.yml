@@ -755,14 +755,8 @@ en:
       test_error: Regular expression syntax is incorrect.
       title: NG Rule
     ng_words:
-      block_unfollow_account_mention: Reject all mentions/quotes from all accounts that do not have followers on your server
-      block_unfollow_account_mention_hint: This setting will be removed. After the setting is removed, the behavior will always be the same as if it were unchecked; please use NG rules instead.
-      deprecated: Will remove settings
-      deprecated_hint: These settings will be removed in the next LTS or kmyblue version 14.0, whichever comes first. Please refer to the description of each setting and replace them with the new settings if possible.
       edit:
         add_domain: Add domain
-      hide_local_users_for_anonymous: Hide timeline local user posts from anonymous
-      hide_local_users_for_anonymous_hint: This setting will be removed. After the setting is removed, the behavior will always be the same as if it were unchecked. It can be replaced, though not completely, by "Allow unauthorized access to public timelines" in the "Find" section of the server settings.
       hold_remote_new_accounts: Hold new remote accounts
       keywords: Reject keywords
       keywords_for_stranger_mention: Keywords for stranger mention
@@ -780,7 +774,7 @@ en:
       save_error: Has save errors
       settings: Settings
       stranger_mention_from_local_ng: NG words for Mention to accounts you do not follow are also applied to posts by local users.
-      stranger_mention_from_local_ng_hint: This setting will be removed. After the setting is removed, the behavior will be the same as if it is always checked. If you do not wish this behavior, please use NG rules instead.
+      stranger_mention_from_local_ng_hint: Use this if there is a possibility that a spam account has entered your server
       test_error: Testing is returned any errors
       title: NG words and against spams
       white_list: White list
