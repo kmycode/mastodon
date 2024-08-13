@@ -2,6 +2,8 @@
 
 [![Ruby Testing](https://github.com/kmycode/mastodon/actions/workflows/test-ruby.yml/badge.svg)](https://github.com/kmycode/mastodon/actions/workflows/test-ruby.yml)
 
+! FOR ENGLISH USER ! We do not provide English documentation for kmyblue; we assume that you will use automatic translation software, such as Google, to translate the site.
+
 kmyblueは、ActivityPubに接続するSNSの1つである[Mastodon](https://github.com/mastodon/mastodon)のフォークです。創作作家のためのMastodonを目指して開発しました。
 
 kmyblueはフォーク名であり、同時に[サーバー名](https://kmy.blue)でもあります。以下は特に記述がない限り、フォークとしてのkmyblueをさします。
