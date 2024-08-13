@@ -18,10 +18,9 @@ import PublicIcon from '@/material-icons/400-24px/public.svg?react';
 import QuietTimeIcon from '@/material-icons/400-24px/quiet_time.svg?react';
 import ReplyIcon from '@/material-icons/400-24px/reply.svg?react';
 import LimitedIcon from '@/material-icons/400-24px/shield.svg?react';
+import { DropdownSelector } from 'mastodon/components/dropdown_selector';
 import { Icon }  from 'mastodon/components/icon';
 import { enabledVisibilites } from 'mastodon/initial_state';
-
-import { PrivacyDropdownMenu } from './privacy_dropdown_menu';
 
 const messages = defineMessages({
   public_short: { id: 'privacy.public.short', defaultMessage: 'Public' },
@@ -135,7 +134,7 @@ class PrivacyDropdown extends PureComponent {
     const { intl: { formatMessage } } = this.props;
 
     this.dynamicOptions = [
-      { icon: 'reply', iconComponent: ReplyIcon, value: 'reply', text: formatMessage(messages.reply_short), meta: formatMessage(messages.reply_long), extra: formatMessage(messages.limited_short), extraIcomComponent: LimitedIcon },
+      { icon: 'reply', iconComponent: ReplyIcon, value: 'reply', text: formatMessage(messages.reply_short), meta: formatMessage(messages.reply_long), extra: formatMessage(messages.limited_short), extraIconComponent: LimitedIcon },
       { icon: 'ban', iconComponent: BlockIcon, value: 'banned', text: formatMessage(messages.banned_short), meta: formatMessage(messages.banned_long) },
     ];
 
@@ -145,8 +144,8 @@ class PrivacyDropdown extends PureComponent {
       { icon: 'key', iconComponent: LoginIcon, value: 'login', text: formatMessage(messages.login_short), meta: formatMessage(messages.login_long) },
       { icon: 'unlock', iconComponent: QuietTimeIcon,  value: 'unlisted', text: formatMessage(messages.unlisted_short), meta: formatMessage(messages.unlisted_long), extra: formatMessage(messages.unlisted_extra) },
       { icon: 'lock', iconComponent: LockIcon, value: 'private', text: formatMessage(messages.private_short), meta: formatMessage(messages.private_long) },
-      { icon: 'exchange', iconComponent: MutualIcon, value: 'mutual', text: formatMessage(messages.mutual_short), meta: formatMessage(messages.mutual_long), extra: formatMessage(messages.limited_short), extraIcomComponent: LimitedIcon },
-      { icon: 'user-circle', iconComponent: CircleIcon, value: 'circle', text: formatMessage(messages.circle_short), meta: formatMessage(messages.circle_long), extra: formatMessage(messages.limited_short), extraIcomComponent: LimitedIcon },
+      { icon: 'exchange', iconComponent: MutualIcon, value: 'mutual', text: formatMessage(messages.mutual_short), meta: formatMessage(messages.mutual_long), extra: formatMessage(messages.limited_short), extraIconComponent: LimitedIcon },
+      { icon: 'user-circle', iconComponent: CircleIcon, value: 'circle', text: formatMessage(messages.circle_short), meta: formatMessage(messages.circle_long), extra: formatMessage(messages.limited_short), extraIconComponent: LimitedIcon },
       { icon: 'at', iconComponent: AlternateEmailIcon, value: 'direct', text: formatMessage(messages.direct_short), meta: formatMessage(messages.direct_long) },
       ...this.dynamicOptions,
     ];
@@ -219,7 +218,7 @@ class PrivacyDropdown extends PureComponent {
           {({ props, placement }) => (
             <div {...props}>
               <div className={`dropdown-animation privacy-dropdown__dropdown ${placement}`}>
-                <PrivacyDropdownMenu
+                <DropdownSelector
                   items={this.options}
                   value={value}
                   onClose={this.handleClose}

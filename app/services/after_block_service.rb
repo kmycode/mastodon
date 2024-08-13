@@ -8,6 +8,7 @@ class AfterBlockService < BaseService
     clear_home_feed!
     clear_list_feeds!
     clear_antenna_feeds!
+    clear_notification_requests!
     clear_notifications!
     clear_conversations!
   end
@@ -32,5 +33,9 @@ class AfterBlockService < BaseService
 
   def clear_notifications!
     Notification.where(account: @account).where(from_account: @target_account).in_batches.delete_all
+  end
+
+  def clear_notification_requests!
+    NotificationRequest.where(account: @account, from_account: @target_account).destroy_all
   end
 end

@@ -302,6 +302,10 @@ code {
     flex: 0;
   }
 
+  .input.select.select--languages {
+    min-width: 32ch;
+  }
+
   .required abbr {
     text-decoration: none;
     color: lighten($error-value-color, 12%);
@@ -452,11 +456,6 @@ code {
     border: 1px solid var(--background-border-color);
     border-radius: 4px;
     padding: 10px 16px;
-
-    &::placeholder {
-      color: $dark-text-color;
-      opacity: 1;
-    }
 
     &:invalid {
       box-shadow: none;
@@ -619,8 +618,7 @@ code {
       inset-inline-end: 3px;
       top: 1px;
       padding: 10px;
-      padding-bottom: 9px;
-      font-size: 16px;
+      font-size: 14px;
       color: $dark-text-color;
       font-family: inherit;
       pointer-events: none;
@@ -638,11 +636,6 @@ code {
         inset-inline-end: 0;
         bottom: 1px;
         width: 5px;
-        background-image: linear-gradient(
-          to right,
-          rgba(darken($ui-base-color, 10%), 0),
-          darken($ui-base-color, 10%)
-        );
       }
     }
   }

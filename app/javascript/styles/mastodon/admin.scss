@@ -13,7 +13,7 @@ $content-width: 840px;
   .icon {
     width: 16px;
     height: 16px;
-    vertical-align: middle;
+    vertical-align: top;
     margin: 0 2px;
   }
 
@@ -65,16 +65,16 @@ $content-width: 840px;
           background: $ui-base-color;
         }
 
-        .fa-times {
+        .material-close {
           display: none;
         }
 
         &.active {
-          .fa-times {
+          .material-close {
             display: block;
           }
 
-          .fa-bars {
+          .material-menu {
             display: none;
           }
         }

@@ -1,7 +1,6 @@
 {
   "about.contact": "კონტაქტი:",
   "about.domain_blocks.no_reason_available": "მიზეზი მიუწვდომელია",
-  "account.account_note_header": "ჩანაწერი",
   "account.add_or_remove_from_list": "სიებში დამატება ან წაშლა",
   "account.badges.bot": "ბოტი",
   "account.badges.group": "ჯგუფი",
@@ -172,7 +171,6 @@
   "navigation_bar.security": "უსაფრთხოება",
   "not_signed_in_indicator.not_signed_in": "You need to sign in to access this resource.",
   "notification.follow": "{name} გამოგყვათ",
-  "notification.mention": "{name}-მა გასახელათ",
   "notification.reblog": "{name}-მა დაბუსტა თქვენი სტატუსი",
   "notifications.clear": "შეტყობინებების გასუფთავება",
   "notifications.clear_confirmation": "დარწმუნებული ხართ, გსურთ სამუდამოდ წაშალოთ ყველა თქვენი შეტყობინება?",

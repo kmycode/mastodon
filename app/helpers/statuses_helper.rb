@@ -60,19 +60,19 @@ module StatusesHelper
   def fa_visibility_icon(status)
     case status.visibility
     when 'public'
-      fa_icon 'globe fw'
+      material_symbol 'globe'
     when 'unlisted'
-      fa_icon 'unlock fw'
+      material_symbol 'lock_open'
     when 'public_unlisted'
-      fa_icon 'cloud fw'
+      material_symbol 'cloud'
     when 'login'
-      fa_icon 'key fw'
+      material_symbol 'key'
     when 'private'
-      fa_icon 'lock fw'
+      material_symbol 'lock'
     when 'limited'
-      fa_icon 'get-pocket fw'
+      material_symbol 'shield'
     when 'direct'
-      fa_icon 'at fw'
+      material_symbol 'alternate_email'
     end
   end
 
