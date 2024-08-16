@@ -94,19 +94,19 @@ export const NotificationGroupWithStatus: React.FC<{
         <div className='notification-group__main'>
           <div className='notification-group__main__header'>
             {emojiReactionGroups?.map((group) => (
-                <div key={group.emoji.name}>
-                  <div className='notification-group__main__header__wrapper__for_emoji_reaction'>
-                    <EmojiView
-                      name={group.emoji.name}
-                      url={group.emoji.url}
-                      staticUrl={group.emoji.static_url}
-                    />
-                    <AvatarGroup accountIds={group.sampleAccountIds} />
+              <div key={group.emoji.name}>
+                <div className='notification-group__main__header__wrapper__for_emoji_reaction'>
+                  <EmojiView
+                    name={group.emoji.name}
+                    url={group.emoji.url}
+                    staticUrl={group.emoji.static_url}
+                  />
+                  <AvatarGroup accountIds={group.sampleAccountIds} />
 
-                    {actions}
-                  </div>
+                  {actions}
                 </div>
-              ))}
+              </div>
+            ))}
 
             {!emojiReactionGroups && (
               <div className='notification-group__main__header__wrapper'>
