@@ -5,6 +5,7 @@ class NotificationGroup < ActiveModelSerializers::Model
 
   # Try to keep this consistent with `app/javascript/mastodon/models/notification_group.ts`
   SAMPLE_ACCOUNTS_SIZE = 8
+  SAMPLE_ACCOUNTS_SIZE_FOR_EMOJI_REACTION = 24
 
   class NotificationEmojiReactionGroup < ActiveModelSerializers::Model
     attributes :emoji_reaction, :sample_accounts
@@ -20,7 +21,9 @@ class NotificationGroup < ActiveModelSerializers::Model
       most_recent_notifications = scope.order(id: :desc).includes(:from_account).take(SAMPLE_ACCOUNTS_SIZE)
       most_recent_id = most_recent_notifications.first.id
       sample_accounts = most_recent_notifications.map(&:from_account)
-      emoji_reaction_groups = extract_emoji_reaction_pair(scope.includes(:emoji_reaction))
+      emoji_reaction_groups = extract_emoji_reaction_pair(
+        scope.order(id: :desc).includes(emoji_reaction: :account).take(SAMPLE_ACCOUNTS_SIZE_FOR_EMOJI_REACTION)
+      )
       notifications_count = scope.count
     else
       most_recent_id = notification.id
