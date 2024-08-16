@@ -65,6 +65,7 @@ export interface BaseNotificationJSON {
   created_at: string;
   group_key: string;
   account: ApiAccountJSON;
+  emoji_reaction?: NotifyEmojiReactionJSON;
 }
 
 export interface BaseNotificationGroupJSON {

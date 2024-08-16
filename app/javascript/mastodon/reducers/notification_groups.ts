@@ -223,6 +223,21 @@ function processNewNotification(
       )
         existingGroup.sampleAccountIds.pop();
 
+      const emojiReactionGroups = existingGroup.emoji_reaction_groups;
+      const emojiReactionData = notification.emoji_reaction;
+      if (emojiReactionGroups && emojiReactionData) {
+        const sameEmoji = emojiReactionGroups.find(
+          (g) => g.emoji_reaction.name === emojiReactionData.name,
+        );
+        if (sameEmoji) {
+          if (
+            sameEmoji.sample_account_ids.unshift(notification.account.id) >
+            NOTIFICATIONS_GROUP_MAX_AVATARS
+          )
+            sameEmoji.sample_account_ids.pop();
+        }
+      }
+
       existingGroup.most_recent_notification_id = notification.id;
       existingGroup.page_max_id = notification.id;
       existingGroup.latest_page_notification_at = notification.created_at;
