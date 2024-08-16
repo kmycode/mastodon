@@ -227,8 +227,9 @@ function processNewNotification(
 
             if (sameEmoji) {
               if (
+                !sameEmoji.sampleAccountIds.includes(notification.account.id) &&
                 sameEmoji.sampleAccountIds.unshift(notification.account.id) >
-                NOTIFICATIONS_GROUP_MAX_AVATARS
+                  NOTIFICATIONS_GROUP_MAX_AVATARS
               )
                 sameEmoji.sampleAccountIds.pop();
 
