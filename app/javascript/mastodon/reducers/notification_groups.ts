@@ -225,6 +225,11 @@ function processNewNotification(
               NOTIFICATIONS_GROUP_MAX_AVATARS
             )
               sameEmoji.sampleAccountIds.pop();
+          } else {
+            emojiReactionGroups.unshift({
+              emoji: emojiReactionData,
+              sampleAccountIds: [notification.account.id],
+            });
           }
         }
       }
