@@ -32,6 +32,7 @@ export const NotificationEmojiReaction: React.FC<{
       icon={EmojiReactionIcon}
       iconId='star'
       accountIds={notification.sampleAccountIds}
+      emojiReactionGroups={notification.emojiReactionGroups}
       statusId={notification.statusId}
       timestamp={notification.latest_page_notification_at}
       count={notification.notifications_count}

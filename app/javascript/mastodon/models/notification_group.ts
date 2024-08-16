@@ -6,6 +6,8 @@ import type {
   ApiNotificationJSON,
   NotificationType,
   NotificationWithStatusType,
+  NotificationEmojiReactionGroupJSON,
+  NotifyEmojiReactionJSON,
 } from 'mastodon/api_types/notifications';
 import type { ApiReportJSON } from 'mastodon/api_types/reports';
 
@@ -22,6 +24,23 @@ interface BaseNotificationWithStatus<Type extends NotificationWithStatusType>
   extends BaseNotificationGroup {
   type: Type;
   statusId: string;
+  emojiReactionGroups?: EmojiReactionGroup[];
+}
+
+interface EmojiInfo {
+  name: string;
+  count: number;
+  me: boolean;
+  url?: string;
+  static_url?: string;
+  domain?: string;
+  width?: number;
+  height?: number;
+}
+
+export interface EmojiReactionGroup {
+  emoji: EmojiInfo;
+  sampleAccountIds: string[];
 }
 
 interface BaseNotification<Type extends NotificationType>
@@ -119,6 +138,20 @@ function createAccountRelationshipSeveranceEventFromJSON(
   return eventJson;
 }
 
+function createEmojiReactionGroupsFromJSON(
+  json: NotifyEmojiReactionJSON | undefined,
+  sampleAccountIds: string[],
+): EmojiReactionGroup[] {
+  if (typeof json === 'undefined') return [];
+
+  return [
+    {
+      emoji: json,
+      sampleAccountIds,
+    },
+  ];
+}
+
 export function createNotificationGroupFromJSON(
   groupJson: ApiNotificationGroupJSON,
 ): NotificationGroup {
@@ -126,7 +159,6 @@ export function createNotificationGroupFromJSON(
 
   switch (group.type) {
     case 'favourite':
-    case 'emoji_reaction':
     case 'reblog':
     case 'status':
     case 'mention':
@@ -137,6 +169,29 @@ export function createNotificationGroupFromJSON(
       return {
         statusId,
         sampleAccountIds,
+        ...groupWithoutStatus,
+      };
+    }
+    case 'emoji_reaction': {
+      const {
+        status_id: statusId,
+        emoji_reaction_groups: emojiReactionGroups,
+        ...groupWithoutStatus
+      } = group;
+      const groups = (
+        typeof emojiReactionGroups === 'undefined'
+          ? ([] as NotificationEmojiReactionGroupJSON[])
+          : emojiReactionGroups
+      ).map((g) => {
+        return {
+          sampleAccountIds: g.sample_account_ids,
+          emoji: g.emoji_reaction,
+        } as EmojiReactionGroup;
+      });
+      return {
+        statusId,
+        sampleAccountIds,
+        emojiReactionGroups: groups,
         ...groupWithoutStatus,
       };
     }
@@ -187,7 +242,6 @@ export function createNotificationGroupFromNotificationJSON(
 
   switch (notification.type) {
     case 'favourite':
-    case 'emoji_reaction':
     case 'reblog':
     case 'status':
     case 'mention':
@@ -195,6 +249,15 @@ export function createNotificationGroupFromNotificationJSON(
     case 'poll':
     case 'update':
       return { ...group, statusId: notification.status.id };
+    case 'emoji_reaction':
+      return {
+        ...group,
+        statusId: notification.status.id,
+        emojiReactionGroups: createEmojiReactionGroupsFromJSON(
+          notification.emoji_reaction,
+          group.sampleAccountIds,
+        ),
+      };
     case 'admin.report':
       return { ...group, report: createReportFromJSON(notification.report) };
     case 'severed_relationships':

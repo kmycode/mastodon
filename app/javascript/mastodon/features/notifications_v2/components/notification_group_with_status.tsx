@@ -6,9 +6,11 @@ import { HotKeys } from 'react-hotkeys';
 
 import { replyComposeById } from 'mastodon/actions/compose';
 import { navigateToStatus } from 'mastodon/actions/statuses';
+import EmojiView from 'mastodon/components/emoji_view';
 import type { IconProp } from 'mastodon/components/icon';
 import { Icon } from 'mastodon/components/icon';
 import { RelativeTimestamp } from 'mastodon/components/relative_timestamp';
+import type { EmojiReactionGroup } from 'mastodon/models/notification_group';
 import { useAppDispatch } from 'mastodon/store';
 
 import { AvatarGroup } from './avatar_group';
@@ -26,6 +28,7 @@ export const NotificationGroupWithStatus: React.FC<{
   actions?: JSX.Element;
   count: number;
   accountIds: string[];
+  emojiReactionGroups?: EmojiReactionGroup[];
   timestamp: string;
   labelRenderer: LabelRenderer;
   labelSeeMoreHref?: string;
@@ -36,6 +39,7 @@ export const NotificationGroupWithStatus: React.FC<{
   iconId,
   timestamp,
   accountIds,
+  emojiReactionGroups,
   actions,
   count,
   statusId,
@@ -89,11 +93,28 @@ export const NotificationGroupWithStatus: React.FC<{
 
         <div className='notification-group__main'>
           <div className='notification-group__main__header'>
-            <div className='notification-group__main__header__wrapper'>
-              <AvatarGroup accountIds={accountIds} />
+            {emojiReactionGroups?.map((group) => (
+                <div key={group.emoji.name}>
+                  <div className='notification-group__main__header__wrapper__for_emoji_reaction'>
+                    <EmojiView
+                      name={group.emoji.name}
+                      url={group.emoji.url}
+                      staticUrl={group.emoji.static_url}
+                    />
+                    <AvatarGroup accountIds={group.sampleAccountIds} />
 
-              {actions}
-            </div>
+                    {actions}
+                  </div>
+                </div>
+              ))}
+
+            {!emojiReactionGroups && (
+              <div className='notification-group__main__header__wrapper'>
+                <AvatarGroup accountIds={accountIds} />
+
+                {actions}
+              </div>
+            )}
 
             <div className='notification-group__main__header__label'>
               {label}

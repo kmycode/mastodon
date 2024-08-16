@@ -10907,6 +10907,25 @@ noscript {
       &__wrapper {
         display: flex;
         justify-content: space-between;
+
+        &__for_emoji_reaction {
+          display: flex;
+          justify-content: start;
+
+          .emoji {
+            display: inline-block;
+            width: 40px;
+            align-self: center;
+
+            img {
+              height: 20px;
+            }
+          }
+
+          .notification-group__avatar-group {
+            margin-left: 8px;
+          }
+        }
       }
 
       &__label {

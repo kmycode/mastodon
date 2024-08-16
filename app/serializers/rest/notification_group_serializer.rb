@@ -30,6 +30,10 @@ class REST::NotificationGroupSerializer < ActiveModel::Serializer
     object.type == :'admin.report'
   end
 
+  def emoji_reaction_type?
+    object.type == :emoji_reaction
+  end
+
   def relationship_severance_event?
     object.type == :severed_relationships
   end
@@ -56,4 +60,15 @@ class REST::NotificationGroupSerializer < ActiveModel::Serializer
   def paginated?
     !instance_options[:group_metadata].nil?
   end
+
+  class NotificationEmojiReactionGroupSerializer < ActiveModel::Serializer
+    has_one :emoji_reaction, serializer: REST::NotifyEmojiReactionSerializer
+    attribute :sample_account_ids
+
+    def sample_account_ids
+      object.sample_accounts.pluck(:id).map(&:to_s)
+    end
+  end
+
+  has_many :emoji_reaction_groups, each_serializer: NotificationEmojiReactionGroupSerializer, if: :emoji_reaction_type?
 end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class REST::NotifyEmojiReactionSerializer < ActiveModel::Serializer
+  # Please update app/javascript/api_types/notification.ts when making changes to the attributes
   include RoutingHelper
 
   attributes :name
