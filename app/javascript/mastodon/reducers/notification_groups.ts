@@ -223,18 +223,20 @@ function processNewNotification(
       )
         existingGroup.sampleAccountIds.pop();
 
-      const emojiReactionGroups = existingGroup.emoji_reaction_groups;
-      const emojiReactionData = notification.emoji_reaction;
-      if (emojiReactionGroups && emojiReactionData) {
-        const sameEmoji = emojiReactionGroups.find(
-          (g) => g.emoji_reaction.name === emojiReactionData.name,
-        );
-        if (sameEmoji) {
-          if (
-            sameEmoji.sample_account_ids.unshift(notification.account.id) >
-            NOTIFICATIONS_GROUP_MAX_AVATARS
-          )
-            sameEmoji.sample_account_ids.pop();
+      if (existingGroup.type === 'emoji_reaction') {
+        const emojiReactionGroups = existingGroup.emojiReactionGroups;
+        const emojiReactionData = notification.emoji_reaction;
+        if (emojiReactionGroups && emojiReactionData) {
+          const sameEmoji = emojiReactionGroups.find(
+            (g) => g.emoji.name === emojiReactionData.name,
+          );
+          if (sameEmoji) {
+            if (
+              sameEmoji.sampleAccountIds.unshift(notification.account.id) >
+              NOTIFICATIONS_GROUP_MAX_AVATARS
+            )
+              sameEmoji.sampleAccountIds.pop();
+          }
         }
       }
 
