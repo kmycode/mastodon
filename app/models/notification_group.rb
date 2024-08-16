@@ -5,7 +5,7 @@ class NotificationGroup < ActiveModelSerializers::Model
 
   # Try to keep this consistent with `app/javascript/mastodon/models/notification_group.ts`
   SAMPLE_ACCOUNTS_SIZE = 8
-  SAMPLE_ACCOUNTS_SIZE_FOR_EMOJI_REACTION = 24
+  SAMPLE_ACCOUNTS_SIZE_FOR_EMOJI_REACTION = 40
 
   class NotificationEmojiReactionGroup < ActiveModelSerializers::Model
     attributes :emoji_reaction, :sample_accounts
