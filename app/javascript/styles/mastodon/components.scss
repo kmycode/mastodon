@@ -5183,8 +5183,10 @@ a.status-card {
   &__menu {
     @include search-popout;
 
-    padding: 0;
-    background: $ui-secondary-color;
+    & {
+      padding: 0;
+      background: $ui-secondary-color;
+    }
   }
 
   &__menu-list {
