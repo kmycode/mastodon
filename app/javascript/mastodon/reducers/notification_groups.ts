@@ -211,18 +211,7 @@ function processNewNotification(
   if (existingGroupIndex > -1) {
     const existingGroup = groups[existingGroupIndex];
 
-    if (
-      existingGroup &&
-      existingGroup.type !== 'gap' &&
-      !existingGroup.sampleAccountIds.includes(notification.account.id) // This can happen for example if you like, then unlike, then like again the same post
-    ) {
-      // Update the existing group
-      if (
-        existingGroup.sampleAccountIds.unshift(notification.account.id) >
-        NOTIFICATIONS_GROUP_MAX_AVATARS
-      )
-        existingGroup.sampleAccountIds.pop();
-
+    if (existingGroup && existingGroup.type !== 'gap') {
       if (existingGroup.type === 'emoji_reaction') {
         const emojiReactionGroups = existingGroup.emojiReactionGroups;
         const emojiReactionData = notification.emoji_reaction;
@@ -239,6 +228,19 @@ function processNewNotification(
           }
         }
       }
+    }
+
+    if (
+      existingGroup &&
+      existingGroup.type !== 'gap' &&
+      !existingGroup.sampleAccountIds.includes(notification.account.id) // This can happen for example if you like, then unlike, then like again the same post
+    ) {
+      // Update the existing group
+      if (
+        existingGroup.sampleAccountIds.unshift(notification.account.id) >
+        NOTIFICATIONS_GROUP_MAX_AVATARS
+      )
+        existingGroup.sampleAccountIds.pop();
 
       existingGroup.most_recent_notification_id = notification.id;
       existingGroup.page_max_id = notification.id;
