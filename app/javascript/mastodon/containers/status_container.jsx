@@ -79,11 +79,11 @@ const mapDispatchToProps = (dispatch, { contextType }) => ({
   },
 
   onReblog (status, e) {
-    dispatch(toggleReblog(status.get('id'), e.shiftKey));
+    dispatch(toggleReblog(status.get('id'), e?.shiftKey || false));
   },
 
   onReblogForceModal (status) {
-    dispatch(openModal({ modalType: 'BOOST', modalProps: { status, onReblog: this.onModalReblog } }));
+    dispatch(openModal({ modalType: 'BOOST', modalProps: { status, onReblog: this.onReblog } }));
   },
 
   onFavourite (status) {
