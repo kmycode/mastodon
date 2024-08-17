@@ -13,6 +13,7 @@ import { NotificationEmojiReaction } from './notification_emoji_reaction';
 import { NotificationFavourite } from './notification_favourite';
 import { NotificationFollow } from './notification_follow';
 import { NotificationFollowRequest } from './notification_follow_request';
+import { NotificationListStatus } from './notification_list_status';
 import { NotificationMention } from './notification_mention';
 import { NotificationModerationWarning } from './notification_moderation_warning';
 import { NotificationPoll } from './notification_poll';
@@ -130,6 +131,14 @@ export const NotificationGroup: React.FC<{
     case 'status':
       content = (
         <NotificationStatus unread={unread} notification={notificationGroup} />
+      );
+      break;
+    case 'list_status':
+      content = (
+        <NotificationListStatus
+          unread={unread}
+          notification={notificationGroup}
+        />
       );
       break;
     case 'update':

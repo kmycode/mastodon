@@ -3,6 +3,7 @@
 import type { AccountWarningAction } from 'mastodon/models/notification_group';
 
 import type { ApiAccountJSON } from './accounts';
+import type { ApiListJSON_KmyDummy } from './dummy_types';
 import type { ApiReportJSON } from './reports';
 import type { ApiStatusJSON } from './statuses';
 
@@ -17,6 +18,7 @@ export const allNotificationTypes = [
   'status_reference',
   'poll',
   'status',
+  'list_status',
   'update',
   'admin.sign_up',
   'admin.report',
@@ -29,6 +31,7 @@ export type NotificationWithStatusType =
   | 'emoji_reaction'
   | 'reblog'
   | 'status'
+  | 'list_status'
   | 'mention'
   | 'status_reference'
   | 'poll'
@@ -78,6 +81,7 @@ export interface BaseNotificationGroupJSON {
   page_min_id?: string;
   page_max_id?: string;
   emoji_reaction_groups?: NotificationEmojiReactionGroupJSON[];
+  list?: ApiListJSON_KmyDummy;
 }
 
 interface NotificationGroupWithStatusJSON extends BaseNotificationGroupJSON {

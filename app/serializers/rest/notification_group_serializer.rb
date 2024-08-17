@@ -13,6 +13,7 @@ class REST::NotificationGroupSerializer < ActiveModel::Serializer
   belongs_to :report, if: :report_type?, serializer: REST::ReportSerializer
   belongs_to :account_relationship_severance_event, key: :event, if: :relationship_severance_event?, serializer: REST::AccountRelationshipSeveranceEventSerializer
   belongs_to :account_warning, key: :moderation_warning, if: :moderation_warning_event?, serializer: REST::AccountWarningSerializer
+  has_one :list, if: :list_status_type?, serializer: REST::ListSerializer
 
   def sample_account_ids
     object.sample_accounts.pluck(:id).map(&:to_s)
@@ -23,7 +24,7 @@ class REST::NotificationGroupSerializer < ActiveModel::Serializer
   end
 
   def status_type?
-    [:favourite, :emoji_reaction, :reblog, :status, :mention, :status_reference, :poll, :update].include?(object.type)
+    [:favourite, :emoji_reaction, :reblog, :status, :mention, :status_reference, :poll, :update, :list_status].include?(object.type)
   end
 
   def report_type?
@@ -32,6 +33,10 @@ class REST::NotificationGroupSerializer < ActiveModel::Serializer
 
   def emoji_reaction_type?
     object.type == :emoji_reaction
+  end
+
+  def list_status_type?
+    object.type == :list_status
   end
 
   def relationship_severance_event?
