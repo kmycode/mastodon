@@ -39,7 +39,7 @@ const messages = defineMessages({
   emojiReaction: { id: 'status.emoji_reaction', defaultMessage: 'Emoji reaction' },
   enabled: { id: 'about.enabled', defaultMessage: 'Enabled' },
   disabled: { id: 'about.disabled', defaultMessage: 'Disabled' },
-  capabilities: { id: 'about.kmyblue_capabilities', defaultMessage: 'kmyblue capabilities' },
+  capabilities: { id: 'about.kmyblue_capabilities', defaultMessage: 'Features available in this server' },
 });
 
 const severityMessages = {
