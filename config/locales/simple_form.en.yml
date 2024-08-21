@@ -70,7 +70,7 @@ en:
         setting_display_media_show_all: Always show media
         setting_dtl_force_searchability: 'With using #%{tag} tag, your post settings will be changed forcibly'
         setting_dtl_force_visibility: 'With using #%{tag} tag, your post settings will be changed forcibly'
-        setting_emoji_reaction_policy: Even with this setting, users on other servers are free to put their emoji reaction on the post and share it within the same server. If you simply want to remove the emoji reaction from your own screen, you can disable it from the appearance settings
+        setting_emoji_reaction_policy: Even with this setting, users on non-kmyblue servers are free to put their emoji reaction on the post and share it within the same server. If you simply want to remove the emoji reaction from your own screen, you can disable it from the appearance settings
         setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、絵文字リアクション機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
         setting_enable_emoji_reaction: If turn off, other users still can react your posts
         setting_enabled_visibilities: If turn off, you cannot select and post the privacy.

@@ -70,7 +70,7 @@ ja:
         setting_display_media_show_all: メディアを常に表示する
         setting_dtl_force_searchability: 'ハッシュタグ #%{tag} をつけて投稿するとき、検索許可を強制的に置き換えるかを設定します'
         setting_dtl_force_visibility: 'ハッシュタグ #%{tag} をつけて投稿するとき、公開範囲を強制的に置き換えるかを設定します'
-        setting_emoji_reaction_policy: この設定をしても他のサーバーのユーザーはその投稿に自由に絵文字をつけ、同じサーバーの中で共有できます。単にあなた自身の画面から絵文字リアクションを除去したいだけなら、外観設定から絵文字リアクションを無効にすることができます
+        setting_emoji_reaction_policy: この設定をしてもkmyblue以外のサーバーのユーザーはその投稿に自由に絵文字をつけ、同じサーバーの中で共有できます。単にあなた自身の画面から絵文字リアクションを除去したいだけなら、外観設定から絵文字リアクションを無効にすることができます
         setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、絵文字リアクション機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
         setting_enable_emoji_reaction: この機能を無効にしても、他の人はあなたの投稿に絵文字をつけられます
         setting_enabled_visibilities: チェックを外した公開範囲は投稿することができなくなります。投稿しようとするとエラーが出ます
