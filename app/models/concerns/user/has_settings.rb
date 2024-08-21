@@ -103,6 +103,10 @@ module User::HasSettings
     settings['web.use_system_font']
   end
 
+  def setting_content_font_size
+    settings['web.content_font_size']
+  end
+
   def setting_show_quote_in_home
     settings['web.show_quote_in_home']
   end

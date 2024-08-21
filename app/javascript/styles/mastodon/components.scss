@@ -1003,8 +1003,8 @@ body > [data-popper-placement] {
   font-weight: 400;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 15px;
-  line-height: 22px;
+  font-size: var(--content-font-size);
+  line-height: var(--content-line-height);
   padding-top: 2px;
   color: $primary-text-color;
 
@@ -1738,8 +1738,8 @@ body > [data-popper-placement] {
   }
 
   .status__content {
-    font-size: 19px;
-    line-height: 24px;
+    font-size: var(--detail-content-font-size);
+    line-height: var(--detail-content-line-height);
 
     .emojione {
       min-width: 24px;

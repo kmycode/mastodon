@@ -60,6 +60,16 @@
       = ff.input :'web.disable_hover_cards', wrapper: :with_label, label: I18n.t('simple_form.labels.defaults.setting_disable_hover_cards')
       = ff.input :'web.use_system_font', wrapper: :with_label, label: I18n.t('simple_form.labels.defaults.setting_system_font_ui')
 
+    .fields-group
+      = ff.input :'web.content_font_size',
+                 collection: %w(medium large x_large xx_large),
+                 hint: false,
+                 include_blank: false,
+                 kmyblue: true,
+                 label_method: ->(size) { I18n.t("simple_form.labels.defaults.setting_content_font_size_items.#{size}") },
+                 label: I18n.t('simple_form.labels.defaults.setting_content_font_size'),
+                 wrapper: :with_label
+
     %h4= t 'appearance.custom_emoji_and_emoji_reactions'
 
     .fields-group

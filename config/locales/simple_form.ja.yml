@@ -257,6 +257,12 @@ ja:
         setting_bookmark_category_needed: Webでブックマーク時にカテゴリの選択を必須にする
         setting_boost_menu: ブーストボタンを押したときにポップアップメニューを表示する
         setting_boost_modal: ブーストする前に確認ダイアログを表示する
+        setting_content_font_size: 投稿本文のフォントサイズ
+        setting_content_font_size_items:
+          large: 大きい
+          medium: デフォルト
+          x_large: 大きい大きい
+          xx_large: 大きい大きい大きい
         setting_default_language: 投稿する言語
         setting_default_privacy: 投稿の公開範囲
         setting_default_reblog_privacy: BTの公開範囲

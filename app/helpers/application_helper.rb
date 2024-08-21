@@ -171,6 +171,7 @@ module ApplicationHelper
     output << 'system-font' if current_account&.user&.setting_system_font_ui
     output << (current_account&.user&.setting_reduce_motion ? 'reduce-motion' : 'no-reduce-motion')
     output << 'rtl' if locale_direction == 'rtl'
+    output << "content-font-size__#{current_account&.user&.setting_content_font_size}"
     output.compact_blank.join(' ')
   end
 

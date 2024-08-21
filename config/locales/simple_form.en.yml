@@ -257,6 +257,12 @@ en:
         setting_bookmark_category_needed: Category selection needed when registering bookmark on web
         setting_boost_menu: Show popup when click boost button
         setting_boost_modal: Show confirmation dialog before boosting
+        setting_content_font_size: Font size of posts
+        setting_content_font_size_items:
+          large: Large
+          medium: Default
+          x_large: Large large
+          xx_large: Large large large
         setting_default_language: Posting language
         setting_default_privacy: Posting privacy
         setting_default_reblog_privacy: Reblogging privacy

@@ -115,4 +115,8 @@ $font-monospace: 'mastodon-font-monospace' !default;
   --surface-variant-background-color: #{$ui-base-color};
   --surface-variant-active-background-color: #{lighten($ui-base-color, 4%)};
   --avatar-border-radius: 8px;
+  --content-font-size: 15px;
+  --content-line-height: 22px;
+  --detail-content-font-size: 19px;
+  --detail-content-line-height: 24px;
 }
