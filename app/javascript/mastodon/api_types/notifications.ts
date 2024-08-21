@@ -69,6 +69,7 @@ export interface BaseNotificationJSON {
   group_key: string;
   account: ApiAccountJSON;
   emoji_reaction?: NotifyEmojiReactionJSON;
+  list?: ApiListJSON_KmyDummy;
 }
 
 export interface BaseNotificationGroupJSON {

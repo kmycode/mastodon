@@ -248,12 +248,17 @@ export function createNotificationGroupFromNotificationJSON(
     case 'favourite':
     case 'reblog':
     case 'status':
-    case 'list_status':
     case 'mention':
     case 'status_reference':
     case 'poll':
     case 'update':
       return { ...group, statusId: notification.status?.id };
+    case 'list_status':
+      return {
+        ...group,
+        statusId: notification.status?.id,
+        list: notification.list,
+      };
     case 'emoji_reaction':
       return {
         ...group,
