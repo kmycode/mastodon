@@ -746,7 +746,7 @@ export function expandMentionedUsersFail(id, error) {
   };
 }
 
-function toggleReblogWithoutConfirmation(status, visibility) {
+export function toggleReblogWithoutConfirmation(status, visibility) {
   return (dispatch) => {
     if (status.get('reblogged')) {
       dispatch(unreblog({ statusId: status.get('id') }));
