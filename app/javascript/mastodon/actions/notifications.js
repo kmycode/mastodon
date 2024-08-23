@@ -81,6 +81,20 @@ export const NOTIFICATIONS_FOR_REQUEST_EXPAND_REQUEST = 'NOTIFICATIONS_FOR_REQUE
 export const NOTIFICATIONS_FOR_REQUEST_EXPAND_SUCCESS = 'NOTIFICATIONS_FOR_REQUEST_EXPAND_SUCCESS';
 export const NOTIFICATIONS_FOR_REQUEST_EXPAND_FAIL    = 'NOTIFICATIONS_FOR_REQUEST_EXPAND_FAIL';
 
+const DEFAULT_NOTIFICATION_MESSAGES = {
+  'notification.admin.report': '{name} reported {target}',
+  'notification.admin.sign_up': '{name} signed up',
+  'notification.emoji_reaction': '{name} reacted your post with emoji',
+  'notification.favourite': '{name} favorited your post',
+  'notification.follow': '{name} followed you',
+  'notification.list_status': '{name} post is added to {listName}',
+  'notification.poll': 'A poll you voted in has ended',
+  'notification.reblog': '{name} boosted your post',
+  'notification.status': '{name} just posted',
+  'notification.status_reference': '{name} quoted your post',
+  'notification.update': '{name} edited a post',
+};
+
 defineMessages({
   mention: { id: 'notification.mention', defaultMessage: '{name} mentioned you' },
   group: { id: 'notifications.group', defaultMessage: '{count} notifications' },
@@ -161,7 +175,11 @@ export function updateNotifications(notification, intlMessages, intlLocale) {
 
     // Desktop notifications
     if (typeof window.Notification !== 'undefined' && showAlert && !filtered) {
-      const title = new IntlMessageFormat(intlMessages[`notification.${notification.type}`], intlLocale).format({ name: notification.account.display_name.length > 0 ? notification.account.display_name : notification.account.username });
+      const messageTemplate = intlMessages[`notification.${notification.type}`] || DEFAULT_NOTIFICATION_MESSAGES[`notification.${notification.type}`];
+      const title = new IntlMessageFormat(messageTemplate, intlLocale).format({
+        name: notification.account.display_name.length > 0 ? notification.account.display_name : notification.account.username,
+        listName: notification.list && notification.list.title,
+      });
       const body  = (notification.status && notification.status.spoiler_text.length > 0) ? notification.status.spoiler_text : unescapeHTML(notification.status ? notification.status.content : '');
 
       const notify = new Notification(title, { body, icon: notification.account.avatar, tag: notification.id });
