@@ -88,6 +88,7 @@ const DEFAULT_NOTIFICATION_MESSAGES = {
   'notification.favourite': '{name} favorited your post',
   'notification.follow': '{name} followed you',
   'notification.list_status': '{name} post is added to {listName}',
+  'notification.mention': 'Mention',
   'notification.poll': 'A poll you voted in has ended',
   'notification.reblog': '{name} boosted your post',
   'notification.status': '{name} just posted',
