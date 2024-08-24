@@ -10,13 +10,9 @@ import ImmutablePureComponent from 'react-immutable-pure-component';
 import { HotKeys } from 'react-hotkeys';
 
 import AlternateEmailIcon from '@/material-icons/400-24px/alternate_email.svg?react';
-import QuoteIcon from '@/material-icons/400-24px/format_quote.svg?react';
-import ReferenceIcon from '@/material-icons/400-24px/link.svg?react';
 import PushPinIcon from '@/material-icons/400-24px/push_pin.svg?react';
 import RepeatIcon from '@/material-icons/400-24px/repeat.svg?react';
 import ReplyIcon from '@/material-icons/400-24px/reply.svg?react';
-import LimitedIcon from '@/material-icons/400-24px/shield.svg?react';
-import TimerIcon from '@/material-icons/400-24px/timer.svg?react';
 import AttachmentList from 'mastodon/components/attachment_list';
 import { ContentWarning } from 'mastodon/components/content_warning';
 import { Icon }  from 'mastodon/components/icon';
@@ -35,7 +31,6 @@ import { Avatar } from './avatar';
 import { DisplayName } from './display_name';
 import { getHashtagBarForStatus } from './hashtag_bar';
 import { RelativeTimestamp } from './relative_timestamp';
-import StatusActionBar from './status_action_bar';
 import StatusContent from './status_content';
 import { VisibilityIcon } from './visibility_icon';
 
@@ -353,9 +348,9 @@ class CompactedStatus extends ImmutablePureComponent {
   };
 
   render () {
-    const { intl, hidden, featured, unfocusable, unread, showThread, scrollKey, pictureInPicture, previousId, nextInReplyToId, rootId, skipPrepend } = this.props;
+    const { intl, hidden, featured, unfocusable, unread, showThread, pictureInPicture, previousId, nextInReplyToId, rootId, skipPrepend } = this.props;
 
-    let { status, account, ...other } = this.props;
+    let { status } = this.props;
 
     if (status === null) {
       return null;
@@ -414,7 +409,6 @@ class CompactedStatus extends ImmutablePureComponent {
 
       rebloggedByText = intl.formatMessage({ id: 'status.reblogged_by', defaultMessage: '{name} boosted' }, { name: status.getIn(['account', 'acct']) });
 
-      account = status.get('account');
       status  = status.get('reblog');
     } else if (status.get('visibility') === 'direct') {
       prepend = (
@@ -533,11 +527,6 @@ class CompactedStatus extends ImmutablePureComponent {
     const {statusContentProps, hashtagBar} = getHashtagBarForStatus(status);
     const expanded = !status.get('hidden') || status.get('spoiler_text').length === 0;
 
-    const withLimited = status.get('visibility_ex') === 'limited' && status.get('limited_scope') ? <span className='status__visibility-icon'><Icon id='get-pocket' icon={LimitedIcon} title={intl.formatMessage(messages.limited_short)} /></span> : null;
-    const withQuote = status.get('quote_id') ? <span className='status__visibility-icon'><Icon id='quote-right' icon={QuoteIcon} title='Quote' /></span> : null;
-    const withReference = (!withQuote && status.get('status_references_count') > 0) ? <span className='status__visibility-icon'><Icon id='link' icon={ReferenceIcon} title='Quiet quote' /></span> : null;
-    const withExpiration = status.get('expires_at') ? <span className='status__visibility-icon'><Icon id='clock-o' icon={TimerIcon} title='Expiration' /></span> : null;
-
     return (
       <HotKeys handlers={handlers} tabIndex={unfocusable ? null : -1}>
         <div className={classNames('status__wrapper', 'status__wrapper__compact', 'content-warning', 'content-warning--compacted-status', `status__wrapper-${status.get('visibility_ex')}`, { 'status__wrapper-reply': !!status.get('in_reply_to_id'), unread, focusable: !this.props.muted })} tabIndex={this.props.muted || unfocusable ? null : 0} data-featured={featured ? 'true' : null} aria-label={textForScreenReader(intl, status, rebloggedByText)} ref={this.handleRef} data-nosnippet={status.getIn(['account', 'noindex'], true) || undefined}>
@@ -550,10 +539,6 @@ class CompactedStatus extends ImmutablePureComponent {
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
             <div onClick={this.handleClick} className='status__info'>
               <a href={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`} className='status__relative-time' target='_blank' rel='noopener noreferrer'>
-                {withQuote}
-                {withReference}
-                {withExpiration}
-                {withLimited}
                 <span className='status__visibility-icon'><VisibilityIcon visibility={visibilityName} /></span>
                 <RelativeTimestamp timestamp={status.get('created_at')} />{status.get('edited_at') && <abbr title={intl.formatMessage(messages.edited, { date: intl.formatDate(status.get('edited_at'), { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }) })}> *</abbr>}
               </a>
@@ -584,8 +569,6 @@ class CompactedStatus extends ImmutablePureComponent {
                 {hashtagBar}
               </>
             )}
-
-            <StatusActionBar scrollKey={scrollKey} status={status} account={account}  {...other} />
           </div>
         </div>
       </HotKeys>
