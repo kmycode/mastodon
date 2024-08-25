@@ -220,7 +220,7 @@ class StatusReachFinder
   def banned_domains_for_misskey_of_status(status)
     return [] if status.public_searchability?
 
-    from_info = InstanceInfo.where(software: %w(misskey calckey cherrypick sharkey)).pluck(:domain)
+    from_info = InstanceInfo.where(software: InstanceInfo.INVALID_SUBSCRIPTION_SOFTWARES).pluck(:domain)
     from_domain_block = DomainBlock.where(detect_invalid_subscription: true).pluck(:domain)
     (from_info + from_domain_block).uniq
   end

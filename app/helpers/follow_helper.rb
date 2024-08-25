@@ -27,9 +27,6 @@ module FollowHelper
   def proxyable_software?(account)
     return false if account.local?
 
-    info = InstanceInfo.find_by(domain: account.domain)
-    return false if info.nil?
-
-    %w(misskey calckey firefish meisskey cherrypick sharkey).include?(info.software)
+    InstanceInfo.proxy_account_software?(account.domain)
   end
 end

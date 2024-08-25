@@ -103,7 +103,7 @@ class ActivityPub::Parser::StatusParser
     return from_audience if from_audience
     return nil if default_searchability_from_bio?
 
-    searchability_from_bio || (misskey_software? ? misskey_searchability : nil)
+    searchability_from_bio || (invalid_subscription_software? ? misskey_searchability : nil)
   end
 
   def limited_scope
@@ -120,7 +120,7 @@ class ActivityPub::Parser::StatusParser
   end
 
   def language
-    lang = raw_language_code || (misskey_software? ? 'ja' : nil)
+    lang = raw_language_code || (no_language_flag_software? ? 'ja' : nil)
     lang.presence && NORMALIZED_LOCALE_NAMES.fetch(lang.downcase.to_sym, lang)
   end
 
@@ -162,15 +162,12 @@ class ActivityPub::Parser::StatusParser
     @object['nameMap'].is_a?(Hash) && !@object['nameMap'].empty?
   end
 
-  def instance_info
-    @instance_info ||= InstanceInfo.find_by(domain: @account.domain)
+  def no_language_flag_software?
+    InstanceInfo.no_language_flag_software?(@account.domain)
   end
 
-  def misskey_software?
-    info = instance_info
-    return false if info.nil?
-
-    %w(misskey calckey).include?(info.software)
+  def invalid_subscription_software?
+    InstanceInfo.invalid_subscription_software?(@account.domain)
   end
 
   def misskey_searchability

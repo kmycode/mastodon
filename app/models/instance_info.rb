@@ -37,6 +37,24 @@ class InstanceInfo < ApplicationRecord
 
   CIRCLE_AVAILABLE_SOFTWARES = %w(fedibird).freeze
 
+  MISSKEY_FORKS = %w(
+    calckey
+    cherrypick
+    firefish
+    iceshrimp
+    meisskey
+    misskey
+    rosekey
+    sharkey
+    tanukey
+  ).freeze
+
+  INVALID_SUBSCRIPTION_SOFTWARES = MISSKEY_FORKS - %w(firefish)
+
+  PROXY_ACCOUNT_SOFTWARES = MISSKEY_FORKS
+
+  NO_LANGUAGE_FLAG_SOFTWARES = MISSKEY_FORKS - %w(firefish)
+
   class << self
     def emoji_reaction_available?(domain)
       return Setting.enable_emoji_reaction if domain.nil?
@@ -48,6 +66,18 @@ class InstanceInfo < ApplicationRecord
       return local_features if domain.nil?
 
       Rails.cache.fetch("domain_available_features:#{domain}") { load_available_features(domain) }
+    end
+
+    def invalid_subscription_software?(domain)
+      INVALID_SUBSCRIPTION_SOFTWARES.include?(software_name(domain))
+    end
+
+    def proxy_account_software?(domain)
+      PROXY_ACCOUNT_SOFTWARES.include?(software_name(domain))
+    end
+
+    def no_language_flag_software?(domain)
+      NO_LANGUAGE_FLAG_SOFTWARES.include?(software_name(domain))
     end
 
     private
@@ -77,7 +107,7 @@ class InstanceInfo < ApplicationRecord
     def feature_available?(info, softwares, feature_name)
       return false if info.nil?
 
-      softwares.include?(software_name(info)) || metadata_features(info)&.include?(feature_name) || false
+      softwares.include?(info.software) || metadata_features(info)&.include?(feature_name) || false
     end
 
     def metadata_features(info)
@@ -86,7 +116,16 @@ class InstanceInfo < ApplicationRecord
       info.data['metadata']['features']
     end
 
-    def software_name(info)
+    def software_name(domain)
+      Rails.cache.fetch("software_name:#{domain}") { load_software_name(domain) }
+    end
+
+    def load_software_name(domain)
+      return 'threads' if domain == 'threads.net'
+
+      info = InstanceInfo.find_by(domain: domain)
+      return '' if info.nil?
+
       info.software
     end
   end

@@ -79,13 +79,9 @@ class StatusesController < ApplicationController
     @misskey_software = false
 
     return false if !@status.local? || signed_request_account&.domain.blank? || !@status.sending_maybe_compromised_privacy?
-
     return @misskey_software = true if DomainBlock.detect_invalid_subscription?(signed_request_account.domain)
 
-    info = InstanceInfo.find_by(domain: signed_request_account.domain)
-    return false if info.nil?
-
-    @misskey_software = %w(misskey calckey cherrypick sharkey).include?(info.software)
+    @misskey_software = InstanceInfo.invalid_subscription_software?(signed_request_account.domain)
   end
 
   def status_activity_serializer

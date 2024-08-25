@@ -59,4 +59,37 @@ RSpec.describe InstanceInfo do
       expect(subject).to be true
     end
   end
+
+  describe '.software_name' do
+    before do
+      Fabricate(:instance_info, domain: 'misskey.io', software: 'misskey')
+      Fabricate(:instance_info, domain: 'novelskey.tarbin.net', software: 'tanukey')
+      Fabricate(:instance_info, domain: 'mastodon.social', software: 'mastodon')
+      Fabricate(:instance_info, domain: 'firefish.social', software: 'firefish')
+    end
+
+    it 'detect invalid subscription domains' do
+      expect(described_class.invalid_subscription_software?('misskey.io')).to be true
+      expect(described_class.invalid_subscription_software?('novelskey.tarbin.net')).to be true
+      expect(described_class.invalid_subscription_software?('mastodon.social')).to be false
+      expect(described_class.invalid_subscription_software?('firefish.social')).to be false
+      expect(described_class.invalid_subscription_software?('ohagi.social')).to be false
+    end
+
+    it 'detect proxy account software domains' do
+      expect(described_class.proxy_account_software?('misskey.io')).to be true
+      expect(described_class.proxy_account_software?('novelskey.tarbin.net')).to be true
+      expect(described_class.proxy_account_software?('mastodon.social')).to be false
+      expect(described_class.proxy_account_software?('firefish.social')).to be true
+      expect(described_class.proxy_account_software?('ohagi.social')).to be false
+    end
+
+    it 'detect no language software domains' do
+      expect(described_class.no_language_flag_software?('misskey.io')).to be true
+      expect(described_class.no_language_flag_software?('novelskey.tarbin.net')).to be true
+      expect(described_class.no_language_flag_software?('mastodon.social')).to be false
+      expect(described_class.no_language_flag_software?('firefish.social')).to be false
+      expect(described_class.no_language_flag_software?('ohagi.social')).to be false
+    end
+  end
 end

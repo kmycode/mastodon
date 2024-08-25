@@ -161,14 +161,7 @@ class AccountStatusesFilter
 
   def misskey_software?
     return false if @account.nil? || @account.local?
-    return false if instance_info.nil?
 
-    %w(misskey cherrypick).include?(instance_info.software)
-  end
-
-  def instance_info
-    return @instance_info if defined?(@instance_info)
-
-    @instance_info = InstanceInfo.find_by(domain: @account.domain)
+    InstanceInfo.invalid_subscription_software?(@account.domain)
   end
 end

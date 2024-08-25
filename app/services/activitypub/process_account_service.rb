@@ -286,7 +286,7 @@ class ActivityPub::ProcessAccountService < BaseService
       bio = searchability_from_bio
       return bio unless bio.nil?
 
-      return misskey_software? ? misskey_searchability_from_indexable : :direct
+      return invalid_subscription_software? ? misskey_searchability_from_indexable : :direct
     end
 
     if audience_searchable_by.any? { |uri| ActivityPub::TagManager.instance.public_collection?(uri) }
@@ -328,11 +328,8 @@ class ActivityPub::ProcessAccountService < BaseService
     @instance_info ||= InstanceInfo.find_by(domain: @domain)
   end
 
-  def misskey_software?
-    info = instance_info
-    return false if info.nil?
-
-    %w(misskey calckey).include?(info.software)
+  def invalid_subscription_software?
+    InstanceInfo.invalid_subscription_software?(@domain)
   end
 
   def subscribable_by
