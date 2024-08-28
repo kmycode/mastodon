@@ -62,6 +62,7 @@ ja:
         setting_allow_quote: ひかえめな引用はこの設定に関わらず可能です。kmyblue以外からは自由に引用できます
         setting_always_send_emails: 通常、Mastodon からメール通知は行われません。
         setting_bookmark_category_needed: すべてのカテゴリから削除したとき、ブックマークが自動で外れるようになります
+        setting_custom_css_lead: "必ず覚えてください: 万が一カスタムCSSの入力を誤り、画面が正常に表示されなくなった場合は、サインイン画面の下にあるリンクよりカスタムCSSを無効化することができます。ブラウザのプライベートモードなどでサインイン画面を開き、無効化してください。"
         setting_default_searchability: kmyblue・Fedibirdでは検索許可設定に基づき検索されます。Misskeyでは当設定に関係なく、全ての公開・ローカル公開・非収載投稿が検索されます。Mastodon・Firefishでは検索許可の代わりにプロフィール設定の「公開投稿を他のサーバーで自由に検索できるようにする」設定が適用されます
         setting_default_sensitive: 閲覧注意状態のメディアはデフォルトでは内容が伏せられ、クリックして初めて閲覧できるようになります
         setting_disallow_unlisted_public_searchability: この設定を有効にすると、非収載投稿と検索範囲「誰でも」は両立できず不特定多数からの検索が不可になります。Fedibirdと同じ挙動になります
@@ -263,6 +264,7 @@ ja:
           medium: デフォルト
           x_large: 大きい大きい
           xx_large: 大きい大きい大きい
+        setting_custom_css: カスタムCSS
         setting_default_language: 投稿する言語
         setting_default_privacy: 投稿の公開範囲
         setting_default_reblog_privacy: BTの公開範囲
@@ -325,6 +327,7 @@ ja:
         setting_trends: 本日のトレンドタグを表示する
         setting_unfollow_modal: フォローを解除する前に確認ダイアログを表示する
         setting_use_blurhash: 非表示のメディアを色付きのぼかしで表示する
+        setting_use_custom_css: カスタムCSSを有効にする
         setting_use_pending_items: 手動更新モード
         setting_use_public_index: Mastodonの標準設定によって検索が許可されたアカウントの公開投稿を検索結果に含める
         severity: 重大性

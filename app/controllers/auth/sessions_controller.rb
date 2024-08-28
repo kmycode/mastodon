@@ -78,7 +78,11 @@ class Auth::SessionsController < Devise::SessionsController
   end
 
   def user_params
-    params.require(:user).permit(:email, :password, :otp_attempt, credential: {})
+    params.require(:user).permit(:email, :password, :otp_attempt, :disable_css, credential: {})
+  end
+
+  def login_page_params
+    params.permit(:with_options)
   end
 
   def after_sign_in_path_for(resource)
@@ -112,6 +116,11 @@ class Auth::SessionsController < Devise::SessionsController
   def continue_after?
     truthy_param?(:continue)
   end
+
+  def with_login_options?
+    login_page_params[:with_options] == '1'
+  end
+  helper_method :with_login_options?
 
   def restart_session
     clear_attempt_from_session
@@ -151,6 +160,8 @@ class Auth::SessionsController < Devise::SessionsController
     sign_in(user)
     flash.delete(:notice)
 
+    disable_custom_css!(user) if disable_custom_css?
+
     LoginActivity.create(
       user: user,
       success: true,
@@ -160,6 +171,16 @@ class Auth::SessionsController < Devise::SessionsController
     )
 
     UserMailer.suspicious_sign_in(user, request.remote_ip, request.user_agent, Time.now.utc).deliver_later! if @login_is_suspicious
+  end
+
+  def disable_custom_css?
+    user_params[:disable_css].present? && user_params[:disable_css] != '0'
+  end
+
+  def disable_custom_css!(user)
+    user.settings['web.use_custom_css'] = false
+    user.settings['web.custom_css_version'] += 1
+    user.save!
   end
 
   def suspicious_sign_in?(user)

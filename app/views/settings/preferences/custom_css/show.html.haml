@@ -1,0 +1,34 @@
+- content_for :page_title do
+  = t('simple_form.labels.form_admin_settings.custom_css')
+
+- content_for :heading_actions do
+  = button_tag t('generic.save_changes'), class: 'button', form: 'edit_preferences'
+
+= simple_form_for current_user, url: settings_preferences_custom_css_path, html: { method: :put, id: 'edit_preferences' } do |f|
+  = render 'shared/error_messages', object: current_user
+
+  = f.simple_fields_for :settings, current_user.settings do |ff|
+    = ff.input :'web.custom_css_version',
+               as: :hidden,
+               input_html: { value: current_user.setting_custom_css_version + 1 }
+
+    .fields-group
+      = ff.input :'web.use_custom_css',
+                 hint: false,
+                 label: I18n.t('simple_form.labels.defaults.setting_use_custom_css'),
+                 kmyblue: true,
+                 wrapper: :with_label
+
+    .fields-group
+      = ff.input :'web.custom_css',
+                 as: :text,
+                 hint: false,
+                 input_html: { rows: 12 },
+                 label: I18n.t('simple_form.labels.defaults.setting_custom_css'),
+                 kmyblue: true,
+                 wrapper: :with_label
+
+  %p.hint= t 'simple_form.hints.defaults.setting_custom_css_lead'
+
+  .actions
+    = f.button :button, t('generic.save_changes'), type: :submit

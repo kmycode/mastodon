@@ -63,6 +63,8 @@ class UserSettings::Setting
     case default_value
     when TrueClass, FalseClass
       ActiveModel::Type::Boolean.new
+    when Integer
+      ActiveModel::Type::Integer.new
     else
       ActiveModel::Type::String.new
     end

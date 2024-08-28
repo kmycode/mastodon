@@ -1418,6 +1418,7 @@ en:
       prefix_sign_up: Sign up on Mastodon today!
       suffix: With an account, you will be able to follow people, post updates and exchange messages with users from any Mastodon server and more!
     didnt_get_confirmation: Didn't receive a confirmation link?
+    disable_custom_css: Disable custom CSS
     dont_have_your_security_key: Don't have your security key?
     forgot_password: Forgot your password?
     invalid_reset_password_token: Password reset token is invalid or expired. Please request a new one.
@@ -1478,6 +1479,7 @@ en:
       view_strikes: View past strikes against your account
     too_fast: Form submitted too fast, try again.
     use_security_key: Use security key
+    with_login_options: Will you disable your custom css?
   bookmark_categories:
     errors:
       limit: Bookmark category limit

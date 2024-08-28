@@ -30,6 +30,15 @@
                 label: t('simple_form.labels.defaults.password'),
                 wrapper: :with_label
 
+    - if with_login_options?
+      .fields-group
+        = f.input :disable_css,
+                  as: :boolean,
+                  hint: false,
+                  input_html: { 'aria-label': t('auth.disable_custom_css') },
+                  label: t('auth.disable_custom_css'),
+                  wrapper: :with_label
+
     .actions
       = f.button :button, t('auth.login'), type: :submit
 

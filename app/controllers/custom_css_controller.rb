@@ -13,7 +13,17 @@ class CustomCssController < ActionController::Base # rubocop:disable Rails/Appli
   def custom_css_styles
     Setting.custom_css
   end
-  helper_method :custom_css_styles
+
+  def user_custom_css?
+    return false if current_user.nil?
+
+    current_user.setting_use_custom_css && current_user.setting_custom_css.present?
+  end
+
+  def user_custom_css
+    current_user.setting_custom_css
+  end
+  helper_method :custom_css_styles, :user_custom_css?, :user_custom_css
 
   def set_user_roles
     @user_roles = UserRole.providing_styles

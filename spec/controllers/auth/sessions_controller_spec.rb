@@ -203,6 +203,45 @@ RSpec.describe Auth::SessionsController do
           end
         end
       end
+
+      context 'with custom css' do
+        let(:params) { {} }
+
+        before do
+          user.settings['web.use_custom_css'] = true
+          user.save!
+
+          post :create, params: { user: { email: user.email, password: user.password }.merge(params) }
+        end
+
+        context 'when does not reset custom css' do
+          let(:params) { { disable_css: '0' } }
+
+          it 'custom css is enabled' do
+            expect(response).to redirect_to(root_path)
+            expect(controller.current_user).to eq user
+            expect(user.reload.setting_use_custom_css).to be true
+          end
+        end
+
+        context 'when reset custom css' do
+          let(:params) { { disable_css: '1' } }
+
+          it 'custom css is disabled' do
+            expect(response).to redirect_to(root_path)
+            expect(controller.current_user).to eq user
+            expect(user.reload.setting_use_custom_css).to be false
+          end
+        end
+
+        context 'when does not specify about custom css' do
+          it 'custom css is enabled' do
+            expect(response).to redirect_to(root_path)
+            expect(controller.current_user).to eq user
+            expect(user.reload.setting_use_custom_css).to be true
+          end
+        end
+      end
     end
 
     context 'when using two-factor authentication' do

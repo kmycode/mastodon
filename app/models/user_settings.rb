@@ -55,6 +55,9 @@ class UserSettings
     setting :use_blurhash, default: true
     setting :use_pending_items, default: false
     setting :use_system_font, default: false
+    setting :use_custom_css, default: false
+    setting :custom_css, default: ''
+    setting :custom_css_version, default: 0
     setting :content_font_size, default: 'medium', in: %w(medium large x_large xx_large)
     setting :bookmark_category_needed, default: false
     setting :disable_swiping, default: false

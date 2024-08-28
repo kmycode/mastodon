@@ -1329,6 +1329,7 @@ ja:
       prefix_sign_up: 今すぐMastodonを始めよう！
       suffix: アカウントがあれば、どんなMastodon互換サーバーのユーザーでもフォローしたりメッセージをやり取りできるようになります！
     didnt_get_confirmation: 確認メールを受信できない場合は
+    disable_custom_css: カスタムCSSを無効化する
     dont_have_your_security_key: セキュリティキーを持っていませんか？
     forgot_password: パスワードをお忘れですか？
     invalid_reset_password_token: パスワードリセットトークンが正しくないか期限切れです。もう一度リクエストしてください。
@@ -1384,6 +1385,7 @@ ja:
       view_strikes: 過去のストライクを表示
     too_fast: フォームの送信が速すぎます。もう一度やり直してください。
     use_security_key: セキュリティキーを使用
+    with_login_options: カスタムCSSを無効化しますか？
   challenge:
     confirm: 続ける
     hint_html: 以後1時間はパスワードの再入力を求めません

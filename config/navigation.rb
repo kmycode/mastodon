@@ -18,6 +18,7 @@ SimpleNavigation::Configuration.run do |navigation|
       s.item :appearance, safe_join([material_symbol('computer'), t('settings.appearance')]), settings_preferences_appearance_path
       s.item :notifications, safe_join([material_symbol('mail'), t('settings.notifications')]), settings_preferences_notifications_path
       s.item :reaching, safe_join([material_symbol('search'), t('preferences.reaching')]), settings_preferences_reaching_path
+      s.item :custom_css, safe_join([material_symbol('inbox'), t('preferences.custom_css')]), settings_preferences_custom_css_path
       s.item :other, safe_join([material_symbol('settings'), t('preferences.other')]), settings_preferences_other_path
     end
 

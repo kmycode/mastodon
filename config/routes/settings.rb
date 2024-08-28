@@ -11,6 +11,7 @@ namespace :settings do
     resource :appearance, only: [:show, :update], controller: :appearance
     resource :notifications, only: [:show, :update]
     resource :reaching, only: [:show, :update], controller: :reaching
+    resource :custom_css, only: [:show, :update], controller: :custom_css
     resource :other, only: [:show, :update], controller: :other
   end
 

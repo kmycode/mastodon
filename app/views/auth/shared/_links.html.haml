@@ -11,6 +11,9 @@
     - if controller_name != 'passwords' && controller_name != 'registrations'
       %li= link_to t('auth.forgot_password'), new_user_password_path
 
+    - if controller_name != 'passwords' && controller_name != 'registrations' && params[:with_options].nil?
+      %li= link_to t('auth.with_login_options'), new_user_session_path(with_options: '1')
+
   - if controller_name != 'confirmations' && (!user_signed_in? || !current_user.confirmed? || current_user.unconfirmed_email.present?)
     %li= link_to t('auth.didnt_get_confirmation'), new_user_confirmation_path
 
