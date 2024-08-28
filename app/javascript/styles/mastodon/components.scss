@@ -1011,9 +1011,9 @@ body > [data-popper-placement] {
   }
 
   .emojione {
-    min-width: 20px;
+    min-width: var(--content-emoji-size);
     max-width: min(10em, 100%);
-    height: 20px;
+    height: var(--content-emoji-size);
     margin: -3px 0 0;
   }
 
@@ -1742,9 +1742,9 @@ body > [data-popper-placement] {
     line-height: var(--detail-content-line-height);
 
     .emojione {
-      min-width: 24px;
+      min-width: var(--detail-content-emoji-size);
       max-width: min(10em, 100%);
-      height: 24px;
+      height: var(--detail-content-emoji-size);
       margin: -1px 0 0;
     }
 
