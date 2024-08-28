@@ -574,7 +574,7 @@ fr:
       already_suspended_badges:
         local: Déjà suspendu sur ce serveur
         remote: Déjà suspendu sur le serveur distant
-      are_you_sure: Voulez-vous vraiment faire ça ?
+      are_you_sure: En êtes-vous sûr ?
       assign_to_self: Me l’assigner
       assigned: Modérateur assigné
       by_target_domain: Domaine du compte signalé
@@ -722,6 +722,7 @@ fr:
         desc_html: Ceci se base sur des scripts externes venant de hCaptcha, ce qui peut engendrer des soucis de sécurité et de confidentialité. De plus, <strong>cela peut rendre l'inscription beaucoup moins accessible pour certaines personnes (comme les personnes handicapées)</strong>. Pour ces raisons, veuillez envisager des mesures alternatives telles que l'inscription sur acceptation ou invitation.
         title: Exiger que les nouveaux utilisateurs résolvent un CAPTCHA pour confirmer leur compte
       content_retention:
+        danger_zone: Zone de danger
         preamble: Contrôle comment le contenu créé par les utilisateurs est enregistré et stocké dans Mastodon.
         title: Rétention du contenu
       default_noindex:
@@ -761,6 +762,7 @@ fr:
       destroyed_msg: Téléversement sur le site supprimé avec succès !
     software_updates:
       critical_update: Critique — veuillez mettre à jour au plus vite
+      description: Il est recommandé de maintenir votre installation de Mastodon à jour afin de bénéficier des derniers correctifs et fonctionnalités. Par ailleurs, il est parfois critique de mettre à jour Mastodon en temps voulu de manière à éviter les incidents relatifs à la sécurité. Pour ces raisons, Mastodon examine la disponibilté des mises à jour toutes les 30 minutes, et vous en avisera en fonction de vos préférences de notification par messagerie électronique.
       documentation_link: En savoir plus
       release_notes: Notes de mises à jour
       title: Mises à jour disponibles
@@ -1203,7 +1205,7 @@ fr:
     add_new: Ajouter un nouveau hashtag
     errors:
       limit: Vous avez déjà mis en avant le nombre maximum de hashtags
-    hint_html: "<strong>Que sont les hashtags mis en avant ?</strong> Ils sont affichés en évidence sur votre profil public et permettent aux gens de parcourir vos messages publics qui utilisent ces hashtags. Ils sont un excellent outil pour garder la trace d’activités créatrices ou de projets de long terme."
+    hint_html: "<strong>Mettez en évidence vos hashtags les plus importants sur votre profil.</strong> Un outil idéal pour suivre vos travaux créatifs et vos projets à long terme, les hashtags mis en avant sont affichés bien en évidence sur votre profil et permettent un accès rapide à vos propres publications."
   filters:
     contexts:
       account: Profils
