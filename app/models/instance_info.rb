@@ -56,12 +56,6 @@ class InstanceInfo < ApplicationRecord
   NO_LANGUAGE_FLAG_SOFTWARES = MISSKEY_FORKS - %w(firefish)
 
   class << self
-    def emoji_reaction_available?(domain)
-      return Setting.enable_emoji_reaction if domain.nil?
-
-      Rails.cache.fetch("emoji_reaction_available_domain:#{domain}") { load_emoji_reaction_available(domain) }
-    end
-
     def available_features(domain)
       return local_features if domain.nil?
 
@@ -117,7 +111,7 @@ class InstanceInfo < ApplicationRecord
     end
 
     def software_name(domain)
-      Rails.cache.fetch("software_name:#{domain}", expires_in: 1.day, race_condition_ttl: 1.hour) { load_software_name(domain) }
+      Rails.cache.fetch("software_name:#{domain}") { load_software_name(domain) }
     end
 
     def load_software_name(domain)
@@ -133,7 +127,7 @@ class InstanceInfo < ApplicationRecord
   private
 
   def reset_cache
-    Rails.cache.delete("emoji_reaction_available_domain:#{domain}")
     Rails.cache.delete("domain_available_features:#{domain}")
+    Rails.cache.delete("software_name:#{domain}")
   end
 end
