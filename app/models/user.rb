@@ -101,6 +101,8 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :invite_request, reject_if: ->(attributes) { attributes['text'].blank? && !Setting.require_invite_text }
   validates :invite_request, presence: true, on: :create, if: :invite_text_required?
 
+  has_one :custom_css, inverse_of: :user, dependent: :destroy
+
   validates :email, presence: true, email_address: true
 
   validates_with UserEmailValidator, if: -> { ENV['EMAIL_DOMAIN_LISTS_APPLY_AFTER_CONFIRMATION'] == 'true' || !confirmed? }
@@ -229,6 +231,18 @@ class User < ApplicationRecord
 
   def disable_css
     false
+  end
+
+  def custom_css_text
+    custom_css&.css.to_s
+  end
+
+  def custom_css_text=(val)
+    if custom_css.present?
+      custom_css.update!(css: val)
+    else
+      CustomCss.create!(user: self, css: val)
+    end
   end
 
   def pending?

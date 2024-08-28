@@ -179,7 +179,6 @@ class Auth::SessionsController < Devise::SessionsController
 
   def disable_custom_css!(user)
     user.settings['web.use_custom_css'] = false
-    user.settings['web.custom_css_version'] += 1
     user.save!
   end
 

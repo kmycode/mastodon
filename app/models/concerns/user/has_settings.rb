@@ -287,14 +287,6 @@ module User::HasSettings
     settings['web.use_custom_css']
   end
 
-  def setting_custom_css
-    settings['web.custom_css']
-  end
-
-  def setting_custom_css_version
-    settings['web.custom_css_version']
-  end
-
   def allows_report_emails?
     settings['notification_emails.report']
   end

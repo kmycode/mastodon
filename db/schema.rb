@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_08_125420) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_28_123604) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -477,6 +477,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_08_125420) do
     t.bigint "ancestor_status_id"
     t.index ["ancestor_status_id"], name: "index_conversations_on_ancestor_status_id", where: "(ancestor_status_id IS NOT NULL)"
     t.index ["uri"], name: "index_conversations_on_uri", unique: true, opclass: :text_pattern_ops, where: "(uri IS NOT NULL)"
+  end
+
+  create_table "custom_csses", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "css", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_custom_csses_on_user_id"
   end
 
   create_table "custom_emoji_categories", force: :cascade do |t|
@@ -1678,6 +1686,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_08_125420) do
   add_foreign_key "circles", "accounts", on_delete: :cascade
   add_foreign_key "conversation_mutes", "accounts", name: "fk_225b4212bb", on_delete: :cascade
   add_foreign_key "conversation_mutes", "conversations", on_delete: :cascade
+  add_foreign_key "custom_csses", "users", on_delete: :cascade
   add_foreign_key "custom_filter_keywords", "custom_filters", on_delete: :cascade
   add_foreign_key "custom_filter_statuses", "custom_filters", on_delete: :cascade
   add_foreign_key "custom_filter_statuses", "statuses", on_delete: :cascade

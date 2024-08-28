@@ -8,10 +8,6 @@
   = render 'shared/error_messages', object: current_user
 
   = f.simple_fields_for :settings, current_user.settings do |ff|
-    = ff.input :'web.custom_css_version',
-               as: :hidden,
-               input_html: { value: current_user.setting_custom_css_version + 1 }
-
     .fields-group
       = ff.input :'web.use_custom_css',
                  hint: false,
@@ -20,13 +16,13 @@
                  wrapper: :with_label
 
     .fields-group
-      = ff.input :'web.custom_css',
-                 as: :text,
-                 hint: false,
-                 input_html: { rows: 12 },
-                 label: I18n.t('simple_form.labels.defaults.setting_custom_css'),
-                 kmyblue: true,
-                 wrapper: :with_label
+      = f.input :custom_css_text,
+                as: :text,
+                hint: false,
+                input_html: { rows: 12 },
+                label: I18n.t('simple_form.labels.defaults.setting_custom_css'),
+                kmyblue: true,
+                wrapper: :with_label
 
   %p.hint= t 'simple_form.hints.defaults.setting_custom_css_lead'
 

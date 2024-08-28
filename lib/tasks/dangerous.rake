@@ -14,6 +14,7 @@ namespace :dangerous do
     end
 
     target_migrations = %w(
+      20240828123604
       20240709063700
       20240426233435
       20240426000034
@@ -113,6 +114,7 @@ namespace :dangerous do
       circles
       circle_accounts
       circle_statuses
+      custom_csses
       emoji_reactions
       friend_domains
       instance_infos

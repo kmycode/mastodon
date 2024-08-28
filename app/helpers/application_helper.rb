@@ -253,9 +253,9 @@ module ApplicationHelper
   end
 
   def user_custom_css_version
-    return '0' if current_account&.user.nil?
+    return '0' if current_account&.user&.custom_css.nil?
 
-    current_account&.user&.setting_custom_css_version.to_s
+    current_account&.user&.custom_css&.updated_at.to_s
   end
 
   private

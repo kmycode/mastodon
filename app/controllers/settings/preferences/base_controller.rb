@@ -25,7 +25,7 @@ class Settings::Preferences::BaseController < Settings::BaseController
   end
 
   def original_user_params
-    params.require(:user).permit(:locale, :time_zone, chosen_languages: [], settings_attributes: UserSettings.keys)
+    params.require(:user).permit(:locale, :time_zone, :custom_css_text, chosen_languages: [], settings_attributes: UserSettings.keys)
   end
 
   def disabled_visibilities_params
