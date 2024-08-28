@@ -87,6 +87,7 @@ Rails.application.routes.draw do
   get 'manifest', to: 'manifests#show', defaults: { format: 'json' }
   get 'intent', to: 'intents#show'
   get 'custom.css', to: 'custom_css#show', as: :custom_css
+  get 'user_custom.css', to: 'user_custom_css#show', as: :user_custom_css
 
   get 'remote_interaction_helper', to: 'remote_interaction_helper#index'
 
