@@ -117,14 +117,14 @@ class InstanceInfo < ApplicationRecord
     end
 
     def software_name(domain)
-      Rails.cache.fetch("software_name:#{domain}") { load_software_name(domain) }
+      Rails.cache.fetch("software_name:#{domain}", expires_in: 1.day, race_condition_ttl: 1.hour) { load_software_name(domain) }
     end
 
     def load_software_name(domain)
       return 'threads' if domain == 'threads.net'
 
       info = InstanceInfo.find_by(domain: domain)
-      return '' if info.nil?
+      return nil if info.nil?
 
       info.software
     end
