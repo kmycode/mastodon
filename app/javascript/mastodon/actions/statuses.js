@@ -1,7 +1,9 @@
 import { browserHistory } from 'mastodon/components/router';
+import { me } from 'mastodon/initial_state';
 
 import api from '../api';
 
+import { fetchRelationships } from './accounts';
 import { ensureComposeIsVisible, setComposeToStatus } from './compose';
 import { importFetchedStatus, importFetchedStatuses, importFetchedAccount } from './importer';
 import { deleteFromTimelines } from './timelines';
@@ -65,6 +67,12 @@ export function fetchStatus(id, forceFetch = false) {
 
     api().get(`/api/v1/statuses/${id}`).then(response => {
       dispatch(importFetchedStatus(response.data));
+
+      const accountId = response.data.account.id;
+      if (me && !getState().getIn(['relationships', accountId])) {
+        dispatch(fetchRelationships([accountId]));
+      }
+
       dispatch(fetchStatusSuccess(skipLoading));
     }).catch(error => {
       dispatch(fetchStatusFail(id, error, skipLoading));
