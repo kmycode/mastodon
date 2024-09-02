@@ -25,6 +25,7 @@ import { DisplayName } from '../../../components/display_name';
 import MediaGallery from '../../../components/media_gallery';
 import StatusContent from '../../../components/status_content';
 import StatusEmojiReactionsBar from '../../../components/status_emoji_reactions_bar';
+import CompactedStatusContainer from '../../../containers/compacted_status_container';
 import Audio from '../../audio';
 import scheduleIdleTask from '../../ui/util/schedule_idle_task';
 import Video from '../../video';
@@ -323,6 +324,8 @@ class DetailedStatus extends ImmutablePureComponent {
     const {statusContentProps, hashtagBar} = getHashtagBarForStatus(status);
     const expanded = !status.get('hidden') || status.get('spoiler_text').length === 0;
 
+    const quote = !this.props.muted && status.get('quote_id') && <CompactedStatusContainer id={status.get('quote_id')} history={this.props.history} />;
+
     return (
       <div style={outerStyle}>
         <div ref={this.setRef} className={classNames('detailed-status', { compact })}>
@@ -349,6 +352,7 @@ class DetailedStatus extends ImmutablePureComponent {
 
               {media}
               {hashtagBar}
+              {quote}
               {emojiReactionsBar}
             </>
           )}
