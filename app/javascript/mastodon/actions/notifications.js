@@ -82,7 +82,7 @@ export const NOTIFICATIONS_FOR_REQUEST_EXPAND_SUCCESS = 'NOTIFICATIONS_FOR_REQUE
 export const NOTIFICATIONS_FOR_REQUEST_EXPAND_FAIL    = 'NOTIFICATIONS_FOR_REQUEST_EXPAND_FAIL';
 
 const messages = defineMessages({
-  mention: { id: 'notification.mention', defaultMessage: '{name} mentioned you' },
+  // mention: { id: 'notification.mention', defaultMessage: '{name} mentioned you' },
   group: { id: 'notifications.group', defaultMessage: '{count} notifications' },
   'message_admin.report': { id: 'notification.admin.report', defaultMessage: '{name} reported {target}' },
   'message_admin.sign_up': { id: 'notification.admin.sign_up', defaultMessage: '{name} signed up' },

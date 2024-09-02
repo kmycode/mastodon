@@ -14,7 +14,7 @@ const labelRenderer: LabelRenderer = (displayedName, total, seeMoreHref) => {
     return (
       <FormattedMessage
         id='notification.emoji_reaction'
-        defaultMessage='{name} reacted your status with emoji'
+        defaultMessage='{name} reacted your post with emoji'
         values={{ name: displayedName }}
       />
     );

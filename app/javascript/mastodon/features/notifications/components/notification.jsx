@@ -34,12 +34,12 @@ import { RelationshipsSeveranceEvent } from './relationships_severance_event';
 import Report from './report';
 
 const messages = defineMessages({
-  favourite: { id: 'notification.favourite', defaultMessage: '{name} favorited your status' },
-  emojiReaction: { id: 'notification.emoji_reaction', defaultMessage: '{name} reacted your status with emoji' },
+  favourite: { id: 'notification.favourite', defaultMessage: '{name} favorited your post' },
+  emojiReaction: { id: 'notification.emoji_reaction', defaultMessage: '{name} reacted your post with emoji' },
   follow: { id: 'notification.follow', defaultMessage: '{name} followed you' },
   ownPoll: { id: 'notification.own_poll', defaultMessage: 'Your poll has ended' },
   poll: { id: 'notification.poll', defaultMessage: 'A poll you voted in has ended' },
-  reblog: { id: 'notification.reblog', defaultMessage: '{name} boosted your status' },
+  reblog: { id: 'notification.reblog', defaultMessage: '{name} boosted your post' },
   status: { id: 'notification.status', defaultMessage: '{name} just posted' },
   listStatus: { id: 'notification.list_status', defaultMessage: '{name} post is added to {listName}' },
   statusReference: { id: 'notification.status_reference', defaultMessage: '{name} quoted your post' },
@@ -207,7 +207,7 @@ class Notification extends ImmutablePureComponent {
             <Icon id='star' icon={StarIcon} className='star-icon' />
 
             <span title={notification.get('created_at')}>
-              <FormattedMessage id='notification.favourite' defaultMessage='{name} favorited your status' values={{ name: link }} />
+              <FormattedMessage id='notification.favourite' defaultMessage='{name} favorited your post' values={{ name: link }} />
             </span>
           </div>
 
@@ -241,7 +241,7 @@ class Notification extends ImmutablePureComponent {
             </div>
 
             <span title={notification.get('created_at')}>
-              <FormattedMessage id='notification.emoji_reaction' defaultMessage='{name} reacted your status with emoji' values={{ name: link }} />
+              <FormattedMessage id='notification.emoji_reaction' defaultMessage='{name} reacted your post with emoji' values={{ name: link }} />
             </span>
           </div>
 
@@ -272,7 +272,7 @@ class Notification extends ImmutablePureComponent {
             <Icon id='retweet' icon={RepeatIcon} />
 
             <span title={notification.get('created_at')}>
-              <FormattedMessage id='notification.reblog' defaultMessage='{name} boosted your status' values={{ name: link }} />
+              <FormattedMessage id='notification.reblog' defaultMessage='{name} boosted your post' values={{ name: link }} />
             </span>
           </div>
 
