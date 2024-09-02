@@ -81,24 +81,21 @@ export const NOTIFICATIONS_FOR_REQUEST_EXPAND_REQUEST = 'NOTIFICATIONS_FOR_REQUE
 export const NOTIFICATIONS_FOR_REQUEST_EXPAND_SUCCESS = 'NOTIFICATIONS_FOR_REQUEST_EXPAND_SUCCESS';
 export const NOTIFICATIONS_FOR_REQUEST_EXPAND_FAIL    = 'NOTIFICATIONS_FOR_REQUEST_EXPAND_FAIL';
 
-const DEFAULT_NOTIFICATION_MESSAGES = {
-  'notification.admin.report': '{name} reported {target}',
-  'notification.admin.sign_up': '{name} signed up',
-  'notification.emoji_reaction': '{name} reacted your post with emoji',
-  'notification.favourite': '{name} favorited your post',
-  'notification.follow': '{name} followed you',
-  'notification.list_status': '{name} post is added to {listName}',
-  'notification.mention': 'Mention',
-  'notification.poll': 'A poll you voted in has ended',
-  'notification.reblog': '{name} boosted your post',
-  'notification.status': '{name} just posted',
-  'notification.status_reference': '{name} quoted your post',
-  'notification.update': '{name} edited a post',
-};
-
-defineMessages({
+const messages = defineMessages({
   mention: { id: 'notification.mention', defaultMessage: '{name} mentioned you' },
   group: { id: 'notifications.group', defaultMessage: '{count} notifications' },
+  'message_admin.report': { id: 'notification.admin.report', defaultMessage: '{name} reported {target}' },
+  'message_admin.sign_up': { id: 'notification.admin.sign_up', defaultMessage: '{name} signed up' },
+  message_emoji_reaction: { id: 'notification.emoji_reaction', defaultMessage: '{name} reacted your post with emoji' },
+  message_favourite: { id: 'notification.favourite', defaultMessage: '{name} favorited your post' },
+  message_follow: { id: 'notification.follow', defaultMessage: '{name} followed you' },
+  message_list_status: { id: 'notification.list_status', defaultMessage: '{name} post is added to {listName}' },
+  message_mention: { id: 'notification.mention', defaultMessage: 'Mention' },
+  message_poll: { id: 'notification.poll', defaultMessage: 'A poll you voted in has ended' },
+  message_reblog: { id: 'notification.reblog', defaultMessage: '{name} boosted your post' },
+  message_status: { id: 'notification.status', defaultMessage: '{name} just posted' },
+  message_status_reference: { id: 'notification.status_reference', defaultMessage: '{name} quoted your post' },
+  message_update: { id: 'notification.update', defaultMessage: '{name} edited a post' },
 });
 
 const fetchRelatedRelationships = (dispatch, notifications) => {
@@ -176,7 +173,7 @@ export function updateNotifications(notification, intlMessages, intlLocale) {
 
     // Desktop notifications
     if (typeof window.Notification !== 'undefined' && showAlert && !filtered) {
-      const messageTemplate = intlMessages[`notification.${notification.type}`] || DEFAULT_NOTIFICATION_MESSAGES[`notification.${notification.type}`];
+      const messageTemplate = intlMessages[`notification.${notification.type}`] || messages[`message_${notification.type}`] || '[NO MESSAGE DEFINITION]';
       const title = new IntlMessageFormat(messageTemplate, intlLocale).format({
         name: notification.account.display_name.length > 0 ? notification.account.display_name : notification.account.username,
         listName: notification.list && notification.list.title,
