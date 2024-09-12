@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_28_123604) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_12_234211) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -515,6 +515,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_28_123604) do
     t.string "license"
     t.integer "image_file_size"
     t.index ["shortcode", "domain"], name: "index_custom_emojis_on_shortcode_and_domain", unique: true
+    t.index ["uri"], name: "index_custom_emojis_on_uri", unique: true
   end
 
   create_table "custom_filter_keywords", force: :cascade do |t|
