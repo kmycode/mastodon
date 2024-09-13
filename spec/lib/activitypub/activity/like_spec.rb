@@ -204,6 +204,20 @@ RSpec.describe ActivityPub::Activity::Like do
         expect(subject.first.custom_emoji.domain).to eq 'example.com'
         expect(sender.favourited?(status)).to be false
       end
+
+      context 'without tag info' do
+        let(:tag) { 'https://example.com/aaa' }
+
+        it 'create emoji reaction' do
+          expect(subject.count).to eq 1
+          expect(subject.first.name).to eq 'tinking'
+          expect(subject.first.account).to eq sender
+          expect(subject.first.custom_emoji).to_not be_nil
+          expect(subject.first.custom_emoji.shortcode).to eq 'tinking'
+          expect(subject.first.custom_emoji.domain).to eq 'example.com'
+          expect(sender.favourited?(status)).to be false
+        end
+      end
     end
 
     context 'with custom emoji and update license from non-original server account' do

@@ -14,6 +14,7 @@ namespace :dangerous do
     end
 
     target_migrations = %w(
+      20240912234211
       20240828123604
       20240709063700
       20240426233435
@@ -189,6 +190,7 @@ namespace :dangerous do
       index_statuses_on_conversation_id
       index_preview_cards_vacuum
       index_media_attachments_vacuum
+      index_custom_emojis_on_uri
     )
 
     prompt.say 'Processing...'

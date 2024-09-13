@@ -77,6 +77,8 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
   end
 
   def process_emoji(tag)
+    return process_emoji_by_uri(as_array(tag)[0]) if tag.is_a?(String) || tag.is_a?(Array)
+
     custom_emoji_parser = ActivityPub::Parser::CustomEmojiParser.new(tag)
 
     return if custom_emoji_parser.shortcode.blank? || custom_emoji_parser.image_remote_url.blank?
@@ -100,33 +102,60 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
     custom_emoji_parser = original_emoji_parser(custom_emoji_parser) if @account.domain != domain
     return if custom_emoji_parser.nil?
 
-    begin
-      emoji ||= CustomEmoji.new(
-        domain: domain,
-        shortcode: custom_emoji_parser.shortcode,
-        uri: custom_emoji_parser.uri
-      )
-      emoji.image_remote_url = custom_emoji_parser.image_remote_url
-      emoji.license = custom_emoji_parser.license
-      emoji.is_sensitive = custom_emoji_parser.is_sensitive
-      emoji.aliases = custom_emoji_parser.aliases
-      emoji.save
-    rescue Seahorse::Client::NetworkingError => e
-      Rails.logger.warn "Error storing emoji: #{e}"
-    end
-
-    emoji
+    update_custom_emoji!(emoji, custom_emoji_parser, domain)
   end
 
   def original_emoji_parser(custom_emoji_parser)
-    uri = custom_emoji_parser.uri
+    fetch_original_emoji_parser(custom_emoji_parser.uri, custom_emoji_parser.shortcode || '')
+  end
+
+  def fetch_original_emoji_parser(uri, shortcode = nil)
     emoji = fetch_resource_without_id_validation(uri)
     return nil unless emoji
 
     parser = ActivityPub::Parser::CustomEmojiParser.new(emoji)
-    return nil unless parser.uri == uri && custom_emoji_parser.shortcode == parser.shortcode
+    return nil unless parser.uri == uri
+    return nil if shortcode.present? && shortcode != parser.shortcode
 
     parser
+  end
+
+  def process_emoji_by_uri(uri)
+    return if uri.blank?
+
+    domain = URI.split(uri)[2] || @account.domain
+
+    if domain == Rails.configuration.x.local_domain || domain == Rails.configuration.x.web_domain
+      # Block overwriting remote-but-local data
+      return CustomEmoji.find_by(id: ActivityPub::TagManager.instance.uri_to_local_id)
+    end
+
+    return if domain.present? && skip_download?(domain)
+
+    custom_emoji_parser = nil
+    custom_emoji_parser = fetch_original_emoji_parser(uri) if @account.domain != domain
+    custom_emoji_parser ||= CustomEmoji.find_by(uri: uri)
+    return if custom_emoji_parser.nil?
+
+    update_custom_emoji!(CustomEmoji.find_by(uri: uri), custom_emoji_parser, domain)
+  end
+
+  def update_custom_emoji!(emoji, custom_emoji_parser, domain)
+    emoji ||= CustomEmoji.new(
+      domain: domain,
+      shortcode: custom_emoji_parser.shortcode,
+      uri: custom_emoji_parser.uri
+    )
+    emoji.image_remote_url = custom_emoji_parser.image_remote_url
+    emoji.license = custom_emoji_parser.license
+    emoji.is_sensitive = custom_emoji_parser.is_sensitive
+    emoji.aliases = custom_emoji_parser.aliases
+    emoji.save
+
+    emoji
+  rescue Seahorse::Client::NetworkingError => e
+    Rails.logger.warn "Error storing emoji: #{e}"
+    emoji
   end
 
   def skip_download?(domain)
