@@ -31,7 +31,7 @@ class InstanceInfo < ApplicationRecord
     tanukey
   ).freeze
 
-  QUOTE_AVAILABLE_SOFTWARES = EMOJI_REACTION_AVAILABLE_SOFTWARES
+  QUOTE_AVAILABLE_SOFTWARES = EMOJI_REACTION_AVAILABLE_SOFTWARES + %w(bridgy-fed).freeze
 
   STATUS_REFERENCE_AVAILABLE_SOFTWARES = %w(fedibird).freeze
 
