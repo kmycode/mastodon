@@ -34,6 +34,7 @@ import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 import AccountNoteContainer from '../containers/account_note_container';
 import FollowRequestNoteContainer from '../containers/follow_request_note_container';
 
+import { BlueskyPill } from './bluesky_pill';
 import { DomainPill } from './domain_pill';
 
 const messages = defineMessages({
@@ -468,6 +469,7 @@ class Header extends ImmutablePureComponent {
               <small>
                 <span>@{username}<span className='invisible'>@{domain}</span></span>
                 <DomainPill username={username} domain={domain} isSelf={me === account.get('id')} />
+                {account.getIn(['other_settings', 'bluesky']) && <BlueskyPill username={username} domain={domain} isSelf={me === account.get('id')} />}
                 {lockedIcon}
               </small>
             </h1>

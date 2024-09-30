@@ -79,6 +79,13 @@ module Account::OtherSettings
       show_emoji_reaction?(account)
     end
 
+    def bluesky_enabled?
+      return bluesky_connected? if local? && !suspended?
+      return settings['bluesky'] if settings.present? && settings.key?('bluesky')
+
+      false
+    end
+
     def public_settings
       # Please update `app/javascript/mastodon/api_types/accounts.ts` when making changes to the attributes
       {
@@ -90,6 +97,7 @@ module Account::OtherSettings
         'translatable_private' => translatable_private?,
         'allow_quote' => allow_quote?,
         'emoji_reaction_policy' => Setting.enable_emoji_reaction ? emoji_reaction_policy.to_s : 'block',
+        'bluesky' => bluesky_enabled?,
       }
     end
 

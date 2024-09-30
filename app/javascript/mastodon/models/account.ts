@@ -60,6 +60,7 @@ const AccountOtherSettingsFactory = ImmutableRecord<AccountOtherSettingsShape>({
   allow_quote: true,
   emoji_reaction_policy: 'allow',
   subscription_policy: 'allow',
+  bluesky: false,
 });
 
 // ServerFeatures

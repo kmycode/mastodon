@@ -29,6 +29,7 @@ export interface ApiAccountOtherSettingsJSON {
     | 'mutuals_only'
     | 'block';
   subscription_policy: 'allow' | 'followers_only' | 'block';
+  bluesky: boolean;
 }
 
 export interface ApiServerFeaturesJSON {

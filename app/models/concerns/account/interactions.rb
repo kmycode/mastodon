@@ -220,6 +220,11 @@ module Account::Interactions
     following?(other_account) && followed_by?(other_account)
   end
 
+  def bluesky_connected?
+    bridge_account = Account.find_by(domain: 'bsky.brid.gy', username: 'bsky.brid.gy')
+    bridge_account && followed_by?(bridge_account)
+  end
+
   def blocking?(other_account)
     block_relationships.exists?(target_account: other_account)
   end
