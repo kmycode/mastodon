@@ -290,9 +290,11 @@ GEM
       ruby-progressbar (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
-    google-protobuf (3.25.5)
-    googleapis-common-protos-types (1.15.0)
-      google-protobuf (>= 3.25.5, < 5.a)
+    google-protobuf (4.28.2)
+      bigdecimal
+      rake (>= 13)
+    googleapis-common-protos-types (1.16.0)
+      google-protobuf (>= 3.18, < 5.a)
     haml (6.3.0)
       temple (>= 0.8.2)
       thor
