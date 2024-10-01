@@ -41,8 +41,3 @@
                      label_method: ->(setting) { I18n.t("simple_form.labels.notification_emails.software_updates.#{setting}") },
                      label: I18n.t('simple_form.labels.notification_emails.software_updates.label'),
                      wrapper: :with_label
-
-  - if Setting.enable_emoji_reaction
-    = f.simple_fields_for :settings, current_user.settings do |ff|
-      .fields-group
-        = ff.input :stop_emoji_reaction_streaming, as: :boolean, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_stop_emoji_reaction_streaming'), hint: I18n.t('simple_form.hints.defaults.setting_stop_emoji_reaction_streaming')
