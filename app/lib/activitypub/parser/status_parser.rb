@@ -147,7 +147,7 @@ class ActivityPub::Parser::StatusParser
   def audience_searchable_by
     return nil if @object['searchableBy'].nil?
 
-    @audience_searchable_by = as_array(@object['searchableBy']).map { |x| value_or_id(x) }
+    @audience_searchable_by = as_array(@object['searchableBy']).map { |x| value_or_id(x) }.compact_blank
   end
 
   def summary_language_map?
@@ -204,17 +204,18 @@ class ActivityPub::Parser::StatusParser
 
   def searchability_from_audience
     return nil if audience_searchable_by.blank?
+    return :limited if audience_searchable_by.include?('kmyblue:Limited') || audience_searchable_by.include?('as:Limited')
 
     if audience_searchable_by.any? { |uri| ActivityPub::TagManager.instance.public_collection?(uri) }
       :public
-    elsif audience_searchable_by.include?('kmyblue:Limited') || audience_searchable_by.include?('as:Limited')
-      :limited
     elsif audience_searchable_by.include?('kmyblue:LocalPublic') && @friend
       :public_unlisted
     elsif audience_searchable_by.include?(@account.followers_url)
       :private
     elsif audience_searchable_by.include?(@account.uri) || audience_searchable_by.include?(@account.url)
       :direct
+    else
+      :limited
     end
   end
 end

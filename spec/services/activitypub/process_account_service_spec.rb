@@ -165,19 +165,19 @@ RSpec.describe ActivityPub::ProcessAccountService do
       end
     end
 
-    context 'when limited old spec' do
-      let(:searchable_by) { 'as:Limited' }
-
-      it 'searchability is limited' do
-        expect(subject.searchability).to eq 'limited'
-      end
-    end
-
     context 'when empty array' do
       let(:searchable_by) { '' }
 
       it 'searchability is direct' do
         expect(subject.searchability).to eq 'direct'
+      end
+    end
+
+    context 'when unintended value' do
+      let(:searchable_by) { 'ohagi' }
+
+      it 'searchability is direct' do
+        expect(subject.searchability).to eq 'limited'
       end
     end
 

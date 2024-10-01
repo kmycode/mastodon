@@ -653,6 +653,17 @@ RSpec.describe ActivityPub::Activity::Create do
           end
         end
 
+        context 'with unintended value' do
+          let(:searchable_by) { 'ohagi' }
+
+          it 'create status' do
+            status = sender.statuses.first
+
+            expect(status).to_not be_nil
+            expect(status.searchability).to eq 'limited'
+          end
+        end
+
         context 'with direct when not specify' do
           let(:searchable_by) { nil }
 
@@ -666,17 +677,6 @@ RSpec.describe ActivityPub::Activity::Create do
 
         context 'with limited' do
           let(:searchable_by) { 'kmyblue:Limited' }
-
-          it 'create status' do
-            status = sender.statuses.first
-
-            expect(status).to_not be_nil
-            expect(status.searchability).to eq 'limited'
-          end
-        end
-
-        context 'with limited old spec' do
-          let(:searchable_by) { 'as:Limited' }
 
           it 'create status' do
             status = sender.statuses.first
