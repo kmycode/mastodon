@@ -544,8 +544,8 @@ class CompactedStatus extends ImmutablePureComponent {
               </a>
 
               <a onClick={this.handleAccountClick} href={`/@${status.getIn(['account', 'acct'])}`} title={status.getIn(['account', 'acct'])} data-hover-card-account={status.getIn(['account', 'id'])} className='status__display-name' target='_blank' rel='noopener noreferrer'>
-                <div className='status__avatar'>
-                  <Avatar account={status.get('account')} size={24} inline />
+                <div className='status__avatar__compact'>
+                  <Avatar account={status.get('account')} size={32} inline />
                 </div>
 
                 <DisplayName account={status.get('account')} />

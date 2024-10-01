@@ -2336,8 +2336,8 @@ a.account__display-name {
   height: 46px;
 
   &.status__avatar__compact {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
   }
 }
 
@@ -11625,5 +11625,9 @@ noscript {
 
   &--compacted-status::after {
     display: none;
+  }
+
+  &--compacted-status p {
+    margin-bottom: 22px;
   }
 }
