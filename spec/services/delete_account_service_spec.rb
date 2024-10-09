@@ -84,7 +84,7 @@ RSpec.describe DeleteAccountService do
       expect { pending_status.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect { fetchable_pending_status.reload }.to raise_error(ActiveRecord::RecordNotFound)
 
-      expect(ng_rule_history.account_id).to eq Account.representative.id
+      expect(ng_rule_history.account_id).to be_nil
     end
 
     def expect_deletion_of_associated_owned_records

@@ -275,7 +275,7 @@ class DeleteAccountService < BaseService
   end
 
   def remove_ng_rule_history_relations!
-    @account.ng_rule_histories.update_all(account_id: Account.representative.id)
+    @account.ng_rule_histories.update_all(account_id: nil)
   end
 
   def fulfill_deletion_request!
