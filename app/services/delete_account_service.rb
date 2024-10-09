@@ -102,6 +102,7 @@ class DeleteAccountService < BaseService
     record_severed_relationships!
     distribute_activities!
     purge_content!
+    remove_ng_rule_history_relations!
     fulfill_deletion_request!
   end
 
@@ -271,6 +272,10 @@ class DeleteAccountService < BaseService
     @account.avatar.destroy
     @account.header.destroy
     @account.save!
+  end
+
+  def remove_ng_rule_history_relations!
+    @account.ng_rule_histories.update_all(account_id: Account.representative.id)
   end
 
   def fulfill_deletion_request!
