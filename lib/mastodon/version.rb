@@ -6,6 +6,8 @@ module Mastodon
 
     module_function
 
+    # If you change the version number, also change the image version in docker-compose.yml.
+
     def kmyblue_major
       15
     end
