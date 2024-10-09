@@ -170,6 +170,7 @@ class DeleteAccountService < BaseService
     purge_feeds!
     purge_other_associations!
 
+    remove_ng_rule_history_relations! unless keep_account_record?
     @account.destroy unless keep_account_record?
   end
 
@@ -271,6 +272,10 @@ class DeleteAccountService < BaseService
     @account.avatar.destroy
     @account.header.destroy
     @account.save!
+  end
+
+  def remove_ng_rule_history_relations!
+    @account.ng_rule_histories.update_all(account_id: nil)
   end
 
   def fulfill_deletion_request!
