@@ -37,8 +37,14 @@ const FollowerCount: React.FC<{ accountId: string }> = ({ accountId }) => {
 
   if (!account) return null;
 
+  const isHide = account.other_settings.hide_followers_count;
+
   return (
-    <ShortNumber value={account.followers_count} renderer={FollowersCounter} />
+    <ShortNumber
+      value={account.followers_count}
+      renderer={FollowersCounter}
+      isHide={isHide}
+    />
   );
 };
 
