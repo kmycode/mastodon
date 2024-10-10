@@ -161,16 +161,27 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
     object.active_mentions.to_a.sort_by(&:id) + object.tags + object.emojis + virtual_tags_of_quote
   end
 
+  class NoteLink < ActiveModelSerializers::Model
+    attributes :href
+  end
+
+  class NoteLinkSerializer < ActivityPub::Serializer
+    attributes :type, :href
+    attribute :media_type, key: :mediaType
+
+    def type
+      'Link'
+    end
+
+    def media_type
+      'application/ld+json; profile="https://www.w3.org/ns/activitystreams"'
+    end
+  end
+
   def virtual_tags_of_quote
     return [] unless object.quote?
 
-    [
-      {
-        type: 'Link',
-        mediaType: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"',
-        href: quote_uri,
-      },
-    ]
+    [NoteLink.new(href: quote_uri)]
   end
 
   def atom_uri
