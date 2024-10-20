@@ -30,6 +30,10 @@ class ActivityPub::ProcessCollectionService < BaseService
       @json.delete('signature') unless safe_for_forwarding?(original_json, @json)
     end
 
+    # any namespaces for general-original activity type
+    @json['type'] = 'EmojiReact' if original_json['type'] == 'EmojiReact'
+    @json['type'] = 'EmojiReaction' if original_json['type'] == 'EmojiReaction'
+
     case @json['type']
     when 'Collection', 'CollectionPage'
       process_items @json['items']
