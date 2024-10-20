@@ -11,7 +11,6 @@ import { connect } from 'react-redux';
 
 import BookmarkIcon from '@/material-icons/400-24px/bookmark-fill.svg?react';
 import BookmarkBorderIcon from '@/material-icons/400-24px/bookmark.svg?react';
-import EmojiReactionIcon from '@/material-icons/400-24px/mood.svg?react';
 import MoreHorizIcon from '@/material-icons/400-24px/more_horiz.svg?react';
 import RepeatIcon from '@/material-icons/400-24px/repeat.svg?react';
 import ReplyIcon from '@/material-icons/400-24px/reply.svg?react';
@@ -232,8 +231,6 @@ class ActionBar extends PureComponent {
     this.props.onEmojiReact(this.props.status, data);
   };
 
-  handleEmojiPickInnerButton = () => {};
-
   render () {
     const { status, relationship, intl } = this.props;
     const { signedIn, permissions } = this.props.identity;
@@ -401,9 +398,7 @@ class ActionBar extends PureComponent {
     const denyFromAll = emojiReactionPolicy !== 'block' && emojiReactionPolicy !== 'block';
     const emojiPickerDropdown = (enableEmojiReaction && emojiReactionAvailableServer && denyFromAll && (writtenByMe || (following && followed && mutual && outside)) && (
       <div className='detailed-status__button'>
-        <EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} button={(
-          <IconButton title={intl.formatMessage(messages.pickEmoji)} icon='smile-o' iconComponent={EmojiReactionIcon} onClick={this.handleEmojiPickInnerButton} />
-        )} />
+        <EmojiPickerDropdown onPickEmoji={this.handleEmojiPick} inverted={false} />
       </div>
     )) || (enableEmojiReaction && (
       <div className='detailed-status__button__blank' />
