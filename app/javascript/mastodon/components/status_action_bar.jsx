@@ -313,14 +313,14 @@ class StatusActionBar extends ImmutablePureComponent {
       if (publicStatus && isRemote) {
         menu.push({ text: intl.formatMessage(messages.openOriginalPage), href: status.get('url') });
       }
-  
+
       menu.push({ text: intl.formatMessage(messages.copy), action: this.handleCopy });
-  
+
       if (publicStatus && 'share' in navigator) {
         menu.push({ text: intl.formatMessage(messages.share), action: this.handleShareClick });
       }
-  
-      if (anonymousStatus && (signedIn || !isRemote)) {
+
+      if (anonymousStatus && !isRemote) {
         menu.push({ text: intl.formatMessage(messages.embed), action: this.handleEmbed });
       }
     }

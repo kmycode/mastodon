@@ -21,6 +21,7 @@ sq:
       one: Mesazh
       other: Mesazhe
     posts_tab_heading: Mesazhe
+    self_follow_error: Ndjekja e llogarisë personale nuk lejohet
   admin:
     account_actions:
       action: Kryeje veprimin
@@ -1158,7 +1159,6 @@ sq:
     use_security_key: Përdor kyç sigurie
   author_attribution:
     example_title: Tekst shembull
-    hint_html: Kontrolloni se si vlerësoheni, kur ndahen lidhje me të tjerë në Mastodon.
     more_from_html: Më tepër nga %{name}
     s_blog: Blogu i %{name}
     title: Atribuim autorësh

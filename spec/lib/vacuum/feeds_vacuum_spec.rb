@@ -18,11 +18,11 @@ RSpec.describe Vacuum::FeedsVacuum do
       redis.sadd(feed_key_for(inactive_user, 'reblogs:2'), 3)
       redis.zadd(list_key_for(list), 1, 1)
       redis.zadd(antenna_key_for(antenna), 1, 1)
-
-      subject.perform
     end
 
     it 'clears feeds of inactive users and lists' do
+      subject.perform
+
       expect(redis.zcard(feed_key_for(inactive_user))).to eq 0
       expect(redis.zcard(feed_key_for(active_user))).to eq 1
       expect(redis.exists?(feed_key_for(inactive_user, 'reblogs'))).to be false
