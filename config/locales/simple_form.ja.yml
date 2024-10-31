@@ -330,6 +330,7 @@ ja:
         setting_use_custom_css: カスタムCSSを有効にする
         setting_use_pending_items: 手動更新モード
         setting_use_public_index: Mastodonの標準設定によって検索が許可されたアカウントの公開投稿を検索結果に含める
+        setting_use_server_css: 管理者の設定したカスタムCSSを有効にする
         severity: 重大性
         sign_in_token_attempt: セキュリティコード
         title: タイトル

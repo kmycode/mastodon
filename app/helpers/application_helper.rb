@@ -235,6 +235,12 @@ module ApplicationHelper
     full_asset_url(instance_presenter.mascot&.file&.url || frontend_asset_path('images/elephant_ui_plane.svg'))
   end
 
+  def server_css?
+    return true if current_account&.user.nil?
+
+    current_account.user.setting_use_server_css
+  end
+
   def user_custom_css?
     return false if current_account&.user.nil?
 

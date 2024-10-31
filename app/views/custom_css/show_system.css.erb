@@ -1,0 +1,6 @@
+<%- @user_roles.each do |role| %>
+.user-role-<%= role.id %> {
+  --user-role-accent: <%= role.color %>;
+}
+
+<%- end %>

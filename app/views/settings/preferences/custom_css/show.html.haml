@@ -9,6 +9,13 @@
 
   = f.simple_fields_for :settings, current_user.settings do |ff|
     .fields-group
+      = ff.input :'web.use_server_css',
+                 hint: false,
+                 label: I18n.t('simple_form.labels.defaults.setting_use_server_css'),
+                 kmyblue: true,
+                 wrapper: :with_label
+
+    .fields-group
       = ff.input :'web.use_custom_css',
                  hint: false,
                  label: I18n.t('simple_form.labels.defaults.setting_use_custom_css'),
