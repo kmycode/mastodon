@@ -329,7 +329,7 @@ en:
         setting_trends: Show today's trends
         setting_unfollow_modal: Show confirmation dialog before unfollowing someone
         setting_use_blurhash: Show colorful gradients for hidden media
-        setting_use_custom_css: Enable custom CSS
+        setting_use_custom_css: Enable custom CSS set by yourself
         setting_use_pending_items: Slow mode
         setting_use_public_index: Include permitted accounts post to results of search
         setting_use_server_css: Enable server CSS set by the administrator
