@@ -55,12 +55,11 @@ module Mastodon
     def to_s_of_mastodon
       components = [to_a.join('.')]
       components << "-#{prerelease}" if prerelease.present?
-      components << "+#{build_metadata_of_mastodon}" if build_metadata_of_mastodon.present?
       components.join
     end
 
     def build_metadata
-      ['kmyblue', to_s_of_kmyblue, build_metadata_of_mastodon].compact.join('.')
+      ['kmyblue', to_s_of_kmyblue].compact.join('.')
     end
 
     def build_metadata_of_mastodon
@@ -75,6 +74,7 @@ module Mastodon
       components = [to_a.join('.')]
       components << "-#{prerelease}" if prerelease.present?
       components << "+#{build_metadata}" if build_metadata.present?
+      components << "+#{build_metadata_of_mastodon}" if build_metadata_of_mastodon.present?
       components.join
     end
 
