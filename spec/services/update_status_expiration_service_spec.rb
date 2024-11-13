@@ -7,9 +7,10 @@ RSpec.describe UpdateStatusExpirationService do
 
   let(:status) { Fabricate(:status, text: text) }
 
+  before { travel_to '2023-01-01T00:00:00Z' }
+
   shared_examples 'set expire date' do |offset|
     it 'set expire date' do
-      travel_to '2023-01-01T00:00:00Z'
       subject
       expect(ScheduledExpirationStatus.where(status: status).count).to eq 1
       expect(ScheduledExpirationStatus.exists?(scheduled_at: Time.now.utc + offset, status: status)).to be true
@@ -55,7 +56,6 @@ RSpec.describe UpdateStatusExpirationService do
 
   context 'when update status text' do
     before do
-      travel_to '2023-01-01T00:00:00Z'
       Fabricate(:scheduled_expiration_status, account: status.account, status: status)
     end
 
