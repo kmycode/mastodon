@@ -186,13 +186,15 @@ const TextList: React.FC<{
 };
 
 const RadioPanel: React.FC<{
+  antennaId: string;
   items: { title: string; value: string }[];
   valueLengths: number[];
   alertMessage: React.ReactElement;
   onChange: (value: string) => void;
-}> = ({ items, valueLengths, alertMessage, onChange }) => {
+}> = ({ antennaId, items, valueLengths, alertMessage, onChange }) => {
   const [error, setError] = useState(false);
   const [value, setValue] = useState('');
+  const [lastAntennaId, setLastAntennaId] = useState('');
 
   useEffect(() => {
     if (valueLengths.length >= 2) {
@@ -203,7 +205,11 @@ const RadioPanel: React.FC<{
   }, [valueLengths]);
 
   useEffect(() => {
-    if (items.length > 0) {
+    if (
+      items.length > 0 &&
+      valueLengths.length === items.length &&
+      antennaId !== lastAntennaId
+    ) {
       for (let i = 0; i < valueLengths.length; i++) {
         const length = valueLengths[i] ?? 0;
         const item = items[i] ?? { value: '' };
@@ -215,7 +221,7 @@ const RadioPanel: React.FC<{
       }
       setValue(items[0]?.value ?? '');
     }
-  }, [items, valueLengths, setValue, onChange]);
+  }, [antennaId, lastAntennaId, items, valueLengths, setValue, onChange]);
 
   const handleChange = useCallback(
     ({ currentTarget }: React.MouseEvent<HTMLButtonElement>) => {
@@ -223,9 +229,12 @@ const RadioPanel: React.FC<{
       if (value !== selected) {
         onChange(selected);
         setValue(selected);
+
+        // Set the flag for the first manual tab change.
+        setLastAntennaId(antennaId);
       }
     },
-    [value, setValue, onChange],
+    [value, setValue, onChange, setLastAntennaId, antennaId],
   );
 
   return (
@@ -585,6 +594,7 @@ const AntennaSetting: React.FC<{
 
       <div className='scrollable antenna-setting'>
         <RadioPanel
+          antennaId={id}
           items={rangeRadioItems}
           valueLengths={rangeRadioLengths}
           alertMessage={
@@ -617,6 +627,7 @@ const AntennaSetting: React.FC<{
         )}
 
         <RadioPanel
+          antennaId={id}
           items={contentRadioItems}
           valueLengths={contentRadioLengths}
           alertMessage={
