@@ -23,6 +23,7 @@ class InstanceInfo < ApplicationRecord
     cherrypick
     fedibird
     firefish
+    hollo
     iceshrimp
     meisskey
     misskey
