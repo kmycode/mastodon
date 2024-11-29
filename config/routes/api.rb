@@ -197,7 +197,7 @@ namespace :api, format: false do
         resources :lists, only: :index
         resources :antennas, only: :index
         resources :exclude_antennas, only: :index
-        resources :circlues, only: :index
+        resources :circles, only: :index
         resources :identity_proofs, only: :index
         resources :featured_tags, only: :index
       end
