@@ -21,7 +21,6 @@ RSpec.describe FriendDomain do
         type: 'Follow',
         actor: 'https://cb6e6126.ngrok.io/actor',
         object: 'https://www.w3.org/ns/activitystreams#Public',
-        inboxUrl: 'https://cb6e6126.ngrok.io/inbox',
       }))).to have_been_made.once
     end
   end

@@ -116,6 +116,7 @@ class FriendDomain < ApplicationRecord
       object: ActivityPub::TagManager::COLLECTIONS[:public],
 
       # Cannot use inbox_url method because this model also has inbox_url column
+      # This is deprecated property. Newer version's kmyblue will ignore it.
       inboxUrl: "https://#{Rails.configuration.x.web_domain}/inbox",
     }
   end
