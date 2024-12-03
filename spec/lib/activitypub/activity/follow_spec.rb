@@ -380,11 +380,10 @@ RSpec.describe ActivityPub::Activity::Follow do
   context 'when given a friend server' do
     subject { described_class.new(json, sender) }
 
-    let(:sender) { Fabricate(:account, domain: 'abc.com', url: 'https://abc.com/#actor') }
+    let(:sender) { Fabricate(:account, domain: 'abc.com', url: 'https://abc.com/#actor', shared_inbox_url: 'https://abc.com/shared_inbox') }
     let!(:friend) { Fabricate(:friend_domain, domain: 'abc.com', inbox_url: 'https://example.com/inbox', passive_state: :idle) }
     let!(:owner_user) { Fabricate(:user, role: UserRole.find_by(name: 'Owner')) }
     let!(:patch_user) { Fabricate(:user, role: Fabricate(:user_role, name: 'OhagiOps', permissions: UserRole::FLAGS[:manage_federation])) }
-    let(:inbox_url) { nil }
 
     let(:json) do
       {
@@ -393,7 +392,6 @@ RSpec.describe ActivityPub::Activity::Follow do
         type: 'Follow',
         actor: ActivityPub::TagManager.instance.uri_for(sender),
         object: 'https://www.w3.org/ns/activitystreams#Public',
-        inboxUrl: inbox_url,
       }.with_indifferent_access
     end
 
@@ -415,25 +413,34 @@ RSpec.describe ActivityPub::Activity::Follow do
         expect(friend).to_not be_nil
         expect(friend.they_are_pending?).to be true
         expect(friend.passive_follow_activity_id).to eq 'foo'
-        expect(friend.inbox_url).to eq 'https://abc.com/inbox'
+        expect(friend.inbox_url).to eq 'https://abc.com/shared_inbox'
       end
     end
 
-    context 'when no record and inbox_url is specified' do
-      let(:inbox_url) { 'https://ohagi.com/inbox' }
+    context 'when old spec which no record and inbox_url is specified' do
+      let(:json) do
+        {
+          '@context': 'https://www.w3.org/ns/activitystreams',
+          id: 'foo',
+          type: 'Follow',
+          actor: ActivityPub::TagManager.instance.uri_for(sender),
+          object: 'https://www.w3.org/ns/activitystreams#Public',
+          inboxUrl: 'https://evil.org/bad_inbox',
+        }.with_indifferent_access
+      end
 
       before do
         friend.destroy!
       end
 
-      it 'marks the friend as pending' do
+      it 'marks the friend as pending but inboxUrl is not working' do
         subject.perform
 
         friend = FriendDomain.find_by(domain: 'abc.com')
         expect(friend).to_not be_nil
         expect(friend.they_are_pending?).to be true
         expect(friend.passive_follow_activity_id).to eq 'foo'
-        expect(friend.inbox_url).to eq 'https://ohagi.com/inbox'
+        expect(friend.inbox_url).to eq 'https://abc.com/shared_inbox'
       end
     end
 
