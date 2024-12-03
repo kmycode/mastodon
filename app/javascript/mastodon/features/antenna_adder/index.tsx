@@ -14,6 +14,7 @@ import {
   apiAddExcludeAccountToAntenna,
   apiRemoveAccountFromAntenna,
   apiRemoveExcludeAccountFromAntenna,
+  apiGetExcludeAccountAntennas,
 } from 'mastodon/api/antennas';
 import type { ApiAntennaJSON } from 'mastodon/api_types/antennas';
 import { Button } from 'mastodon/components/button';
@@ -53,8 +54,8 @@ const AntennaItem: React.FC<{
 
   return (
     // eslint-disable-next-line jsx-a11y/label-has-associated-control
-    <label className='antennas__item'>
-      <div className='antennas__item__title'>
+    <label className='lists__item'>
+      <div className='lists__item__title'>
         <Icon id='antenna-ul' icon={AntennaIcon} />
         <span>{title}</span>
       </div>
@@ -94,8 +95,8 @@ const NewAntennaItem: React.FC<{
   }, [setTitle, dispatch, onCreate, title]);
 
   return (
-    <form className='antennas__item' onSubmit={handleSubmit}>
-      <label className='antennas__item__title'>
+    <form className='lists__item' onSubmit={handleSubmit}>
+      <label className='lists__item__title'>
         <Icon id='antenna-ul' icon={AntennaIcon} />
 
         <input
@@ -127,7 +128,11 @@ const AntennaAdder: React.FC<{
   useEffect(() => {
     dispatch(fetchAntennas());
 
-    apiGetAccountAntennas(accountId)
+    const api = isExclude
+      ? apiGetExcludeAccountAntennas
+      : apiGetAccountAntennas;
+
+    api(accountId)
       .then((data) => {
         setAntennaIds(data.map((l) => l.id));
         return '';
@@ -135,7 +140,7 @@ const AntennaAdder: React.FC<{
       .catch(() => {
         // Nothing
       });
-  }, [dispatch, setAntennaIds, accountId]);
+  }, [dispatch, setAntennaIds, accountId, isExclude]);
 
   const handleToggle = useCallback(
     (antennaId: string, checked: boolean) => {
@@ -205,7 +210,7 @@ const AntennaAdder: React.FC<{
       </div>
 
       <div className='dialog-modal__content'>
-        <div className='antennas-scrollable'>
+        <div className='lists-scrollable'>
           <NewAntennaItem onCreate={handleCreate} />
 
           {antennas.map((antenna) => (
