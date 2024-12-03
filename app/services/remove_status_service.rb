@@ -146,7 +146,7 @@ class RemoveStatusService < BaseService
 
   def remove_from_hashtags
     @account.featured_tags.where(tag_id: @status.tags.map(&:id)).find_each do |featured_tag|
-      featured_tag.decrement(@status.id)
+      featured_tag.decrement(@status)
     end
 
     return unless %i(public public_unlisted login).include?(@visibility) || (@status.unlisted_visibility? && %i(public public_unlisted).include?(@searchability))

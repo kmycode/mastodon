@@ -64,6 +64,7 @@ class DeleteAccountService < BaseService
     scheduled_statuses
     scheduled_expiration_statuses
     status_pins
+    tag_follows
   )
 
   ASSOCIATIONS_ON_DESTROY = %w(
