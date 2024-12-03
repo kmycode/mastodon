@@ -18,8 +18,8 @@ module Mastodon
 
     def kmyblue_flag
       # 'LTS'
-      'dev'
-      # nil
+      # 'dev'
+      nil
     end
 
     def major
