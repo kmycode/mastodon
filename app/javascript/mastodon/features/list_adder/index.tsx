@@ -6,6 +6,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import CloseIcon from '@/material-icons/400-24px/close.svg?react';
 import ListAltIcon from '@/material-icons/400-24px/list_alt.svg?react';
+import VisibilityOffIcon from '@/material-icons/400-24px/visibility_off.svg?react';
 import { fetchLists } from 'mastodon/actions/lists';
 import { createList } from 'mastodon/actions/lists_typed';
 import {
@@ -39,9 +40,10 @@ const messages = defineMessages({
 const ListItem: React.FC<{
   id: string;
   title: string;
+  exclusive: boolean;
   checked: boolean;
   onChange: (id: string, checked: boolean) => void;
-}> = ({ id, title, checked, onChange }) => {
+}> = ({ id, title, exclusive, checked, onChange }) => {
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onChange(id, e.target.checked);
@@ -54,6 +56,7 @@ const ListItem: React.FC<{
     <label className='lists__item'>
       <div className='lists__item__title'>
         <Icon id='list-ul' icon={ListAltIcon} />
+        {exclusive && <Icon id='eye-slash' icon={VisibilityOffIcon} />}
         <span>{title}</span>
       </div>
 
@@ -199,6 +202,7 @@ const ListAdder: React.FC<{
               key={list.id}
               id={list.id}
               title={list.title}
+              exclusive={list.exclusive}
               checked={listIds.includes(list.id)}
               onChange={handleToggle}
             />
