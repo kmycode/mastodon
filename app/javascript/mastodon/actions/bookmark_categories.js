@@ -129,9 +129,9 @@ export const fetchBookmarkCategoryStatusesFail = (id, error) => ({
 
 export function expandBookmarkCategoryStatuses(bookmarkCategoryId) {
   return (dispatch, getState) => {
-    const url = getState().getIn(['bookmark_categories', bookmarkCategoryId, 'next'], null);
+    const url = getState().getIn(['status_lists', 'bookmark_category_statuses', bookmarkCategoryId, 'next'], null);
 
-    if (url === null || getState().getIn(['bookmark_categories', bookmarkCategoryId, 'isLoading'])) {
+    if (url === null || getState().getIn(['status_lists', 'bookmark_category_statuses', bookmarkCategoryId, 'isLoading'])) {
       return;
     }
 
