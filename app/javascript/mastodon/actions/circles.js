@@ -152,9 +152,9 @@ export function fetchCircleStatusesFail(id, error) {
 
 export function expandCircleStatuses(circleId) {
   return (dispatch, getState) => {
-    const url = getState().getIn(['circles', circleId, 'next'], null);
+    const url = getState().getIn(['status_lists', 'circle_statuses', circleId, 'next'], null);
 
-    if (url === null || getState().getIn(['circles', circleId, 'isLoading'])) {
+    if (url === null || getState().getIn(['status_lists', 'circle_statuses', circleId, 'isLoading'])) {
       return;
     }
 
