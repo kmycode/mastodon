@@ -12,6 +12,7 @@ const ListFactory = Record<ListShape>({
   exclusive: false,
   replies_policy: 'list',
   notify: false,
+  favourite: true,
   antennas: [],
 });
 

@@ -20,6 +20,7 @@ RSpec.describe 'Lists' do
         Fabricate(:list, account: user.account, title: 'third list', replies_policy: :none),
         Fabricate(:list, account: user.account, title: 'fourth list', exclusive: true),
         Fabricate(:list, account: user.account, title: 'fifth list', notify: true),
+        Fabricate(:list, account: user.account, title: 'fifth list', favourite: false),
       ]
     end
 
@@ -32,6 +33,7 @@ RSpec.describe 'Lists' do
           exclusive: list.exclusive,
           antennas: list.antennas,
           notify: list.notify,
+          favourite: list.favourite,
         }
       end
     end
@@ -74,6 +76,7 @@ RSpec.describe 'Lists' do
         exclusive: list.exclusive,
         antennas: list.antennas,
         notify: list.notify,
+        favourite: true,
       })
     end
 
@@ -150,7 +153,7 @@ RSpec.describe 'Lists' do
     end
 
     let(:list)   { Fabricate(:list, account: user.account, title: 'my list') }
-    let(:params) { { title: 'list', replies_policy: 'followed', exclusive: 'true' } }
+    let(:params) { { title: 'list', replies_policy: 'followed', exclusive: 'true', favourite: 'false' } }
 
     it_behaves_like 'forbidden for wrong scope', 'read read:lists'
 
@@ -159,6 +162,7 @@ RSpec.describe 'Lists' do
         .to change_list_title
         .and change_list_replies_policy
         .and change_list_exclusive
+        .and change_list_favourite
 
       expect(response).to have_http_status(200)
       expect(response.content_type)
@@ -172,6 +176,7 @@ RSpec.describe 'Lists' do
         exclusive: list.exclusive,
         antennas: list.antennas,
         notify: list.notify,
+        favourite: false,
       })
     end
 
@@ -185,6 +190,10 @@ RSpec.describe 'Lists' do
 
     def change_list_exclusive
       change { list.reload.exclusive }.from(false).to(true)
+    end
+
+    def change_list_favourite
+      change { list.reload.favourite }.from(true).to(false)
     end
 
     context 'when the list does not exist' do
@@ -208,6 +217,102 @@ RSpec.describe 'Lists' do
           .to start_with('application/json')
       end
     end
+  end
+
+  shared_examples 'check list permissions when post' do |path, params|
+    context 'when the list does not exist' do
+      it 'returns http not found' do
+        post path, headers: headers, params: params
+
+        expect(response).to have_http_status(404)
+        expect(response.content_type)
+          .to start_with('application/json')
+      end
+    end
+
+    context 'when the list belongs to another user' do
+      let(:list) { Fabricate(:list) }
+
+      it 'returns http not found' do
+        subject
+
+        expect(response).to have_http_status(404)
+        expect(response.content_type)
+          .to start_with('application/json')
+      end
+    end
+  end
+
+  describe 'POST /api/v1/lists/:id/favourite' do
+    subject do
+      post "/api/v1/lists/#{list.id}/favourite", headers: headers, params: {}
+    end
+
+    let(:list) { Fabricate(:list, account: user.account, title: 'my list', favourite: false) }
+
+    it_behaves_like 'forbidden for wrong scope', 'read read:lists'
+
+    it 'returns the updated list and updates values', :aggregate_failures do
+      expect { subject }
+        .to change_favourite
+
+      expect(response).to have_http_status(200)
+      expect(response.content_type)
+        .to start_with('application/json')
+      list.reload
+
+      expect(response.parsed_body).to match({
+        id: list.id.to_s,
+        title: list.title,
+        replies_policy: list.replies_policy,
+        exclusive: list.exclusive,
+        antennas: list.antennas,
+        notify: list.notify,
+        favourite: true,
+      })
+    end
+
+    def change_favourite
+      change { list.reload.favourite }.from(false).to(true)
+    end
+
+    it_behaves_like 'check list permissions when post', '/api/v1/lists/-1/favourite', {}
+  end
+
+  describe 'POST /api/v1/lists/:id/unfavourite' do
+    subject do
+      post "/api/v1/lists/#{list.id}/unfavourite", headers: headers, params: {}
+    end
+
+    let(:list) { Fabricate(:list, account: user.account, title: 'my list', favourite: true) }
+
+    it_behaves_like 'forbidden for wrong scope', 'read read:lists'
+
+    it 'returns the updated list and updates values', :aggregate_failures do
+      expect { subject }
+        .to change_favourite
+
+      expect(response).to have_http_status(200)
+      expect(response.content_type)
+        .to start_with('application/json')
+      list.reload
+
+      expect(response.parsed_body).to match({
+        id: list.id.to_s,
+        title: list.title,
+        replies_policy: list.replies_policy,
+        exclusive: list.exclusive,
+        antennas: list.antennas,
+        notify: list.notify,
+        favourite: false,
+      })
+    end
+
+    def change_favourite
+      change { list.reload.favourite }.from(true).to(false)
+    end
+
+    it_behaves_like 'check list permissions when post', '/api/v1/lists/-1/favourite', {}
   end
 
   describe 'DELETE /api/v1/lists/:id' do

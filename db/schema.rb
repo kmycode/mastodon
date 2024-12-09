@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_12_05_135925) do
+ActiveRecord::Schema[7.2].define(version: 2024_12_08_232829) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -329,6 +329,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_05_135925) do
     t.boolean "ignore_reblog", default: false, null: false
     t.boolean "insert_feeds", default: false, null: false
     t.boolean "ltl", default: false, null: false
+    t.boolean "favourite", default: true, null: false
     t.index ["account_id"], name: "index_antennas_on_account_id"
     t.index ["any_accounts"], name: "index_antennas_on_any_accounts"
     t.index ["any_domains"], name: "index_antennas_on_any_domains"
@@ -786,6 +787,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_12_05_135925) do
     t.integer "replies_policy", default: 0, null: false
     t.boolean "exclusive", default: false, null: false
     t.boolean "notify", default: false, null: false
+    t.boolean "favourite", default: true, null: false
     t.index ["account_id"], name: "index_lists_on_account_id"
   end
 

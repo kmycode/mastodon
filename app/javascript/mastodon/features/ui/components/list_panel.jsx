@@ -16,7 +16,7 @@ const getOrderedLists = createSelector([state => state.get('lists')], lists => {
     return lists;
   }
 
-  return lists.toList().filter(item => !!item).sort((a, b) => a.get('title').localeCompare(b.get('title'))).take(8);
+  return lists.toList().filter(item => !!item && item.get('favourite')).sort((a, b) => a.get('title').localeCompare(b.get('title'))).take(8);
 });
 
 const getOrderedAntennas = createSelector([state => state.get('antennas')], antennas => {
@@ -24,7 +24,7 @@ const getOrderedAntennas = createSelector([state => state.get('antennas')], ante
     return antennas;
   }
 
-  return antennas.toList().filter(item => !!item && !item.get('insert_feeds') && item.get('title') !== undefined).sort((a, b) => a.get('title').localeCompare(b.get('title'))).take(8);
+  return antennas.toList().filter(item => !!item && item.get('favourite') && item.get('title') !== undefined).sort((a, b) => a.get('title').localeCompare(b.get('title'))).take(8);
 });
 
 export const ListPanel = () => {

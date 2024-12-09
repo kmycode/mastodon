@@ -10,5 +10,6 @@ export interface ApiListJSON {
   exclusive: boolean;
   replies_policy: RepliesPolicyType;
   notify: boolean;
+  favourite: boolean;
   antennas?: ApiAntennaJSON[];
 }

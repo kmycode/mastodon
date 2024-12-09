@@ -62,6 +62,7 @@ const NewAntenna: React.FC<{
   const [ignoreReblog, setIgnoreReblog] = useState(false);
   const [mode, setMode] = useState('filtering');
   const [destination, setDestination] = useState('timeline');
+  const [favourite, setFavourite] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -80,6 +81,7 @@ const NewAntenna: React.FC<{
       setListId(antenna.list?.id ?? '0');
       setWithMediaOnly(antenna.with_media_only);
       setIgnoreReblog(antenna.ignore_reblog);
+      setFavourite(antenna.favourite);
 
       if (antenna.stl) {
         setMode('stl');
@@ -109,6 +111,7 @@ const NewAntenna: React.FC<{
     setIgnoreReblog,
     setMode,
     setDestination,
+    setFavourite,
     id,
     antenna,
     lists,
@@ -179,6 +182,13 @@ const NewAntenna: React.FC<{
     [setIgnoreReblog],
   );
 
+  const handleFavouriteChange = useCallback(
+    ({ target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
+      setFavourite(checked);
+    },
+    [setFavourite],
+  );
+
   const handleSubmit = useCallback(() => {
     setSubmitting(true);
 
@@ -193,6 +203,7 @@ const NewAntenna: React.FC<{
           list_id: destination === 'list' ? listId : '0',
           with_media_only: withMediaOnly,
           ignore_reblog: ignoreReblog,
+          favourite,
         }),
       ).then(() => {
         setSubmitting(false);
@@ -208,6 +219,7 @@ const NewAntenna: React.FC<{
           list_id: destination === 'list' ? listId : '0',
           with_media_only: withMediaOnly,
           ignore_reblog: ignoreReblog,
+          favourite,
         }),
       ).then((result) => {
         setSubmitting(false);
@@ -233,6 +245,7 @@ const NewAntenna: React.FC<{
     withMediaOnly,
     ignoreReblog,
     destination,
+    favourite,
   ]);
 
   return (
@@ -459,6 +472,35 @@ const NewAntenna: React.FC<{
               </div>
             </>
           )}
+
+          <div className='fields-group'>
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+            <label className='app-form__toggle'>
+              <div className='app-form__toggle__label'>
+                <strong>
+                  <FormattedMessage
+                    id='antennas.favourite'
+                    defaultMessage='Favorite'
+                  />
+                </strong>
+                <span className='hint'>
+                  <FormattedMessage
+                    id='antennas.favourite_hint'
+                    defaultMessage='When opening the Web Client on a PC, this antenna appears in the navigation.'
+                  />
+                </span>
+              </div>
+
+              <div className='app-form__toggle__toggle'>
+                <div>
+                  <Toggle
+                    checked={favourite}
+                    onChange={handleFavouriteChange}
+                  />
+                </div>
+              </div>
+            </label>
+          </div>
 
           <div className='actions'>
             <button className='button' type='submit'>

@@ -232,6 +232,11 @@ namespace :api, format: false do
 
     resources :lists, only: [:index, :create, :show, :update, :destroy] do
       resource :accounts, only: [:show, :create, :destroy], module: :lists
+
+      member do
+        post :favourite
+        post :unfavourite
+      end
     end
 
     resources :antennas, only: [:index, :create, :show, :update, :destroy] do

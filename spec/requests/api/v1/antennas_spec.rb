@@ -19,6 +19,7 @@ RSpec.describe 'Antennas' do
         Fabricate(:antenna, account: user.account, title: 'second antenna', with_media_only: true),
         Fabricate(:antenna, account: user.account, title: 'third antenna', stl: true),
         Fabricate(:antenna, account: user.account, title: 'fourth antenna', ignore_reblog: true),
+        Fabricate(:antenna, account: user.account, title: 'fourth antenna', favourite: false),
       ]
     end
 
@@ -37,6 +38,7 @@ RSpec.describe 'Antennas' do
           domains_count: 0,
           tags_count: 0,
           keywords_count: 0,
+          favourite: antenna.favourite,
         }
       end
     end
@@ -80,7 +82,8 @@ RSpec.describe 'Antennas' do
         accounts_count: 0,
         domains_count: 0,
         tags_count: 0,
-        keywords_count: 0
+        keywords_count: 0,
+        favourite: true
       )
     end
 
@@ -137,7 +140,7 @@ RSpec.describe 'Antennas' do
     end
 
     let(:antenna) { Fabricate(:antenna, account: user.account, title: 'my antenna') }
-    let(:params) { { title: 'antenna', ignore_reblog: 'true', insert_feeds: 'true' } }
+    let(:params) { { title: 'antenna', ignore_reblog: 'true', insert_feeds: 'true', favourite: 'false' } }
 
     it_behaves_like 'forbidden for wrong scope', 'read read:lists'
 
@@ -146,6 +149,7 @@ RSpec.describe 'Antennas' do
         .to change_antenna_title
         .and change_antenna_ignore_reblog
         .and change_antenna_insert_feeds
+        .and change_antenna_favourite
 
       expect(response).to have_http_status(200)
       antenna.reload
@@ -162,7 +166,8 @@ RSpec.describe 'Antennas' do
         accounts_count: 0,
         domains_count: 0,
         tags_count: 0,
-        keywords_count: 0
+        keywords_count: 0,
+        favourite: false
       )
     end
 
@@ -176,6 +181,10 @@ RSpec.describe 'Antennas' do
 
     def change_antenna_insert_feeds
       change { antenna.reload.insert_feeds }.from(false).to(true)
+    end
+
+    def change_antenna_favourite
+      change { antenna.reload.favourite }.from(true).to(false)
     end
 
     context 'when the antenna does not exist' do

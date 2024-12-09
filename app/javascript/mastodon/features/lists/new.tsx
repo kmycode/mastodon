@@ -82,6 +82,7 @@ const NewList: React.FC<{
   const [exclusive, setExclusive] = useState(false);
   const [repliesPolicy, setRepliesPolicy] = useState<RepliesPolicyType>('list');
   const [notify, setNotify] = useState(false);
+  const [favourite, setFavourite] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -96,8 +97,17 @@ const NewList: React.FC<{
       setExclusive(list.exclusive);
       setRepliesPolicy(list.replies_policy);
       setNotify(list.notify);
+      setFavourite(list.favourite);
     }
-  }, [setTitle, setExclusive, setRepliesPolicy, setNotify, id, list]);
+  }, [
+    setTitle,
+    setExclusive,
+    setRepliesPolicy,
+    setNotify,
+    setFavourite,
+    id,
+    list,
+  ]);
 
   const handleTitleChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,6 +137,13 @@ const NewList: React.FC<{
     [setNotify],
   );
 
+  const handleFavouriteChange = useCallback(
+    ({ target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
+      setFavourite(checked);
+    },
+    [setFavourite],
+  );
+
   const handleSubmit = useCallback(() => {
     setSubmitting(true);
 
@@ -138,6 +155,7 @@ const NewList: React.FC<{
           exclusive,
           replies_policy: repliesPolicy,
           notify,
+          favourite,
         }),
       ).then(() => {
         setSubmitting(false);
@@ -150,6 +168,7 @@ const NewList: React.FC<{
           exclusive,
           replies_policy: repliesPolicy,
           notify,
+          favourite,
         }),
       ).then((result) => {
         setSubmitting(false);
@@ -171,6 +190,7 @@ const NewList: React.FC<{
     exclusive,
     repliesPolicy,
     notify,
+    favourite,
   ]);
 
   return (
@@ -319,6 +339,35 @@ const NewList: React.FC<{
               <div className='app-form__toggle__toggle'>
                 <div>
                   <Toggle checked={notify} onChange={handleNotifyChange} />
+                </div>
+              </div>
+            </label>
+          </div>
+
+          <div className='fields-group'>
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+            <label className='app-form__toggle'>
+              <div className='app-form__toggle__label'>
+                <strong>
+                  <FormattedMessage
+                    id='lists.favourite'
+                    defaultMessage='Favorite'
+                  />
+                </strong>
+                <span className='hint'>
+                  <FormattedMessage
+                    id='lists.favourite_hint'
+                    defaultMessage='When opening the Web Client on a PC, this list appears in the navigation.'
+                  />
+                </span>
+              </div>
+
+              <div className='app-form__toggle__toggle'>
+                <div>
+                  <Toggle
+                    checked={favourite}
+                    onChange={handleFavouriteChange}
+                  />
                 </div>
               </div>
             </label>

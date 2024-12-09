@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class REST::AntennaSerializer < ActiveModel::Serializer
-  attributes :id, :title, :stl, :ltl, :insert_feeds, :with_media_only, :ignore_reblog, :accounts_count, :domains_count, :tags_count, :keywords_count
+  attributes :id, :title, :stl, :ltl, :insert_feeds, :with_media_only, :ignore_reblog, :accounts_count, :domains_count, :tags_count, :keywords_count, :favourite
 
   class ListSerializer < ActiveModel::Serializer
     attributes :id, :title

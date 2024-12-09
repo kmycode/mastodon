@@ -10,6 +10,7 @@ export interface ApiAntennaJSON {
   insert_feeds: boolean;
   with_media_only: boolean;
   ignore_reblog: boolean;
+  favourite: boolean;
   list: ApiListJSON | null;
 
   list_id: string | undefined;

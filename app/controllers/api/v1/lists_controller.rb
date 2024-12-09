@@ -38,6 +38,16 @@ class Api::V1::ListsController < Api::BaseController
     render_empty
   end
 
+  def favourite
+    @list.favourite!
+    render json: @list, serializer: REST::ListSerializer
+  end
+
+  def unfavourite
+    @list.unfavourite!
+    render json: @list, serializer: REST::ListSerializer
+  end
+
   private
 
   def set_list
@@ -45,6 +55,6 @@ class Api::V1::ListsController < Api::BaseController
   end
 
   def list_params
-    params.permit(:title, :replies_policy, :exclusive, :notify)
+    params.permit(:title, :replies_policy, :exclusive, :notify, :favourite)
   end
 end

@@ -5,27 +5,28 @@
 # Table name: antennas
 #
 #  id               :bigint(8)        not null, primary key
-#  account_id       :bigint(8)        not null
-#  list_id          :bigint(8)        not null
-#  title            :string           default(""), not null
-#  keywords         :jsonb
-#  exclude_keywords :jsonb
-#  any_domains      :boolean          default(TRUE), not null
-#  any_tags         :boolean          default(TRUE), not null
 #  any_accounts     :boolean          default(TRUE), not null
+#  any_domains      :boolean          default(TRUE), not null
 #  any_keywords     :boolean          default(TRUE), not null
+#  any_tags         :boolean          default(TRUE), not null
 #  available        :boolean          default(TRUE), not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  expires_at       :datetime
-#  with_media_only  :boolean          default(FALSE), not null
-#  exclude_domains  :jsonb
 #  exclude_accounts :jsonb
+#  exclude_domains  :jsonb
+#  exclude_keywords :jsonb
 #  exclude_tags     :jsonb
-#  stl              :boolean          default(FALSE), not null
+#  expires_at       :datetime
+#  favourite        :boolean          default(TRUE), not null
 #  ignore_reblog    :boolean          default(FALSE), not null
 #  insert_feeds     :boolean          default(FALSE), not null
+#  keywords         :jsonb
 #  ltl              :boolean          default(FALSE), not null
+#  stl              :boolean          default(FALSE), not null
+#  title            :string           default(""), not null
+#  with_media_only  :boolean          default(FALSE), not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  account_id       :bigint(8)        not null
+#  list_id          :bigint(8)        not null
 #
 class Antenna < ApplicationRecord
   include Expireable
