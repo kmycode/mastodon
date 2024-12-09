@@ -144,7 +144,6 @@ namespace :dangerous do
       # Removed: account_stats group_activitypub_count
       %w(account_statuses_cleanup_policies keep_self_emoji),
       %w(account_statuses_cleanup_policies min_emojis),
-      %w(antennas favourite),
       %w(conversations ancestor_status_id),
       %w(conversations inbox_url),
       %w(custom_emojis aliases),
