@@ -214,7 +214,11 @@ const NewAntenna: React.FC<{
 
         if (isFulfilled(result)) {
           history.replace(`/antennas/${result.payload.id}/edit`);
-          history.push(`/antennas/${result.payload.id}/members`);
+          if (stl || ltl) {
+            history.push(`/antennas`);
+          } else {
+            history.push(`/antennas/${result.payload.id}/filtering`);
+          }
         }
 
         return '';
