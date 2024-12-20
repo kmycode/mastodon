@@ -151,7 +151,7 @@ export const Search: React.FC<{
         key: 'prompt-domain',
         label: (
           <>
-            <mark>language:</mark>{' '}
+            <mark>domain:</mark>{' '}
             <FormattedMessage
               id='search_popout.domain'
               defaultMessage='user domain'
