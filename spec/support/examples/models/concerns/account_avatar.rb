@@ -24,6 +24,15 @@ RSpec.shared_examples 'AccountAvatar' do |fabricator|
     end
   end
 
+  describe 'convertable avatars', :attachment_processing do
+    describe 'with AVIF' do
+      it 'creates a jpeg static style' do
+        account = Fabricate(fabricator, avatar: attachment_fixture('avatar.avif'))
+        expect(account.avatar_original_url.end_with?('.jpeg')).to be true
+      end
+    end
+  end
+
   describe 'base64-encoded files', :attachment_processing do
     let(:base64_attachment) { "data:image/jpeg;base64,#{Base64.encode64(attachment_fixture('attachment.jpg').read)}" }
     let(:account) { Fabricate(fabricator, avatar: base64_attachment) }

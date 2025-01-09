@@ -3,7 +3,8 @@
 module Account::Avatar
   extend ActiveSupport::Concern
 
-  AVATAR_IMAGE_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].freeze
+  AVATAR_IMAGE_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/avif', 'image/heif'].freeze
+  AVATAR_IMAGE_CONVERTIBLE_MIME_TYPES = ['image/heic', 'image/avif', 'image/heif'].freeze
   AVATAR_LIMIT = Rails.configuration.x.use_vips ? 8.megabytes : 2.megabytes
   AVATAR_DIMENSIONS = [400, 400].freeze
   AVATAR_GEOMETRY = [AVATAR_DIMENSIONS.first, AVATAR_DIMENSIONS.last].join('x')
@@ -12,6 +13,9 @@ module Account::Avatar
     def avatar_styles(file)
       styles = { original: { geometry: "#{AVATAR_GEOMETRY}#", file_geometry_parser: FastGeometryParser } }
       styles[:static] = { geometry: "#{AVATAR_GEOMETRY}#", format: 'png', convert_options: '-coalesce', file_geometry_parser: FastGeometryParser } if file.content_type == 'image/gif'
+
+      styles[:original] = { format: 'jpeg', content_type: 'image/jpeg' }.merge(styles[:original]) if AVATAR_IMAGE_CONVERTIBLE_MIME_TYPES.include?(file.content_type)
+
       styles
     end
 
@@ -20,7 +24,7 @@ module Account::Avatar
 
   included do
     # Avatar upload
-    has_attached_file :avatar, styles: ->(f) { avatar_styles(f) }, convert_options: { all: '+profile "!icc,*" +set date:modify +set date:create +set date:timestamp' }, processors: [:lazy_thumbnail]
+    has_attached_file :avatar, styles: ->(f) { avatar_styles(f) }, convert_options: { all: '+profile "!icc,*" +set date:modify +set date:create +set date:timestamp' }, processors: [:lazy_thumbnail, :type_corrector]
     validates_attachment_content_type :avatar, content_type: AVATAR_IMAGE_MIME_TYPES
     validates_attachment_size :avatar, less_than: AVATAR_LIMIT
     remotable_attachment :avatar, AVATAR_LIMIT, suppress_errors: false
