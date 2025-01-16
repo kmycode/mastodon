@@ -25,6 +25,7 @@ class InstanceInfo < ApplicationRecord
     firefish
     hollo
     iceshrimp
+    Iceshrimp.NET
     meisskey
     misskey
     pleroma
