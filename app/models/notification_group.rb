@@ -106,12 +106,12 @@ class NotificationGroup < ActiveModelSerializers::Model
         ActiveRecord::Base.connection.select_all(<<~SQL.squish, 'grouped_notifications', binds).cast_values.to_h { |k, *values| [k, values] }
           SELECT
             groups.group_key,
-            (SELECT id FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key AND #{upper_bound_cond} ORDER BY id DESC LIMIT 1),
-            array(SELECT from_account_id FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key AND #{upper_bound_cond} ORDER BY id DESC LIMIT $2),
-            (SELECT count(*) FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key AND #{upper_bound_cond}) AS notifications_count,
-            array(SELECT activity_id FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key AND #{upper_bound_cond} AND activity_type = 'EmojiReaction'),
+            (SELECT id FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key #{upper_bound_cond} ORDER BY id DESC LIMIT 1),
+            array(SELECT from_account_id FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key #{upper_bound_cond} ORDER BY id DESC LIMIT $2),
+            (SELECT count(*) FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key #{upper_bound_cond}) AS notifications_count,
+            array(SELECT activity_id FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key #{upper_bound_cond} AND activity_type = 'EmojiReaction'),
             (SELECT id FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key AND id >= $3 ORDER BY id ASC LIMIT 1) AS min_id,
-            (SELECT created_at FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key AND #{upper_bound_cond} ORDER BY id DESC LIMIT 1)
+            (SELECT created_at FROM notifications WHERE notifications.account_id = $1 AND notifications.group_key = groups.group_key #{upper_bound_cond} ORDER BY id DESC LIMIT 1)
           FROM
             unnest($3::text[]) AS groups(group_key);
         SQL
