@@ -320,6 +320,7 @@ ja:
         setting_reverse_search_quote: ダブルクオートで囲まず検索した時、単語単位で検索する
         setting_show_application: 送信したアプリを開示する
         setting_show_blocking_quote: ブロックしたユーザーの投稿を引用した投稿を表示する
+        setting_show_avatar_on_filter: フィルター対象投稿の投稿者名やアイコンを表示する
         setting_show_emoji_reaction_count: 投稿につけられた各絵文字の数を表示する
         setting_show_emoji_reaction_on_timeline: タイムライン上の投稿に他の人のつけた絵文字を表示する
         setting_show_favourite_menu: 右サイドメニューに「お気に入り」を表示する

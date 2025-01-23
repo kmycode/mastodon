@@ -13,6 +13,7 @@
  *   | 'recent_emojis'
  *   | 'relationships'
  *   | 'status_reference_unavailable_server'
+ *   | 'avatar_on_filter'
  * } HideItemsDefinition
  */
 

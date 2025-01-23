@@ -83,6 +83,7 @@ class UserSettings
     setting :hide_status_reference_unavailable_server, default: false
     setting :hide_favourite_menu, default: false
     setting :hide_emoji_reaction_count, default: false
+    setting :show_avatar_on_filter, default: true
 
     setting_inverse_alias :'web.show_blocking_quote', :'web.hide_blocking_quote'
     setting_inverse_alias :'web.show_emoji_reaction_count', :'web.hide_emoji_reaction_count'

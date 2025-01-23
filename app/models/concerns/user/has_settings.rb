@@ -123,6 +123,10 @@ module User::HasSettings
     settings['web.show_relationships']
   end
 
+  def setting_show_avatar_on_filter
+    settings['web.show_avatar_on_filter']
+  end
+
   def setting_allow_quote
     settings['allow_quote']
   end
