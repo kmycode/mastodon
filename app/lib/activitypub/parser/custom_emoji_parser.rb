@@ -34,6 +34,6 @@ class ActivityPub::Parser::CustomEmojiParser
   end
 
   def license
-    @json['license'] || @json['licence']
+    @json.dig('_misskey_license', 'freeText') || @json['license'] || @json['licence']
   end
 end

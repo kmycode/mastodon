@@ -34,6 +34,7 @@ module ContextHelper
     license: { 'schema' => 'http://schema.org#', 'license' => 'schema:license' },
     suspended: { 'toot' => 'http://joinmastodon.org/ns#', 'suspended' => 'toot:suspended' },
     attribution_domains: { 'toot' => 'http://joinmastodon.org/ns#', 'attributionDomains' => { '@id' => 'toot:attributionDomains', '@type' => '@id' } },
+    misskey_license: { 'misskey' => 'https://misskey-hub.net/ns#', '_misskey_license' => 'misskey:_misskey_license' },
   }.freeze
 
   def full_context
