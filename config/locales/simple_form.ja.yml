@@ -99,7 +99,6 @@ ja:
       filters:
         action: 投稿がフィルタに一致したときに実行するアクションを選択
         actions:
-          half_warn: フィルターに一致した投稿の本文のみを非表示にし、フィルターのタイトルを含む警告を表示します
           hide: フィルタに一致した投稿を完全に非表示にします
           warn: フィルタに一致した投稿を非表示にし、フィルタのタイトルを含む警告を表示します
       form_admin_settings:
@@ -372,7 +371,6 @@ ja:
         name: ハッシュタグ
       filters:
         actions:
-          half_warn: アカウント名だけを出し、本文は警告で隠す
           hide: 完全に隠す
           warn: 警告付きで隠す
         options:

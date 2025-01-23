@@ -36,7 +36,6 @@ export const makeGetStatus = () => {
       }
 
       let filtered = false;
-      let filterAction = 'warn';
       if ((accountReblog || accountBase).get('id') !== me && filters) {
         let filterResults = statusReblog?.get('filtered') || statusBase.get('filtered') || ImmutableList();
         const quoteFilterResults = statusQuote?.get('filtered');
@@ -47,13 +46,12 @@ export const makeGetStatus = () => {
           }
         }
 
-        if (filterResults.some((result) => filters.getIn([result.get('filter'), 'filter_action_ex']) === 'hide')) {
+        if (filterResults.some((result) => filters.getIn([result.get('filter'), 'filter_action']) === 'hide')) {
           return null;
         }
         filterResults = filterResults.filter(result => filters.has(result.get('filter')));
         if (!filterResults.isEmpty()) {
           filtered = filterResults.map(result => filters.getIn([result.get('filter'), 'title']));
-          filterAction = filterResults.some((result) => filters.getIn([result.get('filter'), 'filter_action_ex']) === 'warn') ? 'warn' : 'half_warn';
         }
       }
 
@@ -62,8 +60,6 @@ export const makeGetStatus = () => {
         map.set('quote', statusQuote);
         map.set('account', accountBase);
         map.set('matched_filters', filtered);
-        map.set('filter_action', filterAction);
-        map.set('filter_action_ex', filterAction);
       });
     },
   );
