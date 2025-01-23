@@ -318,8 +318,8 @@ en:
         setting_reject_send_limited_to_suspects: Reject sending mutual posts to Misskey
         setting_reject_unlisted_subscription: Reject sending unlisted visibility/non-public searchability posts to Misskey, Calckey
         setting_reverse_search_quote: Perform word-by-word search when search keywords are not enclosed in double quotes
-        setting_show_avatar_on_filter: Show filtered posts with avatar and user profile
         setting_show_application: Disclose application used to send posts
+        setting_show_avatar_on_filter: Show filtered posts with avatar and user profile
         setting_show_blocking_quote: Show posts which have a quote written by the user you are blocking
         setting_show_emoji_reaction_count: Show emoji reaction number
         setting_show_emoji_reaction_on_timeline: Show all emoji reactions on timeline
