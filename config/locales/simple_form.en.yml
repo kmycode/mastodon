@@ -3,7 +3,7 @@ en:
   simple_form:
     hints:
       account:
-        attribution_domains_as_text: One per line. Protects from false attributions.
+        attribution_domains: One per line. Protects from false attributions.
         discoverable: Your public posts and profile may be featured or recommended in various areas of Mastodon and your profile may be suggested to other users.
         display_name: Your full name or your fun name.
         fields: Your homepage, pronouns, age, anything you want.
@@ -99,7 +99,6 @@ en:
       filters:
         action: Chose which action to perform when a post matches the filter
         actions:
-          half_warn: Hide the filtered content (exclude account info) behind a warning mentioning the filter's title
           hide: Completely hide the filtered content, behaving as if it did not exist
           warn: Hide the filtered content behind a warning mentioning the filter's title
       form_admin_settings:
@@ -192,7 +191,7 @@ en:
     kmyblue: kmyblue
     labels:
       account:
-        attribution_domains_as_text: Websites allowed to credit you
+        attribution_domains: Websites allowed to credit you
         discoverable: Feature profile and posts in discovery algorithms
         fields:
           examples:
@@ -320,6 +319,7 @@ en:
         setting_reject_unlisted_subscription: Reject sending unlisted visibility/non-public searchability posts to Misskey, Calckey
         setting_reverse_search_quote: Perform word-by-word search when search keywords are not enclosed in double quotes
         setting_show_application: Disclose application used to send posts
+        setting_show_avatar_on_filter: Show filtered posts with avatar and user profile
         setting_show_blocking_quote: Show posts which have a quote written by the user you are blocking
         setting_show_emoji_reaction_count: Show emoji reaction number
         setting_show_emoji_reaction_on_timeline: Show all emoji reactions on timeline
@@ -372,7 +372,6 @@ en:
         name: Hashtag
       filters:
         actions:
-          half_warn: Half hide with a warning
           hide: Hide completely
           warn: Hide with a warning
         options:

@@ -14,6 +14,7 @@ namespace :dangerous do
     end
 
     target_migrations = %w(
+      20250123091137
       20241208232829
       20240828123604
       20240709063700

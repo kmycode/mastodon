@@ -3,7 +3,6 @@ ja:
   simple_form:
     hints:
       account:
-        attribution_domains_as_text: 1行につき1つずつ入力してください。この設定は関わりのないwebサイトに対して虚偽の帰属表示が行われることを防止する役割があります。
         discoverable: プロフィールと公開投稿をMastodonのおすすめやハイライトとしてほかのユーザーに表示することを許可します。
         display_name: フルネーム、ハンドルネームなど
         fields: ホームページ、代名詞、年齢など何でも構いません。
@@ -99,7 +98,6 @@ ja:
       filters:
         action: 投稿がフィルタに一致したときに実行するアクションを選択
         actions:
-          half_warn: フィルターに一致した投稿の本文のみを非表示にし、フィルターのタイトルを含む警告を表示します
           hide: フィルタに一致した投稿を完全に非表示にします
           warn: フィルタに一致した投稿を非表示にし、フィルタのタイトルを含む警告を表示します
       form_admin_settings:
@@ -192,7 +190,6 @@ ja:
     kmyblue: kmyblue
     labels:
       account:
-        attribution_domains_as_text: あなたの著者表示を許可するwebサイト
         discoverable: アカウントを見つけやすくする
         fields:
           examples:
@@ -320,6 +317,7 @@ ja:
         setting_reject_unlisted_subscription: Misskey系サーバーに「非収載」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
         setting_reverse_search_quote: ダブルクオートで囲まず検索した時、単語単位で検索する
         setting_show_application: 送信したアプリを開示する
+        setting_show_avatar_on_filter: フィルター対象投稿の投稿者名やアイコンを表示する
         setting_show_blocking_quote: ブロックしたユーザーの投稿を引用した投稿を表示する
         setting_show_emoji_reaction_count: 投稿につけられた各絵文字の数を表示する
         setting_show_emoji_reaction_on_timeline: タイムライン上の投稿に他の人のつけた絵文字を表示する
@@ -372,7 +370,6 @@ ja:
         name: ハッシュタグ
       filters:
         actions:
-          half_warn: アカウント名だけを出し、本文は警告で隠す
           hide: 完全に隠す
           warn: 警告付きで隠す
         options:

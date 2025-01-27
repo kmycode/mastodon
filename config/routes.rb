@@ -55,7 +55,8 @@ Rails.application.routes.draw do
 
   get 'manifest', to: 'manifests#show', defaults: { format: 'json' }
   get 'intent', to: 'intents#show'
-  get 'custom.css', to: 'custom_css#show', as: :custom_css
+  get 'custom.css', to: 'custom_css#show'
+  resources :custom_css, only: :show, path: :css
   get 'system.css', to: 'system_css#show', as: :system_css
   get 'user_custom.css', to: 'user_custom_css#show', as: :user_custom_css
 

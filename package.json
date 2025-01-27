@@ -1,7 +1,7 @@
 {
   "name": "@mastodon/mastodon",
   "license": "AGPL-3.0-or-later",
-  "packageManager": "yarn@4.5.3",
+  "packageManager": "yarn@4.6.0",
   "engines": {
     "node": ">=18"
   },
@@ -88,6 +88,7 @@
     "imports-loader": "^1.2.0",
     "intl-messageformat": "^10.3.5",
     "js-yaml": "^4.1.0",
+    "lande": "^1.0.10",
     "lodash": "^4.17.21",
     "mark-loader": "^0.1.6",
     "marky": "^1.2.5",
@@ -104,7 +105,7 @@
     "react-hotkeys": "^1.1.4",
     "react-immutable-proptypes": "^2.2.0",
     "react-immutable-pure-component": "^2.2.2",
-    "react-intl": "^6.4.2",
+    "react-intl": "^7.0.0",
     "react-motion": "^0.5.2",
     "react-notification": "^6.8.5",
     "react-overlays": "^5.2.1",
@@ -127,7 +128,7 @@
     "stringz": "^2.1.0",
     "substring-trie": "^1.0.2",
     "terser-webpack-plugin": "^4.2.3",
-    "tesseract.js": "^2.1.5",
+    "tesseract.js": "^6.0.0",
     "tiny-queue": "^0.2.1",
     "twitter-text": "3.1.0",
     "use-debounce": "^10.0.0",
@@ -203,6 +204,8 @@
     "webpack-dev-server": "^3.11.3"
   },
   "resolutions": {
+    "@types/react": "^18.2.7",
+    "@types/react-dom": "^18.2.4",
     "kind-of": "^6.0.3",
     "webpack/terser-webpack-plugin": "^4.2.3"
   },

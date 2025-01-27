@@ -2,6 +2,7 @@ import { Provider } from 'react-redux';
 
 import { fetchCircles } from 'mastodon/actions/circles';
 import { fetchCustomEmojis } from 'mastodon/actions/custom_emojis';
+import { fetchServer } from 'mastodon/actions/server';
 import { hydrateStore } from 'mastodon/actions/store';
 import { Router } from 'mastodon/components/router';
 import Compose from 'mastodon/features/standalone/compose';
@@ -15,6 +16,7 @@ if (initialState) {
 
 store.dispatch(fetchCustomEmojis());
 store.dispatch(fetchCircles());
+store.dispatch(fetchServer());
 
 const ComposeContainer = () => (
   <IntlProvider>

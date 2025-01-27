@@ -784,9 +784,8 @@ const startServer = async () => {
                     // custom_filters.action database column, it is an integer
                     // representing a value in an enum defined by Ruby on Rails:
                     //
-                    // enum { warn: 0, hide: 1, half_warn: 2 }
-                    filter_action: filter.filter_action === 2 ? 'warn' : ['warn', 'hide', 'half_warn'][filter.filter_action],
-                    filter_action_ex: ['warn', 'hide', 'half_warn'][filter.filter_action],
+                    // enum { warn: 0, hide: 1 }
+                    filter_action: ['warn', 'hide'][filter.filter_action],
                     with_quote: filter.with_quote,
                     withAccountName: filter.with_profile,
                     excludeFollows: filter.exclude_follows,

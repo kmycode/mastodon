@@ -141,6 +141,7 @@
 
     .fields-group
       = ff.input :'web.expand_content_warnings', wrapper: :with_label, label: I18n.t('simple_form.labels.defaults.setting_expand_spoilers')
+      = ff.input :'web.show_avatar_on_filter', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_avatar_on_filter')
 
   .actions
     = f.button :button, t('generic.save_changes'), type: :submit

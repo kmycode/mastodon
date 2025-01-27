@@ -53,6 +53,7 @@ const messages = defineMessages({
   cancel_reblog_private: { id: 'status.cancel_reblog_private', defaultMessage: 'Unboost' },
   cannot_reblog: { id: 'status.cannot_reblog', defaultMessage: 'This post cannot be boosted' },
   favourite: { id: 'status.favourite', defaultMessage: 'Favorite' },
+  removeFavourite: { id: 'status.remove_favourite', defaultMessage: 'Remove from favorites' },
   emojiReaction: { id: 'status.emoji_reaction', defaultMessage: 'Emoji reaction' },
   bookmark: { id: 'status.bookmark', defaultMessage: 'Bookmark' },
   bookmarkCategory: { id: 'status.bookmark_category', defaultMessage: 'Bookmark category' },
@@ -335,20 +336,15 @@ class StatusActionBar extends ImmutablePureComponent {
       }
 
       if (!boostMenu) {
-        menu.push({ text: intl.formatMessage(status.get('reblogged') ? messages.cancelReblog : messages.reblog), action: this.handleReblogForceModalClick, tag: 'reblog' });
+        if (publicStatus && allowQuote && (account.getIn(['server_features', 'quote']) || !isHideItem('quote_unavailable_server'))) {
+          menu.push({ text: intl.formatMessage(messages.quote), action: this.handleQuote, tag: 'reblog' });
+        }
 
-        if (publicStatus) {
-          if (allowQuote && (account.getIn(['server_features', 'quote']) || !isHideItem('quote_unavailable_server'))) {
-            menu.push({ text: intl.formatMessage(messages.quote), action: this.handleQuote, tag: 'reblog' });
-          }
-
-          if (account.getIn(['server_features', 'status_reference']) || !isHideItem('status_reference_unavailable_server')) {
-            menu.push({ text: intl.formatMessage(messages.reference), action: this.handleReference, tag: 'reblog' });
-          }
+        if (account.getIn(['server_features', 'status_reference']) || !isHideItem('status_reference_unavailable_server')) {
+          menu.push({ text: intl.formatMessage(messages.reference), action: this.handleReference, tag: 'reblog' });
         }
       }
 
-      menu.push({ text: intl.formatMessage(status.get('bookmarked') ? messages.removeBookmark : messages.bookmark), action: this.handleBookmarkClickOriginal });
       menu.push({ text: intl.formatMessage(messages.bookmarkCategory), action: this.handleBookmarkCategoryAdderClick });
 
       if (writtenByMe && pinnableStatus) {
@@ -488,6 +484,9 @@ class StatusActionBar extends ImmutablePureComponent {
       <div className='status__action-bar__button-wrapper status__action-bar__button-wrapper__blank' />
     )) || null;
 
+
+    const bookmarkTitle = intl.formatMessage(status.get('bookmarked') ? messages.removeBookmark : messages.bookmark);
+    const favouriteTitle = intl.formatMessage(status.get('favourited') ? messages.removeFavourite : messages.favourite);
     const isReply = status.get('in_reply_to_account_id') === status.getIn(['account', 'id']);
 
     const reblogButton = <IconButton className={classNames('status__action-bar__button', { reblogPrivate })} disabled={!publicStatus && !reblogPrivate} active={status.get('reblogged')} title={reblogTitle} icon='retweet' iconComponent={reblogIconComponent} onClick={this.handleReblogClick} counter={withCounters ? status.get('reblogs_count') : undefined} />;
@@ -516,10 +515,10 @@ class StatusActionBar extends ImmutablePureComponent {
           )}
         </div>
         <div className='status__action-bar__button-wrapper'>
-          <IconButton className='status__action-bar__button star-icon' animate active={status.get('favourited')} title={intl.formatMessage(messages.favourite)} icon='star' iconComponent={status.get('favourited') ? StarIcon : StarBorderIcon} onClick={this.handleFavouriteClick} counter={withCounters ? status.get('favourites_count') : undefined} />
+          <IconButton className='status__action-bar__button star-icon' animate active={status.get('favourited')} title={favouriteTitle} icon='star' iconComponent={status.get('favourited') ? StarIcon : StarBorderIcon} onClick={this.handleFavouriteClick} counter={withCounters ? status.get('favourites_count') : undefined} />
         </div>
         <div className='status__action-bar__button-wrapper'>
-          <IconButton className='status__action-bar__button bookmark-icon' disabled={!signedIn} active={status.get('bookmarked')} title={intl.formatMessage(messages.bookmark)} icon='bookmark' iconComponent={status.get('bookmarked') ? BookmarkIcon : BookmarkBorderIcon} onClick={this.handleBookmarkClick} />
+          <IconButton className='status__action-bar__button bookmark-icon' disabled={!signedIn} active={status.get('bookmarked')} title={bookmarkTitle} icon='bookmark' iconComponent={status.get('bookmarked') ? BookmarkIcon : BookmarkBorderIcon} onClick={this.handleBookmarkClick} />
         </div>
         {emojiPickerDropdown}
         <div className='status__action-bar__button-wrapper'>

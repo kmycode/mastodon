@@ -10,7 +10,7 @@ import announcements from './announcements';
 import { antennasReducer } from './antennas';
 import { bookmarkCategoriesReducer } from './bookmark_categories';
 import { circlesReducer } from './circles';
-import compose from './compose';
+import { composeReducer } from './compose';
 import contexts from './contexts';
 import conversations from './conversations';
 import custom_emojis from './custom_emojis';
@@ -63,7 +63,7 @@ const reducers = {
   push_notifications,
   server,
   contexts,
-  compose,
+  compose: composeReducer,
   search: searchReducer,
   media_attachments,
   notifications,

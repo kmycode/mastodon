@@ -4,6 +4,7 @@ module ActivityPub::CaseTransform
   class << self
     NO_CONVERT_VALUES = %w(
       _misskey_content
+      _misskey_license
       _misskey_quote
     ).freeze
 

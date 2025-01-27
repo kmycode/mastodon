@@ -45,6 +45,7 @@ class Status < ApplicationRecord
   include Status::SearchConcern
   include Status::SnapshotConcern
   include Status::ThreadingConcern
+  include Status::Visibility
   include DtlHelper
 
   MEDIA_ATTACHMENTS_LIMIT = 4
@@ -61,10 +62,6 @@ class Status < ApplicationRecord
 
   update_index('statuses', :proper)
   update_index('public_statuses', :proper)
-
-  enum :visibility, { public: 0, unlisted: 1, private: 2, direct: 3, limited: 4, public_unlisted: 10, login: 11 }, suffix: :visibility, validate: true
-  enum :searchability, { public: 0, private: 1, direct: 2, limited: 3, unsupported: 4, public_unlisted: 10 }, suffix: :searchability
-  enum :limited_scope, { none: 0, mutual: 1, circle: 2, personal: 3, reply: 4 }, suffix: :limited
 
   belongs_to :application, class_name: 'Doorkeeper::Application', optional: true
 
@@ -130,7 +127,6 @@ class Status < ApplicationRecord
   validates_with StatusLengthValidator
   validates_with DisallowedHashtagsValidator
   validates :reblog, uniqueness: { scope: :account }, if: :reblog?
-  validates :visibility, exclusion: { in: %w(direct limited) }, if: :reblog?
 
   accepts_nested_attributes_for :poll
 
@@ -159,11 +155,6 @@ class Status < ApplicationRecord
   scope :tagged_with_none, lambda { |tag_ids|
     where('NOT EXISTS (SELECT * FROM statuses_tags forbidden WHERE forbidden.status_id = statuses.id AND forbidden.tag_id IN (?))', tag_ids)
   }
-  scope :unset_searchability, -> { where(searchability: nil, reblog_of_id: nil) }
-  scope :distributable_visibility, -> { where(visibility: %i(public public_unlisted login unlisted)) }
-  scope :distributable_visibility_for_anonymous, -> { where(visibility: %i(public public_unlisted unlisted)) }
-  scope :list_eligible_visibility, -> { where(visibility: %i(public public_unlisted login unlisted private)) }
-  scope :not_direct_visibility, -> { where.not(visibility: :direct) }
 
   after_create_commit :trigger_create_webhooks
   after_update_commit :trigger_update_webhooks
@@ -176,8 +167,6 @@ class Status < ApplicationRecord
 
   before_validation :prepare_contents, if: :local?
   before_validation :set_reblog
-  before_validation :set_visibility
-  before_validation :set_searchability
   before_validation :set_conversation
   before_validation :set_local
 
@@ -304,16 +293,6 @@ class Status < ApplicationRecord
   def reset_preview_card!
     PreviewCardsStatus.where(status_id: id).delete_all
   end
-
-  def hidden?
-    !distributable?
-  end
-
-  def distributable?
-    public_visibility? || unlisted_visibility? || public_unlisted_visibility?
-  end
-
-  alias sign? distributable?
 
   def with_media?
     media_attachments.any?
@@ -521,39 +500,6 @@ class Status < ApplicationRecord
   end
 
   class << self
-    def selectable_visibilities
-      selectable_all_visibilities - %w(mutual circle reply direct)
-    end
-
-    def selectable_all_visibilities
-      vs = %w(public public_unlisted login unlisted private mutual circle reply direct)
-      vs -= %w(public_unlisted) unless Setting.enable_public_unlisted_visibility
-      vs -= %w(public) unless Setting.enable_public_visibility
-      vs
-    end
-
-    def selectable_reblog_visibilities
-      %w(unset) + selectable_visibilities
-    end
-
-    def all_visibilities
-      visibilities.keys
-    end
-
-    def selectable_searchabilities
-      ss = searchabilities.keys - %w(unsupported)
-      ss -= %w(public_unlisted) unless Setting.enable_public_unlisted_visibility
-      ss
-    end
-
-    def selectable_searchabilities_for_search
-      searchabilities.keys - %w(public_unlisted unsupported)
-    end
-
-    def all_searchabilities
-      searchabilities.keys - %w(unlisted login unsupported)
-    end
-
     def favourites_map(status_ids, account_id)
       Favourite.select(:status_id).where(status_id: status_ids).where(account_id: account_id).each_with_object({}) { |f, h| h[f.status_id] = true }
     end
@@ -658,25 +604,6 @@ class Status < ApplicationRecord
 
   def set_poll_id
     update_column(:poll_id, poll.id) if association(:poll).loaded? && poll.present?
-  end
-
-  def set_visibility
-    self.visibility = reblog.visibility if reblog? && visibility.nil?
-    self.visibility = (account.locked? ? :private : :public) if visibility.nil?
-  end
-
-  def set_searchability
-    return if searchability.nil?
-
-    self.searchability = if %w(public public_unlisted login unlisted).include?(visibility)
-                           searchability
-                         elsif visibility == 'limited' || visibility == 'direct'
-                           searchability == 'limited' ? :limited : :direct
-                         elsif visibility == 'private'
-                           searchability == 'public' || searchability == 'public_unlisted' ? :private : searchability
-                         else
-                           :direct
-                         end
   end
 
   def set_conversation

@@ -28,4 +28,15 @@ RSpec.describe 'Invites' do
       end
     end
   end
+
+  describe 'POST /invites' do
+    before { UserRole.everyone.update(permissions: UserRole.everyone.permissions | UserRole::FLAGS[:invite_users]) }
+
+    it 'gracefully handles invalid nested params' do
+      post invites_path(invite: 'invalid')
+
+      expect(response)
+        .to have_http_status(400)
+    end
+  end
 end

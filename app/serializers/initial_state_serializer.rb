@@ -48,6 +48,7 @@ class InitialStateSerializer < ActiveModel::Serializer
         object_account_user.setting_show_quote_in_home ? nil : 'quote_in_home',
         object_account_user.setting_show_quote_in_public ? nil : 'quote_in_public',
         object_account_user.setting_show_relationships ? nil : 'relationships',
+        object_account_user.setting_show_avatar_on_filter ? nil : 'avatar_on_filter',
       ].compact
       store[:enabled_visibilities] = enabled_visibilities
       store[:featured_tags] = object.current_account.featured_tags.pluck(:name)

@@ -176,7 +176,12 @@ class Status extends ImmutablePureComponent {
 
   handleClick = e => {
     e.preventDefault();
-    this.handleHotkeyOpen(e);
+
+    if (e?.button === 0 && !(e?.ctrlKey || e?.metaKey)) {
+      this._openStatus();
+    } else if (e?.button === 1 || (e?.button === 0 && (e?.ctrlKey || e?.metaKey))) {
+      this._openStatus(true);
+    }
   };
 
   handleMouseUp = e => {
@@ -284,7 +289,11 @@ class Status extends ImmutablePureComponent {
     this.props.onMention(this._properStatus().get('account'));
   };
 
-  handleHotkeyOpen = (e) => {
+  handleHotkeyOpen = () => {
+    this._openStatus();
+  };
+
+  _openStatus = (newTab = false) => {
     if (this.props.onClick) {
       this.props.onClick();
       return;
@@ -299,10 +308,10 @@ class Status extends ImmutablePureComponent {
 
     const path = `/@${status.getIn(['account', 'acct'])}/${status.get('id')}`;
 
-    if (e?.button === 0 && !(e?.ctrlKey || e?.metaKey)) {
-      history.push(path);
-    } else if (e?.button === 1 || (e?.button === 0 && (e?.ctrlKey || e?.metaKey))) {
+    if (newTab) {
       window.open(path, '_blank', 'noopener');
+    } else {
+      history.push(path);
     }
   };
 
@@ -395,6 +404,7 @@ class Status extends ImmutablePureComponent {
       toggleHidden: this.handleHotkeyToggleHidden,
       toggleSensitive: this.handleHotkeyToggleSensitive,
       openMedia: this.handleHotkeyOpenMedia,
+      onTranslate: this.handleTranslate,
     };
 
     let media, statusAvatar, prepend, rebloggedByText;
@@ -582,24 +592,26 @@ class Status extends ImmutablePureComponent {
 
           <div className={classNames('status', `status-${status.get('visibility_ex')}`, { 'status-reply': !!status.get('in_reply_to_id'), 'status--in-thread': !!rootId, 'status--first-in-thread': previousId && (!connectUp || connectToRoot), muted: this.props.muted })} data-id={status.get('id')}>
 
-            <div onMouseUp={this.handleMouseUp} className='status__info'>
-              <Link to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`} className='status__relative-time'>
-                {withQuote}
-                {withReference}
-                {withExpiration}
-                {withLimited}
-                <span className='status__visibility-icon'><VisibilityIcon visibility={status.get('visibility_ex')} /></span>
-                <RelativeTimestamp timestamp={status.get('created_at')} />{status.get('edited_at') && <abbr title={intl.formatMessage(messages.edited, { date: intl.formatDate(status.get('edited_at'), { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }) })}> *</abbr>}
-              </Link>
+            {(!matchedFilters || expanded || isShowItem('avatar_on_filter')) && (
+              <div onMouseUp={this.handleMouseUp} className='status__info'>
+                <Link to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}`} className='status__relative-time'>
+                  {withQuote}
+                  {withReference}
+                  {withExpiration}
+                  {withLimited}
+                  <span className='status__visibility-icon'><VisibilityIcon visibility={visibilityName} /></span>
+                  <RelativeTimestamp timestamp={status.get('created_at')} />{status.get('edited_at') && <abbr title={intl.formatMessage(messages.edited, { date: intl.formatDate(status.get('edited_at'), { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }) })}> *</abbr>}
+                </Link>
 
-              <Link to={`/@${status.getIn(['account', 'acct'])}`} title={status.getIn(['account', 'acct'])} data-hover-card-account={status.getIn(['account', 'id'])} className='status__display-name'>
-                <div className='status__avatar'>
-                  {statusAvatar}
-                </div>
+                <Link to={`/@${status.getIn(['account', 'acct'])}`} title={status.getIn(['account', 'acct'])} data-hover-card-account={status.getIn(['account', 'id'])} className='status__display-name'>
+                  <div className='status__avatar'>
+                    {statusAvatar}
+                  </div>
 
-                <DisplayName account={status.get('account')} />
-              </Link>
-            </div>
+                  <DisplayName account={status.get('account')} />
+                </Link>
+              </div>
+            )}
 
             {matchedFilters && <FilterWarning title={matchedFilters.join(', ')} expanded={this.state.showDespiteFilter} onClick={this.handleFilterToggle} />}
 
