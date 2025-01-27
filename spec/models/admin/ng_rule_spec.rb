@@ -305,7 +305,7 @@ RSpec.describe Admin::NgRule do
         let(:ng_rule) { Fabricate(:ng_rule, reaction_type: ['emoji_reaction']) }
         let(:options) { { uri: uri, recipient: Fabricate(:account), reaction_type: 'emoji_reaction', emoji_reaction_origin_domain: nil } }
 
-        it_behaves_like 'matches rule'
+        it_behaves_like 'matches rule', 'reaction'
       end
     end
   end
