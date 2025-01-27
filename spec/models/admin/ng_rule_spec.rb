@@ -301,11 +301,11 @@ RSpec.describe Admin::NgRule do
         it_behaves_like 'does not match rule'
       end
 
-      context 'when local emoji but other options are match' do
+      context 'when local emoji but all options match' do
         let(:ng_rule) { Fabricate(:ng_rule, reaction_type: ['emoji_reaction']) }
         let(:options) { { uri: uri, recipient: Fabricate(:account), reaction_type: 'emoji_reaction', emoji_reaction_origin_domain: nil } }
 
-        it_behaves_like 'does not match rule'
+        it_behaves_like 'matches rule'
       end
     end
   end
