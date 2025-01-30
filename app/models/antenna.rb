@@ -26,7 +26,7 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  account_id       :bigint(8)        not null
-#  list_id          :bigint(8)        not null
+#  list_id          :bigint(8)        default(0), not null
 #
 class Antenna < ApplicationRecord
   include Expireable

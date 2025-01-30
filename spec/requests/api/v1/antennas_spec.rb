@@ -123,6 +123,20 @@ RSpec.describe 'Antennas' do
       expect(Antenna.where(account: user.account).count).to eq(1)
     end
 
+    context 'when specify a list when create new' do
+      let(:list) { Fabricate(:list, account: user.account, title: 'ohagi') }
+      let(:params) { { title: 'my antenna', list_id: list.id.to_s, insert_feeds: 'true' } }
+
+      it 'returns the new antenna with list', :aggregate_failures do
+        subject
+
+        expect(response).to have_http_status(200)
+        expect(response.parsed_body).to match(a_hash_including(title: 'my antenna', insert_feeds: true))
+        expect(response.parsed_body['list']).to match(a_hash_including(id: list.id.to_s, title: list.title))
+        expect(Antenna.where(account: user.account).count).to eq(1)
+      end
+    end
+
     context 'when a title is not given' do
       let(:params) { { title: '' } }
 

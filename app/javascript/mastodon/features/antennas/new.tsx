@@ -57,7 +57,7 @@ const NewAntenna: React.FC<{
   const [stl, setStl] = useState(false);
   const [ltl, setLtl] = useState(false);
   const [insertFeeds, setInsertFeeds] = useState(false);
-  const [listId, setListId] = useState('');
+  const [listId, setListId] = useState('0');
   const [withMediaOnly, setWithMediaOnly] = useState(false);
   const [ignoreReblog, setIgnoreReblog] = useState(false);
   const [mode, setMode] = useState('filtering');
