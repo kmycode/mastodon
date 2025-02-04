@@ -28,6 +28,7 @@ class InstanceInfo < ApplicationRecord
     Iceshrimp.NET
     meisskey
     misskey
+    mitra
     pleroma
     sharkey
     tanukey
