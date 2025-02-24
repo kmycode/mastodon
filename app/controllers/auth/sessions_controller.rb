@@ -174,7 +174,7 @@ class Auth::SessionsController < Devise::SessionsController
   end
 
   def disable_custom_css?
-    user_params[:disable_css].present? && user_params[:disable_css] != '0'
+    user_params[:disable_css].present? && user_params[:disable_css] == '1'
   end
 
   def disable_custom_css!(user)
