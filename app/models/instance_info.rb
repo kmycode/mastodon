@@ -25,11 +25,14 @@ class InstanceInfo < ApplicationRecord
     firefish
     hollo
     iceshrimp
+    Iceshrimp.NET
     meisskey
     misskey
+    mitra
     pleroma
     sharkey
     tanukey
+    yojo-art
   ).freeze
 
   QUOTE_AVAILABLE_SOFTWARES = EMOJI_REACTION_AVAILABLE_SOFTWARES + %w(bridgy-fed).freeze

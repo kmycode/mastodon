@@ -278,5 +278,35 @@ RSpec.describe Admin::NgRule do
 
       it_behaves_like 'matches rule', 'reaction'
     end
+
+    context 'with emoji reaction origin domain' do
+      let(:account) { Fabricate(:account, domain: 'example.com', uri: 'https://example.com/actor') }
+      let(:ng_rule) { Fabricate(:ng_rule, reaction_type: ['emoji_reaction'], emoji_reaction_origin_domain: 'ohagi.com') }
+
+      context 'when remote emoji matches domain' do
+        let(:options) { { uri: uri, recipient: Fabricate(:account), reaction_type: 'emoji_reaction', emoji_reaction_origin_domain: 'ohagi.com' } }
+
+        it_behaves_like 'matches rule', 'reaction'
+      end
+
+      context 'when remote emoji does not match domain' do
+        let(:options) { { uri: uri, recipient: Fabricate(:account), reaction_type: 'emoji_reaction', emoji_reaction_origin_domain: 'test.com' } }
+
+        it_behaves_like 'does not match rule'
+      end
+
+      context 'when local emoji' do
+        let(:options) { { uri: uri, recipient: Fabricate(:account), reaction_type: 'emoji_reaction', emoji_reaction_origin_domain: nil } }
+
+        it_behaves_like 'does not match rule'
+      end
+
+      context 'when local emoji but all options match' do
+        let(:ng_rule) { Fabricate(:ng_rule, reaction_type: ['emoji_reaction']) }
+        let(:options) { { uri: uri, recipient: Fabricate(:account), reaction_type: 'emoji_reaction', emoji_reaction_origin_domain: nil } }
+
+        it_behaves_like 'matches rule', 'reaction'
+      end
+    end
   end
 end
