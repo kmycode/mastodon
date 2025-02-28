@@ -36,7 +36,7 @@ RSpec.describe FeedInsertWorker do
 
     context 'when there are real records' do
       it 'skips the push when there is a filter' do
-        instance = instance_double(FeedManager, push_to_home: nil, filter?: true)
+        instance = instance_double(FeedManager, push_to_home: nil, filter?: true, filter: :filter)
         allow(FeedManager).to receive(:instance).and_return(instance)
         result = subject.perform(status.id, follower.id)
 
@@ -45,7 +45,7 @@ RSpec.describe FeedInsertWorker do
       end
 
       it 'pushes the status onto the home timeline without filter' do
-        instance = instance_double(FeedManager, push_to_home: nil, filter?: false)
+        instance = instance_double(FeedManager, push_to_home: nil, filter?: false, filter: nil)
         allow(FeedManager).to receive(:instance).and_return(instance)
         result = subject.perform(status.id, follower.id, :home)
 
@@ -54,7 +54,7 @@ RSpec.describe FeedInsertWorker do
       end
 
       it 'pushes the status onto the tags timeline without filter' do
-        instance = instance_double(FeedManager, push_to_home: nil, filter?: false)
+        instance = instance_double(FeedManager, push_to_home: nil, filter?: false, filter: nil)
         allow(FeedManager).to receive(:instance).and_return(instance)
         result = subject.perform(status.id, follower.id, :tags)
 
@@ -63,7 +63,7 @@ RSpec.describe FeedInsertWorker do
       end
 
       it 'pushes the status onto the list timeline without filter' do
-        instance = instance_double(FeedManager, push_to_list: nil, filter?: false)
+        instance = instance_double(FeedManager, push_to_list: nil, filter?: false, filter: nil)
         allow(FeedManager).to receive(:instance).and_return(instance)
         result = subject.perform(status.id, list.id, :list)
 
