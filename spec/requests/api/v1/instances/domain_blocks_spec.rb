@@ -4,9 +4,9 @@ require 'rails_helper'
 
 RSpec.describe 'Domain Blocks' do
   let(:user)    { Fabricate(:user) }
-  let(:token)   { Fabricate(:accessible_access_token, resource_owner_id: user.id, scopes: scopes) }
+  let(:token)   { Fabricate(:accessible_access_token, resource_owner_id: user.id, scopes: scopes).token }
   let(:scopes)  { 'read' }
-  let(:headers) { { Authorization: "Bearer #{token.token}" } }
+  let(:headers) { { Authorization: "Bearer #{token}" } }
 
   describe 'GET /api/v1/instance/domain_blocks' do
     let(:user) { Fabricate(:user) }
