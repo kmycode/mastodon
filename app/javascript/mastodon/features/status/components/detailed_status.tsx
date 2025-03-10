@@ -235,7 +235,7 @@ export const DetailedStatus: React.FC<{
       <Card
         sensitive={status.get('sensitive') && !status.get('spoiler_text')}
         onOpenMedia={onOpenMedia}
-        card={status.get('card', null)}
+        card={status.get('card')}
       />
     );
   }
