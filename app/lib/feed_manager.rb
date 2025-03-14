@@ -51,7 +51,7 @@ class FeedManager
     when :home
       filter_from_home(status, receiver.id, build_crutches(receiver.id, [status]), :home)
     when :list
-      (filter_from_list?(status, receiver) ? :filter : nil) || filter_from_home(status, receiver.account_id, build_crutches(receiver.account_id, [status], list: receiver), :list, stl_home: stl_home)
+      (filter_from_list?(status, receiver) ? :filter : nil) || filter_from_home(status, receiver.account_id, build_crutches(receiver.account_id, [status], list: receiver, stl_home: stl_home), :list, stl_home: stl_home)
     when :mentions
       filter_from_mentions?(status, receiver.id) ? :filter : nil
     when :tags
@@ -661,7 +661,7 @@ class FeedManager
   # @param [Array<Status>] statuses
   # @param [List] list
   # @return [Hash]
-  def build_crutches(receiver_id, statuses, list: nil)
+  def build_crutches(receiver_id, statuses, list: nil, stl_home: false)
     crutches = {}
 
     crutches[:active_mentions] = crutches_active_mentions(statuses)
@@ -685,7 +685,7 @@ class FeedManager
     crutches[:muting]               = Mute.where(account_id: receiver_id, target_account_id: check_for_blocks).pluck(:target_account_id).index_with(true)
     crutches[:domain_blocking]      = AccountDomainBlock.where(account_id: receiver_id, domain: statuses.flat_map { |s| [s.account.domain, s.reblog&.account&.domain] }.compact).pluck(:domain).index_with(true)
     crutches[:blocked_by]           = Block.where(target_account_id: receiver_id, account_id: statuses.map { |s| [s.account_id, s.reblog&.account_id] }.flatten.compact).pluck(:account_id).index_with(true)
-    crutches[:exclusive_list_users] = crutches_exclusive_list_users(receiver_id, statuses) if list.blank?
+    crutches[:exclusive_list_users] = crutches_exclusive_list_users(receiver_id, statuses) if list.nil? || stl_home
     crutches[:exclusive_antenna_users] = crutches_exclusive_antenna_users(receiver_id, statuses)
 
     crutches
