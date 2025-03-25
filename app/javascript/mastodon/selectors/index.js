@@ -17,7 +17,7 @@ export const makeGetStatus = () => {
       (state, { id }) => state.getIn(['accounts', state.getIn(['statuses', id, 'account'])]),
       (state, { id }) => state.getIn(['accounts', state.getIn(['statuses', state.getIn(['statuses', id, 'reblog']), 'account'])]),
       getFilters,
-      (_, { contextType }) => contextType === 'detailed',
+      (_, { contextType }) => ['detailed', 'bookmarks', 'favourites'].includes(contextType),
     ],
 
     (statusBase, statusReblog, statusQuote, statusReblogQuote, accountBase, accountReblog, filters, warnInsteadOfHide) => {
