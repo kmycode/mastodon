@@ -7,6 +7,8 @@ export const toServerSideType = (columnType: string) => {
     case 'account':
     case 'explore':
       return columnType;
+    case 'detailed':
+      return 'thread';
     default:
       if (columnType.includes('list:') || columnType.includes('antenna:')) {
         return 'home';
