@@ -17,9 +17,10 @@ export const makeGetStatus = () => {
       (state, { id }) => state.getIn(['accounts', state.getIn(['statuses', id, 'account'])]),
       (state, { id }) => state.getIn(['accounts', state.getIn(['statuses', state.getIn(['statuses', id, 'reblog']), 'account'])]),
       getFilters,
+      (_, { contextType }) => ['detailed', 'bookmarks', 'favourites'].includes(contextType),
     ],
 
-    (statusBase, statusReblog, statusQuote, statusReblogQuote, accountBase, accountReblog, filters) => {
+    (statusBase, statusReblog, statusQuote, statusReblogQuote, accountBase, accountReblog, filters, warnInsteadOfHide) => {
       if (!statusBase || statusBase.get('isLoading')) {
         return null;
       }
@@ -47,7 +48,7 @@ export const makeGetStatus = () => {
           }
         }
 
-        if (filterResults.some((result) => filters.getIn([result.get('filter'), 'filter_action_ex']) === 'hide')) {
+        if (!warnInsteadOfHide && filterResults.some((result) => filters.getIn([result.get('filter'), 'filter_action_ex']) === 'hide')) {
           return null;
         }
         filterResults = filterResults.filter(result => filters.has(result.get('filter')));
