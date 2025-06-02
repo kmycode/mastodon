@@ -91,9 +91,14 @@ class Trends::Statuses < Trends::Base
   def eligible?(status)
     status.created_at.past? &&
       (status.public_visibility? || status.public_unlisted_visibility?) &&
-      status.account.discoverable? && !status.account.silenced? && !status.account.sensitized? &&
-      status.spoiler_text.blank? && (!status.sensitive? || status.media_attachments.none?) &&
-      !status.reply? && valid_locale?(status.language) && !domain_blocked?(status)
+      status.account.discoverable? &&
+      !status.account.silenced? &&
+      !status.account.sensitized? &&
+      status.spoiler_text.blank? &&
+      (!status.sensitive? || status.media_attachments.none?) &&
+      !status.reply? &&
+      valid_locale?(status.language) &&
+      !domain_blocked?(status)
   end
 
   def domain_blocked?(status)
