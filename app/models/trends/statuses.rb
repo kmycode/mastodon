@@ -90,6 +90,7 @@ class Trends::Statuses < Trends::Base
 
   def eligible?(status)
     status.created_at.past? &&
+      (status.searchability.nil? || status.compute_searchability == 'public') &&
       (status.public_visibility? || status.public_unlisted_visibility?) &&
       status.account.discoverable? &&
       !status.account.silenced? &&
