@@ -54,7 +54,7 @@ class SearchQueryTransformer < Parslet::Transform
     private
 
     def clauses_by_operator
-      @clauses_by_operator ||= @clauses.compact.group_by(&:operator).to_h
+      @clauses_by_operator ||= @clauses.compact.group_by(&:operator)
     end
 
     def flags_from_clauses!
