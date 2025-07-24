@@ -184,7 +184,7 @@ class PostStatusService < BaseService
     # NOTE: for now this is only for convenience in testing, as we don't support the request flow nor serialize quotes in ActivityPub
     # we only support incoming quotes so far
 
-    status.quote = Quote.new(quoted_status: @quoted_status, activity_uri: ActivityPub::TagManager.instance.uri_for(@quoted_status), approval_uri: nil)
+    status.quote = Quote.new(quoted_status: @quoted_status, activity_uri: nil, approval_uri: nil)
     status.quote.accept!
     # status.quote.accept! if @status.account == @quoted_status.account || @quoted_status.active_mentions.exists?(mentions: { account_id: status.account_id })
 
