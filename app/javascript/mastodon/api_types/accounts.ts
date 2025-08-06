@@ -66,7 +66,7 @@ export interface BaseApiAccountJSON {
   subscribable: boolean;
   statuses_count: number;
   uri: string;
-  url: string;
+  url?: string;
   username: string;
   moved?: ApiAccountJSON;
   suspended?: boolean;

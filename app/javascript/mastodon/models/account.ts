@@ -77,7 +77,7 @@ const AccountServerFeaturesFactory =
 // Account
 export interface AccountShape
   extends Required<
-    Omit<ApiAccountJSON, 'emojis' | 'fields' | 'roles' | 'moved'>
+    Omit<ApiAccountJSON, 'emojis' | 'fields' | 'roles' | 'moved' | 'url'>
   > {
   emojis: List<CustomEmoji>;
   fields: List<AccountField>;
@@ -87,6 +87,7 @@ export interface AccountShape
   note_plain: string | null;
   hidden: boolean;
   moved: string | null;
+  url: string;
 }
 
 export type Account = RecordOf<AccountShape>;
@@ -185,8 +186,8 @@ export function createAccountFromServerJSON(serverJSON: ApiAccountJSON) {
     note_emojified: emojify(accountJSON.note, emojiMap),
     note_plain: unescapeHTML(accountJSON.note),
     url:
-      accountJSON.url.startsWith('http://') ||
-      accountJSON.url.startsWith('https://')
+      accountJSON.url?.startsWith('http://') ||
+      accountJSON.url?.startsWith('https://')
         ? accountJSON.url
         : accountJSON.uri,
   });
