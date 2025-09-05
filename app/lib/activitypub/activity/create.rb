@@ -593,8 +593,12 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     @ignore_hashtags ||= DomainBlock.reject_hashtag?(@account.domain)
   end
 
+  def through_relay?
+    requested_through_relay? && !DomainBlock.reject_relay?(@account.domain)
+  end
+
   def related_to_local_activity?
-    fetch? || followed_by_local_accounts? || requested_through_relay? ||
+    fetch? || followed_by_local_accounts? || through_relay? ||
       responds_to_followed_account? || addresses_local_accounts? || free_friend_domain?
   end
 

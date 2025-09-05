@@ -65,6 +65,7 @@ RSpec.describe 'Domain Blocks' do
             reject_send_sensitive: domain_block.reject_send_sensitive,
             reject_straight_follow: domain_block.reject_straight_follow,
             reject_friend: domain_block.reject_friend,
+            reject_relay: domain_block.reject_relay,
           }
         end
       end
@@ -119,6 +120,7 @@ RSpec.describe 'Domain Blocks' do
         reject_send_sensitive: domain_block.reject_send_sensitive,
         reject_straight_follow: domain_block.reject_straight_follow,
         reject_friend: domain_block.reject_friend,
+        reject_relay: domain_block.reject_relay,
       }
     end
 
@@ -151,7 +153,8 @@ RSpec.describe 'Domain Blocks' do
         reject_reply_exclude_followers: domain_block.reject_reply_exclude_followers,
         reject_send_sensitive: domain_block.reject_send_sensitive,
         reject_straight_follow: domain_block.reject_straight_follow,
-        reject_friend: domain_block.reject_friend
+        reject_friend: domain_block.reject_friend,
+        reject_relay: domain_block.reject_relay
       )
     end
 

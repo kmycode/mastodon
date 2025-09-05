@@ -46,6 +46,7 @@ module Admin
                                        detect_invalid_subscription: row.fetch('#detect_invalid_subscription', false),
                                        reject_reply_exclude_followers: row.fetch('#reject_reply_exclude_followers', false),
                                        reject_friend: row.fetch('#reject_friend', false),
+                                       reject_relay: row.fetch('#reject_relay', false),
                                        block_trends: row.fetch('#block_trends', false))
 
         if domain_block.invalid?
@@ -93,6 +94,7 @@ module Admin
         #detect_invalid_subscription
         #reject_reply_exclude_followers
         #reject_friend
+        #reject_relay
         #block_trends
       )
     end
@@ -116,6 +118,7 @@ module Admin
             instance.detect_invalid_subscription,
             instance.reject_reply_exclude_followers,
             instance.reject_friend,
+            instance.reject_relay,
             instance.block_trends,
           ]
         end

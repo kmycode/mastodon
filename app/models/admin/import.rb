@@ -38,7 +38,7 @@ class Admin::Import
         field&.downcase&.strip&.to_sym
       when '#reject_media', '#reject_reports', '#obfuscate', '#reject_favourite', '#reject_send_sensitive',
         '#reject_hashtag', '#reject_straight_follow', '#reject_new_follow', '#hidden', '#detect_invalid_subscription',
-        '#reject_reply_exclude_followers', '#reject_friend', '#block_trends'
+        '#reject_reply_exclude_followers', '#reject_friend', '#reject_relay', '#block_trends'
         ActiveModel::Type::Boolean.new.cast(field&.downcase)
       else
         field

@@ -69,7 +69,7 @@ class Api::V1::Admin::DomainBlocksController < Api::BaseController
 
   def domain_block_params
     params.permit(:severity, :reject_media, :reject_favourite, :reject_reply_exclude_followers, :reject_reports, :reject_send_sensitive, :reject_hashtag, :reject_straight_follow,
-                  :reject_new_follow, :reject_friend, :block_trends, :detect_invalid_subscription, :private_comment, :public_comment, :obfuscate, :hidden)
+                  :reject_new_follow, :reject_friend, :reject_relay, :block_trends, :detect_invalid_subscription, :private_comment, :public_comment, :obfuscate, :hidden)
   end
 
   def next_path
@@ -90,6 +90,6 @@ class Api::V1::Admin::DomainBlocksController < Api::BaseController
 
   def resource_params
     params.permit(:domain, :severity, :reject_media, :reject_favourite, :reject_reply_exclude_followers, :reject_send_sensitive, :reject_hashtag, :reject_straight_follow,
-                  :reject_new_follow, :reject_friend, :block_trends, :detect_invalid_subscription, :reject_reports, :private_comment, :public_comment, :obfuscate, :hidden)
+                  :reject_new_follow, :reject_friend, :reject_relay, :block_trends, :detect_invalid_subscription, :reject_reports, :private_comment, :public_comment, :obfuscate, :hidden)
   end
 end

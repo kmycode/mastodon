@@ -17,6 +17,7 @@ module Admin
       reject_hashtag
       reject_media
       reject_new_follow
+      reject_relay
       reject_reply_exclude_followers
       reject_reports
       reject_send_sensitive
@@ -131,7 +132,7 @@ module Admin
           form_domain_block_batch: [
             domain_blocks_attributes: [[:enabled, :domain, :severity, :reject_media, :reject_reports, :private_comment, :public_comment, :obfuscate,
                                         :reject_favourite, :reject_reply_exclude_followers, :reject_send_sensitive, :reject_hashtag,
-                                        :reject_straight_follow, :reject_new_follow, :reject_friend, :block_trends, :detect_invalid_subscription, :hidden]],
+                                        :reject_straight_follow, :reject_new_follow, :reject_friend, :reject_relay, :block_trends, :detect_invalid_subscription, :hidden]],
           ]
         )
     end

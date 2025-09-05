@@ -5,25 +5,26 @@
 # Table name: domain_blocks
 #
 #  id                             :bigint(8)        not null, primary key
+#  block_trends                   :boolean          default(FALSE), not null
+#  detect_invalid_subscription    :boolean          default(FALSE), not null
 #  domain                         :string           default(""), not null
-#  created_at                     :datetime         not null
-#  updated_at                     :datetime         not null
-#  severity                       :integer          default("silence")
-#  reject_media                   :boolean          default(FALSE), not null
-#  reject_reports                 :boolean          default(FALSE), not null
+#  hidden                         :boolean          default(FALSE), not null
+#  obfuscate                      :boolean          default(FALSE), not null
 #  private_comment                :text
 #  public_comment                 :text
-#  obfuscate                      :boolean          default(FALSE), not null
 #  reject_favourite               :boolean          default(FALSE), not null
-#  reject_send_sensitive          :boolean          default(FALSE), not null
-#  reject_hashtag                 :boolean          default(FALSE), not null
-#  reject_straight_follow         :boolean          default(FALSE), not null
-#  reject_new_follow              :boolean          default(FALSE), not null
-#  hidden                         :boolean          default(FALSE), not null
-#  detect_invalid_subscription    :boolean          default(FALSE), not null
-#  reject_reply_exclude_followers :boolean          default(FALSE), not null
 #  reject_friend                  :boolean          default(FALSE), not null
-#  block_trends                   :boolean          default(FALSE), not null
+#  reject_hashtag                 :boolean          default(FALSE), not null
+#  reject_media                   :boolean          default(FALSE), not null
+#  reject_new_follow              :boolean          default(FALSE), not null
+#  reject_relay                   :boolean          default(FALSE), not null
+#  reject_reply_exclude_followers :boolean          default(FALSE), not null
+#  reject_reports                 :boolean          default(FALSE), not null
+#  reject_send_sensitive          :boolean          default(FALSE), not null
+#  reject_straight_follow         :boolean          default(FALSE), not null
+#  severity                       :integer          default("silence")
+#  created_at                     :datetime         not null
+#  updated_at                     :datetime         not null
 #
 
 class DomainBlock < ApplicationRecord
@@ -47,6 +48,7 @@ class DomainBlock < ApplicationRecord
       .or(where(reject_new_follow: true))
       .or(where(reject_straight_follow: true))
       .or(where(reject_friend: true))
+      .or(where(reject_relay: true))
       .or(where(block_trends: true))
   }
   scope :by_severity, -> { in_order_of(:severity, %w(noop silence suspend)).order(:domain) }
@@ -68,6 +70,7 @@ class DomainBlock < ApplicationRecord
        reject_straight_follow? ? :reject_straight_follow : nil,
        reject_new_follow? ? :reject_new_follow : nil,
        reject_friend? ? :reject_friend : nil,
+       reject_relay? ? :reject_relay : nil,
        block_trends? ? :block_trends : nil,
        detect_invalid_subscription? ? :detect_invalid_subscription : nil,
        reject_reports? ? :reject_reports : nil]
@@ -111,6 +114,10 @@ class DomainBlock < ApplicationRecord
 
     def reject_friend?(domain)
       !!rule_for(domain)&.reject_friend?
+    end
+
+    def reject_relay?(domain)
+      !!rule_for(domain)&.reject_relay?
     end
 
     def block_trends?(domain)

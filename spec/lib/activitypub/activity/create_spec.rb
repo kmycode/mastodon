@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe ActivityPub::Activity::Create do
   let(:sender_bio) { '' }
-  let(:sender) { Fabricate(:account, followers_url: 'http://example.com/followers', domain: 'example.com', uri: 'https://example.com/actor', note: sender_bio) }
+  let(:sender) { Fabricate(:account, followers_url: 'http://example.com/followers', domain: 'example.com', uri: 'https://example.com/actor', inbox_url: 'https://example.com/actor', note: sender_bio) }
 
   let(:json) do
     {
@@ -2658,6 +2658,37 @@ RSpec.describe ActivityPub::Activity::Create do
 
         expect(status).to_not be_nil
         expect(status.text).to eq 'Lorem ipsum'
+      end
+    end
+
+    context 'when the post is from relay' do
+      subject { described_class.new(json, sender, delivery: true, relayed_through_actor: sender) }
+
+      before { Fabricate(:relay, inbox_url: sender.inbox_url, state: :accepted) }
+
+      let(:object_json) do
+        {
+          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+          type: 'Note',
+          content: 'Lorem ipsum',
+        }
+      end
+
+      it 'creates status' do
+        subject.perform
+        status = sender.statuses.first
+
+        expect(status).to_not be_nil
+        expect(status.text).to eq 'Lorem ipsum'
+      end
+
+      it 'when domain blocked not creates status' do
+        Fabricate(:domain_block, domain: sender.domain, reject_relay: true)
+
+        subject.perform
+        status = sender.statuses.first
+
+        expect(status).to be_nil
       end
     end
 
