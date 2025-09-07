@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ActivityPub::ContextsController < ActivityPub::BaseController
-  include SignatureVerification
-
   vary_by -> { 'Signature' if authorized_fetch_mode? }
 
   before_action :set_context
@@ -16,6 +14,10 @@ class ActivityPub::ContextsController < ActivityPub::BaseController
   end
 
   private
+
+  def account_required?
+    false
+  end
 
   def set_context
     @context = Conversation.find(params[:id])
