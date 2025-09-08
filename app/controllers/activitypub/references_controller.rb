@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class ActivityPub::ReferencesController < ActivityPub::BaseController
-  include SignatureVerification
   include Authorization
-  include AccountOwnedConcern
 
   before_action :require_signature!, if: :authorized_fetch_mode?
   before_action :set_status
