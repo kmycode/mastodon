@@ -10,7 +10,7 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
              :attributed_to, :to, :cc, :sensitive,
              :atom_uri, :in_reply_to_atom_uri,
              :conversation, :searchable_by, :context
-  
+
   attribute :content
   attribute :content_map, if: :language?
   attribute :updated, if: :edited?
