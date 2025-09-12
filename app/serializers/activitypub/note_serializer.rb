@@ -3,7 +3,7 @@
 class ActivityPub::NoteSerializer < ActivityPub::Serializer
   include FormattingHelper
 
-  context_extensions :atom_uri, :conversation, :sensitive, :voters_count, :searchable_by, :references, :limited_scope, :quote_uri
+  context_extensions :atom_uri, :conversation, :sensitive, :voters_count, :searchable_by, :references, :limited_scope, :quote_uri, :group_context
 
   attributes :id, :type, :summary,
              :in_reply_to, :published, :url,
@@ -18,6 +18,8 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
 
   attribute :quote_uri, if: :quote?
   attribute :misskey_quote, key: :_misskey_quote, if: :quote?
+
+  attribute :context, key: :group_context
 
   has_many :virtual_attachments, key: :attachment
   has_many :virtual_tags, key: :tag

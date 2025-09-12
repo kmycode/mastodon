@@ -476,7 +476,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def conversation_from_activity
-    conversation_from_context(@object['context']) || conversation_from_uri(@object['conversation'])
+    conversation_from_context(@object['groupContext'] || @object['context']) || conversation_from_uri(@object['conversation'])
   end
 
   def fetch_and_verify_quote
