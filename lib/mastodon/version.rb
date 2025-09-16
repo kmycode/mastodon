@@ -13,7 +13,7 @@ module Mastodon
     end
 
     def kmyblue_minor
-      4
+      5
     end
 
     def kmyblue_flag
@@ -31,7 +31,7 @@ module Mastodon
     end
 
     def patch
-      3
+      4
     end
 
     def default_prerelease
@@ -87,7 +87,7 @@ module Mastodon
     end
 
     def lts?
-      kmyblue_flag == 'LTS'
+      kmyblue_flag == 'lts'
     end
 
     def dev?
