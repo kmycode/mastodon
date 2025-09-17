@@ -637,8 +637,13 @@ export default function compose(state = initialState, action) {
       }
 
       if (action.status.get('poll')) {
+        let options = action.status.getIn(['poll', 'options']).map(x => x.get('title'));
+        if (options.size < action.maxOptions) {
+          options = options.push('');
+        }
+
         map.set('poll', ImmutableMap({
-          options: action.status.getIn(['poll', 'options']).map(x => x.get('title')),
+          options: options,
           multiple: action.status.getIn(['poll', 'multiple']),
           expires_in: expiresInFromExpiresAt(action.status.getIn(['poll', 'expires_at'])),
         }));
@@ -673,8 +678,13 @@ export default function compose(state = initialState, action) {
       }
 
       if (action.status.get('poll')) {
+        let options = action.status.getIn(['poll', 'options']).map(x => x.get('title'));
+        if (options.size < action.maxOptions) {
+          options = options.push('');
+        }
+
         map.set('poll', ImmutableMap({
-          options: action.status.getIn(['poll', 'options']).map(x => x.get('title')),
+          options: options,
           multiple: action.status.getIn(['poll', 'multiple']),
           expires_in: expiresInFromExpiresAt(action.status.getIn(['poll', 'expires_at'])),
         }));
