@@ -2147,8 +2147,6 @@ ja:
       limit: 固定できる投稿数の上限に達しました
       ownership: 他人の投稿を固定することはできません
       reblog: ブーストを固定することはできません
-    quote_policies:
-      public: 全員
     searchabilities:
       direct: 反応者
       direct_long: この投稿に反応した人しか検索できません
@@ -2171,7 +2169,6 @@ ja:
     violate_rules: サーバールールに違反するため投稿できません
     visibilities:
       circle: サークル限定
-      direct: ダイレクト
       limited: 限定投稿
       login: ログインユーザーのみ
       login_long: ログインしたユーザーのみが見ることができます
