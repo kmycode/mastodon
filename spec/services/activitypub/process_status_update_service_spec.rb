@@ -946,9 +946,10 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
     end
 
     it 'updates the approval URI but does not verify the quote' do
+      # kmyblue special spec for fedibird/misskey
       expect { subject.call(status, json, json) }
         .to change(status, :text).to('')
-        .and not_change(quote, :state).from('pending')
+        .and change(quote, :state).from('pending').to('accepted')
     end
   end
 

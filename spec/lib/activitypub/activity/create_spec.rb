@@ -1640,8 +1640,9 @@ RSpec.describe ActivityPub::Activity::Create do
           expect(status.spoiler_text).to eq 'beware of what she said'
           expect(status.content).to eq ''
           expect(status.quote).to_not be_nil
+          # kmyblue special spec for fedibird/misskey
           expect(status.quote).to have_attributes(
-            state: 'pending',
+            state: 'accepted',
             approval_uri: nil
           )
         end
