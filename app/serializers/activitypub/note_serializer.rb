@@ -279,7 +279,7 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
   end
 
   def quote_authorization?
-    object.quote.present? && (Setting.auto_accept_legacy_quotes ? object.quote.legacy_accepted? : ActivityPub::TagManager.instance.approval_uri_for(object.quote).present?)
+    object.quote.present? && ActivityPub::TagManager.instance.approval_uri_for(object.quote).present?
   end
 
   def quote
