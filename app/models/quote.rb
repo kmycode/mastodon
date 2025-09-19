@@ -44,12 +44,6 @@ class Quote < ApplicationRecord
   after_destroy_commit :decrement_counter_caches!
   after_update_commit :update_counter_caches!
 
-  def legacy_accepted?
-    return false if !accepted? || !quoted_account || quoted_account.local?
-
-    InstanceInfo.legacy_quote_software?(quoted_account.domain)
-  end
-
   def accept!
     update!(state: :accepted)
   end

@@ -59,7 +59,7 @@ class ActivityPub::TagManager
 
   def approval_uri_for(quote, check_approval: true)
     unless quote.quoted_account&.local?
-      return 'http://kmy.blue/ns#LegacyQuote' if Setting.auto_accept_legacy_quotes && !quote.approval_uri && quote.quoted_account&.domain && InstanceInfo.legacy_quote_software?(quote.quoted_account.domain)
+      return 'http://kmy.blue/ns#LegacyQuote' if Setting.auto_accept_legacy_quotes && quote.approval_uri.nil? && InstanceInfo.legacy_quote_software?(quote.quoted_account.domain)
 
       return quote.approval_uri
     end

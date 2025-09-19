@@ -113,6 +113,82 @@ RSpec.describe ActivityPub::NoteSerializer do
     end
   end
 
+  context 'with a pending quote' do
+    let(:quoted_account) { Fabricate(:account) }
+    let(:quoted_status) { Fabricate(:status, account: quoted_account) }
+    let!(:quote) { Fabricate(:quote, status: parent, quoted_status: quoted_status, state: :accepted) }
+
+    shared_examples 'quote is authorized' do
+      it 'has the expected shape' do
+        expect(subject).to include({
+          'type' => 'Note',
+          'quote' => ActivityPub::TagManager.instance.uri_for(quote.quoted_status),
+          'quoteUri' => ActivityPub::TagManager.instance.uri_for(quote.quoted_status),
+          '_misskey_quote' => ActivityPub::TagManager.instance.uri_for(quote.quoted_status),
+          'quoteAuthorization' => ActivityPub::TagManager.instance.approval_uri_for(quote),
+        })
+      end
+    end
+
+    shared_examples 'quote is not authorized' do
+      it 'has the expected shape' do
+        expect(subject).to include({
+          'type' => 'Note',
+          'quote' => ActivityPub::TagManager.instance.uri_for(quote.quoted_status),
+          'quoteUri' => ActivityPub::TagManager.instance.uri_for(quote.quoted_status),
+          '_misskey_quote' => ActivityPub::TagManager.instance.uri_for(quote.quoted_status),
+        })
+        expect(subject).to_not have_key('quoteAuthorization')
+      end
+    end
+
+    it_behaves_like 'quote is authorized'
+
+    context 'when quote is pending' do
+      let(:quote) { Fabricate(:quote, status: parent, quoted_status: quoted_status, state: :pending) }
+
+      it_behaves_like 'quote is not authorized'
+    end
+
+    context 'when quote is from misskey and approval_uri is nil' do
+      let(:quoted_account) { Fabricate(:account, uri: 'https://example.com/actor', domain: 'example.com') }
+
+      before { Fabricate(:instance_info, domain: 'example.com', software: 'misskey') }
+
+      it_behaves_like 'quote is not authorized'
+    end
+
+    context 'when quote is from misskey and approval_uri is nil, auto_accept_legacy_quotes is enabled' do
+      let(:quoted_account) { Fabricate(:account, uri: 'https://example.com/actor', domain: 'example.com') }
+
+      before do
+        Fabricate(:instance_info, domain: 'example.com', software: 'misskey')
+        Setting.auto_accept_legacy_quotes = true
+      end
+
+      it_behaves_like 'quote is authorized'
+    end
+
+    context 'when quote is from mastodon and approval_uri is nil' do
+      let(:quoted_account) { Fabricate(:account, uri: 'https://example.com/actor', domain: 'example.com') }
+
+      before { Fabricate(:instance_info, domain: 'example.com', software: 'mastodon') }
+
+      it_behaves_like 'quote is not authorized'
+    end
+
+    context 'when quote is from mastodon and approval_uri is nil, auto_accept_legacy_quotes is enabled' do
+      let(:quoted_account) { Fabricate(:account, uri: 'https://example.com/actor', domain: 'example.com') }
+
+      before do
+        Fabricate(:instance_info, domain: 'example.com', software: 'mastodon')
+        Setting.auto_accept_legacy_quotes = true
+      end
+
+      it_behaves_like 'quote is not authorized'
+    end
+  end
+
   context 'with a quote policy', feature: :outgoing_quotes do
     let(:parent) { Fabricate(:status, quote_approval_policy: Status::QUOTE_APPROVAL_POLICY_FLAGS[:followers] << 16) }
 
