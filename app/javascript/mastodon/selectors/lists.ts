@@ -14,3 +14,12 @@ export const getOrderedLists = createAppSelector(
   (lists) =>
     lists.sort((a: List, b: List) => a.title.localeCompare(b.title)).toArray(),
 );
+
+export const getFavouritedLists = createAppSelector(
+  [(state) => getLists(state)],
+  (lists) =>
+    lists
+      .sort((a: List, b: List) => a.title.localeCompare(b.title))
+      .filter((list) => list.favourite)
+      .toArray(),
+);

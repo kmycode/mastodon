@@ -16,3 +16,12 @@ export const getOrderedAntennas = createAppSelector(
       .sort((a: Antenna, b: Antenna) => a.title.localeCompare(b.title))
       .toArray(),
 );
+
+export const getFavouritedAntennas = createAppSelector(
+  [(state) => getAntennas(state)],
+  (antennas) =>
+    antennas
+      .sort((a: Antenna, b: Antenna) => a.title.localeCompare(b.title))
+      .filter((antenna) => antenna.favourite)
+      .toArray(),
+);
