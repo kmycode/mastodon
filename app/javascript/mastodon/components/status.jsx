@@ -135,6 +135,7 @@ class Status extends ImmutablePureComponent {
       available: PropTypes.bool,
     }),
     withoutEmojiReactions: PropTypes.bool,
+    myEmojiReactionsOnly: PropTypes.bool,
     contextType: PropTypes.string,
     ...WithOptionalRouterPropTypes,
   };
@@ -566,7 +567,7 @@ class Status extends ImmutablePureComponent {
       const emojiReactions = status.get('emoji_reactions');
       const emojiReactionAvailableServer = !isHideItem('emoji_reaction_unavailable_server') || status.getIn(['account', 'server_features', 'emoji_reaction']);
       if (emojiReactions.size > 0 && enableEmojiReaction && emojiReactionAvailableServer) {
-        emojiReactionsBar = <StatusEmojiReactionsBar emojiReactions={emojiReactions} myReactionOnly={!isShowItem('emoji_reaction_on_timeline')} status={status} onEmojiReact={this.props.onEmojiReact} onUnEmojiReact={this.props.onUnEmojiReact} />;
+        emojiReactionsBar = <StatusEmojiReactionsBar emojiReactions={emojiReactions} myReactionOnly={this.props.myEmojiReactionsOnly || !isShowItem('emoji_reaction_on_timeline')} status={status} onEmojiReact={this.props.onEmojiReact} onUnEmojiReact={this.props.onUnEmojiReact} />;
       }
     }
 
