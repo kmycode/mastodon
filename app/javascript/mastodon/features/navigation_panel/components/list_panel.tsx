@@ -26,9 +26,7 @@ const messages = defineMessages({
 export const ListPanel: React.FC = () => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
-  const lists = useAppSelector((state) => getFavouritedLists(state)).filter(
-    (list) => list.favourite,
-  );
+  const lists = useAppSelector((state) => getFavouritedLists(state));
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
