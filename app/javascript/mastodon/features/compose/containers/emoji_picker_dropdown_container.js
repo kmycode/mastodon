@@ -37,13 +37,9 @@ const DEFAULTS = [
 const RECENT_SIZE = DEFAULTS.length;
 
 const getFrequentlyUsedEmojis = createSelector([
-  state => { return {
-    emojiCounters: state.getIn(['settings', 'frequentlyUsedEmojis'], ImmutableMap()),
-    reactionDeck: state.get('reaction_deck', ImmutableList()),
-  }; },
-], data => {
-  const { emojiCounters, reactionDeck } = data;
-
+  state => state.getIn(['settings', 'frequentlyUsedEmojis'], ImmutableMap()),
+  state => state.get('reaction_deck', ImmutableList()),
+], (emojiCounters, reactionDeck) => {
   let deckEmojis = reactionDeck
     .toArray()
     .map((e) => e.get('name'))

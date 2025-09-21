@@ -166,13 +166,17 @@ const searchabilityOptions = {
 const PrivacyModalButton: FC<PrivacyDropdownProps> = ({ disabled = false }) => {
   const intl = useIntl();
 
-  const { visibility, searchability, quotePolicy, circleId } = useAppSelector(
-    (state) => ({
-      visibility: state.compose.get('privacy') as StatusVisibility,
-      searchability: state.compose.get('searchability') as StatusSearchability,
-      quotePolicy: state.compose.get('quote_policy') as ApiQuotePolicy,
-      circleId: state.compose.get('circle_id') as string,
-    }),
+  const quotePolicy = useAppSelector(
+    (state) => state.compose.get('quote_policy') as ApiQuotePolicy,
+  );
+  const visibility = useAppSelector(
+    (state) => state.compose.get('privacy') as StatusVisibility,
+  );
+  const searchability = useAppSelector(
+    (state) => state.compose.get('searchability') as StatusSearchability,
+  );
+  const circleId = useAppSelector(
+    (state) => state.compose.get('circle_id') as string,
   );
 
   const { icon, iconComponent } = useMemo(() => {
