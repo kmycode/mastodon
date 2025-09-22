@@ -6,7 +6,7 @@ import ListAltActiveIcon from '@/material-icons/400-24px/list_alt-fill.svg?react
 import ListAltIcon from '@/material-icons/400-24px/list_alt.svg?react';
 import { fetchLists } from 'mastodon/actions/lists';
 import { ColumnLink } from 'mastodon/features/ui/components/column_link';
-import { getOrderedLists } from 'mastodon/selectors/lists';
+import { getFavouritedLists } from 'mastodon/selectors/lists';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 import { CollapsiblePanel } from './collapsible_panel';
@@ -26,7 +26,7 @@ const messages = defineMessages({
 export const ListPanel: React.FC = () => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
-  const lists = useAppSelector((state) => getOrderedLists(state));
+  const lists = useAppSelector((state) => getFavouritedLists(state));
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

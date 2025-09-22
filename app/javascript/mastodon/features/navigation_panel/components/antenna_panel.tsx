@@ -5,7 +5,7 @@ import { useIntl, defineMessages } from 'react-intl';
 import { fetchAntennas } from '@/mastodon/actions/antennas_typed';
 import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import { ColumnLink } from 'mastodon/features/ui/components/column_link';
-import { getOrderedAntennas } from 'mastodon/selectors/antennas';
+import { getFavouritedAntennas } from 'mastodon/selectors/antennas';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 import { CollapsiblePanel } from './collapsible_panel';
@@ -25,7 +25,7 @@ const messages = defineMessages({
 export const AntennaPanel: React.FC = () => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
-  const antennas = useAppSelector((state) => getOrderedAntennas(state));
+  const antennas = useAppSelector((state) => getFavouritedAntennas(state));
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
