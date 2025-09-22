@@ -94,12 +94,8 @@ export const getDescendantsIds = createAppSelector(
 );
 
 export const getReferencesIds = createAppSelector(
-  [
-    (_, id: string) => id,
-    (state) => state.contexts.references,
-    (_, __, exceptId: string) => exceptId,
-  ],
-  (statusId, references, exceptId) => {
-    return references[statusId]?.filter((id) => exceptId !== id) ?? [];
+  [(_, id: string) => id, (state) => state.contexts.references],
+  (statusId, references) => {
+    return references[statusId] ?? [];
   },
 );
