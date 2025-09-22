@@ -95,7 +95,7 @@ const makeMapStateToProps = () => {
     if (status) {
       ancestorsIds   = getAncestorsIds(state, status.get('in_reply_to_id'));
       descendantsIds = getDescendantsIds(state, status.get('id'));
-      referencesIds  = getReferencesIds(state, status.get('id'), [status.getIn(['quote', 'quoted_status'])]);
+      referencesIds  = getReferencesIds(state, status.get('id'), status.getIn(['quote', 'quoted_status']));
     }
 
     return {
