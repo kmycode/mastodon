@@ -21,7 +21,7 @@ RSpec.describe ProcessReferencesService, type: :service do
       target_status.account.user&.save
 
       described_class.new.call(status, reference_parameters, urls: urls, fetch_remote: fetch_remote)
-      status.reference_objects.pluck(:target_status_id, :attribute_type)
+      status.reference_objects.pluck(:target_status_id)
     end
 
     let(:reference_parameters) { [] }
@@ -33,8 +33,7 @@ RSpec.describe ProcessReferencesService, type: :service do
 
       it 'post status', :inline_jobs do
         expect(subject.size).to eq 1
-        expect(subject.pluck(0)).to include target_status.id
-        expect(subject.pluck(1)).to include 'RT'
+        expect(subject).to include target_status.id
         expect(notify?).to be true
       end
 
@@ -50,8 +49,8 @@ RSpec.describe ProcessReferencesService, type: :service do
 
       it 'post status', :inline_jobs do
         expect(subject.size).to eq 2
-        expect(subject).to include [target_status.id, 'RT']
-        expect(subject).to include [target_status2.id, 'BT']
+        expect(subject).to include target_status.id
+        expect(subject).to include target_status2.id
         expect(notify?).to be true
         expect(notify?(target_status2.id)).to be true
       end
@@ -63,8 +62,7 @@ RSpec.describe ProcessReferencesService, type: :service do
 
       it 'post status', :inline_jobs do
         expect(subject.size).to eq 1
-        expect(subject.pluck(0)).to include target_status.id
-        expect(subject.pluck(1)).to include 'RT'
+        expect(subject).to include target_status.id
         expect(notify?).to be false
       end
     end
@@ -84,8 +82,7 @@ RSpec.describe ProcessReferencesService, type: :service do
 
       it 'post status', :inline_jobs do
         expect(subject.size).to eq 1
-        expect(subject.pluck(0)).to include target_status.id
-        expect(subject.pluck(1)).to include 'QT'
+        expect(subject).to include target_status.id
 
         # it's not kmyblue legacy quote
         expect(status.quote).to be_nil
@@ -116,8 +113,7 @@ RSpec.describe ProcessReferencesService, type: :service do
 
         it 'post status', :inline_jobs do
           expect(subject.size).to eq 1
-          expect(subject.pluck(0)).to include target_status.id
-          expect(subject.pluck(1)).to include 'RT'
+          expect(subject).to include target_status.id
           expect(notify?).to be true
         end
       end
@@ -154,7 +150,6 @@ RSpec.describe ProcessReferencesService, type: :service do
 
       it 'reference it', :inline_jobs do
         expect(subject.size).to eq 1
-        expect(subject[0][1]).to eq 'BT'
 
         status = Status.find_by(id: subject[0][0])
         expect(status).to_not be_nil
@@ -180,8 +175,7 @@ RSpec.describe ProcessReferencesService, type: :service do
 
         it 'reference it', :inline_jobs do
           expect(subject.size).to eq 2
-          expect(subject).to include [target_status.id, 'RT']
-          expect(subject.pluck(1)).to include 'BT'
+          expect(subject).to include target_status.id
 
           status = Status.find_by(id: subject.pluck(0), uri: 'https://example.com/test_post')
           expect(status).to_not be_nil
@@ -216,7 +210,6 @@ RSpec.describe ProcessReferencesService, type: :service do
       shared_examples 'reference once' do |uri, url|
         it 'reference it', :inline_jobs do
           expect(subject.size).to eq 1
-          expect(subject[0][1]).to eq 'BT'
 
           status = Status.find_by(id: subject[0][0])
           expect(status).to_not be_nil

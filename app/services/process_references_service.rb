@@ -25,11 +25,10 @@ class ProcessReferencesService < BaseService
       @references_count = @status.reference_objects.count
       build_references_diff
 
-      if @added_items.present? || @removed_items.present? || @changed_items.present?
+      if @added_status_ids.present? || @removed_status_ids.present?
         StatusReference.transaction do
           remove_old_references
           add_references
-          change_reference_attributes
 
           @status.save!
         end
@@ -74,65 +73,51 @@ class ProcessReferencesService < BaseService
   private
 
   def build_old_references
-    @status.reference_objects.pluck(:target_status_id, :attribute_type).to_h
+    @status.reference_objects.pluck(:target_status_id)
   end
 
   def build_new_references
-    scan_text_and_quotes.tap do |status_id_to_attributes|
-      @reference_parameters.each do |status_id|
-        id_num = status_id.to_i
-        status_id_to_attributes[id_num] = 'BT' unless id_num.positive? && status_id_to_attributes.key?(id_num)
-      end
-    end
+    scan_text_and_quotes
   end
 
   def build_references_diff
     olds = build_old_references
     news = build_new_references
 
-    @changed_items = {}
-    @added_items = {}
-    @removed_items = {}
+    @added_status_ids = []
+    @removed_status_ids = []
 
-    news.each_key do |status_id|
-      exist_attribute = olds[status_id]
+    news.each do |status_id_or_url|
+      next if olds.include?(status_id_or_url)
 
-      @added_items[status_id] = news[status_id] if exist_attribute.nil?
-      @changed_items[status_id] = news[status_id] if olds.key?(status_id) && exist_attribute != news[status_id]
+      @added_status_ids << status_id_or_url if status_id_or_url.is_a?(Integer)
     end
 
-    olds.each_key do |status_id|
-      new_attribute = news[status_id]
-
-      @removed_items[status_id] = olds[status_id] if new_attribute.nil?
+    olds.each do |status_id|
+      @removed_status_ids << status_id unless news.include?(status_id)
     end
   end
 
   def scan_text_and_quotes
     text = extract_status_plain_text(@status)
-    url_to_attributes = @urls.index_with('BT')
-                             .merge(text.scan(REFURL_EXP).to_h { |result| [result[3], result[0]] })
+    @urls.index_with('BT')
+         .merge(text.scan(REFURL_EXP).to_h { |result| [result[3], result[0]] })
 
-    url_to_statuses = fetch_statuses(url_to_attributes.keys.uniq)
+    detected_urls = (@urls + text.scan(REFURL_EXP).pluck(3)).uniq
+
+    url_to_statuses = fetch_statuses(detected_urls)
 
     @again = true if !@fetch_remote && url_to_statuses.values.any?(&:nil?)
 
-    url_to_statuses.keys.to_h do |url|
-      attribute = url_to_attributes[url] || 'BT'
+    url_to_statuses.keys.map do |url|
       status = url_to_statuses[url]
 
       if status.present?
-        quote_attribute?(attribute)
-
-        [status.id, attribute]
+        status.id
       else
-        [url, attribute]
+        url
       end
     end
-  end
-
-  def quote_attribute?(attribute)
-    %w(QT RE).include?(attribute)
   end
 
   def fetch_statuses(urls)
@@ -163,17 +148,16 @@ class ProcessReferencesService < BaseService
   end
 
   def add_references
-    return if @added_items.empty?
+    return if @added_status_ids.empty?
 
     @added_objects = []
 
-    statuses = Status.where(id: @added_items.keys).to_a
-    @added_items.each_key do |status_id|
+    statuses = Status.where(id: @added_status_ids).to_a
+    @added_status_ids.each do |status_id|
       status = statuses.find { |s| s.id == status_id }
       next if status.blank?
 
-      attribute_type = @added_items[status_id]
-      @added_objects << @status.reference_objects.new(target_status: status, attribute_type: attribute_type)
+      @added_objects << @status.reference_objects.new(target_status: status)
 
       status.increment_count!(:status_referred_by_count)
       @references_count += 1
@@ -194,31 +178,19 @@ class ProcessReferencesService < BaseService
   end
 
   def remove_old_references
-    return if @removed_items.empty?
+    return if @removed_status_ids.empty?
 
     @removed_objects = []
 
-    @status.reference_objects.where(target_status: @removed_items.keys).destroy_all
+    @status.reference_objects.where(target_status: @removed_status_ids).destroy_all
 
-    statuses = Status.where(id: @added_items.keys).to_a
-    @removed_items.each_key do |status_id|
+    statuses = Status.where(id: @removed_status_ids).to_a
+    @removed_status_ids.each do |status_id|
       status = statuses.find { |s| s.id == status_id }
       next if status.blank?
 
       status.decrement_count!(:status_referred_by_count)
       @references_count -= 1
-    end
-  end
-
-  def change_reference_attributes
-    return if @changed_items.empty?
-
-    @changed_objects = []
-
-    @status.reference_objects.where(target_status: @changed_items.keys).find_each do |ref|
-      attribute_type = @changed_items[ref.target_status_id]
-
-      ref.update!(attribute_type: attribute_type)
     end
   end
 
