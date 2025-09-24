@@ -42,6 +42,43 @@ module Mastodon::CLI
       end
     end
 
+    desc 'lookup_by_email', 'Lookup account username by email'
+    long_desc <<-LONG_DESC
+      Find account username by email for check the email is used in this server.
+    LONG_DESC
+    def lookup_by_email(email)
+      user = User.find_by(email: email)
+      account = user&.account
+
+      if account.present?
+        say('Found', :green)
+        say("email    : #{email}")
+        say("username : #{account.username}")
+      else
+        say('Not found', :red)
+      end
+    end
+
+    desc 'lookup_by_username', 'Lookup account email by username'
+    long_desc <<-LONG_DESC
+      Find account username by email for login this server.
+      If you forgot password, use 'accounts modify username --reset-password'.
+
+      NOTE: username is NOT indexed in PostgreSQL. This command affects the performance.
+    LONG_DESC
+    def lookup_by_username(username)
+      account = Account.find_by(username: username, domain: nil)
+      user = account&.user
+
+      if user.present?
+        say('Found', :green)
+        say("username : #{username}")
+        say("email    : #{user.email}")
+      else
+        say('Not found', :red)
+      end
+    end
+
     option :email, required: true
     option :confirmed, type: :boolean
     option :role
