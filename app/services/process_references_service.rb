@@ -96,6 +96,9 @@ class ProcessReferencesService < BaseService
     olds.each do |status_id|
       @removed_status_ids << status_id unless news.include?(status_id)
     end
+
+    @added_status_ids = @added_status_ids.uniq
+    @removed_status_ids = @removed_status_ids.uniq
   end
 
   def scan_text_and_quotes

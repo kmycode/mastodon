@@ -151,7 +151,7 @@ RSpec.describe ProcessReferencesService, type: :service do
       it 'reference it', :inline_jobs do
         expect(subject.size).to eq 1
 
-        status = Status.find_by(id: subject[0][0])
+        status = Status.find_by(id: subject[0])
         expect(status).to_not be_nil
         expect(status.url).to eq 'https://example.com/test_post'
       end
@@ -160,7 +160,7 @@ RSpec.describe ProcessReferencesService, type: :service do
         let(:fetch_remote) { false }
 
         it 'reference it', :inline_jobs do
-          ids = subject.pluck(0)
+          ids = subject
           expect(ids.size).to eq 1
 
           status = Status.find_by(id: ids[0])
@@ -177,7 +177,7 @@ RSpec.describe ProcessReferencesService, type: :service do
           expect(subject.size).to eq 2
           expect(subject).to include target_status.id
 
-          status = Status.find_by(id: subject.pluck(0), uri: 'https://example.com/test_post')
+          status = Status.find_by(id: subject, uri: 'https://example.com/test_post')
           expect(status).to_not be_nil
         end
       end
@@ -211,7 +211,7 @@ RSpec.describe ProcessReferencesService, type: :service do
         it 'reference it', :inline_jobs do
           expect(subject.size).to eq 1
 
-          status = Status.find_by(id: subject[0][0])
+          status = Status.find_by(id: subject[0])
           expect(status).to_not be_nil
           expect(status.id).to eq remote_status.id
           expect(status.uri).to eq uri
