@@ -717,6 +717,7 @@ export const AccountHeader: React.FC<{
     handleReblogToggle,
     handleReport,
     handleUnblockDomain,
+    isHideRelationships,
   ]);
 
   if (!account) {
