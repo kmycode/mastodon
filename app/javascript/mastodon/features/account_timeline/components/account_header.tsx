@@ -50,7 +50,12 @@ import { DomainPill } from 'mastodon/features/account/components/domain_pill';
 import FollowRequestNoteContainer from 'mastodon/features/account/containers/follow_request_note_container';
 import { useLinks } from 'mastodon/hooks/useLinks';
 import { useIdentity } from 'mastodon/identity_context';
-import { autoPlayGif, me, domain as localDomain } from 'mastodon/initial_state';
+import {
+  autoPlayGif,
+  me,
+  domain as localDomain,
+  isHideItem,
+} from 'mastodon/initial_state';
 import type { Account } from 'mastodon/models/account';
 import type { MenuItem } from 'mastodon/models/dropdown_menu';
 import {
@@ -219,6 +224,8 @@ export const AccountHeader: React.FC<{
   );
   const hidden = useAppSelector((state) => getAccountHidden(state, accountId));
   const handleLinkClick = useLinks();
+
+  const isHideRelationships = isHideItem('relationships');
 
   const handleBlock = useCallback(() => {
     if (!account) {
@@ -548,7 +555,7 @@ export const AccountHeader: React.FC<{
         text: intl.formatMessage(messages.add_or_remove_from_exclude_antenna),
         action: handleAddToExcludeAntenna,
       });
-      if (relationship?.followed_by) {
+      if (!isHideRelationships && relationship?.followed_by) {
         arr.push({
           text: intl.formatMessage(messages.add_or_remove_from_circle),
           action: handleAddToCircle,
@@ -556,7 +563,7 @@ export const AccountHeader: React.FC<{
       }
       arr.push(null);
 
-      if (relationship?.followed_by) {
+      if (!isHideRelationships && relationship?.followed_by) {
         const handleRemoveFromFollowers = () => {
           dispatch(
             openModal({
@@ -709,6 +716,7 @@ export const AccountHeader: React.FC<{
     handleReblogToggle,
     handleReport,
     handleUnblockDomain,
+    isHideRelationships,
   ]);
 
   if (!account) {
@@ -724,6 +732,7 @@ export const AccountHeader: React.FC<{
 
   if (me !== account.id && relationship) {
     if (
+      !isHideRelationships &&
       relationship.followed_by &&
       (relationship.following || relationship.requested)
     ) {
@@ -735,7 +744,7 @@ export const AccountHeader: React.FC<{
           />
         </span>,
       );
-    } else if (relationship.followed_by) {
+    } else if (!isHideRelationships && relationship.followed_by) {
       info.push(
         <span key='followed_by' className='relationship-tag'>
           <FormattedMessage
@@ -744,7 +753,7 @@ export const AccountHeader: React.FC<{
           />
         </span>,
       );
-    } else if (relationship.requested_by) {
+    } else if (!relationship.followed_by && relationship.requested_by) {
       info.push(
         <span key='requested_by' className='relationship-tag'>
           <FormattedMessage
