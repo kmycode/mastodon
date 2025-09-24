@@ -55,6 +55,7 @@
   "account.followers": "フォロワー",
   "account.followers.empty": "まだ誰もフォローしていません。",
   "account.followers_counter": "{count, plural, other {{counter} フォロワー}}",
+  "account.followers.hidden_from_me": "この情報はあなた自身の設定によって隠されています。",
   "account.followers_you_know_counter": "あなたと知り合いの{counter}人",
   "account.following": "フォロー中",
   "account.following_counter": "{count, plural, other {{counter} フォロー}}",
