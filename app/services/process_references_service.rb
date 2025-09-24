@@ -84,21 +84,8 @@ class ProcessReferencesService < BaseService
     olds = build_old_references
     news = build_new_references
 
-    @added_status_ids = []
-    @removed_status_ids = []
-
-    news.each do |status_id_or_url|
-      next if olds.include?(status_id_or_url)
-
-      @added_status_ids << status_id_or_url if status_id_or_url.is_a?(Integer)
-    end
-
-    olds.each do |status_id|
-      @removed_status_ids << status_id unless news.include?(status_id)
-    end
-
-    @added_status_ids = @added_status_ids.uniq
-    @removed_status_ids = @removed_status_ids.uniq
+    @added_status_ids = (news - olds).uniq
+    @removed_status_ids = (olds - news).uniq
   end
 
   def scan_text_and_quotes
@@ -107,20 +94,11 @@ class ProcessReferencesService < BaseService
          .merge(text.scan(REFURL_EXP).to_h { |result| [result[3], result[0]] })
 
     detected_urls = (@urls + text.scan(REFURL_EXP).pluck(3)).uniq
-
     url_to_statuses = fetch_statuses(detected_urls)
 
     @again = true if !@fetch_remote && url_to_statuses.values.any?(&:nil?)
 
-    url_to_statuses.keys.map do |url|
-      status = url_to_statuses[url]
-
-      if status.present?
-        status.id
-      else
-        url
-      end
-    end
+    url_to_statuses.keys.filter_map { |url| url_to_statuses[url]&.id }
   end
 
   def fetch_statuses(urls)
@@ -134,7 +112,7 @@ class ProcessReferencesService < BaseService
   def url_to_status(url)
     status   = ActivityPub::TagManager.instance.uri_to_resource(url, Status, url: true)
     status ||= ResolveURLService.new.call(url, on_behalf_of: @status.account) unless bad_url_to_fetch?(url)
-    referrable?(status) ? status : nil
+    status
   end
 
   def bad_url_to_fetch?(url)
@@ -158,7 +136,7 @@ class ProcessReferencesService < BaseService
     statuses = Status.where(id: @added_status_ids).to_a
     @added_status_ids.each do |status_id|
       status = statuses.find { |s| s.id == status_id }
-      next if status.blank?
+      next if status.blank? || !referrable?(status)
 
       @added_objects << @status.reference_objects.new(target_status: status)
 
