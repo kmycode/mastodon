@@ -81,6 +81,7 @@ module Status::SearchConcern
       properties << 'sensitive' if sensitive?
       properties << 'reply' if reply?
       properties << 'reference' if with_status_reference?
+      properties << 'quote' if with_quote?
     end
   end
 end

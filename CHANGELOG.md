@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.4.5] - 2025-09-23
+
+### Security
+
+- Update dependencies
+
+### Added
+
+- Add support for `has:quote` in search (#36217 by @ClearlyClaire)
+
+### Changed
+
+- Change quoted posts from silenced accounts to use a click-through rather than being hidden (#36166 and #36167 by @ClearlyClaire)
+
+### Fixed
+
+- Fix processing of out-of-order `Update` as implicit updates (#36190 by @ClearlyClaire)
+- Fix getting `Create` and `Update` out of order (#36176 by @ClearlyClaire)
+- Fix quotes with Content Warnings but no text being shown without Content Warnings (#36150 by @ClearlyClaire)
+
 ## [4.4.4] - 2025-09-16
 
 ### Security
@@ -18,7 +38,7 @@ All notable changes to this project will be documented in this file.
 - Fix WebUI handling of deleted quoted posts (#35909 and #35918 by @ClearlyClaire and @diondiondion)
 - Fix “Edit” and “Delete & Redraft” on a poll not inserting empty option (#35892 by @ClearlyClaire)
 - Fix loading of some compatibility CSS on some configurations (#35876 by @shleeable)
-- Fix HttpLog not being enabled with `RAILS_LOGÈ_LEVEL=debug` (#35833 by @mjankowski)
+- Fix HttpLog not being enabled with `RAILS_LOG_LEVEL=debug` (#35833 by @mjankowski)
 - Fix self-destruct scheduler behavior on some Redis setups (#35823 by @ClearlyClaire)
 - Fix `tootctl admin create` not bypassing reserved username checks (#35779 by @ClearlyClaire)
 - Fix interaction policy changes in implicit updates not being saved (#35751 by @ClearlyClaire)

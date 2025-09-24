@@ -138,9 +138,10 @@ RSpec.describe ActivityPub::Activity::Update do
         subject.perform
       end
 
-      it 'does not create a new status', :inline_jobs do
+      it 'creates a new status', :inline_jobs do
         status = Status.find_by(uri: 'https://example.com/note')
-        expect(status).to be_nil
+        expect(status).to_not be_nil
+        expect(status.text).to eq 'Ohagi is tsubuan'
       end
     end
 
