@@ -405,6 +405,7 @@
   "domain_pill.server": "サーバー",
   "domain_pill.their_handle": "このユーザーのハンドル:",
   "domain_pill.their_server": "ユーザーの仮想の住所です。そのユーザーIDによるすべての投稿を保持しています。",
+  "domain_pill.their_server_software": "このサーバーは<software>unknown</software>という名前のソフトウェアを使用していますが、他のサーバーと同様に投稿を表示したり、会話に参加できます。",
   "domain_pill.their_username": "ユーザーを識別する名前です。ユーザー名はひとつのサーバー内においては唯一無二の名前ですが、ほかのサーバーには同名のユーザーがいることもあります。",
   "domain_pill.username": "ユーザー名",
   "domain_pill.whats_in_a_handle": "ユーザーハンドルについて",

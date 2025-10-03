@@ -48,6 +48,7 @@ export const accountFactory: FactoryFunction<ApiAccountJSON> = ({
   noindex: false,
   roles: [],
   hide_collections: false,
+  software: 'mastodon',
   other_settings: {
     hide_followers_count: false,
     hide_following_count: false,

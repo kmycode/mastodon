@@ -101,6 +101,7 @@ export const accountDefaultValues: AccountShape = {
   display_name: '',
   display_name_html: '',
   server_features: AccountServerFeaturesFactory(),
+  software: '',
   emojis: ImmutableList<CustomEmoji>(),
   fields: ImmutableList<AccountField>(),
   group: false,

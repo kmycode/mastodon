@@ -428,6 +428,7 @@
   "domain_pill.server": "Server",
   "domain_pill.their_handle": "Their handle:",
   "domain_pill.their_server": "Their digital home, where all of their posts live.",
+  "domain_pill.their_server_software": "This server is using <software>unknown</software> software, but you can view posts and participate in conversations just like other users.",
   "domain_pill.their_username": "Their unique identifier on their server. It’s possible to find users with the same username on different servers.",
   "domain_pill.username": "Username",
   "domain_pill.whats_in_a_handle": "What's in a handle?",

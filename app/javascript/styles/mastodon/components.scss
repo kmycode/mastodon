@@ -2259,6 +2259,16 @@
           font-weight: 500;
           color: $primary-text-color;
         }
+
+        &__software-name {
+          font-weight: 500;
+          color: $highlight-text-color;
+        }
+
+        &__header-software-name {
+          font-size: 12px;
+          margin-inline-start: 8px;
+        }
       }
     }
   }

@@ -14,8 +14,9 @@ import { Icon } from 'mastodon/components/icon';
 export const DomainPill: React.FC<{
   domain: string;
   username: string;
+  software: string;
   isSelf: boolean;
-}> = ({ domain, username, isSelf }) => {
+}> = ({ domain, username, software, isSelf }) => {
   const accessibilityId = useId();
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -126,6 +127,11 @@ export const DomainPill: React.FC<{
                       id='domain_pill.server'
                       defaultMessage='Server'
                     />
+                    {!isSelf && software && (
+                      <span className='account__domain-pill__popout__parts__header-software-name'>
+                        ({software})
+                      </span>
+                    )}
                   </h6>
                   <p>
                     {isSelf ? (
@@ -134,10 +140,25 @@ export const DomainPill: React.FC<{
                         defaultMessage='Your digital home, where all of your posts live. Don’t like this one? Transfer servers at any time and bring your followers, too.'
                       />
                     ) : (
-                      <FormattedMessage
-                        id='domain_pill.their_server'
-                        defaultMessage='Their digital home, where all of their posts live.'
-                      />
+                      <>
+                        <FormattedMessage
+                          id='domain_pill.their_server'
+                          defaultMessage='Their digital home, where all of their posts live.'
+                        />
+                        {software && (
+                          <FormattedMessage
+                            id='domain_pill.their_server_software'
+                            defaultMessage='This server is using <software>unknown</software> software, but you can view posts and participate in conversations just like other users.'
+                            values={{
+                              software: () => (
+                                <span className='account__domain-pill__popout__parts__software-name'>
+                                  {software}
+                                </span>
+                              ),
+                            }}
+                          />
+                        )}
+                      </>
                     )}
                   </p>
                 </div>

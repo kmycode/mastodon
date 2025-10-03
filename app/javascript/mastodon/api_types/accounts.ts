@@ -62,6 +62,7 @@ export interface BaseApiAccountJSON {
   other_settings: ApiAccountOtherSettingsJSON;
   roles?: ApiAccountJSON[];
   server_features: ApiServerFeaturesJSON;
+  software: string;
   statuses_count: number;
   uri: string;
   url?: string;

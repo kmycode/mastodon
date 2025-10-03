@@ -2,7 +2,7 @@
 
 module Mastodon
   module Version
-    KMYBLUE_API_VERSION = 4
+    KMYBLUE_API_VERSION = 5
 
     module_function
 

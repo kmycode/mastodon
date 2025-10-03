@@ -926,6 +926,7 @@ export const AccountHeader: React.FC<{
                 <DomainPill
                   username={username ?? ''}
                   domain={domain ?? ''}
+                  software={account.software}
                   isSelf={me === account.id}
                 />
                 {lockedIcon}

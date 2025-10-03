@@ -82,6 +82,12 @@ class InstanceInfo < ApplicationRecord
       NO_LANGUAGE_FLAG_SOFTWARES.include?(software_name(domain))
     end
 
+    def software_name(domain)
+      return 'kmyblue' unless domain
+
+      Rails.cache.fetch("software_name:#{domain}") { load_software_name(domain) }
+    end
+
     private
 
     def load_available_features(domain)
@@ -116,10 +122,6 @@ class InstanceInfo < ApplicationRecord
       return nil unless info.data.is_a?(Hash) && info.data['metadata'].is_a?(Hash) && info.data['metadata']['features'].is_a?(Array)
 
       info.data['metadata']['features']
-    end
-
-    def software_name(domain)
-      Rails.cache.fetch("software_name:#{domain}") { load_software_name(domain) }
     end
 
     def load_software_name(domain)
