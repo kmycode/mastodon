@@ -15,6 +15,8 @@ class ActivityPub::VerifyQuoteService < BaseService
     fetch_quoted_post_if_needed!(fetchable_quoted_uri, prefetched_body: prefetched_quoted_object)
     return if fast_track_approval!
 
+    return if quote.state == 'deleted'
+
     # for current version of kmyblue, fedibird, misskey
     if quote.approval_uri.blank?
       quote.accept!
