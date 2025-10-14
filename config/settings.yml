@@ -47,7 +47,7 @@ defaults: &defaults
   stranger_mention_from_local_ng: false
   enable_local_timeline: true
   emoji_reaction_disallow_domains: []
-  allow_referer_origin: false
+  allow_referrer_origin: false
   auto_accept_legacy_quotes: false
 
 development:
