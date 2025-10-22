@@ -29,7 +29,7 @@ module Status::InteractionPolicyConcern
 
   # Returns `:automatic`, `:manual`, `:unknown` or `:denied`
   def quote_policy_for_account(other_account, preloaded_relations: {})
-    return :denied if other_account.nil? || direct_visibility? || limited_visibility?
+    return :denied if other_account.nil? || direct_visibility? || limited_visibility? || reblog?
 
     following_author = nil
 
