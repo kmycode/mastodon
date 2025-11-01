@@ -346,7 +346,7 @@ GEM
       azure-blob (~> 0.5.2)
       hashie (~> 5.0)
     jmespath (1.6.2)
-    json (2.15.1)
+    json (2.15.2)
     json-canonicalization (1.0.0)
     json-jwt (1.17.0)
       activesupport (>= 4.2)
@@ -465,7 +465,7 @@ GEM
     nokogiri (1.18.10)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    oj (3.16.11)
+    oj (3.16.12)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     omniauth (2.1.4)
@@ -581,7 +581,7 @@ GEM
     ox (2.14.23)
       bigdecimal (>= 3.0)
     parallel (1.27.0)
-    parser (3.3.9.0)
+    parser (3.3.10.0)
       ast (~> 2.4.1)
       racc
     parslet (2.0.0)
@@ -590,7 +590,7 @@ GEM
     pg (1.6.2)
     pghero (3.7.0)
       activerecord (>= 7.1)
-    playwright-ruby-client (1.55.0)
+    playwright-ruby-client (1.56.0)
       concurrent-ruby (>= 1.1.6)
       mime-types (>= 3.0)
     pp (0.6.3)
@@ -745,7 +745,7 @@ GEM
       rspec-mocks (~> 3.0)
       sidekiq (>= 5, < 9)
     rspec-support (3.13.6)
-    rubocop (1.81.6)
+    rubocop (1.81.7)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -911,7 +911,7 @@ GEM
       activesupport
       faraday (~> 2.0)
       faraday-follow_redirects
-    webmock (3.26.0)
+    webmock (3.26.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -1028,7 +1028,7 @@ DEPENDENCIES
   parslet
   pg (~> 1.5)
   pghero
-  playwright-ruby-client (= 1.55.0)
+  playwright-ruby-client (= 1.56.0)
   premailer-rails
   prometheus_exporter (~> 2.2)
   propshaft
