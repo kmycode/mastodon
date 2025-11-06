@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import { changeCircle } from '../../../actions/compose';
+import { changeCircle } from '../../../actions/compose_typed';
 import { openModal, closeModal } from '../../../actions/modal';
 import { isUserTouching } from '../../../is_mobile';
 import CircleDropdown from '../components/circle_dropdown';

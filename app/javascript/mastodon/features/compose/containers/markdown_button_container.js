@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import MarkdownIcon from '@/material-icons/400-24px/markdown.svg?react';
 import { IconButton } from 'mastodon/components/icon_button';
 
-import { changeComposeMarkdown } from '../../../actions/compose';
+import { changeComposeMarkdown } from '../../../actions/compose_typed';
 
 const messages = defineMessages({
   marked: { id: 'compose_form.markdown.marked', defaultMessage: 'Markdown is enabled' },

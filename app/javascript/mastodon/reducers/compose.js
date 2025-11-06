@@ -1,11 +1,17 @@
 import { Map as ImmutableMap, List as ImmutableList, OrderedSet as ImmutableOrderedSet, fromJS } from 'immutable';
 
 import {
+  changeComposeVisibility,
+  changeComposeSearchability,
+  changeCircle,
+  changeComposeMarkdown,
   changeUploadCompose,
   quoteCompose,
   quoteComposeCancel,
   setComposeQuotePolicy,
-} from 'mastodon/actions/compose_typed';
+  pasteLinkCompose,
+  cancelPasteLinkCompose,
+} from '@/mastodon/actions/compose_typed';
 import { timelineDelete } from 'mastodon/actions/timelines_typed';
 
 import {
@@ -38,8 +44,6 @@ import {
   COMPOSE_SENSITIVITY_CHANGE,
   COMPOSE_SPOILERNESS_CHANGE,
   COMPOSE_SPOILER_TEXT_CHANGE,
-  COMPOSE_MARKDOWN_CHANGE,
-  COMPOSE_VISIBILITY_CHANGE,
   COMPOSE_LANGUAGE_CHANGE,
   COMPOSE_COMPOSING_CHANGE,
   COMPOSE_EMOJI_INSERT,
@@ -51,10 +55,8 @@ import {
   COMPOSE_POLL_REMOVE,
   COMPOSE_POLL_OPTION_CHANGE,
   COMPOSE_POLL_SETTINGS_CHANGE,
-  COMPOSE_CIRCLE_CHANGE,
   COMPOSE_CHANGE_MEDIA_ORDER,
   COMPOSE_SET_STATUS,
-  COMPOSE_SEARCHABILITY_CHANGE,
   COMPOSE_FOCUS,
 } from '../actions/compose';
 import { REDRAFT } from '../actions/statuses';
@@ -106,6 +108,7 @@ const initialState = ImmutableMap({
   quoted_status_id: null,
   quote_policy: 'public',
   default_quote_policy: 'public', // Set in hydration.
+  fetching_link: null,
 });
 
 const initialPoll = ImmutableMap({
@@ -417,7 +420,22 @@ const calculateProgress = (loaded, total) => Math.min(Math.round((loaded / total
 
 /** @type {import('@reduxjs/toolkit').Reducer<typeof initialState>} */
 export const composeReducer = (state = initialState, action) => {
-  if (changeUploadCompose.fulfilled.match(action)) {
+  if (changeComposeVisibility.match(action)) {
+    return state
+      .set('privacy', action.payload)
+      .set('idempotencyKey', uuid());
+  } else if (changeComposeSearchability.match(action)) {
+    return state
+      .set('searchability', action.payload)
+      .set('idempotencyKey', uuid());
+  } else if (changeCircle.match(action)) {
+    return state.set('circle_id', action.payload);
+  } else if (changeComposeMarkdown.match(action)) {
+    return state.withMutations(map => {
+      map.set('markdown', !state.get('markdown'));
+      map.set('idempotencyKey', uuid());
+    });
+  } else if (changeUploadCompose.fulfilled.match(action)) {
     return state
       .set('is_changing_upload', false)
       .update('media_attachments', list => list.map(item => {
@@ -433,15 +451,27 @@ export const composeReducer = (state = initialState, action) => {
     return state.set('is_changing_upload', false);
   } else if (quoteCompose.match(action)) {
     const status = action.payload;
+    const isDirect = state.get('privacy') === 'direct';
     return state
-      .set('quoted_status_id', status.get('id'))
+      .set('quoted_status_id', isDirect ? null : status.get('id'))
       .set('spoiler', status.get('sensitive'))
       .set('spoiler_text', status.get('spoiler_text'))
-      .update('privacy', (visibility) => ['public', 'unlisted'].includes(visibility) && status.get('visibility') === 'private' ? 'private' : visibility);
+      .update('privacy', (visibility) => {
+        if (['public', 'unlisted'].includes(visibility) && status.get('visibility') === 'private') {
+          return 'private';
+        }
+        return visibility;
+      });
   } else if (quoteComposeCancel.match(action)) {
     return state.set('quoted_status_id', null);
   } else if (setComposeQuotePolicy.match(action)) {
     return state.set('quote_policy', action.payload);
+  } else if (pasteLinkCompose.pending.match(action)) {
+    return state.set('fetching_link', action.meta.requestId);
+  } else if (pasteLinkCompose.fulfilled.match(action) || pasteLinkCompose.rejected.match(action)) {
+    return action.meta.requestId === state.get('fetching_link') ? state.set('fetching_link', null) : state;
+  } else if (cancelPasteLinkCompose.match(action)) {
+    return state.set('fetching_link', null);
   }
 
   switch(action.type) {
@@ -484,19 +514,6 @@ export const composeReducer = (state = initialState, action) => {
     if (!state.get('spoiler')) return state;
     return state
       .set('spoiler_text', action.text)
-      .set('idempotencyKey', uuid());
-  case COMPOSE_MARKDOWN_CHANGE:
-    return state.withMutations(map => {
-      map.set('markdown', !state.get('markdown'));
-      map.set('idempotencyKey', uuid());
-    });
-  case COMPOSE_VISIBILITY_CHANGE:
-    return state
-      .set('privacy', action.value)
-      .set('idempotencyKey', uuid());
-  case COMPOSE_SEARCHABILITY_CHANGE:
-    return state
-      .set('searchability', action.value)
       .set('idempotencyKey', uuid());
   case COMPOSE_CHANGE:
     return state
@@ -726,8 +743,6 @@ export const composeReducer = (state = initialState, action) => {
     return updatePoll(state, action.index, action.title, action.maxOptions);
   case COMPOSE_POLL_SETTINGS_CHANGE:
     return state.update('poll', poll => poll.set('expires_in', action.expiresIn).set('multiple', action.isMultiple));
-  case COMPOSE_CIRCLE_CHANGE:
-    return state.set('circle_id', action.circleId);
   case COMPOSE_LANGUAGE_CHANGE:
     return state.set('language', action.language);
   case COMPOSE_FOCUS:

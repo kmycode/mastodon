@@ -238,7 +238,7 @@ const HashtagBar: React.FC<{
       ))}
 
       {!expanded && !defaultExpanded && hashtags.length > VISIBLE_HASHTAGS && (
-        <button className='link-button' onClick={handleClick}>
+        <button className='link-button' onClick={handleClick} type='button'>
           <FormattedMessage
             id='hashtags.and_other'
             defaultMessage='…and {count, plural, other {# more}}'
