@@ -707,7 +707,6 @@
   "lists.replies_policy.list": "Members of the list",
   "lists.replies_policy.none": "No one",
   "lists.save": "Save",
-  "lists.save_to_edit_member": "You can edit list members after saving.",
   "lists.search": "Search",
   "lists.show_replies_to": "Include replies from list members to",
   "load_pending": "{count, plural, one {# new item} other {# new items}}",
