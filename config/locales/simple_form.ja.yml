@@ -96,7 +96,6 @@ ja:
       featured_tag:
         name: 最近使用したハッシュタグ
       filters:
-        action: 投稿がフィルタに一致したときに実行するアクションを選択
         actions:
           blur: メディアは警告して非表示にするが、テキストは表示する
           hide: フィルタに一致した投稿を完全に非表示にします
@@ -314,6 +313,7 @@ ja:
         setting_hide_status_reference_unavailable_server: ひかえめな引用（Fedibirdの参照）に対応していないと思われるサーバーの投稿からメニューを隠す
         setting_lock_follow_from_bot: botからのフォローを承認制にする
         setting_public_post_to_unlisted: サードパーティから公開範囲「公開」で投稿した場合、「ローカル公開」に変更する
+        setting_quick_boosting: クイックブーストの有効化
         setting_reduce_motion: アニメーションの動きを減らす
         setting_reject_public_unlisted_subscription: Misskey系サーバーに「ローカル公開」かつ検索許可「誰でも以外」の投稿を「フォロワーのみ」に変換して配送する
         setting_reject_send_limited_to_suspects: Misskey系サーバーに「相互のみ」投稿を配送しない

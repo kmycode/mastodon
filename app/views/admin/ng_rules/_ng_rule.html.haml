@@ -1,4 +1,4 @@
-.filters-list__item{ class: [(ng_rule.expired? || !ng_rule.available) && 'expired'] }
+.filters-list__item{ class: [(ng_rule.expired? || !ng_rule.available?) && 'expired'] }
   = link_to edit_admin_ng_rule_path(ng_rule), class: 'filters-list__item__title' do
     = ng_rule.title.presence || "(#{t('admin.ng_rules.index.empty_title')})"
 

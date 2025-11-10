@@ -226,6 +226,9 @@ export const VisibilityModal: FC<VisibilityModalProps> = forwardRef(
     const disablePublicVisibilities: boolean = useAppSelector(
       selectDisablePublicVisibilities,
     );
+    const isQuotePost = useAppSelector(
+      (state) => state.compose.get('quoted_status_id') !== null,
+    );
     const disableSave = visibility === 'circle' && !circleId;
 
     const visibilityItems = useMemo<SelectItem<StatusVisibility>[]>(() => {
@@ -611,6 +614,21 @@ export const VisibilityModal: FC<VisibilityModalProps> = forwardRef(
                 id={quoteDescriptionId}
               />
             </div>
+
+            {isQuotePost && visibility === 'direct' && (
+              <div className='visibility-modal__quote-warning'>
+                <FormattedMessage
+                  id='visibility_modal.direct_quote_warning.title'
+                  defaultMessage="Quotes can't be embedded in private mentions"
+                  tagName='h3'
+                />
+                <FormattedMessage
+                  id='visibility_modal.direct_quote_warning.text'
+                  defaultMessage='If you save the current settings, the embedded quote will be converted to a link.'
+                  tagName='p'
+                />
+              </div>
+            )}
           </div>
           <div className='dialog-modal__content__actions'>
             <Button onClick={onClose} secondary>

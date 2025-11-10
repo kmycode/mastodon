@@ -58,9 +58,6 @@ export const COMPOSE_UNMOUNT = 'COMPOSE_UNMOUNT';
 export const COMPOSE_SENSITIVITY_CHANGE  = 'COMPOSE_SENSITIVITY_CHANGE';
 export const COMPOSE_SPOILERNESS_CHANGE  = 'COMPOSE_SPOILERNESS_CHANGE';
 export const COMPOSE_SPOILER_TEXT_CHANGE = 'COMPOSE_SPOILER_TEXT_CHANGE';
-export const COMPOSE_MARKDOWN_CHANGE     = 'COMPOSE_MARKDOWN_CHANGE';
-export const COMPOSE_VISIBILITY_CHANGE   = 'COMPOSE_VISIBILITY_CHANGE';
-export const COMPOSE_SEARCHABILITY_CHANGE= 'COMPOSE_SEARCHABILITY_CHANGE';
 export const COMPOSE_COMPOSING_CHANGE    = 'COMPOSE_COMPOSING_CHANGE';
 export const COMPOSE_LANGUAGE_CHANGE     = 'COMPOSE_LANGUAGE_CHANGE';
 
@@ -79,8 +76,6 @@ export const COMPOSE_POLL_OPTION_ADD      = 'COMPOSE_POLL_OPTION_ADD';
 export const COMPOSE_POLL_OPTION_CHANGE   = 'COMPOSE_POLL_OPTION_CHANGE';
 export const COMPOSE_POLL_OPTION_REMOVE   = 'COMPOSE_POLL_OPTION_REMOVE';
 export const COMPOSE_POLL_SETTINGS_CHANGE = 'COMPOSE_POLL_SETTINGS_CHANGE';
-
-export const COMPOSE_CIRCLE_CHANGE = 'COMPOSE_CIRCLE_CHANGE';
 
 export const INIT_MEDIA_EDIT_MODAL = 'INIT_MEDIA_EDIT_MODAL';
 
@@ -821,26 +816,6 @@ export function changeComposeSpoilerText(text) {
   };
 }
 
-export function changeComposeMarkdown() {
-  return {
-    type: COMPOSE_MARKDOWN_CHANGE,
-  };
-}
-
-export function changeComposeVisibility(value) {
-  return {
-    type: COMPOSE_VISIBILITY_CHANGE,
-    value,
-  };
-}
-
-export function changeComposeSearchability(value) {
-  return {
-    type: COMPOSE_SEARCHABILITY_CHANGE,
-    value,
-  };
-}
-
 export function insertEmojiCompose(position, emoji, needsSpace) {
   return {
     type: COMPOSE_EMOJI_INSERT,
@@ -934,10 +909,3 @@ export const changeMediaOrder = (a, b) => ({
   a,
   b,
 });
-
-export function changeCircle(circleId) {
-  return {
-    type: COMPOSE_CIRCLE_CHANGE,
-    circleId,
-  };
-}

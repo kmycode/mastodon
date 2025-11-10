@@ -242,6 +242,7 @@ const RadioPanel: React.FC<{
       <div className='setting-radio-panel'>
         {items.map((item) => (
           <button
+            type='button'
             className={classNames('setting-radio-panel__item', {
               'setting-radio-panel__item__active': value === item.value,
             })}

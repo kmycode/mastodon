@@ -236,12 +236,14 @@ export const SearchResults: React.FC<{ multiColumn: boolean }> = ({
         <button
           onClick={handleSelectAll}
           className={mappedType === 'all' ? 'active' : undefined}
+          type='button'
         >
           <FormattedMessage id='search_results.all' defaultMessage='All' />
         </button>
         <button
           onClick={handleSelectAccounts}
           className={mappedType === 'accounts' ? 'active' : undefined}
+          type='button'
         >
           <FormattedMessage
             id='search_results.accounts'
@@ -251,6 +253,7 @@ export const SearchResults: React.FC<{ multiColumn: boolean }> = ({
         <button
           onClick={handleSelectHashtags}
           className={mappedType === 'hashtags' ? 'active' : undefined}
+          type='button'
         >
           <FormattedMessage
             id='search_results.hashtags'
@@ -260,6 +263,7 @@ export const SearchResults: React.FC<{ multiColumn: boolean }> = ({
         <button
           onClick={handleSelectStatuses}
           className={mappedType === 'statuses' ? 'active' : undefined}
+          type='button'
         >
           <FormattedMessage
             id='search_results.statuses'
