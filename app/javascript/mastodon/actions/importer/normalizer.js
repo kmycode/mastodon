@@ -27,8 +27,11 @@ function stripQuoteFallback(text) {
   return wrapper.innerHTML;
 }
 
-export function normalizeStatus(status, normalOldStatus, options = undefined) {
+export function normalizeStatus(status, normalOldStatus, { bogusQuotePolicy = false, withoutEmojiReaction = false }) {
   const normalStatus   = { ...status };
+
+  if (bogusQuotePolicy)
+    normalStatus.quote_approval = null;
 
   normalStatus.account = status.account.id;
 
@@ -63,7 +66,7 @@ export function normalizeStatus(status, normalOldStatus, options = undefined) {
   }
 
   if (status.emoji_reactions) {
-    if (!options?.withoutEmojiReaction) {
+    if (!withoutEmojiReaction) {
       normalStatus.emoji_reactions = normalizeEmojiReactions(status.emoji_reactions);
     } else {
       normalStatus.emoji_reactions = normalOldStatus?.get('emoji_reactions') ?? [];
@@ -125,6 +128,8 @@ export function normalizeStatus(status, normalOldStatus, options = undefined) {
   }
 
   if (normalOldStatus) {
+    normalStatus.quote_approval ||= normalOldStatus.quote_approval;
+
     const list = normalOldStatus.get('media_attachments');
     if (normalStatus.media_attachments && list) {
       normalStatus.media_attachments.forEach(item => {

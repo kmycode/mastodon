@@ -66,6 +66,7 @@ export const MediaModal: FC<MediaModalProps> = forwardRef<
     _ref,
   ) => {
     const [index, setIndex] = useState(startIndex);
+    const [zoomedIn, setZoomedIn] = useState(false);
     const currentMedia = media.get(index);
 
     const handleChangeIndex = useCallback(
@@ -116,6 +117,9 @@ export const MediaModal: FC<MediaModalProps> = forwardRef<
           onChangeBackgroundColor(backgroundColor);
         }
       }
+      return () => {
+        onChangeBackgroundColor(null);
+      };
     }, [currentMedia, onChangeBackgroundColor]);
 
     const [viewportDimensions, setViewportDimensions] = useState<{
@@ -131,7 +135,6 @@ export const MediaModal: FC<MediaModalProps> = forwardRef<
       }
     }, []);
 
-    const [zoomedIn, setZoomedIn] = useState(false);
     const zoomable =
       currentMedia?.get('type') === 'image' &&
       ((currentMedia.getIn(['meta', 'original', 'width']) as number) >

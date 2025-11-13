@@ -30,14 +30,12 @@ export const ListPanel: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-
     void dispatch(fetchLists()).then(() => {
       setLoading(false);
 
       return '';
     });
-  }, [dispatch, setLoading]);
+  }, [dispatch]);
 
   return (
     <CollapsiblePanel

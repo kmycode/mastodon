@@ -46,8 +46,8 @@ export function importFetchedAccounts(accounts) {
   return importAccounts({ accounts: normalAccounts });
 }
 
-export function importFetchedStatus(status) {
-  return importFetchedStatuses([status]);
+export function importFetchedStatus(status, options = {}) {
+  return importFetchedStatuses([status], options);
 }
 
 export function importFetchedStatuses(statuses) {

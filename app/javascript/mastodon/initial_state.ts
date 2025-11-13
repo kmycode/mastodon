@@ -168,17 +168,21 @@ export const communityTimelineInsteadOfSearchMenu = getMeta(
   'community_timeline_instead_of_search_menu',
 );
 
-const displayNames = new Intl.DisplayNames(getMeta('locale'), {
-  type: 'language',
-  fallback: 'none',
-  languageDisplay: 'standard',
-});
+const displayNames =
+  // Intl.DisplayNames can be undefined in old browsers
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  Intl.DisplayNames &&
+  (new Intl.DisplayNames(getMeta('locale'), {
+    type: 'language',
+    fallback: 'none',
+    languageDisplay: 'standard',
+  }) as Intl.DisplayNames | undefined);
 
 export const languages = initialState?.languages.map((lang) => {
   // zh-YUE is not a valid CLDR unicode_language_id
   return [
     lang[0],
-    displayNames.of(lang[0].replace('zh-YUE', 'yue')) ?? lang[1],
+    displayNames?.of(lang[0].replace('zh-YUE', 'yue')) ?? lang[1],
     lang[2],
   ];
 });
