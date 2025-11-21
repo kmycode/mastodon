@@ -7,6 +7,7 @@ import { useParams, useHistory } from 'react-router-dom';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import type { BookmarkCategory } from '@/mastodon/models/bookmark_category';
 import BookmarkIcon from '@/material-icons/400-24px/bookmark-fill.svg?react';
 import { fetchBookmarkCategory } from 'mastodon/actions/bookmark_categories';
 import {
@@ -30,17 +31,14 @@ const messages = defineMessages({
 });
 
 const NewBookmarkCategory: React.FC<{
-  multiColumn?: boolean;
-}> = ({ multiColumn }) => {
+  bookmark_category?: BookmarkCategory | null;
+}> = ({ bookmark_category }) => {
   const dispatch = useAppDispatch();
-  const { id } = useParams<{ id?: string }>();
-  const intl = useIntl();
   const history = useHistory();
 
-  const bookmark_category = useAppSelector((state) =>
-    id ? state.bookmark_categories.get(id) : undefined,
-  );
-  const [title, setTitle] = useState('');
+  const { id, title: initialTitle = '' } = bookmark_category ?? {};
+
+  const [title, setTitle] = useState(initialTitle);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -48,12 +46,6 @@ const NewBookmarkCategory: React.FC<{
       dispatch(fetchBookmarkCategory(id));
     }
   }, [dispatch, id]);
-
-  useEffect(() => {
-    if (id && bookmark_category) {
-      setTitle(bookmark_category.title);
-    }
-  }, [setTitle, id, bookmark_category]);
 
   const handleTitleChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,63 +86,90 @@ const NewBookmarkCategory: React.FC<{
   }, [history, dispatch, setSubmitting, id, title]);
 
   return (
+    <form className='simple_form app-form' onSubmit={handleSubmit}>
+      <div className='fields-group'>
+        <div className='input with_label'>
+          <div className='label_input'>
+            <label htmlFor='bookmark_category_title'>
+              <FormattedMessage
+                id='bookmark_categories.bookmark_category_name'
+                defaultMessage='BookmarkCategory name'
+              />
+            </label>
+
+            <div className='label_input__wrapper'>
+              <input
+                id='bookmark_category_title'
+                type='text'
+                value={title}
+                onChange={handleTitleChange}
+                maxLength={30}
+                required
+                placeholder=' '
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className='actions'>
+        <button className='button' type='submit'>
+          {submitting ? (
+            <LoadingIndicator />
+          ) : id ? (
+            <FormattedMessage
+              id='bookmark_categories.save'
+              defaultMessage='Save'
+            />
+          ) : (
+            <FormattedMessage
+              id='bookmark_categories.create'
+              defaultMessage='Create'
+            />
+          )}
+        </button>
+      </div>
+    </form>
+  );
+};
+
+const NewBookmarkCategoryWrapper: React.FC<{
+  multiColumn?: boolean;
+}> = ({ multiColumn }) => {
+  const intl = useIntl();
+  const dispatch = useAppDispatch();
+  const { id } = useParams<{ id?: string }>();
+  const bookmark_category = useAppSelector((state) =>
+    id ? state.bookmark_categories.get(id) : undefined,
+  );
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchBookmarkCategory(id));
+    }
+  }, [dispatch, id]);
+
+  const isLoading = id && !bookmark_category;
+
+  return (
     <Column
       bindToDocument={!multiColumn}
       label={intl.formatMessage(id ? messages.edit : messages.create)}
     >
       <ColumnHeader
         title={intl.formatMessage(id ? messages.edit : messages.create)}
-        icon='bookmark_category-ul'
+        icon='list-ul'
         iconComponent={BookmarkIcon}
         multiColumn={multiColumn}
         showBackButton
       />
 
       <div className='scrollable'>
-        <form className='simple_form app-form' onSubmit={handleSubmit}>
-          <div className='fields-group'>
-            <div className='input with_label'>
-              <div className='label_input'>
-                <label htmlFor='bookmark_category_title'>
-                  <FormattedMessage
-                    id='bookmark_categories.bookmark_category_name'
-                    defaultMessage='BookmarkCategory name'
-                  />
-                </label>
-
-                <div className='label_input__wrapper'>
-                  <input
-                    id='bookmark_category_title'
-                    type='text'
-                    value={title}
-                    onChange={handleTitleChange}
-                    maxLength={30}
-                    required
-                    placeholder=' '
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className='actions'>
-            <button className='button' type='submit'>
-              {submitting ? (
-                <LoadingIndicator />
-              ) : id ? (
-                <FormattedMessage
-                  id='bookmark_categories.save'
-                  defaultMessage='Save'
-                />
-              ) : (
-                <FormattedMessage
-                  id='bookmark_categories.create'
-                  defaultMessage='Create'
-                />
-              )}
-            </button>
-          </div>
-        </form>
+        {isLoading ? (
+          <LoadingIndicator />
+        ) : (
+          <NewBookmarkCategory bookmark_category={bookmark_category} />
+        )}
       </div>
 
       <Helmet>
@@ -164,4 +183,4 @@ const NewBookmarkCategory: React.FC<{
 };
 
 // eslint-disable-next-line import/no-default-export
-export default NewBookmarkCategory;
+export default NewBookmarkCategoryWrapper;

@@ -73,6 +73,7 @@ const NewAntenna: React.FC<{
   }, [dispatch, id]);
 
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     if (id && antenna) {
       setTitle(antenna.title);
       setStl(antenna.stl);
@@ -101,6 +102,7 @@ const NewAntenna: React.FC<{
         setDestination('timeline');
       }
     }
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [
     setTitle,
     setStl,

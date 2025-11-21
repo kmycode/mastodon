@@ -504,6 +504,7 @@
   "empty_column.notifications": "You don't have any notifications yet. When other people interact with you, you will see it here.",
   "empty_column.public": "There is nothing here! Write something publicly, or manually follow users from other servers to fill it up",
   "empty_column.status_references": "No one has links this post yet. When someone does, they will show up here.",
+  "error.no_hashtag_feed_access": "Join or log in to view and follow this hashtag.",
   "error.unexpected_crash.explanation": "Due to a bug in our code or a browser compatibility issue, this page could not be displayed correctly.",
   "error.unexpected_crash.explanation_addons": "This page could not be displayed correctly. This error is likely caused by a browser add-on or automatic translation tools.",
   "error.unexpected_crash.next_steps": "Try refreshing the page. If that does not help, you may still be able to use Mastodon through a different browser or native app.",
