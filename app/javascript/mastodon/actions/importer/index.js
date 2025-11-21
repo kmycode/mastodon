@@ -50,7 +50,7 @@ export function importFetchedStatus(status, options = {}) {
   return importFetchedStatuses([status], options);
 }
 
-export function importFetchedStatuses(statuses) {
+export function importFetchedStatuses(statuses, outsideOptions = {}) {
   return (dispatch, getState) => {
     const accounts = [];
     const normalStatuses = [];
@@ -58,6 +58,8 @@ export function importFetchedStatuses(statuses) {
     const filters = [];
 
     function processStatus(status, options = undefined) {
+      options ??= outsideOptions;
+
       pushUnique(normalStatuses, normalizeStatus(status, getState().getIn(['statuses', status.id]), options));
       pushUnique(accounts, status.account);
 
@@ -70,7 +72,7 @@ export function importFetchedStatuses(statuses) {
       }
 
       if (status.quote?.quoted_status) {
-        processStatus(status.quote.quoted_status, { withoutEmojiReaction: true });
+        processStatus(status.quote.quoted_status, { ...options, withoutEmojiReaction: true });
       }
 
       if (status.poll?.id) {
