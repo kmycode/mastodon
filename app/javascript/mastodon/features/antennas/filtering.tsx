@@ -198,11 +198,12 @@ const RadioPanel: React.FC<{
 
   useEffect(() => {
     if (valueLengths.length >= 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError(valueLengths.filter((v) => v > 0).length > 1);
     } else {
       setError(false);
     }
-  }, [valueLengths]);
+  }, [valueLengths, setError]);
 
   useEffect(() => {
     if (
@@ -214,6 +215,7 @@ const RadioPanel: React.FC<{
         const length = valueLengths[i] ?? 0;
         const item = items[i] ?? { value: '' };
         if (length > 0) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setValue(item.value);
           onChange(item.value);
           return;

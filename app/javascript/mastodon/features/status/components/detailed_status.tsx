@@ -4,7 +4,7 @@
                   @typescript-eslint/no-unsafe-assignment */
 
 import type { CSSProperties } from 'react';
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -61,6 +61,8 @@ export const DetailedStatus: React.FC<{
   onEmojiReact?: (status: any, name: string) => void;
   onUnEmojiReact?: (status: any, name: string) => void;
   muted?: boolean;
+  ancestors?: number;
+  multiColumn?: boolean;
 }> = ({
   status,
   onOpenMedia,
@@ -77,6 +79,8 @@ export const DetailedStatus: React.FC<{
   onToggleHidden,
   onEmojiReact,
   onUnEmojiReact,
+  ancestors = 0,
+  multiColumn = false,
 }) => {
   const properStatus = status?.get('reblog') ?? status;
   const [height, setHeight] = useState(0);
@@ -130,6 +134,30 @@ export const DetailedStatus: React.FC<{
   const handleTranslate = useCallback(() => {
     if (onTranslate) onTranslate(status);
   }, [onTranslate, status]);
+
+  // The component is managed and will change if the status changes
+  // Ancestors can increase when loading a thread, in which case we want to scroll,
+  // or decrease if a post is deleted, in which case we don't want to mess with it
+  const previousAncestors = useRef(-1);
+  useEffect(() => {
+    if (nodeRef.current && previousAncestors.current < ancestors) {
+      nodeRef.current.scrollIntoView(true);
+
+      // In the single-column interface, `scrollIntoView` will put the post behind the header, so compensate for that.
+      if (!multiColumn) {
+        const offset = document
+          .querySelector('.column-header__wrapper')
+          ?.getBoundingClientRect().bottom;
+
+        if (offset) {
+          const scrollingElement = document.scrollingElement ?? document.body;
+          scrollingElement.scrollBy(0, -offset);
+        }
+      }
+    }
+
+    previousAncestors.current = ancestors;
+  }, [ancestors, multiColumn]);
 
   if (!properStatus) {
     return null;
@@ -346,13 +374,17 @@ export const DetailedStatus: React.FC<{
         to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}/reblogs`}
         className='detailed-status__link'
       >
-        <span className='detailed-status__reblogs'>
-          <AnimatedNumber value={status.get('reblogs_count')} />
-        </span>
         <FormattedMessage
-          id='status.reblogs'
-          defaultMessage='{count, plural, one {boost} other {boosts}}'
-          values={{ count: status.get('reblogs_count') }}
+          id='status.reblogs_count'
+          defaultMessage='{count, plural, one {{counter} boost} other {{counter} boosts}}'
+          values={{
+            count: status.get('reblogs_count'),
+            counter: (
+              <span className='detailed-status__reblogs'>
+                <AnimatedNumber value={status.get('reblogs_count')} />
+              </span>
+            ),
+          }}
         />
       </Link>
     );
@@ -366,26 +398,34 @@ export const DetailedStatus: React.FC<{
         to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}/quotes`}
         className='detailed-status__link'
       >
-        <span className='detailed-status__quotes'>
-          <AnimatedNumber value={status.get('quotes_count')} />
-        </span>
         <FormattedMessage
-          id='status.quotes'
-          defaultMessage='{count, plural, one {quote} other {quotes}}'
-          values={{ count: status.get('quotes_count') }}
+          id='status.quotes_count'
+          defaultMessage='{count, plural, one {{counter} quote} other {{counter} quotes}}'
+          values={{
+            count: status.get('quotes_count'),
+            counter: (
+              <span className='detailed-status__quotes'>
+                <AnimatedNumber value={status.get('quotes_count')} />
+              </span>
+            ),
+          }}
         />
       </Link>
     );
   } else {
     quotesLink = (
       <span className='detailed-status__link'>
-        <span className='detailed-status__quotes'>
-          <AnimatedNumber value={status.get('quotes_count')} />
-        </span>
         <FormattedMessage
-          id='status.quotes'
-          defaultMessage='{count, plural, one {quote} other {quotes}}'
-          values={{ count: status.get('quotes_count') }}
+          id='status.quotes_count'
+          defaultMessage='{count, plural, one {{counter} quote} other {{counter} quotes}}'
+          values={{
+            count: status.get('quotes_count'),
+            counter: (
+              <span className='detailed-status__quotes'>
+                <AnimatedNumber value={status.get('quotes_count')} />
+              </span>
+            ),
+          }}
         />
       </span>
     );
@@ -396,13 +436,17 @@ export const DetailedStatus: React.FC<{
       to={`/@${status.getIn(['account', 'acct'])}/${status.get('id')}/favourites`}
       className='detailed-status__link'
     >
-      <span className='detailed-status__favorites'>
-        <AnimatedNumber value={status.get('favourites_count')} />
-      </span>
       <FormattedMessage
-        id='status.favourites'
-        defaultMessage='{count, plural, one {favorite} other {favorites}}'
-        values={{ count: status.get('favourites_count') }}
+        id='status.favourites_count'
+        defaultMessage='{count, plural, one {{counter} favorite} other {{counter} favorites}}'
+        values={{
+          count: status.get('favourites_count'),
+          counter: (
+            <span className='detailed-status__favorites'>
+              <AnimatedNumber value={status.get('favourites_count')} />
+            </span>
+          ),
+        }}
       />
     </Link>
   );
@@ -493,6 +537,7 @@ export const DetailedStatus: React.FC<{
               <QuotedStatus
                 quote={status.get('quote')}
                 parentQuotePostId={status.get('id')}
+                contextType='thread'
               />
             )}
           </>

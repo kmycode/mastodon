@@ -199,16 +199,6 @@ export const ReactionDeck: React.FC<{
     }),
   );
 
-  const handleDragStart = useCallback(
-    (e: DragStartEvent) => {
-      const { active } = e;
-
-      setActiveId(active.id);
-      setActiveEmoji(deck.get(idToNumber(active.id)));
-    },
-    [setActiveId, setActiveEmoji, deck],
-  );
-
   const idToNumber = (id: UniqueIdentifier): number => {
     if (typeof id === 'string') {
       return parseInt(id);
@@ -218,6 +208,16 @@ export const ReactionDeck: React.FC<{
     }
     return 0;
   };
+
+  const handleDragStart = useCallback(
+    (e: DragStartEvent) => {
+      const { active } = e;
+
+      setActiveId(active.id);
+      setActiveEmoji(deck.get(idToNumber(active.id)));
+    },
+    [setActiveId, setActiveEmoji, deck],
+  );
 
   const handleDragEnd = useCallback(
     (e: DragEndEvent) => {

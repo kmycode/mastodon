@@ -26,11 +26,9 @@ export const AntennaPanel: React.FC = () => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
   const antennas = useAppSelector((state) => getFavouritedAntennas(state));
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-
     void dispatch(fetchAntennas()).then(() => {
       setLoading(false);
 

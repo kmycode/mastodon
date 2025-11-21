@@ -192,12 +192,11 @@ const AntennaMembers: React.FC<{
   const [searching, setSearching] = useState(false);
   const [accountIds, setAccountIds] = useState<string[]>([]);
   const [searchAccountIds, setSearchAccountIds] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!id);
   const [mode, setMode] = useState<Mode>('remove');
 
   useEffect(() => {
     if (id) {
-      setLoading(true);
       dispatch(fetchAntenna(id));
 
       const api = isExclude ? apiGetExcludeAccounts : apiGetAccounts;
