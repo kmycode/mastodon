@@ -2283,7 +2283,6 @@ ja:
   themes:
     contrast: Mastodon (ハイコントラスト)
     default: Mastodon (ダーク)
-    full-dark: フルダーク
     mastodon-light: Mastodon (ライト)
     system: 自動 (システムのテーマを使用)
   time:

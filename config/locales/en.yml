@@ -2377,7 +2377,6 @@ en:
   themes:
     contrast: Mastodon (High contrast)
     default: Mastodon (Dark)
-    full-dark: フルダーク
     mastodon-light: Mastodon (Light)
     system: Automatic (use system theme)
   time:

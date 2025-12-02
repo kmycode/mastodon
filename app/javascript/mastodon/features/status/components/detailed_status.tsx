@@ -271,8 +271,8 @@ export const DetailedStatus: React.FC<{
   } else if (status.get('card') && !status.get('quote')) {
     media = (
       <Card
+        key={`${status.get('id')}-${status.get('edited_at')}`}
         sensitive={status.get('sensitive') && !status.get('spoiler_text')}
-        onOpenMedia={onOpenMedia}
         card={status.get('card')}
       />
     );
