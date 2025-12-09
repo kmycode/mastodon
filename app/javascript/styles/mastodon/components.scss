@@ -1755,7 +1755,7 @@ body > [data-popper-placement] {
     .count {
       display: block;
       margin: 0 2px;
-      color: var(--classic-ui-secondary-color);
+      color: var(--classic-darker-text-color);
     }
   }
 }
@@ -7508,7 +7508,18 @@ a.status-card {
     // The size of single images is determined by their
     // aspect-ratio, applied via inline style attribute
     width: initial;
-    max-height: 460px;
+
+    // Prevent extremely tall images from essentially becoming invisible
+    min-width: 120px;
+    max-height: var(--max-media-height-small);
+
+    @container (width > 500px) {
+      max-height: var(--max-media-height-large);
+    }
+
+    .detailed-status & {
+      max-height: calc(2 * var(--max-media-height-large));
+    }
   }
 
   &--layout-2 {
@@ -7843,13 +7854,17 @@ a.status-card {
   position: relative;
   color: var(--color-text-on-media);
   background: var(--color-bg-media);
-  max-height: 460px;
+  max-height: var(--max-media-height-small);
   border-radius: 8px;
   box-sizing: border-box;
   display: flex;
   outline: 1px solid var(--color-border-media);
   outline-offset: -1px;
   z-index: 2;
+
+  @container (width > 500px) {
+    max-height: var(--max-media-height-large);
+  }
 
   video {
     display: block;
@@ -10739,7 +10754,7 @@ noscript {
   background: transparent;
   text-transform: uppercase;
   cursor: pointer;
-  color: var(--color-text-brand);
+  color: var(--color-text-brand-on-inverted);
   font-weight: 700;
   border-radius: 4px;
   padding: 0 4px;
@@ -11223,7 +11238,7 @@ noscript {
   box-sizing: border-box;
   font-size: 14px;
   color: var(--color-text-secondary);
-  background: var(--color-bg-tertiary);
+  background: var(--color-bg-secondary);
   border: 1px solid var(--color-border-primary);
   border-top: 0;
   border-radius: 0 0 8px 8px;

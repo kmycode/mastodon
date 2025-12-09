@@ -1999,6 +1999,8 @@ ja:
       too_few_options: は複数必要です
       too_many_options: は%{max}個までです
     vote: 投票
+  posting_defaults:
+    explanation: これらの設定は投稿を新規作成するときにデフォルトとして使用されますが、作成画面で投稿ごとに変更できます。
   preferences:
     custom_css: カスタムCSS
     does_not_search: このサーバーでは全文検索機能を利用できません。代わりに、他のkmyblueサーバーであなたの投稿がこの設定に従って検索されます。

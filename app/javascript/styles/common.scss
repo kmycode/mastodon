@@ -1,8 +1,10 @@
+@use 'mastodon/variables';
 @use 'mastodon/mixins';
 @use 'fonts/roboto';
 @use 'fonts/roboto-mono';
 
 @use 'mastodon/reset';
+@use 'mastodon/theme';
 @use 'mastodon/basics';
 @use 'mastodon/branding';
 @use 'mastodon/containers';
@@ -20,5 +22,4 @@
 @use 'mastodon/admin';
 @use 'mastodon/dashboard';
 @use 'mastodon/rtl';
-@use 'mastodon/accessibility';
 @use 'mastodon/rich_text';

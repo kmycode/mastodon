@@ -5,9 +5,7 @@ class AnnualReport
 
   SOURCES = [
     AnnualReport::Archetype,
-    AnnualReport::TypeDistribution,
     AnnualReport::TopStatuses,
-    AnnualReport::MostUsedApps,
     AnnualReport::TimeSeries,
     AnnualReport::TopHashtags,
   ].freeze
@@ -16,6 +14,13 @@ class AnnualReport
 
   def self.table_name_prefix
     'annual_report_'
+  end
+
+  def self.current_campaign
+    return unless Mastodon::Feature.wrapstodon_enabled?
+
+    datetime = Time.now.utc
+    datetime.year if datetime.month == 12 && (10..31).cover?(datetime.day)
   end
 
   def initialize(account, year)
@@ -36,7 +41,8 @@ class AnnualReport
       account: @account,
       year: @year,
       schema_version: SCHEMA,
-      data: data
+      data: data,
+      share_key: SecureRandom.hex(8)
     )
   end
 
