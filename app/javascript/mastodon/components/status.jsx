@@ -565,9 +565,8 @@ class Status extends ImmutablePureComponent {
     } else if (status.get('card') && !status.get('quote') && !this.props.muted) {
       media = (
         <Card
-          onOpenMedia={this.handleOpenMedia}
+          key={`${status.get('id')}-${status.get('edited_at')}`}
           card={status.get('card')}
-          compact
           sensitive={status.get('sensitive') && !status.get('spoiler_text')}
         />
       );

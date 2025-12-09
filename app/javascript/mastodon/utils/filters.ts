@@ -7,6 +7,8 @@ export const toServerSideType = (columnType: string) => {
     case 'account':
     case 'explore':
       return columnType;
+    case 'search':
+      return 'explore';
     case 'detailed':
       return 'thread';
     case 'bookmarks':

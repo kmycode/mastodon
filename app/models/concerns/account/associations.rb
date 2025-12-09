@@ -18,6 +18,8 @@ module Account::Associations
         has_many :bookmark_categories
         has_many :circle_accounts
         has_many :circles
+        has_many :collections
+        has_many :collection_items
         has_many :conversations, class_name: 'AccountConversation'
         has_many :custom_filters
         has_many :emoji_reactions
