@@ -20,7 +20,7 @@ class Conversation < ApplicationRecord
   has_many :statuses, dependent: nil
   belongs_to :ancestor_status, class_name: 'Status', inverse_of: :owned_conversation, optional: true
 
-  belongs_to :parent_status, class_name: 'Status', optional: true, inverse_of: :conversation
+  belongs_to :parent_status, class_name: 'Status', optional: true, inverse_of: :owned_conversation
   belongs_to :parent_account, class_name: 'Account', optional: true
 
   scope :local, -> { where(uri: nil) }
