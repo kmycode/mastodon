@@ -69,7 +69,7 @@ class StatusesController < ApplicationController
     else
       authorize @status, :show?
     end
-  rescue Mastodon::NotPermittedError
+  rescue ActiveRecord::RecordNotFound, Mastodon::NotPermittedError
     not_found
   end
 
