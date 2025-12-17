@@ -8,9 +8,10 @@ module Status::ThreadingConcern
       statuses    = Status.with_accounts(ids).to_a
       account_ids = statuses.map(&:account_id).uniq
       domains     = statuses.filter_map(&:account_domain).uniq
-      relations   = account&.relations_map(account_ids, domains) || {}
 
-      statuses.reject! { |status| StatusFilter.new(status, account, relations).filtered? }
+      account&.preload_relations!(account_ids, domains)
+
+      statuses.reject! { |status| StatusFilter.new(status, account).filtered? }
 
       if stable
         statuses.sort_by! { |status| ids.index(status.id) }
@@ -30,10 +31,9 @@ module Status::ThreadingConcern
 
   def readable_references(account = nil)
     statuses = references.to_a
-    account_ids = statuses.map(&:account_id).uniq
-    domains = statuses.filter_map(&:account_domain).uniq
-    relations = account&.relations_map(account_ids, domains) || {}
-    statuses.reject! { |status| StatusFilter.new(status, account, relations).filtered? }
+    statuses.map(&:account_id).uniq
+    statuses.filter_map(&:account_domain).uniq
+    statuses.reject! { |status| StatusFilter.new(status, account).filtered? }
     statuses
   end
 

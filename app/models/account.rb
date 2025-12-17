@@ -498,6 +498,10 @@ class Account < ApplicationRecord
     local? ? 'public' : searchability
   end
 
+  def featureable?
+    local? && discoverable?
+  end
+
   private
 
   def prepare_contents

@@ -29,9 +29,8 @@ class Api::V1::Statuses::ReferredByStatusesController < Api::BaseController
 
     account     = current_user&.account
     statuses    = Status.where(id: @status.referenced_by_status_objects.select(:status_id))
-    account_ids = statuses.map(&:account_id).uniq
-    domains     = statuses.filter_map(&:account_domain).uniq
-    relations   = account&.relations_map(account_ids, domains) || {}
+    statuses.map(&:account_id).uniq
+    statuses.filter_map(&:account_domain).uniq
 
     statuses = preload_collection_paginated_by_id(
       statuses,
@@ -40,7 +39,7 @@ class Api::V1::Statuses::ReferredByStatusesController < Api::BaseController
       params_slice(:max_id, :since_id, :min_id)
     )
 
-    @results = statuses.filter { |status| !StatusFilter.new(status, account, relations).filtered? }
+    @results = statuses.filter { |status| !StatusFilter.new(status, account).filtered? }
   end
 
   def insert_pagination_headers
