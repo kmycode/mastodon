@@ -99,7 +99,7 @@ class Admin::NgRule
 
     text = @options[:target_status].present? ? [@options[:target_status].spoiler_text, @options[:target_status].text].compact_blank.join("\n\n") : nil
     data = {
-      url: @options[:target_status].present? ? @options[:target_status].url : nil,
+      url: @options[:target_status].presence&.url,
     }
     record!('reaction', @options[:uri], "reaction_#{@options[:reaction_type]}", text: text, data: data) if !@account.local? || @ng_rule.record_history_also_local
 

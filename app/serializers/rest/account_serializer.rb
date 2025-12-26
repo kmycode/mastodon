@@ -172,6 +172,10 @@ class REST::AccountSerializer < ActiveModel::Serializer
     object.moved?
   end
 
+  def other_settings
+    object.suspended? ? {} : object.public_settings_for_local
+  end
+
   def feature_approval
     {
       automatic: object.feature_policy_as_keys(:automatic),
