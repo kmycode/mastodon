@@ -29,12 +29,8 @@ module Status::ThreadingConcern
     find_statuses_from_tree_path(descendant_ids(limit, depth), account, promote: true)
   end
 
-  def readable_references(account = nil)
-    statuses = references.to_a
-    statuses.map(&:account_id).uniq
-    statuses.filter_map(&:account_domain).uniq
-    statuses.reject! { |status| StatusFilter.new(status, account).filtered? }
-    statuses
+  def readable_references(limit, account = nil)
+    find_statuses_from_tree_path(referred_by_ids(limit), account)
   end
 
   def self_replies(limit)
@@ -42,6 +38,10 @@ module Status::ThreadingConcern
   end
 
   private
+
+  def referred_by_ids(limit)
+    references.reorder(id: :desc).limit(limit)
+  end
 
   def ancestor_ids(limit)
     key = "ancestors:#{id}"

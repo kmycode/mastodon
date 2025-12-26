@@ -27,6 +27,7 @@ class Api::V1::StatusesController < Api::BaseController
   ANCESTORS_LIMIT         = 40
   DESCENDANTS_LIMIT       = 60
   DESCENDANTS_DEPTH_LIMIT = 20
+  REFERENCES_LIMIT        = 20
 
   def index
     @statuses = preload_collection(@statuses, Status)
@@ -45,16 +46,18 @@ class Api::V1::StatusesController < Api::BaseController
     ancestors_limit         = CONTEXT_LIMIT
     descendants_limit       = CONTEXT_LIMIT
     descendants_depth_limit = nil
+    references_limit        = CONTEXT_LIMIT
 
     if current_account.nil?
       ancestors_limit         = ANCESTORS_LIMIT
       descendants_limit       = DESCENDANTS_LIMIT
       descendants_depth_limit = DESCENDANTS_DEPTH_LIMIT
+      references_limit        = REFERENCES_LIMIT
     end
 
     ancestors_results   = @status.in_reply_to_id.nil? ? [] : @status.ancestors(ancestors_limit, current_account)
     descendants_results = @status.descendants(descendants_limit, current_account, descendants_depth_limit)
-    references_results  = @status.readable_references(current_account)
+    references_results  = @status.readable_references(references_limit, current_account)
     loaded_ancestors    = preload_collection(ancestors_results, Status)
     loaded_descendants  = preload_collection(descendants_results, Status)
     loaded_references   = preload_collection(references_results, Status)

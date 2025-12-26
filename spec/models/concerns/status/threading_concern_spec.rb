@@ -131,7 +131,7 @@ RSpec.describe Status::ThreadingConcern do
   end
 
   describe '#readable_references' do
-    subject { status.readable_references(account).pluck(:id) }
+    subject { status.readable_references(10, account).pluck(:id) }
 
     let(:visibility) { :public }
     let(:alice) { Fabricate(:account) }
