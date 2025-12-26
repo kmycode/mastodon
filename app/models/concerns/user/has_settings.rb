@@ -163,6 +163,14 @@ module User::HasSettings
     settings['discoverable_local']
   end
 
+  def setting_color_scheme
+    settings['web.color_scheme']
+  end
+
+  def setting_contrast
+    settings['web.contrast']
+  end
+
   def setting_display_media
     settings['web.display_media']
   end

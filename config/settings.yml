@@ -52,6 +52,7 @@ defaults: &defaults
   allow_referrer_origin: false
   auto_accept_legacy_quotes: false
   landing_page: 'trends'
+  wrapstodon: true
 
 development:
   <<: *defaults

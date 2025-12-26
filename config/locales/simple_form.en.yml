@@ -146,6 +146,7 @@ en:
         thumbnail: A roughly 2:1 image displayed alongside your server information.
         trendable_by_default: Skip manual review of trending content. Individual items can still be removed from trends after the fact.
         trends: Trends show which posts, hashtags and news stories are gaining traction on your server.
+        wrapstodon: Offer local users to generate a playful summary of their Mastodon use during the year. This feature is available between the 10th and 31st of December of each year, and is offered to users who made at least one Public or Quiet Public post and used at least one hashtag within the year.
       form_challenge:
         current_password: You are entering a secure area
       imports:
@@ -287,6 +288,7 @@ en:
         setting_bio_markdown: Enable profile markdown
         setting_bookmark_category_needed: Category selection needed when registering bookmark on web
         setting_boost_modal: Control boosting visibility
+        setting_color_scheme: Mode
         setting_community_timeline_instead_of_search_menu: Show local timeline on phone navigation instead of search
         setting_content_font_size: Font size of posts
         setting_content_font_size_items:
@@ -294,6 +296,7 @@ en:
           medium: Default
           x_large: Large large
           xx_large: Large large large
+        setting_contrast: Contrast
         setting_custom_css: Custom CSS
         setting_default_language: Posting language
         setting_default_privacy: Posting visibility
@@ -449,6 +452,7 @@ en:
         trendable_by_default: Allow trends without prior review
         trends: Enable trends
         unlocked_friend: Accept all friend server follows automatically
+        wrapstodon: Enable Wrapstodon
       interactions:
         must_be_follower: Block notifications from non-followers
         must_be_following: Block notifications from people you don't follow

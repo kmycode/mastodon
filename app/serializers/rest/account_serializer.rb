@@ -20,6 +20,8 @@ class REST::AccountSerializer < ActiveModel::Serializer
 
   attribute :memorial, if: :memorial?
 
+  attribute :feature_approval, if: -> { Mastodon::Feature.collections_enabled? }
+
   class AccountDecorator < SimpleDelegator
     def self.model_name
       Account.model_name
@@ -170,19 +172,11 @@ class REST::AccountSerializer < ActiveModel::Serializer
     object.moved?
   end
 
-  def statuses_count
-    object.public_statuses_count
-  end
-
-  def followers_count
-    object.public_followers_count
-  end
-
-  def following_count
-    object.public_following_count
-  end
-
-  def other_settings
-    object.suspended? ? {} : object.public_settings_for_local
+  def feature_approval
+    {
+      automatic: object.feature_policy_as_keys(:automatic),
+      manual: object.feature_policy_as_keys(:manual),
+      current_user: object.feature_policy_for_account(current_user&.account),
+    }
   end
 end

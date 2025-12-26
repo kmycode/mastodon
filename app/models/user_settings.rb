@@ -83,6 +83,8 @@ class UserSettings
     setting :hide_emoji_reaction_count, default: false
     setting :show_avatar_on_filter, default: true
     setting :community_timeline_instead_of_search_menu, default: false
+    setting :color_scheme, default: 'auto', in: %w(auto light dark)
+    setting :contrast, default: 'auto', in: %w(auto high)
 
     setting_inverse_alias :'web.show_emoji_reaction_count', :'web.hide_emoji_reaction_count'
     setting_inverse_alias :'web.show_favourite_menu', :'web.hide_favourite_menu'
