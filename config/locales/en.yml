@@ -7,6 +7,8 @@ en:
     hosted_on: Mastodon hosted on %{domain}
     title: About
   accounts:
+    errors:
+      cannot_be_added_to_collections: This account cannot be added to collections.
     followers:
       one: Follower
       other: Followers
@@ -1095,6 +1097,7 @@ en:
         title: Discovery
         trends: Trends
         visibilities: Visibilities
+        wrapstodon: Wrapstodon
       domain_blocks:
         all: To everyone
         disabled: To no one
@@ -1617,6 +1620,13 @@ en:
     hint_html: "<strong>Tip:</strong> We won't ask you for your password again for the next hour."
     invalid_password: Invalid password
     prompt: Confirm password to continue
+  color_scheme:
+    auto: Auto
+    dark: Dark
+    light: Light
+  contrast:
+    auto: Auto
+    high: High
   crypto:
     errors:
       invalid_key: is not a valid Ed25519 or Curve25519 key
@@ -2561,4 +2571,5 @@ en:
     otp_required: To use security keys please enable two-factor authentication first.
     registered_on: Registered on %{date}
   wrapstodon:
+    description: See how %{name} used Mastodon this year!
     title: Wrapstodon %{year} for %{name}

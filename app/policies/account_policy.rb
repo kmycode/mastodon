@@ -72,4 +72,8 @@ class AccountPolicy < ApplicationPolicy
   def reject_remote?
     role.can?(:manage_users) && record.remote_pending
   end
+
+  def feature?
+    record.featureable? && !current_account.blocking?(record) && !current_account.blocked_by?(record)
+  end
 end

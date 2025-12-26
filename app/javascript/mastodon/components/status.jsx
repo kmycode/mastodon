@@ -125,6 +125,7 @@ class Status extends ImmutablePureComponent {
     hidden: PropTypes.bool,
     unread: PropTypes.bool,
     showThread: PropTypes.bool,
+    showActions: PropTypes.bool,
     isQuotedPost: PropTypes.bool,
     shouldHighlightOnMount: PropTypes.bool,
     getScrollPosition: PropTypes.func,
@@ -391,7 +392,7 @@ class Status extends ImmutablePureComponent {
   };
 
   render () {
-    const { intl, hidden, featured, unfocusable, unread, showThread, isQuotedPost = false, scrollKey, pictureInPicture, previousId, nextInReplyToId, rootId, skipPrepend, avatarSize = 46, children } = this.props;
+    const { intl, hidden, featured, unfocusable, unread, showThread, showActions = true, isQuotedPost = false, scrollKey, pictureInPicture, previousId, nextInReplyToId, rootId, skipPrepend, avatarSize = 46, children } = this.props;
 
     let { status, account, ...other } = this.props;
     
@@ -660,7 +661,7 @@ class Status extends ImmutablePureComponent {
               </>
             )}
 
-            {!isQuotedPost && (!matchedFilters || this.state.showDespiteFilter) &&
+            {(showActions && !isQuotedPost) && (!matchedFilters || this.state.showDespiteFilter) &&
               <StatusActionBar scrollKey={scrollKey} status={status} account={account}  {...other} />
             }
           </div>

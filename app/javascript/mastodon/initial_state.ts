@@ -1,3 +1,4 @@
+import type { ApiAnnualReportState } from './api/annual_report';
 import type { ApiAccountJSON } from './api_types/accounts';
 
 type HideItemsDefinition =
@@ -68,6 +69,7 @@ interface InitialStateMeta {
   hide_items: HideItemsDefinition[];
   registrations_reach_limit: boolean;
   simple_timeline_menu: boolean;
+  wrapstodon?: InitialWrapstodonState | null;
 }
 
 interface Role {
@@ -76,6 +78,11 @@ interface Role {
   permissions: string;
   color: string;
   highlighted: boolean;
+}
+
+interface InitialWrapstodonState {
+  year: number;
+  state: ApiAnnualReportState;
 }
 
 export interface InitialState {
@@ -167,6 +174,7 @@ export const simpleTimelineMenu = getMeta('simple_timeline_menu');
 export const communityTimelineInsteadOfSearchMenu = getMeta(
   'community_timeline_instead_of_search_menu',
 );
+export const wrapstodon = getMeta('wrapstodon');
 
 const displayNames =
   // Intl.DisplayNames can be undefined in old browsers

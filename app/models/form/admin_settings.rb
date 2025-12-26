@@ -71,6 +71,7 @@ class Form::AdminSettings
     local_topic_feed_access
     remote_topic_feed_access
     landing_page
+    wrapstodon
   ).freeze
 
   INTEGER_KEYS = %i(
@@ -115,6 +116,7 @@ class Form::AdminSettings
     delete_content_cache_without_reaction
     hold_remote_new_accounts
     auto_accept_legacy_quotes
+    wrapstodon
   ).freeze
 
   UPLOAD_KEYS = %i(
@@ -208,6 +210,10 @@ class Form::AdminSettings
         setting.update(value: typecast_value(key, instance_variable_get(:"@#{key}")))
       end
     end
+  end
+
+  def persisted?
+    true
   end
 
   private

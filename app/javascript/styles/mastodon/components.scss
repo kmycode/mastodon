@@ -784,7 +784,6 @@ body > [data-popper-placement] {
     align-items: center;
     flex: 1 1 auto;
     max-width: 100%;
-    overflow: hidden;
   }
 
   &__buttons {
@@ -947,6 +946,11 @@ body > [data-popper-placement] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  &:focus-visible {
+    outline: var(--outline-focus-default);
+    outline-offset: 2px;
+  }
 
   &[disabled] {
     cursor: default;
@@ -2938,7 +2942,7 @@ a.account__display-name {
     cursor: default;
 
     &:focus {
-      color: rgb(from var(--color-text-disabled) r g b / 70%);
+      color: var(--color-text-on-disabled);
       background: var(--color-bg-disabled);
       outline: 0;
     }
@@ -4103,8 +4107,8 @@ a.account__display-name {
   box-sizing: border-box;
 
   &:hover,
-  &:focus,
-  &:active {
+  &:active,
+  &:focus-visible {
     color: var(--color-text-primary);
   }
 
@@ -4122,14 +4126,7 @@ a.account__display-name {
   }
 
   &--logo {
-    background: transparent;
     padding: 10px;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background: transparent;
-    }
   }
 }
 

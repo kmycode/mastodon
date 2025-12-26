@@ -10,11 +10,15 @@ class ActivityPub::ActorSerializer < ActivityPub::Serializer
                      :moved_to, :property_value, :discoverable, :suspended, :searchable_by,
                      :other_setting, :memorial, :indexable, :attribution_domains
 
+  context_extensions :interaction_policies if Mastodon::Feature.collections_enabled?
+
   attributes :id, :type, :following, :followers,
              :inbox, :outbox, :featured, :featured_tags,
              :preferred_username, :name, :summary,
              :url, :manually_approves_followers,
              :discoverable, :indexable, :published, :memorial, :searchable_by, :other_setting
+
+  attribute :interaction_policy, if: -> { Mastodon::Feature.collections_enabled? }
 
   has_one :public_key, serializer: ActivityPub::PublicKeySerializer
 
@@ -184,6 +188,16 @@ class ActivityPub::ActorSerializer < ActivityPub::Serializer
         value: v,
       }
     end
+  end
+
+  def interaction_policy
+    uri = object.discoverable? ? ActivityPub::TagManager::COLLECTIONS[:public] : ActivityPub::TagManager.instance.uri_for(object)
+
+    {
+      canFeature: {
+        automaticApproval: [uri],
+      },
+    }
   end
 
   class CustomEmojiSerializer < ActivityPub::EmojiSerializer

@@ -53,6 +53,8 @@ import { canViewFeed } from 'mastodon/permissions';
 import { selectUnreadNotificationGroupsCount } from 'mastodon/selectors/notifications';
 import { useAppSelector, useAppDispatch } from 'mastodon/store';
 
+import { AnnualReportNavItem } from '../annual_report/nav_item';
+
 import { AntennaPanel } from './components/antenna_panel';
 import { DisabledAccountBanner } from './components/disabled_account_banner';
 import { FollowedTagsPanel } from './components/followed_tags_panel';
@@ -335,6 +337,8 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
             <NotificationsLink />
 
             <FollowRequestsLink />
+
+            <AnnualReportNavItem />
 
             <hr />
 
