@@ -96,8 +96,8 @@ GEM
     ast (2.4.3)
     attr_required (1.0.2)
     aws-eventstream (1.4.0)
-    aws-partitions (1.1194.0)
-    aws-sdk-core (3.239.2)
+    aws-partitions (1.1200.0)
+    aws-sdk-core (3.240.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
@@ -108,7 +108,7 @@ GEM
     aws-sdk-kms (1.118.0)
       aws-sdk-core (~> 3, >= 3.239.1)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.207.0)
+    aws-sdk-s3 (1.209.0)
       aws-sdk-core (~> 3, >= 3.234.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
@@ -131,7 +131,7 @@ GEM
     blurhash (0.1.8)
     bootsnap (1.19.0)
       msgpack (~> 1.2)
-    brakeman (7.1.1)
+    brakeman (7.1.2)
       racc
     browser (6.2.0)
     builder (3.3.0)
@@ -165,7 +165,7 @@ GEM
     chunky_png (1.4.0)
     climate_control (1.2.0)
     cocoon (1.2.15)
-    color_diff (0.1)
+    color_diff (0.2)
     concurrent-ruby (1.3.6)
     connection_pool (2.5.5)
     cose (1.3.1)
@@ -183,7 +183,7 @@ GEM
       database_cleaner-core (~> 2.0)
     database_cleaner-core (2.0.1)
     date (3.5.1)
-    debug (1.11.0)
+    debug (1.11.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
     debug_inspector (1.2.0)
@@ -322,7 +322,7 @@ GEM
     httplog (1.7.3)
       rack (>= 2.0)
       rainbow (>= 2.0.0)
-    i18n (1.14.7)
+    i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     i18n-tasks (1.1.2)
       activesupport (>= 4.0.2)
@@ -341,7 +341,7 @@ GEM
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
     io-console (0.8.2)
-    irb (1.15.3)
+    irb (1.16.0)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
@@ -370,9 +370,9 @@ GEM
     json-ld-preloaded (3.3.2)
       json-ld (~> 3.3)
       rdf (~> 3.3)
-    json-schema (6.0.0)
+    json-schema (6.1.0)
       addressable (~> 2.8)
-      bigdecimal (~> 3.1)
+      bigdecimal (>= 3.1, < 5)
     jsonapi-renderer (0.2.2)
     jwt (2.10.2)
       base64
@@ -594,7 +594,8 @@ GEM
     pg (1.6.2)
     pghero (3.7.0)
       activerecord (>= 7.1)
-    playwright-ruby-client (1.57.0)
+    playwright-ruby-client (1.57.1)
+      base64
       concurrent-ruby (>= 1.1.6)
       mime-types (>= 3.0)
     pp (0.6.3)
@@ -615,7 +616,7 @@ GEM
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
       rack
-    psych (5.3.0)
+    psych (5.3.1)
       date
       stringio
     public_suffix (7.0.0)
@@ -842,8 +843,8 @@ GEM
     stoplight (5.7.0)
       concurrent-ruby
       zeitwerk
-    stringio (3.1.9)
-    strong_migrations (2.5.1)
+    stringio (3.2.0)
+    strong_migrations (2.5.2)
       activerecord (>= 7.1)
     swd (2.0.3)
       activesupport (>= 3)
@@ -1033,7 +1034,7 @@ DEPENDENCIES
   parslet
   pg (~> 1.5)
   pghero
-  playwright-ruby-client (= 1.57.0)
+  playwright-ruby-client (= 1.57.1)
   premailer-rails
   prometheus_exporter (~> 2.2)
   propshaft
