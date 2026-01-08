@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class ActivityPub::ContextSerializer < ActivityPub::Serializer
+  include RoutingHelper
+
   attributes :id, :type, :attributed_to, :first, :inbox
+
+  has_one :first, serializer: ActivityPub::CollectionSerializer
 
   def type
     'Collection'
