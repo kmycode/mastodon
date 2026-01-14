@@ -18,8 +18,8 @@ module Mastodon
 
     def kmyblue_flag
       # 'LTS'
-      'dev'
-      # nil
+      # 'dev'
+      nil
     end
 
     def major
@@ -35,7 +35,7 @@ module Mastodon
     end
 
     def default_prerelease
-      'alpha.1'
+      'alpha.2'
     end
 
     def prerelease
