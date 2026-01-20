@@ -174,7 +174,11 @@ class ApplicationController < ActionController::Base
   end
 
   def current_theme
-    return Setting.theme unless Themes.instance.names.include? current_user&.setting_theme
+    unless Themes.instance.names.include? current_user&.setting_theme
+      return 'default' unless Themes.instance.names.include? Setting.theme
+
+      return Setting.theme
+    end
 
     current_user.setting_theme
   end
