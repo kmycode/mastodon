@@ -122,9 +122,7 @@ class Api::V1::StatusesController < Api::BaseController
     @status = Status.where(account: current_account).find(params[:id])
     authorize @status, :update?
 
-    UpdateStatusService.new.call(
-      @status,
-      current_account.id,
+    update_options = {
       text: status_params[:status],
       media_ids: status_params[:media_ids],
       media_attributes: status_params[:media_attributes],
@@ -133,8 +131,11 @@ class Api::V1::StatusesController < Api::BaseController
       spoiler_text: status_params[:spoiler_text],
       markdown: status_params[:markdown],
       poll: status_params[:poll],
-      quote_approval_policy: quote_approval_policy
-    )
+    }
+
+    update_options[:quote_approval_policy] = quote_approval_policy if status_params[:quote_approval_policy].present?
+
+    UpdateStatusService.new.call(@status, current_account.id, update_options)
 
     render json: @status, serializer: REST::StatusSerializer
   end

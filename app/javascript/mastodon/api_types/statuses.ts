@@ -55,11 +55,10 @@ export interface ApiPreviewCardJSON {
   url: string;
   title: string;
   description: string;
-  language: string;
-  type: string;
+  language: string | null;
+  type: 'video' | 'link';
   author_name: string;
   author_url: string;
-  author_account?: ApiAccountJSON;
   provider_name: string;
   provider_url: string;
   html: string;
@@ -69,7 +68,7 @@ export interface ApiPreviewCardJSON {
   image_description: string;
   embed_url: string;
   blurhash: string;
-  published_at: string;
+  published_at: string | null;
   authors: ApiPreviewCardAuthorJSON[];
 }
 

@@ -68,6 +68,8 @@ class ActivityPub::TagManager
       emoji_reaction_url(target)
     when :flag
       target.uri
+    when :featured_collection
+      ap_account_collection_url(target.account.id, target)
     end
   end
 
@@ -149,7 +151,7 @@ class ActivityPub::TagManager
   def collection_uri_for(target, ...)
     raise ArgumentError, 'target must be a local account' unless target.local?
 
-    target.numeric_ap_id? ? ap_account_collection_url(target.id, ...) : account_collection_url(target, ...)
+    target.numeric_ap_id? ? ap_account_actor_collection_url(target.id, ...) : account_actor_collection_url(target, ...)
   end
 
   def inbox_uri_for(target)
