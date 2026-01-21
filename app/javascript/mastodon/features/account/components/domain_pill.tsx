@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useState, useRef, useCallback, useId } from 'react';
 
 import { FormattedMessage } from 'react-intl';
@@ -16,7 +17,9 @@ export const DomainPill: React.FC<{
   username: string;
   software: string;
   isSelf: boolean;
-}> = ({ domain, username, software, isSelf }) => {
+  children?: ReactNode;
+  className?: string;
+}> = ({ domain, username, software, isSelf, children, className }) => {
   const accessibilityId = useId();
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -33,7 +36,9 @@ export const DomainPill: React.FC<{
   return (
     <>
       <button
-        className={classNames('account__domain-pill', { active: open })}
+        className={classNames('account__domain-pill', className, {
+          active: open,
+        })}
         ref={triggerRef}
         onClick={handleClick}
         aria-expanded={open}
@@ -41,6 +46,7 @@ export const DomainPill: React.FC<{
         type='button'
       >
         {domain}
+        {children}
       </button>
 
       <Overlay

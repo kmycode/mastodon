@@ -19,6 +19,7 @@ class ActivityPub::ActorSerializer < ActivityPub::Serializer
              :discoverable, :indexable, :published, :memorial, :searchable_by, :other_setting
 
   attribute :interaction_policy, if: -> { Mastodon::Feature.collections_enabled? }
+  attribute :featured_collections, if: -> { Mastodon::Feature.collections_enabled? }
 
   has_one :public_key, serializer: ActivityPub::PublicKeySerializer
 
@@ -198,6 +199,12 @@ class ActivityPub::ActorSerializer < ActivityPub::Serializer
         automaticApproval: [uri],
       },
     }
+  end
+
+  def featured_collections
+    return nil if instance_actor?
+
+    ap_account_featured_collections_url(object.id)
   end
 
   class CustomEmojiSerializer < ActivityPub::EmojiSerializer
