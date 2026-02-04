@@ -275,7 +275,7 @@
   height: 24px;
   aspect-ratio: 1;
 
-  path {
+  &:not(.icon--no-fill) path {
     fill: currentColor;
   }
 }
@@ -1069,6 +1069,7 @@ body > [data-popper-placement] {
   font-weight: 400;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-autospace: normal;
   font-size: var(--content-font-size);
   line-height: var(--content-line-height);
   padding-top: 2px;
@@ -8729,7 +8730,6 @@ noscript {
 }
 
 .account__header {
-  overflow: hidden;
   container: account-header / inline-size;
 
   &.inactive {

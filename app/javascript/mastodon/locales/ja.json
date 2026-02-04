@@ -892,7 +892,7 @@
   "privacy.public.short": "公開",
   "privacy.public_unlisted.long": "ひかえめな公開に加えて、ローカルタイムラインに掲載",
   "privacy.public_unlisted.short": "ローカル公開",
-  "privacy.quote.anyone": "{visibility}、誰でも引用可能",
+  "privacy.quote.anyone": "{visibility}、引用可",
   "privacy.quote.disabled": "{visibility}、引用不可",
   "privacy.quote.limited": "{visibility}、引用は制限",
   "privacy.reply.long": "元投稿と同じメンバーが閲覧可",

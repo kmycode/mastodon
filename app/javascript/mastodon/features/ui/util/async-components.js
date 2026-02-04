@@ -1,3 +1,5 @@
+import { isClientFeatureEnabled } from '@/mastodon/utils/environment';
+
 export function EmojiPicker () {
   return import('../../emoji/emoji_picker');
 }
@@ -58,6 +60,18 @@ export function CircleStatuses () {
   return import('../../circle_statuses');
 }
 
+export function Collections () {
+  return import('../../collections').then(
+    module => ({default: module.Collections})
+  );
+}
+
+export function CollectionsEditor () {
+  return import('../../collections/editor').then(
+    module => ({default: module.CollectionEditorPage})
+  );
+}
+
 export function Status () {
   return import('../../status');
 }
@@ -75,6 +89,9 @@ export function PinnedStatuses () {
 }
 
 export function AccountTimeline () {
+  if (isClientFeatureEnabled('profile_redesign')) {
+    return import('../../account_timeline/v2');
+  }
   return import('../../account_timeline');
 }
 

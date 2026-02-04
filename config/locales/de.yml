@@ -994,7 +994,7 @@ de:
         trendable: Trendfähig
         unreviewed: Ungeprüft
         usable: Verwendbar
-      name: Name
+      name: Hashtag
       newest: Neueste
       oldest: Älteste
       open: Öffentlich anzeigen
@@ -1695,7 +1695,7 @@ de:
   notification_mailer:
     admin:
       report:
-        subject: "%{name} hat eine Meldung eingereicht"
+        subject: "%{name} reichte eine Meldung ein"
       sign_up:
         subject: "%{name} registrierte sich"
     favourite:

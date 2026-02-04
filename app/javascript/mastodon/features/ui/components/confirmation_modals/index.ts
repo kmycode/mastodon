@@ -4,6 +4,7 @@ export { ConfirmDeleteListModal } from './delete_list';
 export { ConfirmDeleteAntennaModal } from './delete_antenna';
 export { ConfirmDeleteCircleModal } from './delete_circle';
 export { ConfirmDeleteBookmarkCategoryModal } from './delete_bookmark_category';
+export { ConfirmDeleteCollectionModal } from './delete_collection';
 export {
   ConfirmReplyModal,
   ConfirmEditStatusModal,
