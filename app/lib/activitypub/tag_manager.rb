@@ -284,6 +284,12 @@ class ActivityPub::TagManager
     !host.nil? && (::TagManager.instance.local_domain?(host) || ::TagManager.instance.web_domain?(host))
   end
 
+  def uri_to_local_id(uri, param = :id)
+    path_params = Rails.application.routes.recognize_path(uri)
+    path_params[:username] = Rails.configuration.x.local_domain if path_params[:controller] == 'instance_actors'
+    path_params[param]
+  end
+
   def uris_to_local_accounts(uris)
     usernames = []
     ids = []
