@@ -85,6 +85,7 @@ RSpec.describe FanOutOnWriteService do
 
   context 'when status account is suspended' do
     let(:visibility) { 'public' }
+    let(:custom_before) { true }
 
     before { alice.suspend! }
 
@@ -98,22 +99,26 @@ RSpec.describe FanOutOnWriteService do
   context 'when status is public' do
     let(:visibility) { 'public' }
 
-    it 'adds status to home feed of author and followers and broadcasts', :inline_jobs do
-      expect { subject.call(status) }
-        .to change(bob.notifications, :count).by(1)
-        .and change(eve.notifications, :count).by(1)
+    context 'with notification' do
+      let(:custom_before) { true }
 
-      expect(status.id)
-        .to be_in(home_feed_of(alice))
-        .and be_in(home_feed_of(bob))
-        .and be_in(home_feed_of(tom))
-        .and be_in(home_feed_of(tagf))
+      it 'adds status to home feed of author and followers and broadcasts', :inline_jobs do
+        expect { subject.call(status) }
+          .to change(bob.notifications, :count).by(1)
+          .and change(eve.notifications, :count).by(1)
 
-      expect(redis).to have_received(:publish).with('timeline:hashtag:hoge', anything)
-      expect(redis).to have_received(:publish).with('timeline:hashtag:hoge:local', anything)
-      expect(redis).to have_received(:publish).with('timeline:public', anything)
-      expect(redis).to have_received(:publish).with('timeline:public:local', anything)
-      expect(redis).to have_received(:publish).with('timeline:public:media', anything)
+        expect(status.id)
+          .to be_in(home_feed_of(alice))
+          .and be_in(home_feed_of(bob))
+          .and be_in(home_feed_of(tom))
+          .and be_in(home_feed_of(tagf))
+
+        expect(redis).to have_received(:publish).with('timeline:hashtag:hoge', anything)
+        expect(redis).to have_received(:publish).with('timeline:hashtag:hoge:local', anything)
+        expect(redis).to have_received(:publish).with('timeline:public', anything)
+        expect(redis).to have_received(:publish).with('timeline:public:local', anything)
+        expect(redis).to have_received(:publish).with('timeline:public:media', anything)
+      end
     end
 
     context 'with silenced_account_ids' do
