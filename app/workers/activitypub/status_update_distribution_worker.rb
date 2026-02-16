@@ -47,6 +47,14 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
     )
   end
 
+  def activity_serializer
+    ActivityPub::UpdateNoteSerializer
+  end
+
+  def serializer_options
+    super.merge({ updated_at: @options[:updated_at] })
+  end
+
   def activity
     build_activity
   end

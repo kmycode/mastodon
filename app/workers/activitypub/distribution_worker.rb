@@ -65,27 +65,23 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
   end
 
   def payload
-    @payload ||= Oj.dump(serialize_payload(activity, ActivityPub::ActivitySerializer, signer: @account, always_sign_unsafe: always_sign))
+    @payload ||= Oj.dump(serialize_payload(@status, activity_serializer, serializer_options.merge(signer: @account, always_sign_unsafe: always_sign)))
   end
 
   def payload_for_misskey
-    @payload_for_misskey ||= Oj.dump(serialize_payload(activity_for_misskey, ActivityPub::ActivityForMisskeySerializer, signer: @account))
+    @payload_for_misskey ||= Oj.dump(serialize_payload(@status, activity_serializer, serializer_options.merge(signer: @account, for_misskey: true)))
   end
 
   def payload_for_friend
-    @payload_for_friend ||= Oj.dump(serialize_payload(activity_for_friend, ActivityPub::ActivityForFriendSerializer, signer: @account, always_sign_unsafe: always_sign))
+    @payload_for_friend ||= Oj.dump(serialize_payload(@status, activity_serializer, serializer_options.merge(signer: @account, for_friend: true, always_sign_unsafe: always_sign)))
   end
 
-  def activity
-    ActivityPub::ActivityPresenter.from_status(@status)
+  def activity_serializer
+    @status.reblog? ? ActivityPub::AnnounceNoteSerializer : ActivityPub::CreateNoteSerializer
   end
 
-  def activity_for_misskey
-    ActivityPub::ActivityPresenter.from_status(@status, for_misskey: true)
-  end
-
-  def activity_for_friend
-    ActivityPub::ActivityPresenter.from_status(@status, for_friend: true)
+  def serializer_options
+    {}
   end
 
   def always_sign
