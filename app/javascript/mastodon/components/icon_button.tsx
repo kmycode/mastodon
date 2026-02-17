@@ -54,7 +54,7 @@ export const IconButton = forwardRef<HTMLButtonElement, Props>(
       overlay = false,
       tabIndex = 0,
       ariaHidden = false,
-      data_id = undefined,
+      data_id,
       ariaControls,
     },
     buttonRef,
