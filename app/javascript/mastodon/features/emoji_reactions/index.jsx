@@ -102,11 +102,11 @@ class EmojiReactions extends ImmutablePureComponent {
           bindToDocument={!multiColumn}
         >
           {Object.keys(groups).map((key) =>(
-            <Account key={key} id={key} hideButtons>
+            <Account key={key} id={key} hideButtons childrenA={(
               <div style={{ 'maxWidth': '100px' }}>
                 {groups[key].map((value, index2) => <EmojiView key={index2} name={value.name} url={value.url} staticUrl={value.static_url} />)}
               </div>
-            </Account>
+            )} />
           ))}
         </ScrollableList>
 

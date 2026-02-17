@@ -22,6 +22,7 @@ module Account::Associations
         has_many :circles
         has_many :collections
         has_many :collection_items
+        has_many :curated_collection_items, through: :collections, class_name: 'CollectionItem', source: :collection_items
         has_many :conversations, class_name: 'AccountConversation'
         has_many :custom_filters
         has_many :emoji_reactions

@@ -83,6 +83,7 @@
   "account.muted": "ミュート済み",
   "account.muting": "ミュート中",
   "account.mutual": "相互フォロー中",
+  "account.name.help.domain": "{domain} is the server that hosts the user’s profile and posts. このサーバーは<software>unknown</software>という名前のソフトウェアを使用していますが、他のサーバーと同様に投稿を表示したり、会話に参加できます。",
   "account.no_bio": "説明が提供されていません。",
   "account.open_original_page": "元のページを開く",
   "account.posts": "投稿",
