@@ -5,18 +5,18 @@
 # Table name: friend_domains
 #
 #  id                         :bigint(8)        not null, primary key
+#  active_state               :integer          default("idle"), not null
+#  allow_all_posts            :boolean          default(TRUE), not null
+#  available                  :boolean          default(TRUE), not null
+#  delivery_local             :boolean          default(TRUE), not null
 #  domain                     :string           default(""), not null
 #  inbox_url                  :string           default(""), not null
-#  active_state               :integer          default("idle"), not null
 #  passive_state              :integer          default("idle"), not null
-#  active_follow_activity_id  :string
-#  passive_follow_activity_id :string
-#  available                  :boolean          default(TRUE), not null
 #  pseudo_relay               :boolean          default(FALSE), not null
-#  allow_all_posts            :boolean          default(TRUE), not null
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
-#  delivery_local             :boolean          default(TRUE), not null
+#  active_follow_activity_id  :string
+#  passive_follow_activity_id :string
 #
 
 class FriendDomain < ApplicationRecord

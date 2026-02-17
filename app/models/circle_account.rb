@@ -5,11 +5,11 @@
 # Table name: circle_accounts
 #
 #  id         :bigint(8)        not null, primary key
-#  circle_id  :bigint(8)
-#  account_id :bigint(8)        not null
-#  follow_id  :bigint(8)        not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  account_id :bigint(8)        not null
+#  circle_id  :bigint(8)
+#  follow_id  :bigint(8)        not null
 #
 
 class CircleAccount < ApplicationRecord

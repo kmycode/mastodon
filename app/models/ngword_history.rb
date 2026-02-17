@@ -5,14 +5,14 @@
 # Table name: ngword_histories
 #
 #  id          :bigint(8)        not null, primary key
-#  uri         :string           not null
-#  target_type :integer          not null
-#  reason      :integer          not null
-#  text        :string           not null
+#  count       :integer          default(0), not null
 #  keyword     :string           not null
+#  reason      :integer          not null
+#  target_type :integer          not null
+#  text        :string           not null
+#  uri         :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  count       :integer          default(0), not null
 #
 class NgwordHistory < ApplicationRecord
   include Paginable

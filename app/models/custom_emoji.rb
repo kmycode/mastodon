@@ -5,25 +5,25 @@
 # Table name: custom_emojis
 #
 #  id                           :bigint(8)        not null, primary key
-#  shortcode                    :string           default(""), not null
-#  domain                       :string
-#  image_file_name              :string
-#  image_content_type           :string
-#  image_updated_at             :datetime
-#  created_at                   :datetime         not null
-#  updated_at                   :datetime         not null
-#  disabled                     :boolean          default(FALSE), not null
-#  uri                          :string
-#  image_remote_url             :string
-#  visible_in_picker            :boolean          default(TRUE), not null
-#  category_id                  :bigint(8)
-#  image_storage_schema_version :integer
-#  image_width                  :integer
-#  image_height                 :integer
 #  aliases                      :jsonb
+#  disabled                     :boolean          default(FALSE), not null
+#  domain                       :string
+#  image_content_type           :string
+#  image_file_name              :string
+#  image_file_size              :integer
+#  image_height                 :integer
+#  image_remote_url             :string
+#  image_storage_schema_version :integer
+#  image_updated_at             :datetime
+#  image_width                  :integer
 #  is_sensitive                 :boolean          default(FALSE), not null
 #  license                      :string
-#  image_file_size              :integer
+#  shortcode                    :string           default(""), not null
+#  uri                          :string
+#  visible_in_picker            :boolean          default(TRUE), not null
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  category_id                  :bigint(8)
 #
 
 class CustomEmoji < ApplicationRecord

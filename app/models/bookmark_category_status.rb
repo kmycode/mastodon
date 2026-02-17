@@ -5,11 +5,11 @@
 # Table name: bookmark_category_statuses
 #
 #  id                   :bigint(8)        not null, primary key
-#  bookmark_category_id :bigint(8)        not null
-#  status_id            :bigint(8)        not null
-#  bookmark_id          :bigint(8)
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
+#  bookmark_category_id :bigint(8)        not null
+#  bookmark_id          :bigint(8)
+#  status_id            :bigint(8)        not null
 #
 
 class BookmarkCategoryStatus < ApplicationRecord

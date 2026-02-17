@@ -5,10 +5,10 @@
 # Table name: bookmark_categories
 #
 #  id         :bigint(8)        not null, primary key
-#  account_id :bigint(8)        not null
 #  title      :string           default(""), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  account_id :bigint(8)        not null
 #
 
 class BookmarkCategory < ApplicationRecord

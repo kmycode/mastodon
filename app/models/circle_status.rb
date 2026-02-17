@@ -5,10 +5,10 @@
 # Table name: circle_statuses
 #
 #  id         :bigint(8)        not null, primary key
-#  circle_id  :bigint(8)
-#  status_id  :bigint(8)        not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  circle_id  :bigint(8)
+#  status_id  :bigint(8)        not null
 #
 
 class CircleStatus < ApplicationRecord

@@ -5,18 +5,18 @@
 # Table name: status_edits
 #
 #  id                           :bigint(8)        not null, primary key
-#  status_id                    :bigint(8)        not null
-#  account_id                   :bigint(8)
-#  text                         :text             default(""), not null
-#  spoiler_text                 :text             default(""), not null
-#  created_at                   :datetime         not null
-#  updated_at                   :datetime         not null
-#  ordered_media_attachment_ids :bigint(8)        is an Array
+#  markdown                     :boolean          default(FALSE)
 #  media_descriptions           :text             is an Array
+#  ordered_media_attachment_ids :bigint(8)        is an Array
 #  poll_options                 :string           is an Array
 #  sensitive                    :boolean
-#  markdown                     :boolean          default(FALSE)
+#  spoiler_text                 :text             default(""), not null
+#  text                         :text             default(""), not null
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  account_id                   :bigint(8)
 #  quote_id                     :bigint(8)
+#  status_id                    :bigint(8)        not null
 #
 
 class StatusEdit < ApplicationRecord
