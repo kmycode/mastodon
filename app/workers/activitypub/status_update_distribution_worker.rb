@@ -47,6 +47,14 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
     )
   end
 
+  def activity_serializer
+    ActivityPub::UpdateNoteSerializer
+  end
+
+  def serializer_options
+    super.merge({ updated_at: @options[:updated_at] })
+  end
+
   def activity
     build_activity
   end
@@ -60,7 +68,7 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
   end
 
   def delete_activity
-    @delete_activity ||= Oj.dump(serialize_payload(@status, ActivityPub::DeleteSerializer, signer: @account))
+    @delete_activity ||= Oj.dump(serialize_payload(@status, ActivityPub::DeleteNoteSerializer, signer: @account))
   end
 
   def distribute_delete_activity!

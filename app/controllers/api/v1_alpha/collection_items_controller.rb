@@ -21,13 +21,13 @@ class Api::V1Alpha::CollectionItemsController < Api::BaseController
 
     @item = AddAccountToCollectionService.new.call(@collection, @account)
 
-    render json: @item, serializer: REST::CollectionItemSerializer
+    render json: @item, serializer: REST::CollectionItemSerializer, adapter: :json
   end
 
   def destroy
     authorize @collection, :update?
 
-    @collection_item.destroy
+    DeleteCollectionItemService.new.call(@collection_item)
 
     head 200
   end

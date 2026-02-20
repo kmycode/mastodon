@@ -9,7 +9,6 @@ my:
   accounts:
     followers:
       other: စောင့်ကြည့်သူ
-    following: စောင့်ကြည့်နေသည်
     instance_actor_flash: ဤအကောင့်သည် ဆာဗာကို ကိုယ်စားပြုသည့် အကောင့်တခုသာဖြစ်ပြီး မည်သည့်အသုံးပြုသူမှမဟုတ်ပါ။ ၎င်းကို Federation ရည်ရွယ်ချက်များအတွက် အသုံးပြုသည့်အတွက် ပိတ်ပင် ဆိုင်းငံ့ခြင်း မပြုသင့်ပါ။
     last_active: နောက်ဆုံးအသုံးပြုခဲ့သည့်အချိန်
     link_verified_on: ဤလင့်ခ်၏ ပိုင်ဆိုင်မှုကို %{date} တွင် စစ်ဆေးခဲ့သည်
@@ -1581,10 +1580,6 @@ my:
       too_late: ဤလုပ်ဆောင်ချက်တင်ပြရန် နောက်ကျသွားပါပြီ
   tags:
     does_not_match_previous_name: ယခင်အမည်နှင့် မကိုက်ညီပါ
-  themes:
-    contrast: Mastodon (စာသားအလင်းပုံစံ)
-    default: Mastodon (အနက်နောက်ခံပုံစံ)
-    mastodon-light: Mastodon (အလင်းနောက်ခံပုံစံ)
   time:
     formats:
       default: "%b %d, %Y, %H:%M"

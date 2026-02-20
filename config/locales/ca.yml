@@ -12,7 +12,6 @@ ca:
     followers:
       one: Seguidor
       other: Seguidors
-    following: Seguint
     instance_actor_flash: Aquest compte és un actor virtual usat per a representar el mateix servidor i no cap usuari individual. Es fa servir per a federar i no s'hauria d'esborrar.
     last_active: última activitat
     link_verified_on: La propietat d'aquest enllaç va quedar verificada el %{date}
@@ -846,6 +845,10 @@ ca:
         all: Per a tothom
         disabled: Per a ningú
         users: Per als usuaris locals en línia
+      feed_access:
+        modes:
+          authenticated: Només usuaris autenticats
+          public: Tothom
       registrations:
         moderation_recommandation: Assegureu-vos de tenir un equip de moderadors adient i actiu abans d'obrir l'alta de comptes al públic!
         preamble: Controla qui pot crear un compte en el teu servidor.
@@ -1661,6 +1664,7 @@ ca:
       disabled_account: El teu compte actual no serà plenament utilitzable després. Tanmateix, tindràs accés a exportació de dades així com reactivació.
       followers: Aquesta acció mourà tots els seguidors des de l'actual al compte nou
       only_redirect_html: Alternativament, pots <a href="%{path}">posar només una redirecció en el teu perfil</a>.
+      other_data: No es mourà cap altra dada automàticament (incloses les vostres publicacions ni els comptes que seguiu)
       redirect: El perfil del teu compte actual serà actualitzat amb un avís de redirecció i serà exclòs de les cerques
   moderation:
     title: Moderació
@@ -1942,6 +1946,7 @@ ca:
       private: Només seguidors
       public: Públic
       public_long: Tothom dins o fora Mastodon
+      unlisted: Pública però discreta
       unlisted_long: Amagat dels resultats de cerca de Mastodon, de les tendències i de les línies temporals
   statuses_cleanup:
     enabled: Esborra automàticament tuts antics
@@ -1990,11 +1995,6 @@ ca:
     past_preamble_html: Hem fet canvis a les condicions de servei des de la vostra darrera visita. Us recomanem que hi doneu un cop d'ull.
     review_link: Revisió de les condicions de servei
     title: Les condicions de servei de %{domain} han canviat
-  themes:
-    contrast: Mastodon (alt contrast)
-    default: Mastodon (fosc)
-    mastodon-light: Mastodon (clar)
-    system: Automàtic (utilitza el tema del sistema)
   time:
     formats:
       default: "%b %d, %Y, %H:%M"
@@ -2162,6 +2162,7 @@ ca:
       error: Hi ha hagut un problema al esborrar la teva clau de seguretat. Tornau-ho a provar.
       success: La teva clau de seguretat s'ha esborrat correctament.
     invalid_credential: Clau de seguretat invàlida
+    nickname: Sobrenom
     nickname_hint: Introdueix el sobrenom de la teva clau de seguretat nova
     not_enabled: Encara no has activat WebAuthn
     not_supported: Aquest navegador no suporta claus de seguretat

@@ -5,10 +5,10 @@
 # Table name: status_capability_tokens
 #
 #  id         :bigint(8)        not null, primary key
-#  status_id  :bigint(8)        not null
 #  token      :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  status_id  :bigint(8)        not null
 #
 class StatusCapabilityToken < ApplicationRecord
   belongs_to :status

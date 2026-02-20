@@ -28,7 +28,7 @@ gem 'bootsnap', require: false
 gem 'browser'
 gem 'charlock_holmes', '~> 0.7.7'
 gem 'chewy', '~> 7.3'
-gem 'devise', '~> 4.9'
+gem 'devise'
 gem 'devise-two-factor'
 
 group :pam_authentication, optional: true do
@@ -187,7 +187,7 @@ group :development do
   gem 'letter_opener_web', '~> 3.0'
 
   # Security analysis CLI tools
-  gem 'brakeman', '~> 7.0', require: false
+  gem 'brakeman', '~> 8.0', require: false
   gem 'bundler-audit', '~> 0.9', require: false
 
   # Linter CLI for HAML files

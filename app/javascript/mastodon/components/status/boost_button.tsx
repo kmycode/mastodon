@@ -140,7 +140,7 @@ const BoostOrQuoteMenu: FC<ReblogButtonProps> = ({ status, counters }) => {
     const generateItem = (
       item: MenuItemState,
       action: (event: MouseEvent | KeyboardEvent | React.TouchEvent) => void,
-      highlighted: boolean | undefined = undefined,
+      highlighted?: boolean,
     ): ActionMenuItemWithIcon => {
       return {
         text: intl.formatMessage(item.title),

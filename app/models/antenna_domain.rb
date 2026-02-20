@@ -5,11 +5,11 @@
 # Table name: antenna_domains
 #
 #  id         :bigint(8)        not null, primary key
-#  antenna_id :bigint(8)        not null
-#  name       :string
 #  exclude    :boolean          default(FALSE), not null
+#  name       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  antenna_id :bigint(8)        not null
 #
 class AntennaDomain < ApplicationRecord
   belongs_to :antenna

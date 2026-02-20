@@ -5,11 +5,11 @@
 # Table name: scheduled_expiration_statuses
 #
 #  id           :bigint(8)        not null, primary key
-#  account_id   :bigint(8)
-#  status_id    :bigint(8)        not null
 #  scheduled_at :datetime
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  account_id   :bigint(8)
+#  status_id    :bigint(8)        not null
 #
 
 class ScheduledExpirationStatus < ApplicationRecord

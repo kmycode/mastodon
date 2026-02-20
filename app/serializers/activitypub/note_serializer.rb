@@ -147,7 +147,7 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
   end
 
   def cc
-    ActivityPub::TagManager.instance.cc(object)
+    instance_options[:for_misskey] ? ActivityPub::TagManager.instance.cc_for_misskey(object) : ActivityPub::TagManager.instance.cc(object)
   end
 
   def sensitive
@@ -209,7 +209,7 @@ class ActivityPub::NoteSerializer < ActivityPub::Serializer
   end
 
   def searchable_by
-    ActivityPub::TagManager.instance.searchable_by(object)
+    instance_options[:for_friend] ? ActivityPub::TagManager.instance.searchable_by_for_friend(object) : ActivityPub::TagManager.instance.searchable_by(object)
   end
 
   def limited_scope

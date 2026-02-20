@@ -35,6 +35,7 @@ import {
   ConfirmDeleteAntennaModal,
   ConfirmDeleteCircleModal,
   ConfirmDeleteBookmarkCategoryModal,
+  ConfirmDeleteCollectionModal,
   ConfirmReplyModal,
   ConfirmEditStatusModal,
   ConfirmUnblockModal,
@@ -66,6 +67,7 @@ export const MODAL_COMPONENTS = {
   'CONFIRM_DELETE_ANTENNA': () => Promise.resolve({ default: ConfirmDeleteAntennaModal }),
   'CONFIRM_DELETE_CIRCLE': () => Promise.resolve({ default: ConfirmDeleteCircleModal }),
   'CONFIRM_DELETE_BOOKMARK_CATEGORY': () => Promise.resolve({ default: ConfirmDeleteBookmarkCategoryModal }),
+  'CONFIRM_DELETE_COLLECTION': () => Promise.resolve({ default: ConfirmDeleteCollectionModal }),
   'CONFIRM_REPLY': () => Promise.resolve({ default: ConfirmReplyModal }),
   'CONFIRM_EDIT_STATUS': () => Promise.resolve({ default: ConfirmEditStatusModal }),
   'CONFIRM_UNBLOCK': () => Promise.resolve({ default: ConfirmUnblockModal }),
@@ -97,7 +99,7 @@ export const MODAL_COMPONENTS = {
   'IGNORE_NOTIFICATIONS': IgnoreNotificationsModal,
   'ANNUAL_REPORT': AnnualReportModal,
   'COMPOSE_PRIVACY': () => Promise.resolve({ default: VisibilityModal }),
-  'ACCOUNT_FIELDS': () => import('mastodon/features/account_timeline/components/fields_modal.tsx').then(module => ({ default: module.AccountFieldsModal })),
+  'ACCOUNT_NOTE': () => import('@/mastodon/features/account_timeline/modals/note_modal').then(module => ({ default: module.AccountNoteModal })),
 };
 
 export default class ModalRoot extends PureComponent {

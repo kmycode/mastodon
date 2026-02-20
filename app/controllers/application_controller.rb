@@ -17,9 +17,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_account
   helper_method :current_session
-  helper_method :current_theme
-  helper_method :color_scheme
-  helper_method :contrast
   helper_method :single_user_mode?
   helper_method :use_seamless_external_login?
   helper_method :sso_account_settings
@@ -64,11 +61,15 @@ class ApplicationController < ActionController::Base
     return if request.referer.blank?
 
     redirect_uri = URI(request.referer)
-    return if redirect_uri.path.start_with?('/auth')
+    return if redirect_uri.path.start_with?('/auth', '/settings/two_factor_authentication', '/settings/otp_authentication')
 
     stored_url = redirect_uri.to_s if redirect_uri.host == request.host && redirect_uri.port == request.port
 
     store_location_for(:user, stored_url)
+  end
+
+  def mfa_setup_path(path_params = {})
+    settings_two_factor_authentication_methods_path(path_params)
   end
 
   def require_functional!
@@ -76,7 +77,9 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.any do
-        if current_user.confirmed?
+        if current_user.missing_2fa?
+          redirect_to mfa_setup_path
+        elsif current_user.confirmed?
           redirect_to edit_user_registration_path
         else
           redirect_to auth_setup_path
@@ -88,6 +91,8 @@ class ApplicationController < ActionController::Base
           render json: { error: 'Your login is missing a confirmed e-mail address' }, status: 403
         elsif !current_user.approved?
           render json: { error: 'Your login is currently pending approval' }, status: 403
+        elsif current_user.missing_2fa?
+          render json: { error: 'Your account requires two-factor authentication' }, status: 403
         elsif !current_user.functional?
           render json: { error: 'Your login is currently disabled' }, status: 403
         end
@@ -171,35 +176,6 @@ class ApplicationController < ActionController::Base
     return @current_session if defined?(@current_session)
 
     @current_session = SessionActivation.find_by(session_id: cookies.signed['_session_id']) if cookies.signed['_session_id'].present?
-  end
-
-  def current_theme
-    unless Themes.instance.names.include? current_user&.setting_theme
-      return 'default' unless Themes.instance.names.include? Setting.theme
-
-      return Setting.theme
-    end
-
-    current_user.setting_theme
-  end
-
-  def color_scheme
-    current = current_user&.setting_color_scheme
-    return current if current && current != 'auto'
-
-    return 'dark' if current_theme.include?('default') || current_theme.include?('contrast')
-    return 'light' if current_theme.include?('light')
-
-    'auto'
-  end
-
-  def contrast
-    current = current_user&.setting_contrast
-    return current if current && current != 'auto'
-
-    return 'high' if current_theme.include?('contrast')
-
-    'auto'
   end
 
   def respond_with_error(code)

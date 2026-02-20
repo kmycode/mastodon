@@ -10,7 +10,6 @@ sco:
     followers:
       one: Follaer
       other: Follaers
-    following: Follaein
     instance_actor_flash: This accoont is a virtual actor uised tae represent the server itsel an no onie individual uiser. It is uised fir federation purposes an shuidnae be suspendit.
     last_active: last active
     link_verified_on: Ainership o this link wis checkt on %{date}
@@ -1430,10 +1429,6 @@ sco:
       too_late: It is ower late fir tae appeal this strike
   tags:
     does_not_match_previous_name: disnae match the previous nemm
-  themes:
-    contrast: Mastodon (Heich contrast)
-    default: Mastodon (Daurk)
-    mastodon-light: Mastodon (Licht)
   time:
     formats:
       default: "%b %d, %Y, %H:%M"

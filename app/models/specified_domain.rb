@@ -6,8 +6,8 @@
 #
 #  id         :bigint(8)        not null, primary key
 #  domain     :string           not null
-#  table      :integer          default(0), not null
 #  options    :jsonb            not null
+#  table      :integer          default(0), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

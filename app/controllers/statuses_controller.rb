@@ -29,15 +29,15 @@ class StatusesController < ApplicationController
       end
 
       format.json do
-        expires_in 3.minutes, public: true if @status.distributable? && public_fetch_mode? && !misskey_software? && !@status.expires?
-        render_with_cache json: @status, content_type: 'application/activity+json', serializer: status_activity_serializer, adapter: ActivityPub::Adapter, cancel_cache: misskey_software?
+        expires_in @status.quote&.pending? ? 5.seconds : 3.minutes, public: true if @status.distributable? && public_fetch_mode? && !misskey_software? && !@status.expires?
+        render_with_cache json: @status, content_type: 'application/activity+json', serializer: status_activity_serializer, for_misskey: misskey_software?, adapter: ActivityPub::Adapter, cancel_cache: misskey_software?
       end
     end
   end
 
   def activity
     expires_in 3.minutes, public: @status.distributable? && public_fetch_mode? && !misskey_software?
-    render_with_cache json: ActivityPub::ActivityPresenter.from_status(@status, for_misskey: misskey_software?), content_type: 'application/activity+json', serializer: ActivityPub::ActivitySerializer, adapter: ActivityPub::Adapter, cancel_cache: misskey_software?
+    render_with_cache json: @status, content_type: 'application/activity+json', serializer: activity_serializer, adapter: ActivityPub::Adapter, for_misskey: misskey_software?, cancel_cache: misskey_software?
   end
 
   def embed
@@ -85,14 +85,14 @@ class StatusesController < ApplicationController
   end
 
   def status_activity_serializer
-    if misskey_software?
-      ActivityPub::NoteForMisskeySerializer
-    else
-      ActivityPub::NoteSerializer
-    end
+    ActivityPub::NoteSerializer
   end
 
   def redirect_to_original
     redirect_to(ActivityPub::TagManager.instance.url_for(@status.reblog), allow_other_host: true) if @status.reblog?
+  end
+
+  def activity_serializer
+    @status.reblog? ? ActivityPub::AnnounceNoteSerializer : ActivityPub::CreateNoteSerializer
   end
 end

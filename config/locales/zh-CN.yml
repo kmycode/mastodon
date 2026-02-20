@@ -8,10 +8,11 @@ zh-CN:
     title: 关于本站
   accounts:
     errors:
-      cannot_be_added_to_collections: 此账号无法被添加到关注列表内。
+      cannot_be_added_to_collections: 此账号无法被添加到收藏列表内。
     followers:
       other: 关注者
-    following: 正在关注
+    following:
+      other: 正在关注
     instance_actor_flash: 该账号用来代表虚拟角色，并不代表个人用户，仅代表服务器本身。该账号用于联合目的，不应该被停用。
     last_active: 上次活跃
     link_verified_on: 此链接的所有权已在 %{date} 验证
@@ -786,6 +787,7 @@ zh-CN:
         view_devops_description: 允许用户访问 Sidekiq 和 pgHero 控制面板
         view_feeds: 查看实时动态和话题
         view_feeds_description: 允许用户无视服务器设置访问实时动态和话题
+      requires_2fa: 需要双因素认证
       title: 角色
     rules:
       add_new: 添加规则
@@ -1643,7 +1645,7 @@ zh-CN:
       disabled_account: 此后，你的当前账号将无法使用。但是，你仍然有权导出数据或者重新激活。
       followers: 这步操作将把全部关注者从当前账号移动到新账号
       only_redirect_html: 或者，你可以<a href="%{path}">只在你的账号资料上设置一个跳转</a>。
-      other_data: 其他数据不会自动移动（包括您的嘟文及您关注的账号列表）
+      other_data: 其他数据不会自动移动（包括你的嘟文及你关注的账号列表）
       redirect: 在收到一个跳转通知后，你当前的账号资料将会更新，并被排除在搜索范围外
   moderation:
     title: 审核
@@ -1692,7 +1694,7 @@ zh-CN:
       subject: "%{name} 转嘟了你的嘟文"
       title: 新的转嘟
     severed_relationships:
-      subject: 由于管理决定，您已失去网络上的关注关系
+      subject: 由于管理决定，你已失去网络上的关注关系
     status:
       subject: "%{name} 刚刚发布嘟文"
     update:
@@ -1976,10 +1978,7 @@ zh-CN:
     review_link: 查看服务条款
     title: "%{domain} 更新了服务条款"
   themes:
-    contrast: Mastodon（高对比度）
-    default: Mastodon（暗色主题）
-    mastodon-light: Mastodon（亮色主题）
-    system: 自动切换（使用系统主题）
+    default: Mastodon
   time:
     formats:
       default: "%Y年%m月%d日 %H:%M"
@@ -2004,6 +2003,8 @@ zh-CN:
     recovery_codes: 备份恢复代码
     recovery_codes_regenerated: 恢复代码重新生成成功
     recovery_instructions_html: 如果你的手机无法使用，你可以使用下列任意一个恢复代码来重新获得对账号的访问权。<strong>请妥善保管好你的恢复代码</strong>（例如，你可以将它们打印出来，然后和其他重要的文件放在一起）。
+    resume_app_authorization: 恢复应用程序授权
+    role_requirement: "%{domain} 要求你设置双因素认证以使用 Mastodon。"
     webauthn: 安全密钥
   user_mailer:
     announcement_published:

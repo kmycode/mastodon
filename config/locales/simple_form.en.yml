@@ -199,6 +199,7 @@ en:
         name: Public name of the role, if role is set to be displayed as a badge
         permissions_as_keys: Users with this role will have access to...
         position: Higher role decides conflict resolution in certain situations. Certain actions can only be performed on roles with a lower priority
+        require_2fa: Users with this role will be required to set up two-factor authentication to use Mastodon
       username_block:
         allow_with_approval: Instead of preventing sign-up outright, matching sign-ups will require your approval
         comparison: Please be mindful of the Scunthorpe Problem when blocking partial matches
@@ -267,6 +268,7 @@ en:
         email: E-mail address
         expires_in: Expire after
         fields: Extra fields
+        filter_action: Filter action
         group: This is a group account
         header: Header picture
         honeypot: "%{label} (do not fill in)"
@@ -288,7 +290,7 @@ en:
         setting_bio_markdown: Enable profile markdown
         setting_bookmark_category_needed: Category selection needed when registering bookmark on web
         setting_boost_modal: Control boosting visibility
-        setting_color_scheme: Mode
+        setting_color_scheme: Color scheme
         setting_community_timeline_instead_of_search_menu: Show local timeline on phone navigation instead of search
         setting_content_font_size: Font size of posts
         setting_content_font_size_items:
@@ -525,6 +527,7 @@ en:
         name: Name
         permissions_as_keys: Permissions
         position: Priority
+        require_2fa: Require two-factor authentication
       username_block:
         allow_with_approval: Allow registrations with approval
         comparison: Method of comparison

@@ -12,7 +12,6 @@ pt-BR:
     followers:
       one: Seguidor
       other: Seguidores
-    following: Seguindo
     instance_actor_flash: Esta conta é um ator virtual usado para representar o próprio servidor e não um usuário individual. É utilizada para fins de federação e não deve ser suspensa.
     last_active: última atividade
     link_verified_on: O link foi verificado em %{date}
@@ -848,6 +847,7 @@ pt-BR:
         publish_statistics: Publicar estatísticas
         title: Descobrir
         trends: Tendências
+        wrapstodon: Wrapstodon
       domain_blocks:
         all: Para todos
         disabled: Para ninguém
@@ -1318,6 +1318,13 @@ pt-BR:
     hint_html: "<strong>Dica:</strong> Não pediremos novamente sua senha pela próxima hora."
     invalid_password: Senha inválida
     prompt: Confirme sua senha para continuar
+  color_scheme:
+    auto: Automático
+    dark: Escuro
+    light: Claro
+  contrast:
+    auto: Automático
+    high: Alto
   crypto:
     errors:
       invalid_key: não é uma chave Ed25519 ou Curve25519 válida
@@ -1966,9 +1973,11 @@ pt-BR:
     enabled: Excluir publicações antigas automaticamente
     enabled_hint: Exclui suas publicações automaticamente assim que elas alcançam sua validade, a não ser que se enquadrem em alguma das exceções abaixo
     exceptions: Exceções
+    explanation: A eliminação automatizada é realizada com baixa prioridade. Pode haver um atraso entre atingir o limite de idade e ser removido.
     ignore_favs: Ignorar favoritos
     ignore_reblogs: Ignorar impulsos
     interaction_exceptions: Exceções baseadas nas interações
+    interaction_exceptions_explanation: Postagens que excedem temporariamente  o limite de favoritos ou de impulso podem ser retidos mesmo que posteriormente diminuam.
     keep_direct: Manter mensagens diretas
     keep_direct_hint: Não exclui nenhuma de suas mensagens diretas
     keep_media: Manter publicações com mídia
@@ -2009,11 +2018,6 @@ pt-BR:
     past_preamble_html: Alteramos nossos termos de serviço desde a sua última visita. Recomendamos que você revise os termos atualizados.
     review_link: Revisar os termos do serviço
     title: Os termos de serviço do %{domain} estão mudando
-  themes:
-    contrast: Mastodon  (Alto contraste)
-    default: Mastodon (Noturno)
-    mastodon-light: Mastodon (Diurno)
-    system: Automático (usar tema do sistema)
   time:
     formats:
       default: "%H:%M em %d de %b de %Y"
@@ -2181,6 +2185,7 @@ pt-BR:
       error: Houve um problema ao excluir sua chave de segurança. Tente novamente.
       success: Sua chave de segurança foi excluída.
     invalid_credential: Chave de segurança inválida
+    nickname: Nome
     nickname_hint: Digite o apelido da sua nova chave de segurança
     not_enabled: Você ainda não habilitou o WebAuthn
     not_supported: Este navegador não tem suporte a chaves de segurança

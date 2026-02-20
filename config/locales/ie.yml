@@ -10,7 +10,6 @@ ie:
     followers:
       one: Sequitor
       other: Sequitores
-    following: Sequent
     instance_actor_flash: Ti-ci conto es un virtual actor usat por representer li servitor self e null individual usator. It es usat por federational rasones e deve ne esser suspendet.
     last_active: ultim activitá
     link_verified_on: Proprietá de ti-ci ligament esset verificat ye %{date}
@@ -1658,11 +1657,6 @@ ie:
       too_late: It es tro tard por apellar ti admoniment
   tags:
     does_not_match_previous_name: ne concorda li anteyan nómine
-  themes:
-    contrast: Mastodon (Alt contraste)
-    default: Mastodon (Obscur)
-    mastodon-light: Mastodon (Luminosi)
-    system: Automatic (usar tema del sistema)
   time:
     formats:
       default: "%d.%m.%Y ye %H:%M"

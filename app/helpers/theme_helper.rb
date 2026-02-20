@@ -18,9 +18,6 @@ module ThemeHelper
   end
 
   def theme_style_tags(theme)
-    # TODO: get rid of that when we retire the themes and perform the settings migration
-    theme = 'default' if %w(mastodon-light contrast system).include?(theme)
-
     vite_stylesheet_tag "themes/#{theme}", type: :virtual, media: 'all', crossorigin: 'anonymous'
   end
 
@@ -65,6 +62,28 @@ module ThemeHelper
       media: :all,
       skip_pipeline: true
     )
+  end
+
+  def current_theme
+    unless Themes.instance.names.include? current_user&.setting_theme
+      return 'default' unless Themes.instance.names.include? Setting.theme
+
+      return Setting.theme
+    end
+
+    current_user.setting_theme
+  end
+
+  def color_scheme
+    current_user&.setting_color_scheme || 'auto'
+  end
+
+  def contrast
+    current_user&.setting_contrast || 'auto'
+  end
+
+  def page_color_scheme
+    content_for(:force_color_scheme).presence || color_scheme
   end
 
   private

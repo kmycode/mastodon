@@ -10,6 +10,7 @@
   /bookmarks
   /bookmark_categories/(*any)
   /circles/(*any)
+  /collections/(*any)
   /conversations
   /deck/(*any)
   /directory

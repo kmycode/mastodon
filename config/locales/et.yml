@@ -12,7 +12,9 @@ et:
     followers:
       one: Jälgija
       other: Jälgijaid
-    following: Jälgib
+    following:
+      one: Jälgib
+      other: Jälgib
     instance_actor_flash: See on serveri enda virtuaalne konto. See ei esinda ühtegi kindlat kasutajat, vaid seda kasutatakse födereerumisel. Seda kontot ei tohi kustutada.
     last_active: viimati aktiivne
     link_verified_on: Selle lingi autorsust kontrolliti %{date}
@@ -1797,7 +1799,7 @@ et:
   reactions:
     errors:
       limit_reached: Jõutud on erinevate reaktsioonide limiidini
-      unrecognized_emoji: ei ole tuntud emotikoon
+      unrecognized_emoji: ei ole tuntud emoji
   redirects:
     prompt: Kui te usaldate seda linki, klõpsake sellele, et jätkata.
     title: Te lahkute %{instance}.
@@ -2020,11 +2022,6 @@ et:
     past_preamble_html: Peale sinu viimast külastust oleme muutnud oma kasutustingimusi. Palun vaata muutunud tingimused üle.
     review_link: Vaata üle kasutustingimused
     title: "%{domain} saidi kasutustingimused muutuvad"
-  themes:
-    contrast: Mastodon (Kõrge kontrast)
-    default: Mastodon (Tume)
-    mastodon-light: Mastodon (Hele)
-    system: Automaatne (kasuta süsteemi teemat)
   time:
     formats:
       default: "%d. %B, %Y. aastal, kell %H:%M"

@@ -75,8 +75,9 @@ interface AccountProps {
   defaultAction?: 'block' | 'mute';
   withBio?: boolean;
   hideButtons?: boolean;
-  children?: ReactNode;
+  childrenA?: ReactNode;
   withMenu?: boolean;
+  children?: React.ReactNode;
 }
 
 export const Account: React.FC<AccountProps> = ({
@@ -87,8 +88,9 @@ export const Account: React.FC<AccountProps> = ({
   defaultAction,
   withBio,
   hideButtons,
-  children,
+  childrenA,
   withMenu = true,
+  children,
 }) => {
   const intl = useIntl();
   const { signedIn } = useIdentity();
@@ -358,21 +360,23 @@ export const Account: React.FC<AccountProps> = ({
             ))}
         </div>
 
-        {!minimal && children && (
+        {!minimal && childrenA && (
           <div>
-            <div>{children}</div>
+            <div>{childrenA}</div>
             <div className='account__relationship'>
               {dropdown}
               {button}
             </div>
           </div>
         )}
-        {!minimal && !children && (
+        {!minimal && !childrenA && (
           <div className='account__relationship'>
             {dropdown}
             {button}
           </div>
         )}
+
+        {children}
       </div>
     </div>
   );

@@ -9,7 +9,6 @@ zh-HK:
   accounts:
     followers:
       other: 關注者
-    following: 正在關注
     instance_actor_flash: 這個帳戶是結盟用的本伺服器的虛擬象徵，並不代表任何個別用戶。請不要把帳號停權。
     last_active: 上次活躍時間
     link_verified_on: 此連結的所有權已在 %{date} 檢查過
@@ -1670,11 +1669,6 @@ zh-HK:
       too_late: 對此次警告提出申訴已經太遲
   tags:
     does_not_match_previous_name: 和舊有名稱並不符合
-  themes:
-    contrast: 高對比
-    default: 萬象
-    mastodon-light: 萬象（亮色主題）
-    system: 自動（使用系統主題）
   time:
     formats:
       default: "%Y年%b月%d日 %H:%M"

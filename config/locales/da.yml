@@ -12,7 +12,9 @@ da:
     followers:
       one: Følger
       other: Følgere
-    following: Følger
+    following:
+      one: Fulgt
+      other: Fulgte
     instance_actor_flash: Denne konto er en virtuel aktør repræsenterende selve serveren og ikke en individuel bruger. Den anvendes til fællesformål og bør ikke suspenderes.
     last_active: senest aktiv
     link_verified_on: Ejerskab af dette link blev tjekket %{date}
@@ -800,6 +802,7 @@ da:
         view_devops_description: Tillader brugere at tilgå Sidekiq- og pgHero-dashboards
         view_feeds: Se live- og emne-feeds
         view_feeds_description: Giver brugerne adgang til live- og emne-feeds uanset serverindstillinger
+      requires_2fa: Kræver tofaktorgodkendelse
       title: Roller
     rules:
       add_new: Tilføj regel
@@ -1473,7 +1476,7 @@ da:
         other: "%{count} individuelle indlæg skjult"
       title: Filtre
     new:
-      save: Gem nye filter
+      save: Gem nyt filter
       title: Tilføj nyt filter
     statuses:
       back_to_filter: Tilbage til filter
@@ -2019,10 +2022,7 @@ da:
     review_link: Gennemgå Tjenestevilkår
     title: Tjenestevilkårene for %{domain} ændres
   themes:
-    contrast: Mastodon (høj kontrast)
-    default: Mastodon (mørkt)
-    mastodon-light: Mastodon (lyst)
-    system: Automatisk (benyt systemtema)
+    default: Mastodon
   time:
     formats:
       default: "%d. %b %Y, %H:%M"
@@ -2044,9 +2044,11 @@ da:
     lost_recovery_codes: Gendannelseskoder giver dig mulighed for at få adgang til din konto igen, hvis du mister din telefon. Hvis du har mistet dine gendannelseskoder, kan du generere dem igen her. Dine gamle gendannelseskoder vil blive ugyldige.
     methods: Tofaktormetoder
     otp: Godkendelses-app
-    recovery_codes: Sikkerhedskopieret gendannelseskoder
+    recovery_codes: Reserve-gendannelseskoder
     recovery_codes_regenerated: Gendannelseskoder er regenereret
     recovery_instructions_html: Mister du nogensinde adgang til din mobil, kan en af gendannelseskoderne nedenfor bruges til at opnå adgang til din konto. <strong>Opbevar disse et sikkert sted</strong>. De kan f.eks. udskrives og gemmes sammen med andre vigtige dokumenter.
+    resume_app_authorization: Genoptag godkendelse af applikation
+    role_requirement: "%{domain} kræver, at du konfigurerer tofaktorgodkendelse, før du kan bruge Mastodon."
     webauthn: Sikkerhedsnøgler
   user_mailer:
     announcement_published:

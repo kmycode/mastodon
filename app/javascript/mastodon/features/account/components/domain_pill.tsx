@@ -45,8 +45,7 @@ export const DomainPill: React.FC<{
         aria-controls={accessibilityId}
         type='button'
       >
-        {domain}
-        {children}
+        {children ?? domain}
       </button>
 
       <Overlay

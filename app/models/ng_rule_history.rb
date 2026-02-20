@@ -5,17 +5,17 @@
 # Table name: ng_rule_histories
 #
 #  id            :bigint(8)        not null, primary key
-#  ng_rule_id    :bigint(8)        not null
-#  account_id    :bigint(8)
-#  text          :string
-#  uri           :string
+#  data          :jsonb
+#  hidden        :boolean          default(FALSE), not null
+#  local         :boolean          default(TRUE), not null
 #  reason        :integer          not null
 #  reason_action :integer          not null
-#  local         :boolean          default(TRUE), not null
-#  hidden        :boolean          default(FALSE), not null
-#  data          :jsonb
+#  text          :string
+#  uri           :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  account_id    :bigint(8)
+#  ng_rule_id    :bigint(8)        not null
 #
 class NgRuleHistory < ApplicationRecord
   enum :reason, { account: 0, status: 1, reaction: 2 }, prefix: :reason

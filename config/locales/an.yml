@@ -10,7 +10,6 @@ an:
     followers:
       one: Seguidor
       other: Seguidores
-    following: Seguindo
     instance_actor_flash: Esta cuenta ye un actor virtual utilizau pa representar a lo servidor en ell mesmo y no a garra usuario individual. S'utiliza pa propositos d'a federación y no s'ha de suspender.
     last_active: zaguera connexión
     link_verified_on: La propiedat d'este vinclo estió verificada lo %{date}
@@ -1445,10 +1444,6 @@ an:
       too_late: Ye masiau tarde pa apelar esta amonestación
   tags:
     does_not_match_previous_name: no coincide con o nombre anterior
-  themes:
-    contrast: Mastodon (Alto contraste)
-    default: Mastodon (Fosco)
-    mastodon-light: Mastodon (claro)
   time:
     formats:
       default: "%d de %b de %Y, %H:%M"

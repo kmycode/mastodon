@@ -70,6 +70,8 @@ class ActivityPub::TagManager
       target.uri
     when :featured_collection
       ap_account_collection_url(target.account.id, target)
+    when :featured_item
+      ap_account_collection_item_url(target.collection.account_id, target)
     end
   end
 
@@ -309,6 +311,14 @@ class ActivityPub::TagManager
     uri_to_resource(uri, Account)
   end
 
+  def uri_to_local_conversation(uri)
+    path_params = Rails.application.routes.recognize_path(uri)
+    return unless path_params[:controller] == 'activitypub/contexts'
+
+    account_id, conversation_id = path_params[:id].split('-')
+    Conversation.find_by(parent_account_id: account_id, id: conversation_id)
+  end
+
   def uri_to_resource(uri, klass, url: false)
     return if uri.nil?
 
@@ -316,6 +326,8 @@ class ActivityPub::TagManager
       case klass.name
       when 'Account'
         uris_to_local_accounts([uri]).first
+      when 'Conversation'
+        uri_to_local_conversation(uri)
       else
         StatusFinder.new(uri).status
       end

@@ -26,6 +26,7 @@ class Collection < ApplicationRecord
   belongs_to :tag, optional: true
 
   has_many :collection_items, dependent: :delete_all
+  has_many :collection_reports, dependent: :delete_all
 
   validates :name, presence: true
   validates :description, presence: true
@@ -43,6 +44,7 @@ class Collection < ApplicationRecord
 
   scope :with_items, -> { includes(:collection_items).merge(CollectionItem.with_accounts) }
   scope :with_tag, -> { includes(:tag) }
+  scope :discoverable, -> { where(discoverable: true) }
 
   def remote?
     !local?

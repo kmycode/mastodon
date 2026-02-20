@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_19_153538) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_12_131934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -207,6 +207,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_153538) do
     t.string "following_url", default: "", null: false
     t.integer "id_scheme", default: 1
     t.integer "feature_approval_policy", default: 0, null: false
+    t.string "avatar_description", default: "", null: false
+    t.string "header_description", default: "", null: false
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), COALESCE(lower((domain)::text), ''::text)", name: "index_accounts_on_username_and_domain_lower", unique: true
     t.index ["domain", "id"], name: "index_accounts_on_domain_and_id"
@@ -484,10 +486,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_153538) do
     t.integer "state", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "uri"
     t.index ["account_id"], name: "index_collection_items_on_account_id"
     t.index ["approval_uri"], name: "index_collection_items_on_approval_uri", unique: true, where: "(approval_uri IS NOT NULL)"
     t.index ["collection_id"], name: "index_collection_items_on_collection_id"
     t.index ["object_uri"], name: "index_collection_items_on_object_uri", unique: true, where: "(activity_uri IS NOT NULL)"
+  end
+
+  create_table "collection_reports", force: :cascade do |t|
+    t.bigint "collection_id", null: false
+    t.bigint "report_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["collection_id"], name: "index_collection_reports_on_collection_id"
+    t.index ["report_id"], name: "index_collection_reports_on_report_id"
   end
 
   create_table "collections", id: :bigint, default: -> { "timestamp_id('collections'::text)" }, force: :cascade do |t|
@@ -1649,6 +1661,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_153538) do
     t.boolean "highlighted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "require_2fa", default: false, null: false
   end
 
   create_table "username_blocks", force: :cascade do |t|
@@ -1809,6 +1822,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_19_153538) do
   add_foreign_key "circles", "accounts", on_delete: :cascade
   add_foreign_key "collection_items", "accounts"
   add_foreign_key "collection_items", "collections", on_delete: :cascade
+  add_foreign_key "collection_reports", "collections", on_delete: :cascade
+  add_foreign_key "collection_reports", "reports", on_delete: :cascade
   add_foreign_key "collections", "accounts"
   add_foreign_key "collections", "tags"
   add_foreign_key "conversation_mutes", "accounts", name: "fk_225b4212bb", on_delete: :cascade
