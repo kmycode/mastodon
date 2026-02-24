@@ -13,12 +13,12 @@ import { Link } from 'react-router-dom';
 
 import type { Map as ImmutableMap } from 'immutable';
 
-import Overlay from 'react-overlays/Overlay';
 import type {
   OffsetValue,
   UsePopperOptions,
   Placement,
 } from 'react-overlays/esm/usePopper';
+import Overlay from 'react-overlays/Overlay';
 
 import { fetchRelationships } from 'mastodon/actions/accounts';
 import {
@@ -90,7 +90,7 @@ export const DropdownMenuItemContent: React.FC<{ item: MenuItem }> = ({
   );
 };
 
-export const DropdownMenu = <Item = MenuItem,>({
+export const DropdownMenu = <Item = MenuItem>({
   items,
   loading,
   scrollable,
@@ -312,10 +312,11 @@ interface DropdownProps<Item extends object | null = MenuItem> {
   status?: ImmutableMap<string, unknown>;
   needsStatusRefresh?: boolean;
   forceDropdown?: boolean;
+  className?: string;
   renderItem?: RenderItemFn<Item>;
   renderHeader?: RenderHeaderFn<Item>;
   onOpen?: // Must use a union type for the full function as a union with void is not allowed.
-  | ((event: React.MouseEvent | React.KeyboardEvent) => void)
+    | ((event: React.MouseEvent | React.KeyboardEvent) => void)
     | ((event: React.MouseEvent | React.KeyboardEvent) => boolean);
   onItemClick?: ItemClickFn<Item>;
 }
@@ -337,6 +338,7 @@ export const Dropdown = <Item extends object | null = MenuItem>({
   status,
   needsStatusRefresh,
   forceDropdown = false,
+  className,
   renderItem,
   renderHeader,
   onOpen,
@@ -436,6 +438,7 @@ export const Dropdown = <Item extends object | null = MenuItem>({
               modalProps: {
                 actions: items,
                 onClick: handleItemClick,
+                className,
               },
             }),
           );
@@ -464,6 +467,7 @@ export const Dropdown = <Item extends object | null = MenuItem>({
       handleClose,
       statusId,
       needsStatusRefresh,
+      className,
     ],
   );
 
@@ -517,7 +521,7 @@ export const Dropdown = <Item extends object | null = MenuItem>({
         popperConfig={popperConfig}
       >
         {({ props, arrowProps, placement }) => (
-          <div {...props} id={menuId}>
+          <div {...props} className={className} id={menuId}>
             <div className={`dropdown-animation dropdown-menu ${placement}`}>
               <div
                 className={`dropdown-menu__arrow ${placement}`}

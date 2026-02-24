@@ -11,14 +11,14 @@ export interface ApiCollectionJSON {
   account_id: string;
 
   id: string;
-  uri: string;
+  uri: string | null;
   local: boolean;
   item_count: number;
 
   name: string;
   description: string;
-  tag?: ApiTagJSON;
-  language: string;
+  tag: ApiTagJSON | null;
+  language: string | null;
   sensitive: boolean;
   discoverable: boolean;
 
@@ -45,8 +45,7 @@ export interface ApiWrappedCollectionJSON {
 /**
  * Returned when fetching a single collection
  */
-export interface ApiCollectionWithAccountsJSON
-  extends ApiWrappedCollectionJSON {
+export interface ApiCollectionWithAccountsJSON extends ApiWrappedCollectionJSON {
   accounts: ApiAccountJSON[];
 }
 
@@ -76,8 +75,7 @@ type CommonPayloadFields = Pick<
   language?: ApiCollectionJSON['language'];
 };
 
-export interface ApiUpdateCollectionPayload
-  extends Partial<CommonPayloadFields> {
+export interface ApiUpdateCollectionPayload extends Partial<CommonPayloadFields> {
   id: string;
 }
 

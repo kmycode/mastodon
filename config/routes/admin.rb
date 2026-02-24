@@ -179,6 +179,8 @@ namespace :admin do
     resource :reset, only: [:create]
     resource :action, only: [:new, :create], controller: 'account_actions'
 
+    resources :collections, only: [:show]
+
     resources :statuses, only: [:index, :show] do
       member do
         post :remove_history
