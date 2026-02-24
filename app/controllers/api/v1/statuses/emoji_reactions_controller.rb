@@ -23,7 +23,7 @@ class Api::V1::Statuses::EmojiReactionsController < Api::BaseController
     if emoji
       shortcode, domain = emoji.split('@')
       emoji_reaction = EmojiReaction.where(account_id: current_account.id).where(status_id: @status.id).where(name: shortcode)
-                                    .find { |reaction| domain == '' ? reaction.custom_emoji.nil? : reaction.custom_emoji&.domain == domain }
+        .find { |reaction| domain == '' ? reaction.custom_emoji.nil? : reaction.custom_emoji&.domain == domain }
 
       authorize @status, :show? if emoji_reaction.nil?
 

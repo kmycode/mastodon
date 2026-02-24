@@ -8,8 +8,7 @@ import type { CommonFieldWrapperProps } from './form_field_wrapper';
 import classes from './select.module.scss';
 
 interface Props
-  extends ComponentPropsWithoutRef<'select'>,
-    CommonFieldWrapperProps {}
+  extends ComponentPropsWithoutRef<'select'>, CommonFieldWrapperProps {}
 
 /**
  * A simple form field for single-item selections.

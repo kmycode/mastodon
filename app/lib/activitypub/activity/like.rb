@@ -158,7 +158,7 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
 
   def write_stream(emoji_reaction)
     emoji_group = @original_status.emoji_reactions_grouped_by_name(nil, force: true)
-                                  .find { |reaction_group| reaction_group['name'] == emoji_reaction.name && (!reaction_group.key?(:domain) || reaction_group['domain'] == emoji_reaction.custom_emoji&.domain) }
+      .find { |reaction_group| reaction_group['name'] == emoji_reaction.name && (!reaction_group.key?(:domain) || reaction_group['domain'] == emoji_reaction.custom_emoji&.domain) }
     emoji_group['status_id'] = @original_status.id.to_s
     DeliveryEmojiReactionWorker.perform_async(render_emoji_reaction(emoji_group), @original_status.id, emoji_reaction.account_id) if @original_status.local? ? Setting.streaming_local_emoji_reaction : Setting.streaming_other_servers_emoji_reaction
   end

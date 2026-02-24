@@ -6,8 +6,8 @@ import type { MessageDescriptor } from 'react-intl';
 
 import classNames from 'classnames';
 
-import Overlay from 'react-overlays/Overlay';
 import type { Placement } from 'react-overlays/esm/usePopper';
+import Overlay from 'react-overlays/Overlay';
 
 import UnfoldMoreIcon from '@/material-icons/400-24px/unfold_more.svg?react';
 
