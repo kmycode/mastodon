@@ -16,7 +16,7 @@ import { CustomEmojiFactory } from './custom_emoji';
 import type { CustomEmoji } from './custom_emoji';
 
 // AccountField
-interface AccountFieldShape extends Required<ApiAccountFieldJSON> {
+export interface AccountFieldShape extends Required<ApiAccountFieldJSON> {
   name_emojified: string;
   value_emojified: string;
   value_plain: string | null;
@@ -72,10 +72,9 @@ const AccountServerFeaturesFactory =
   });
 
 // Account
-export interface AccountShape
-  extends Required<
-    Omit<ApiAccountJSON, 'emojis' | 'fields' | 'roles' | 'moved' | 'url'>
-  > {
+export interface AccountShape extends Required<
+  Omit<ApiAccountJSON, 'emojis' | 'fields' | 'roles' | 'moved' | 'url'>
+> {
   emojis: ImmutableList<CustomEmoji>;
   fields: ImmutableList<AccountField>;
   roles: ImmutableList<AccountRole>;
@@ -102,6 +101,11 @@ export const accountDefaultValues: AccountShape = {
   server_features: AccountServerFeaturesFactory(),
   software: '',
   emojis: ImmutableList<CustomEmoji>(),
+  feature_approval: {
+    automatic: [],
+    manual: [],
+    current_user: 'missing',
+  },
   fields: ImmutableList<AccountField>(),
   group: false,
   header: '',

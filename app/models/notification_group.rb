@@ -73,10 +73,10 @@ class NotificationGroup < ActiveModelSerializers::Model
     return [] if activity_ids.empty?
 
     EmojiReaction.where(id: activity_ids)
-                 .order(id: :desc)
-                 .each_with_object({}) { |e, h| h[e.name] = (h[e.name] || []).push(e) }
-                 .to_a
-                 .map { |pair| NotificationEmojiReactionGroup.new(emoji_reaction: pair[1].first, sample_accounts: pair[1].take(SAMPLE_ACCOUNTS_SIZE).map(&:account)) }
+      .order(id: :desc)
+      .each_with_object({}) { |e, h| h[e.name] = (h[e.name] || []).push(e) }
+      .to_a
+      .map { |pair| NotificationEmojiReactionGroup.new(emoji_reaction: pair[1].first, sample_accounts: pair[1].take(SAMPLE_ACCOUNTS_SIZE).map(&:account)) }
   end
 
   class << self

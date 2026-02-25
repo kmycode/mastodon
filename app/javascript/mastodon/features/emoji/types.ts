@@ -36,8 +36,10 @@ export interface EmojiAppState {
 }
 
 export type CustomEmojiData = ApiCustomEmojiJSON & { tokens: string[] };
-export interface UnicodeEmojiData
-  extends Omit<CompactEmoji, 'emoticon' | 'skins' | 'tags'> {
+export interface UnicodeEmojiData extends Omit<
+  CompactEmoji,
+  'emoticon' | 'skins' | 'tags'
+> {
   shortcodes: string[];
   tokens: string[];
   emoticons?: string[];

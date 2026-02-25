@@ -43,7 +43,7 @@ class UnEmojiReactService < BaseService
 
   def write_stream(emoji_reaction)
     emoji_group = @status.emoji_reactions_grouped_by_name(@account)
-                         .find { |reaction_group| reaction_group['name'] == emoji_reaction.name }
+      .find { |reaction_group| reaction_group['name'] == emoji_reaction.name }
     if emoji_group
       emoji_group['status_id'] = @status.id.to_s
     else

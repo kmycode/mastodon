@@ -37,6 +37,26 @@ export interface ApiServerFeaturesJSON {
   legacy_quote: boolean;
 }
 
+type ApiFeaturePolicy =
+  | 'public'
+  | 'followers'
+  | 'following'
+  | 'disabled'
+  | 'unsupported_policy';
+
+type ApiUserFeaturePolicy =
+  | 'automatic'
+  | 'manual'
+  | 'denied'
+  | 'missing'
+  | 'unknown';
+
+interface ApiFeaturePolicyJSON {
+  automatic: ApiFeaturePolicy[];
+  manual: ApiFeaturePolicy[];
+  current_user: ApiUserFeaturePolicy;
+}
+
 // See app/serializers/rest/account_serializer.rb
 export interface BaseApiAccountJSON {
   acct: string;
@@ -48,6 +68,7 @@ export interface BaseApiAccountJSON {
   indexable: boolean;
   display_name: string;
   emojis: ApiCustomEmojiJSON[];
+  feature_approval: ApiFeaturePolicyJSON;
   fields: ApiAccountFieldJSON[];
   followers_count: number;
   following_count: number;

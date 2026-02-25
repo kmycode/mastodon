@@ -13,8 +13,8 @@ module NgRuleHelper
 
   def check_for_ng_rule!(account, **options, &block)
     NgRule.cached_rules
-          .map { |raw_rule| Admin::NgRule.new(raw_rule, account, **options) }
-          .filter(&block)
+      .map { |raw_rule| Admin::NgRule.new(raw_rule, account, **options) }
+      .filter(&block)
   end
 
   def do_account_action_for_rule!(account, action)
