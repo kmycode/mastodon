@@ -33,6 +33,7 @@ import StatusActionBar from './status_action_bar';
 import StatusContent from './status_content';
 import StatusEmojiReactionsBar from './status_emoji_reactions_bar';
 import { StatusThreadLabel } from './status_thread_label';
+import { VisibilityIcon } from './visibility_icon';
 
 const domParser = new DOMParser();
 
