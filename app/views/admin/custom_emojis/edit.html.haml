@@ -24,7 +24,14 @@
     %h4= t('admin.custom_emojis.edit.label')
 
     .fields-group
-      = f.input :category_id, collection: CustomEmojiCategory.all, label_method: ->(item) { item.name }, collection_wrapper_tag: 'ul', item_wrapper_tag: 'li', include_blank: t('admin.custom_emojis.assign_category'), wrapper: :with_label, label: false, hint: false
+      = f.input :category_id,
+                collection: CustomEmojiCategory.all,
+                label_method: ->(item) { item.name },
+                collection_wrapper_tag: 'ul',
+                item_wrapper_tag: 'li',
+                include_blank: t('admin.custom_emojis.assign_category'),
+                wrapper: :with_label,
+                label: false, hint: false
 
     .fields-group
       = f.input :visible_in_picker, as: :boolean, wrapper: :with_label, label: t('admin.custom_emojis.visible_in_picker')

@@ -88,6 +88,7 @@ export const MODAL_COMPONENTS = {
   'DOMAIN_BLOCK': DomainBlockModal,
   'REPORT': ReportModal,
   'REPORT_COLLECTION': ReportCollectionModal,
+  'SHARE_COLLECTION': () => import('@/mastodon/features/collections/detail/share_modal').then(module => ({ default: module.CollectionShareModal })),
   'ACTIONS': () => Promise.resolve({ default: ActionsModal }),
   'EMBED': EmbedModal,
   'FOCAL_POINT': () => Promise.resolve({ default: AltTextModal }),
@@ -104,8 +105,10 @@ export const MODAL_COMPONENTS = {
   'ANNUAL_REPORT': AnnualReportModal,
   'COMPOSE_PRIVACY': () => Promise.resolve({ default: VisibilityModal }),
   'ACCOUNT_NOTE': () => import('@/mastodon/features/account_timeline/modals/note_modal').then(module => ({ default: module.AccountNoteModal })),
+  'ACCOUNT_FIELD_OVERFLOW': () => import('@/mastodon/features/account_timeline/modals/field_modal').then(module => ({ default: module.AccountFieldModal })),
   'ACCOUNT_EDIT_NAME': () => import('@/mastodon/features/account_edit/components/name_modal').then(module => ({ default: module.NameModal })),
   'ACCOUNT_EDIT_BIO': () => import('@/mastodon/features/account_edit/components/bio_modal').then(module => ({ default: module.BioModal })),
+  'ACCOUNT_EDIT_PROFILE_DISPLAY': () => import('@/mastodon/features/account_edit/components/profile_display_modal').then(module => ({ default: module.ProfileDisplayModal })),
 };
 
 export default class ModalRoot extends PureComponent {
