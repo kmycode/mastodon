@@ -2065,7 +2065,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dnd-kit/modifiers@npm:9.0.0":
+"@dnd-kit/modifiers@npm:^9.0.0":
   version: 9.0.0
   resolution: "@dnd-kit/modifiers@npm:9.0.0"
   dependencies:
@@ -2958,7 +2958,7 @@ __metadata:
   dependencies:
     "@csstools/stylelint-formatter-github": "npm:^2.0.0"
     "@dnd-kit/core": "npm:^6.1.0"
-    "@dnd-kit/modifiers": "npm:9.0.0"
+    "@dnd-kit/modifiers": "npm:^9.0.0"
     "@dnd-kit/sortable": "npm:^10.0.0"
     "@dnd-kit/utilities": "npm:^3.2.2"
     "@eslint/js": "npm:^9.39.2"

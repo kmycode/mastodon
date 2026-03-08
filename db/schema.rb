@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_17_154542) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_03_144409) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -1270,11 +1270,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_17_154542) do
     t.string "title", default: "", null: false
     t.boolean "trendable"
     t.integer "type", default: 0, null: false
+    t.bigint "unverified_author_account_id"
     t.datetime "updated_at", precision: nil, null: false
     t.string "url", default: "", null: false
     t.integer "width", default: 0, null: false
     t.index ["author_account_id"], name: "index_preview_cards_on_author_account_id", where: "(author_account_id IS NOT NULL)"
     t.index ["id"], name: "index_preview_cards_vacuum", where: "((image_file_name IS NOT NULL) AND ((image_file_name)::text <> ''::text))"
+    t.index ["unverified_author_account_id", "id"], name: "index_preview_cards_on_unverified_author_account_id_and_id", where: "(unverified_author_account_id IS NOT NULL)"
     t.index ["url"], name: "index_preview_cards_on_url", unique: true
   end
 
@@ -1902,6 +1904,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_17_154542) do
   add_foreign_key "polls", "statuses", on_delete: :cascade
   add_foreign_key "preview_card_trends", "preview_cards", on_delete: :cascade
   add_foreign_key "preview_cards", "accounts", column: "author_account_id", on_delete: :nullify
+  add_foreign_key "preview_cards", "accounts", column: "unverified_author_account_id", on_delete: :nullify
   add_foreign_key "quotes", "accounts", column: "quoted_account_id", on_delete: :nullify
   add_foreign_key "quotes", "accounts", on_delete: :cascade
   add_foreign_key "quotes", "statuses", column: "quoted_status_id", on_delete: :nullify
