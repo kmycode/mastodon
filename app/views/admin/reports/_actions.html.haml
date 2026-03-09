@@ -5,7 +5,7 @@
         = link_to t('admin.reports.mark_as_resolved'), resolve_admin_report_path(report), method: :post, class: 'button'
       .report-actions__item__description
         = t('admin.reports.actions.resolve_description_html')
-    - if statuses.any? { |status| (status.with_media? || status.with_preview_card?) && !status.discarded? }
+    - if report.collections.any? || statuses.any? { |status| (status.with_media? || status.with_preview_card?) && !status.discarded? }
       .report-actions__item
         .report-actions__item__button
           = form.button t('admin.reports.mark_as_sensitive'),
@@ -15,16 +15,18 @@
           = t('admin.reports.actions.mark_as_sensitive_description_html')
     .report-actions__item
       .report-actions__item__button
-        = button_tag t('admin.reports.force_cw'), name: :force_cw, class: 'button'
+        = form.button t('admin.reports.force_cw'),
+                      name: :force_cw,
+                      class: 'button'
       .report-actions__item__description
         = t('admin.reports.actions.force_cw_description_html')
     .report-actions__item
       .report-actions__item__button
-        = button_tag t('admin.reports.delete_and_resolve'),
-                     name: :delete,
-                     class: 'button button--destructive',
-                     disabled: statuses.empty?,
-                     title: statuses.empty? ? t('admin.reports.actions_no_posts') : ''
+        = form.button t('admin.reports.delete_and_resolve'),
+                      name: :delete,
+                      class: 'button button--destructive',
+                      disabled: (report.collections + statuses).empty?,
+                      title: (report.collections + statuses).empty? ? t('admin.reports.actions_no_posts') : ''
       .report-actions__item__description
         = t('admin.reports.actions.delete_description_html')
     .report-actions__item

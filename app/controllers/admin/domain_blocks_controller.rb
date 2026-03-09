@@ -65,7 +65,7 @@ module Admin
       end
 
       # Allow transparently upgrading a domain block
-      if existing_domain_block.present? && existing_domain_block.domain == TagManager.instance.normalize_domain(@domain_block.domain.strip)
+      if existing_domain_block.present? && existing_domain_block.domain == TagManager.instance.normalize_domain(@domain_block.domain)
         @domain_block = existing_domain_block
         @domain_block.assign_attributes(resource_params)
       end

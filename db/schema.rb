@@ -10,26 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_03_144409) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "account_aliases", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.string "acct", default: "", null: false
-    t.string "uri", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "uri", default: "", null: false
     t.index ["account_id", "uri"], name: "index_account_aliases_on_account_id_and_uri", unique: true
   end
 
   create_table "account_conversations", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.bigint "conversation_id", null: false
-    t.bigint "participant_account_ids", default: [], null: false, array: true
-    t.bigint "status_ids", default: [], null: false, array: true
     t.bigint "last_status_id"
     t.integer "lock_version", default: 0, null: false
+    t.bigint "participant_account_ids", default: [], null: false, array: true
+    t.bigint "status_ids", default: [], null: false, array: true
     t.boolean "unread", default: false, null: false
     t.index ["account_id", "conversation_id", "participant_account_ids"], name: "index_unique_conversations", unique: true
     t.index ["conversation_id"], name: "index_account_conversations_on_conversation_id"
@@ -43,29 +43,29 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "account_domain_blocks", force: :cascade do |t|
-    t.string "domain", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.bigint "account_id", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.string "domain", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "domain"], name: "index_account_domain_blocks_on_account_id_and_domain", unique: true
   end
 
   create_table "account_migrations", force: :cascade do |t|
     t.bigint "account_id"
     t.string "acct", default: "", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.bigint "followers_count", default: 0, null: false
     t.bigint "target_account_id"
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_account_migrations_on_account_id"
     t.index ["target_account_id"], name: "index_account_migrations_on_target_account_id", where: "(target_account_id IS NOT NULL)"
   end
 
   create_table "account_moderation_notes", force: :cascade do |t|
-    t.text "content", null: false
     t.bigint "account_id", null: false
-    t.bigint "target_account_id", null: false
+    t.text "content", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "target_account_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_account_moderation_notes_on_account_id"
     t.index ["target_account_id"], name: "index_account_moderation_notes_on_target_account_id"
@@ -73,9 +73,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "account_notes", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "target_account_id", null: false
     t.text "comment", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "target_account_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "target_account_id"], name: "index_account_notes_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id"], name: "index_account_notes_on_target_account_id"
@@ -83,8 +83,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "account_pins", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "target_account_id", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "target_account_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "target_account_id"], name: "index_account_pins_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id"], name: "index_account_pins_on_target_account_id"
@@ -92,126 +92,126 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "account_relationship_severance_events", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "relationship_severance_event_id", null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "followers_count", default: 0, null: false
     t.integer "following_count", default: 0, null: false
+    t.bigint "relationship_severance_event_id", null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id", "relationship_severance_event_id"], name: "idx_on_account_id_relationship_severance_event_id_7bd82bf20e", unique: true
     t.index ["relationship_severance_event_id"], name: "idx_on_relationship_severance_event_id_403f53e707"
   end
 
   create_table "account_stats", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "statuses_count", default: 0, null: false
-    t.bigint "following_count", default: 0, null: false
-    t.bigint "followers_count", default: 0, null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.bigint "followers_count", default: 0, null: false
+    t.bigint "following_count", default: 0, null: false
     t.datetime "last_status_at", precision: nil
+    t.bigint "statuses_count", default: 0, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_account_stats_on_account_id", unique: true
     t.index ["last_status_at", "account_id"], name: "index_account_stats_on_last_status_at_and_account_id", order: { last_status_at: "DESC NULLS LAST" }
   end
 
   create_table "account_statuses_cleanup_policies", force: :cascade do |t|
     t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
     t.boolean "enabled", default: true, null: false
-    t.integer "min_status_age", default: 1209600, null: false
     t.boolean "keep_direct", default: true, null: false
+    t.boolean "keep_media", default: false, null: false
     t.boolean "keep_pinned", default: true, null: false
     t.boolean "keep_polls", default: false, null: false
-    t.boolean "keep_media", default: false, null: false
-    t.boolean "keep_self_fav", default: true, null: false
     t.boolean "keep_self_bookmark", default: true, null: false
+    t.boolean "keep_self_emoji", default: true, null: false
+    t.boolean "keep_self_fav", default: true, null: false
+    t.integer "min_emojis"
     t.integer "min_favs"
     t.integer "min_reblogs"
-    t.datetime "created_at", null: false
+    t.integer "min_status_age", default: 1209600, null: false
     t.datetime "updated_at", null: false
-    t.integer "min_emojis"
-    t.boolean "keep_self_emoji", default: true, null: false
     t.index ["account_id"], name: "index_account_statuses_cleanup_policies_on_account_id"
   end
 
   create_table "account_warning_presets", force: :cascade do |t|
-    t.text "text", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.text "text", default: "", null: false
     t.string "title", default: "", null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "account_warnings", force: :cascade do |t|
     t.bigint "account_id"
-    t.bigint "target_account_id"
     t.integer "action", default: 0, null: false
-    t.text "text", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "overruled_at", precision: nil
     t.bigint "report_id"
     t.string "status_ids", array: true
-    t.datetime "overruled_at", precision: nil
+    t.bigint "target_account_id"
+    t.text "text", default: "", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_account_warnings_on_account_id"
     t.index ["target_account_id"], name: "index_account_warnings_on_target_account_id"
   end
 
   create_table "accounts", id: :bigint, default: -> { "timestamp_id('accounts'::text)" }, force: :cascade do |t|
-    t.string "username", default: "", null: false
-    t.string "domain"
-    t.text "private_key"
-    t.text "public_key", default: "", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.text "note", default: "", null: false
-    t.string "display_name", default: "", null: false
-    t.string "uri", default: "", null: false
-    t.string "url"
-    t.string "avatar_file_name"
+    t.string "actor_type"
+    t.string "also_known_as", array: true
+    t.string "attribution_domains", default: [], array: true
     t.string "avatar_content_type"
-    t.datetime "avatar_updated_at", precision: nil
-    t.string "header_file_name"
-    t.string "header_content_type"
-    t.datetime "header_updated_at", precision: nil
+    t.string "avatar_description", default: "", null: false
+    t.string "avatar_file_name"
+    t.integer "avatar_file_size"
     t.string "avatar_remote_url"
-    t.boolean "locked", default: false, null: false
-    t.string "header_remote_url", default: "", null: false
-    t.datetime "last_webfingered_at", precision: nil
-    t.string "inbox_url", default: "", null: false
-    t.string "outbox_url", default: "", null: false
-    t.string "shared_inbox_url", default: "", null: false
-    t.string "followers_url", default: "", null: false
-    t.integer "protocol", default: 0, null: false
-    t.boolean "memorial", default: false, null: false
-    t.bigint "moved_to_account_id"
+    t.integer "avatar_storage_schema_version"
+    t.datetime "avatar_updated_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.boolean "discoverable"
+    t.string "display_name", default: "", null: false
+    t.string "domain"
+    t.integer "feature_approval_policy", default: 0, null: false
     t.string "featured_collection_url"
     t.jsonb "fields"
-    t.string "actor_type"
-    t.boolean "discoverable"
-    t.string "also_known_as", array: true
-    t.datetime "silenced_at", precision: nil
-    t.datetime "suspended_at", precision: nil
-    t.boolean "hide_collections"
-    t.integer "avatar_storage_schema_version"
-    t.integer "header_storage_schema_version"
-    t.datetime "sensitized_at", precision: nil
-    t.integer "suspension_origin"
-    t.boolean "trendable"
-    t.datetime "reviewed_at", precision: nil
-    t.datetime "requested_review_at", precision: nil
-    t.integer "searchability", default: 2, null: false
-    t.jsonb "settings"
-    t.boolean "indexable", default: false, null: false
-    t.jsonb "master_settings"
-    t.boolean "remote_pending", default: false, null: false
-    t.integer "avatar_file_size"
-    t.integer "header_file_size"
-    t.string "attribution_domains", default: [], array: true
+    t.string "followers_url", default: "", null: false
     t.string "following_url", default: "", null: false
-    t.integer "id_scheme", default: 1
-    t.integer "feature_approval_policy", default: 0, null: false
-    t.string "avatar_description", default: "", null: false
+    t.string "header_content_type"
     t.string "header_description", default: "", null: false
+    t.string "header_file_name"
+    t.integer "header_file_size"
+    t.string "header_remote_url", default: "", null: false
+    t.integer "header_storage_schema_version"
+    t.datetime "header_updated_at", precision: nil
+    t.boolean "hide_collections"
+    t.integer "id_scheme", default: 1
+    t.string "inbox_url", default: "", null: false
+    t.boolean "indexable", default: false, null: false
+    t.datetime "last_webfingered_at", precision: nil
+    t.boolean "locked", default: false, null: false
+    t.jsonb "master_settings"
+    t.boolean "memorial", default: false, null: false
+    t.bigint "moved_to_account_id"
+    t.text "note", default: "", null: false
+    t.string "outbox_url", default: "", null: false
+    t.text "private_key"
+    t.integer "protocol", default: 0, null: false
+    t.text "public_key", default: "", null: false
+    t.boolean "remote_pending", default: false, null: false
+    t.datetime "requested_review_at", precision: nil
+    t.datetime "reviewed_at", precision: nil
+    t.integer "searchability", default: 2, null: false
+    t.datetime "sensitized_at", precision: nil
+    t.jsonb "settings"
+    t.string "shared_inbox_url", default: "", null: false
+    t.boolean "show_featured", default: true, null: false
     t.boolean "show_media", default: true, null: false
     t.boolean "show_media_replies", default: true, null: false
-    t.boolean "show_featured", default: true, null: false
+    t.datetime "silenced_at", precision: nil
+    t.datetime "suspended_at", precision: nil
+    t.integer "suspension_origin"
+    t.boolean "trendable"
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "uri", default: "", null: false
+    t.string "url"
+    t.string "username", default: "", null: false
     t.index "(((setweight(to_tsvector('simple'::regconfig, (display_name)::text), 'A'::\"char\") || setweight(to_tsvector('simple'::regconfig, (username)::text), 'B'::\"char\")) || setweight(to_tsvector('simple'::regconfig, (COALESCE(domain, ''::character varying))::text), 'C'::\"char\")))", name: "search_index", using: :gin
     t.index "lower((username)::text), COALESCE(lower((domain)::text), ''::text)", name: "index_accounts_on_username_and_domain_lower", unique: true
     t.index ["domain", "id"], name: "index_accounts_on_domain_and_id"
@@ -230,13 +230,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   create_table "admin_action_logs", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.string "action", default: "", null: false
-    t.string "target_type"
-    t.bigint "target_id"
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.string "human_identifier"
-    t.string "route_param"
     t.string "permalink"
+    t.string "route_param"
+    t.bigint "target_id"
+    t.string "target_type"
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_admin_action_logs_on_account_id"
     t.index ["target_type", "target_id"], name: "index_admin_action_logs_on_target_type_and_target_id"
   end
@@ -253,9 +253,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   create_table "announcement_reactions", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.bigint "announcement_id", null: false
-    t.string "name", default: "", null: false
-    t.bigint "custom_emoji_id"
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "custom_emoji_id"
+    t.string "name", default: "", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "announcement_id", "name"], name: "index_announcement_reactions_on_account_id_and_announcement_id", unique: true
     t.index ["announcement_id"], name: "index_announcement_reactions_on_announcement_id"
@@ -263,31 +263,31 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "announcements", force: :cascade do |t|
-    t.text "text", default: "", null: false
-    t.boolean "published", default: false, null: false
     t.boolean "all_day", default: false, null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "ends_at", precision: nil
+    t.datetime "notification_sent_at"
+    t.boolean "published", default: false, null: false
+    t.datetime "published_at", precision: nil
     t.datetime "scheduled_at", precision: nil
     t.datetime "starts_at", precision: nil
-    t.datetime "ends_at", precision: nil
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.datetime "published_at", precision: nil
     t.bigint "status_ids", array: true
-    t.datetime "notification_sent_at"
+    t.text "text", default: "", null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "annual_report_statuses_per_account_counts", force: :cascade do |t|
-    t.integer "year", null: false
     t.bigint "account_id", null: false
     t.bigint "statuses_count", null: false
+    t.integer "year", null: false
     t.index ["year", "account_id"], name: "idx_on_year_account_id_ff3e167cef", unique: true
   end
 
   create_table "antenna_accounts", force: :cascade do |t|
-    t.bigint "antenna_id", null: false
     t.bigint "account_id", null: false
-    t.boolean "exclude", default: false, null: false
+    t.bigint "antenna_id", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.boolean "exclude", default: false, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_antenna_accounts_on_account_id"
     t.index ["antenna_id", "account_id"], name: "index_antenna_accounts_on_antenna_id_and_account_id", unique: true
@@ -296,9 +296,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "antenna_domains", force: :cascade do |t|
     t.bigint "antenna_id", null: false
-    t.string "name"
-    t.boolean "exclude", default: false, null: false
     t.datetime "created_at", precision: nil, null: false
+    t.boolean "exclude", default: false, null: false
+    t.string "name"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["antenna_id", "name"], name: "index_antenna_domains_on_antenna_id_and_name", unique: true
     t.index ["exclude"], name: "index_antenna_domains_on_exclude"
@@ -307,9 +307,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "antenna_tags", force: :cascade do |t|
     t.bigint "antenna_id", null: false
-    t.bigint "tag_id", null: false
-    t.boolean "exclude", default: false, null: false
     t.datetime "created_at", precision: nil, null: false
+    t.boolean "exclude", default: false, null: false
+    t.bigint "tag_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["antenna_id", "tag_id"], name: "index_antenna_tags_on_antenna_id_and_tag_id", unique: true
     t.index ["exclude"], name: "index_antenna_tags_on_exclude"
@@ -318,27 +318,27 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "antennas", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "list_id", default: 0, null: false
-    t.string "title", default: "", null: false
-    t.jsonb "keywords"
-    t.jsonb "exclude_keywords"
-    t.boolean "any_domains", default: true, null: false
-    t.boolean "any_tags", default: true, null: false
     t.boolean "any_accounts", default: true, null: false
+    t.boolean "any_domains", default: true, null: false
     t.boolean "any_keywords", default: true, null: false
+    t.boolean "any_tags", default: true, null: false
     t.boolean "available", default: true, null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.datetime "expires_at", precision: nil
-    t.boolean "with_media_only", default: false, null: false
-    t.jsonb "exclude_domains"
     t.jsonb "exclude_accounts"
+    t.jsonb "exclude_domains"
+    t.jsonb "exclude_keywords"
     t.jsonb "exclude_tags"
-    t.boolean "stl", default: false, null: false
+    t.datetime "expires_at", precision: nil
+    t.boolean "favourite", default: true, null: false
     t.boolean "ignore_reblog", default: false, null: false
     t.boolean "insert_feeds", default: false, null: false
+    t.jsonb "keywords"
+    t.bigint "list_id", default: 0, null: false
     t.boolean "ltl", default: false, null: false
-    t.boolean "favourite", default: true, null: false
+    t.boolean "stl", default: false, null: false
+    t.string "title", default: "", null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.boolean "with_media_only", default: false, null: false
     t.index ["account_id"], name: "index_antennas_on_account_id"
     t.index ["any_accounts"], name: "index_antennas_on_any_accounts"
     t.index ["any_domains"], name: "index_antennas_on_any_domains"
@@ -353,12 +353,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   create_table "appeals", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.bigint "account_warning_id", null: false
-    t.text "text", default: "", null: false
     t.datetime "approved_at", precision: nil
     t.bigint "approved_by_account_id"
+    t.datetime "created_at", null: false
     t.datetime "rejected_at", precision: nil
     t.bigint "rejected_by_account_id"
-    t.datetime "created_at", null: false
+    t.text "text", default: "", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_appeals_on_account_id"
     t.index ["account_warning_id"], name: "index_appeals_on_account_warning_id", unique: true
@@ -367,22 +367,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "backups", force: :cascade do |t|
-    t.bigint "user_id"
-    t.string "dump_file_name"
+    t.datetime "created_at", precision: nil, null: false
     t.string "dump_content_type"
+    t.string "dump_file_name"
+    t.bigint "dump_file_size"
     t.datetime "dump_updated_at", precision: nil
     t.boolean "processed", default: false, null: false
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.bigint "dump_file_size"
+    t.bigint "user_id"
     t.index ["user_id"], name: "index_backups_on_user_id"
   end
 
   create_table "blocks", force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.bigint "account_id", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.bigint "target_account_id", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "uri"
     t.index ["account_id", "target_account_id"], name: "index_blocks_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id"], name: "index_blocks_on_target_account_id"
@@ -390,17 +390,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "bookmark_categories", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "title", default: "", null: false
     t.datetime "created_at", null: false
+    t.string "title", default: "", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_bookmark_categories_on_account_id"
   end
 
   create_table "bookmark_category_statuses", force: :cascade do |t|
     t.bigint "bookmark_category_id", null: false
-    t.bigint "status_id", null: false
     t.bigint "bookmark_id"
     t.datetime "created_at", null: false
+    t.bigint "status_id", null: false
     t.datetime "updated_at", null: false
     t.index ["bookmark_category_id", "status_id"], name: "index_bc_statuses", unique: true
     t.index ["bookmark_id"], name: "index_bookmark_category_statuses_on_bookmark_id"
@@ -409,8 +409,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "status_id", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "status_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "status_id"], name: "index_bookmarks_on_account_id_and_status_id", unique: true
     t.index ["status_id"], name: "index_bookmarks_on_status_id"
@@ -418,24 +418,24 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "bulk_import_rows", force: :cascade do |t|
     t.bigint "bulk_import_id", null: false
-    t.jsonb "data"
     t.datetime "created_at", null: false
+    t.jsonb "data"
     t.datetime "updated_at", null: false
     t.index ["bulk_import_id"], name: "index_bulk_import_rows_on_bulk_import_id"
   end
 
   create_table "bulk_imports", force: :cascade do |t|
-    t.integer "type", null: false
-    t.integer "state", null: false
-    t.integer "total_items", default: 0, null: false
-    t.integer "imported_items", default: 0, null: false
-    t.integer "processed_items", default: 0, null: false
-    t.datetime "finished_at", precision: nil
-    t.boolean "overwrite", default: false, null: false
-    t.boolean "likely_mismatched", default: false, null: false
-    t.string "original_filename", default: "", null: false
     t.bigint "account_id", null: false
     t.datetime "created_at", null: false
+    t.datetime "finished_at", precision: nil
+    t.integer "imported_items", default: 0, null: false
+    t.boolean "likely_mismatched", default: false, null: false
+    t.string "original_filename", default: "", null: false
+    t.boolean "overwrite", default: false, null: false
+    t.integer "processed_items", default: 0, null: false
+    t.integer "state", null: false
+    t.integer "total_items", default: 0, null: false
+    t.integer "type", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_bulk_imports_on_account_id"
     t.index ["id"], name: "index_bulk_imports_unconfirmed", where: "(state = 0)"
@@ -443,18 +443,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "canonical_email_blocks", force: :cascade do |t|
     t.string "canonical_email_hash", default: "", null: false
-    t.bigint "reference_account_id"
     t.datetime "created_at", null: false
+    t.bigint "reference_account_id"
     t.datetime "updated_at", null: false
     t.index ["canonical_email_hash"], name: "index_canonical_email_blocks_on_canonical_email_hash", unique: true
     t.index ["reference_account_id"], name: "index_canonical_email_blocks_on_reference_account_id"
   end
 
   create_table "circle_accounts", force: :cascade do |t|
-    t.bigint "circle_id"
     t.bigint "account_id", null: false
-    t.bigint "follow_id", null: false
+    t.bigint "circle_id"
     t.datetime "created_at", null: false
+    t.bigint "follow_id", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_circle_accounts_on_account_id"
     t.index ["circle_id", "account_id"], name: "index_circle_accounts_on_circle_id_and_account_id", unique: true
@@ -463,8 +463,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "circle_statuses", force: :cascade do |t|
     t.bigint "circle_id"
-    t.bigint "status_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "status_id", null: false
     t.datetime "updated_at", null: false
     t.index ["circle_id", "status_id"], name: "index_circle_statuses_on_circle_id_and_status_id", unique: true
     t.index ["status_id"], name: "index_circle_statuses_on_status_id"
@@ -472,22 +472,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "circles", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "title", default: "", null: false
     t.datetime "created_at", null: false
+    t.string "title", default: "", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_circles_on_account_id"
   end
 
   create_table "collection_items", id: :bigint, default: -> { "timestamp_id('collection_items'::text)" }, force: :cascade do |t|
-    t.bigint "collection_id", null: false
     t.bigint "account_id"
-    t.integer "position", default: 1, null: false
-    t.string "object_uri"
-    t.string "approval_uri"
     t.string "activity_uri"
     t.datetime "approval_last_verified_at"
-    t.integer "state", default: 0, null: false
+    t.string "approval_uri"
+    t.bigint "collection_id", null: false
     t.datetime "created_at", null: false
+    t.string "object_uri"
+    t.integer "position", default: 1, null: false
+    t.integer "state", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "uri"
     t.index ["account_id"], name: "index_collection_items_on_account_id"
@@ -498,8 +498,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "collection_reports", force: :cascade do |t|
     t.bigint "collection_id", null: false
-    t.bigint "report_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "report_id", null: false
     t.datetime "updated_at", null: false
     t.index ["collection_id"], name: "index_collection_reports_on_collection_id"
     t.index ["report_id"], name: "index_collection_reports_on_report_id"
@@ -507,93 +507,93 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "collections", id: :bigint, default: -> { "timestamp_id('collections'::text)" }, force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "name", null: false
-    t.text "description", null: false
-    t.string "uri"
-    t.boolean "local", null: false
-    t.boolean "sensitive", null: false
-    t.boolean "discoverable", null: false
-    t.bigint "tag_id"
-    t.integer "original_number_of_items"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.text "description", null: false
+    t.boolean "discoverable", null: false
     t.integer "item_count", default: 0, null: false
     t.string "language"
+    t.boolean "local", null: false
+    t.string "name", null: false
+    t.integer "original_number_of_items"
+    t.boolean "sensitive", null: false
+    t.bigint "tag_id"
+    t.datetime "updated_at", null: false
+    t.string "uri"
     t.index ["account_id"], name: "index_collections_on_account_id"
     t.index ["tag_id"], name: "index_collections_on_tag_id"
   end
 
   create_table "conversation_mutes", force: :cascade do |t|
-    t.bigint "conversation_id", null: false
     t.bigint "account_id", null: false
+    t.bigint "conversation_id", null: false
     t.index ["account_id", "conversation_id"], name: "index_conversation_mutes_on_account_id_and_conversation_id", unique: true
   end
 
   create_table "conversations", force: :cascade do |t|
-    t.string "uri"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "inbox_url"
     t.bigint "ancestor_status_id"
-    t.bigint "parent_status_id"
+    t.datetime "created_at", precision: nil, null: false
+    t.string "inbox_url"
     t.bigint "parent_account_id"
+    t.bigint "parent_status_id"
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "uri"
     t.index ["ancestor_status_id"], name: "index_conversations_on_ancestor_status_id", where: "(ancestor_status_id IS NOT NULL)"
     t.index ["parent_status_id"], name: "index_conversations_on_parent_status_id", unique: true, where: "(parent_status_id IS NOT NULL)"
     t.index ["uri"], name: "index_conversations_on_uri", unique: true, opclass: :text_pattern_ops, where: "(uri IS NOT NULL)"
   end
 
   create_table "custom_csses", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "css", default: "", null: false
     t.datetime "created_at", null: false
+    t.string "css", default: "", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_custom_csses_on_user_id"
   end
 
   create_table "custom_emoji_categories", force: :cascade do |t|
-    t.string "name"
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.bigint "featured_emoji_id"
+    t.string "name"
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["name"], name: "index_custom_emoji_categories_on_name", unique: true
   end
 
   create_table "custom_emojis", force: :cascade do |t|
-    t.string "shortcode", default: "", null: false
-    t.string "domain"
-    t.string "image_file_name"
-    t.string "image_content_type"
-    t.datetime "image_updated_at", precision: nil
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.boolean "disabled", default: false, null: false
-    t.string "uri"
-    t.string "image_remote_url"
-    t.boolean "visible_in_picker", default: true, null: false
-    t.bigint "category_id"
-    t.integer "image_storage_schema_version"
-    t.integer "image_width"
-    t.integer "image_height"
     t.jsonb "aliases"
+    t.bigint "category_id"
+    t.datetime "created_at", precision: nil, null: false
+    t.boolean "disabled", default: false, null: false
+    t.string "domain"
+    t.string "image_content_type"
+    t.string "image_file_name"
+    t.integer "image_file_size"
+    t.integer "image_height"
+    t.string "image_remote_url"
+    t.integer "image_storage_schema_version"
+    t.datetime "image_updated_at", precision: nil
+    t.integer "image_width"
     t.boolean "is_sensitive", default: false, null: false
     t.string "license"
-    t.integer "image_file_size"
+    t.string "shortcode", default: "", null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "uri"
+    t.boolean "visible_in_picker", default: true, null: false
     t.index ["shortcode", "domain"], name: "index_custom_emojis_on_shortcode_and_domain", unique: true
   end
 
   create_table "custom_filter_keywords", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "custom_filter_id", null: false
     t.text "keyword", default: "", null: false
-    t.boolean "whole_word", default: false, null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "whole_word", default: false, null: false
     t.index ["custom_filter_id"], name: "index_custom_filter_keywords_on_custom_filter_id"
   end
 
   create_table "custom_filter_statuses", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "custom_filter_id", null: false
     t.bigint "status_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["custom_filter_id"], name: "index_custom_filter_statuses_on_custom_filter_id"
     t.index ["status_id", "custom_filter_id"], name: "index_custom_filter_statuses_on_status_id_and_custom_filter_id", unique: true
@@ -601,66 +601,66 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "custom_filters", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.datetime "expires_at", precision: nil
-    t.text "phrase", default: "", null: false
+    t.integer "action", default: 0, null: false
     t.string "context", default: [], null: false, array: true
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.integer "action", default: 0, null: false
     t.boolean "exclude_follows", default: false, null: false
     t.boolean "exclude_localusers", default: false, null: false
+    t.datetime "expires_at", precision: nil
+    t.text "phrase", default: "", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "with_profile", default: false, null: false
     t.index ["account_id"], name: "index_custom_filters_on_account_id"
   end
 
   create_table "domain_allows", force: :cascade do |t|
-    t.string "domain", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.string "domain", default: "", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["domain"], name: "index_domain_allows_on_domain", unique: true
   end
 
   create_table "domain_blocks", force: :cascade do |t|
-    t.string "domain", default: "", null: false
+    t.boolean "block_trends", default: false, null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.integer "severity", default: 0
-    t.boolean "reject_media", default: false, null: false
-    t.boolean "reject_reports", default: false, null: false
+    t.boolean "detect_invalid_subscription", default: false, null: false
+    t.string "domain", default: "", null: false
+    t.boolean "hidden", default: false, null: false
+    t.boolean "obfuscate", default: false, null: false
     t.text "private_comment"
     t.text "public_comment"
-    t.boolean "obfuscate", default: false, null: false
     t.boolean "reject_favourite", default: false, null: false
-    t.boolean "reject_send_sensitive", default: false, null: false
-    t.boolean "reject_hashtag", default: false, null: false
-    t.boolean "reject_straight_follow", default: false, null: false
-    t.boolean "reject_new_follow", default: false, null: false
-    t.boolean "hidden", default: false, null: false
-    t.boolean "detect_invalid_subscription", default: false, null: false
-    t.boolean "reject_reply_exclude_followers", default: false, null: false
     t.boolean "reject_friend", default: false, null: false
-    t.boolean "block_trends", default: false, null: false
+    t.boolean "reject_hashtag", default: false, null: false
+    t.boolean "reject_media", default: false, null: false
+    t.boolean "reject_new_follow", default: false, null: false
     t.boolean "reject_relay", default: false, null: false
+    t.boolean "reject_reply_exclude_followers", default: false, null: false
+    t.boolean "reject_reports", default: false, null: false
+    t.boolean "reject_send_sensitive", default: false, null: false
+    t.boolean "reject_straight_follow", default: false, null: false
+    t.integer "severity", default: 0
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
   end
 
   create_table "email_domain_blocks", force: :cascade do |t|
-    t.string "domain", default: "", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.bigint "parent_id"
     t.boolean "allow_with_approval", default: false, null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.string "domain", default: "", null: false
+    t.bigint "parent_id"
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["domain"], name: "index_email_domain_blocks_on_domain", unique: true
   end
 
   create_table "emoji_reactions", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "status_id", null: false
-    t.string "name", default: "", null: false
-    t.bigint "custom_emoji_id"
-    t.string "uri"
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "custom_emoji_id"
+    t.string "name", default: "", null: false
+    t.bigint "status_id", null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "uri"
     t.index ["account_id"], name: "index_emoji_reactions_on_account_id"
     t.index ["custom_emoji_id"], name: "index_emoji_reactions_on_custom_emoji_id"
     t.index ["status_id"], name: "index_emoji_reactions_on_status_id"
@@ -669,70 +669,70 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "fasp_backfill_requests", force: :cascade do |t|
     t.string "category", null: false
-    t.integer "max_count", default: 100, null: false
-    t.string "cursor"
-    t.boolean "fulfilled", default: false, null: false
-    t.bigint "fasp_provider_id", null: false
     t.datetime "created_at", null: false
+    t.string "cursor"
+    t.bigint "fasp_provider_id", null: false
+    t.boolean "fulfilled", default: false, null: false
+    t.integer "max_count", default: 100, null: false
     t.datetime "updated_at", null: false
     t.index ["fasp_provider_id"], name: "index_fasp_backfill_requests_on_fasp_provider_id"
   end
 
   create_table "fasp_debug_callbacks", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "fasp_provider_id", null: false
     t.string "ip", null: false
     t.text "request_body", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["fasp_provider_id"], name: "index_fasp_debug_callbacks_on_fasp_provider_id"
   end
 
   create_table "fasp_follow_recommendations", force: :cascade do |t|
-    t.bigint "requesting_account_id", null: false
-    t.bigint "recommended_account_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "recommended_account_id", null: false
+    t.bigint "requesting_account_id", null: false
     t.datetime "updated_at", null: false
     t.index ["recommended_account_id"], name: "index_fasp_follow_recommendations_on_recommended_account_id"
     t.index ["requesting_account_id"], name: "index_fasp_follow_recommendations_on_requesting_account_id"
   end
 
   create_table "fasp_providers", force: :cascade do |t|
-    t.boolean "confirmed", default: false, null: false
-    t.string "name", null: false
     t.string "base_url", null: false
-    t.string "sign_in_url"
-    t.string "remote_identifier", null: false
-    t.string "provider_public_key_pem", null: false
-    t.string "server_private_key_pem", null: false
     t.jsonb "capabilities", default: [], null: false
-    t.jsonb "privacy_policy"
+    t.boolean "confirmed", default: false, null: false
     t.string "contact_email"
-    t.string "fediverse_account"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.datetime "delivery_last_failed_at"
+    t.string "fediverse_account"
+    t.string "name", null: false
+    t.jsonb "privacy_policy"
+    t.string "provider_public_key_pem", null: false
+    t.string "remote_identifier", null: false
+    t.string "server_private_key_pem", null: false
+    t.string "sign_in_url"
+    t.datetime "updated_at", null: false
     t.index ["base_url"], name: "index_fasp_providers_on_base_url", unique: true
   end
 
   create_table "fasp_subscriptions", force: :cascade do |t|
     t.string "category", null: false
-    t.string "subscription_type", null: false
+    t.datetime "created_at", null: false
+    t.bigint "fasp_provider_id", null: false
     t.integer "max_batch_size", null: false
-    t.integer "threshold_timeframe"
-    t.integer "threshold_shares"
+    t.string "subscription_type", null: false
     t.integer "threshold_likes"
     t.integer "threshold_replies"
-    t.bigint "fasp_provider_id", null: false
-    t.datetime "created_at", null: false
+    t.integer "threshold_shares"
+    t.integer "threshold_timeframe"
     t.datetime "updated_at", null: false
     t.index ["fasp_provider_id"], name: "index_fasp_subscriptions_on_fasp_provider_id"
   end
 
   create_table "favourites", force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.bigint "account_id", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.bigint "status_id", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "uri"
     t.index ["account_id", "id"], name: "index_favourites_on_account_id_and_id"
     t.index ["account_id", "status_id"], name: "index_favourites_on_account_id_and_status_id", unique: true
@@ -742,20 +742,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "featured_tags", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "tag_id", null: false
-    t.bigint "statuses_count", default: 0, null: false
-    t.datetime "last_status_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "last_status_at", precision: nil
     t.string "name"
+    t.bigint "statuses_count", default: 0, null: false
+    t.bigint "tag_id", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "tag_id"], name: "index_featured_tags_on_account_id_and_tag_id", unique: true
     t.index ["tag_id"], name: "index_featured_tags_on_tag_id"
   end
 
   create_table "follow_recommendation_mutes", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "target_account_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "target_account_id", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "target_account_id"], name: "idx_on_account_id_target_account_id_a8c8ddf44e", unique: true
     t.index ["target_account_id"], name: "index_follow_recommendation_mutes_on_target_account_id"
@@ -769,63 +769,63 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "follow_requests", force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.bigint "account_id", null: false
-    t.bigint "target_account_id", null: false
-    t.boolean "show_reblogs", default: true, null: false
-    t.string "uri"
-    t.boolean "notify", default: false, null: false
+    t.datetime "created_at", precision: nil, null: false
     t.string "languages", array: true
+    t.boolean "notify", default: false, null: false
+    t.boolean "show_reblogs", default: true, null: false
+    t.bigint "target_account_id", null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "uri"
     t.index ["account_id", "target_account_id"], name: "index_follow_requests_on_account_id_and_target_account_id", unique: true
   end
 
   create_table "follows", force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.bigint "account_id", null: false
-    t.bigint "target_account_id", null: false
-    t.boolean "show_reblogs", default: true, null: false
-    t.string "uri"
-    t.boolean "notify", default: false, null: false
+    t.datetime "created_at", precision: nil, null: false
     t.string "languages", array: true
+    t.boolean "notify", default: false, null: false
+    t.boolean "show_reblogs", default: true, null: false
+    t.bigint "target_account_id", null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "uri"
     t.index ["account_id", "target_account_id"], name: "index_follows_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id", "account_id"], name: "index_follows_on_target_account_id_and_account_id"
   end
 
   create_table "friend_domains", force: :cascade do |t|
+    t.string "active_follow_activity_id"
+    t.integer "active_state", default: 0, null: false
+    t.boolean "allow_all_posts", default: true, null: false
+    t.boolean "available", default: true, null: false
+    t.datetime "created_at", null: false
+    t.boolean "delivery_local", default: true, null: false
     t.string "domain", default: "", null: false
     t.string "inbox_url", default: "", null: false
-    t.integer "active_state", default: 0, null: false
-    t.integer "passive_state", default: 0, null: false
-    t.string "active_follow_activity_id"
     t.string "passive_follow_activity_id"
-    t.boolean "available", default: true, null: false
+    t.integer "passive_state", default: 0, null: false
     t.boolean "pseudo_relay", default: false, null: false
-    t.boolean "allow_all_posts", default: true, null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "delivery_local", default: true, null: false
     t.index ["domain"], name: "index_friend_domains_on_domain", unique: true
     t.index ["inbox_url"], name: "index_friend_domains_on_inbox_url", unique: true
   end
 
   create_table "generated_annual_reports", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.integer "year", null: false
+    t.datetime "created_at", null: false
     t.jsonb "data", null: false
     t.integer "schema_version", null: false
-    t.datetime "viewed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "share_key"
+    t.datetime "updated_at", null: false
+    t.datetime "viewed_at"
+    t.integer "year", null: false
     t.index ["account_id", "year"], name: "index_generated_annual_reports_on_account_id_and_year", unique: true
   end
 
   create_table "identities", force: :cascade do |t|
+    t.datetime "created_at", precision: nil, null: false
     t.string "provider", default: "", null: false
     t.string "uid", default: "", null: false
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["uid", "provider"], name: "index_identities_on_uid_and_provider", unique: true
@@ -833,53 +833,53 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "instance_infos", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "data", default: {}, null: false
     t.string "domain", default: "", null: false
     t.string "software", default: "", null: false
-    t.string "version", default: "", null: false
-    t.jsonb "data", default: {}, null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "version", default: "", null: false
     t.index ["domain"], name: "index_instance_infos_on_domain", unique: true
   end
 
   create_table "instance_moderation_notes", force: :cascade do |t|
-    t.string "domain", null: false
     t.bigint "account_id", null: false
     t.text "content"
     t.datetime "created_at", null: false
+    t.string "domain", null: false
     t.datetime "updated_at", null: false
     t.index ["domain"], name: "index_instance_moderation_notes_on_domain"
   end
 
   create_table "invites", force: :cascade do |t|
-    t.bigint "user_id", null: false
+    t.boolean "autofollow", default: false, null: false
     t.string "code", default: "", null: false
+    t.text "comment"
+    t.datetime "created_at", precision: nil, null: false
     t.datetime "expires_at", precision: nil
     t.integer "max_uses"
-    t.integer "uses", default: 0, null: false
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.boolean "autofollow", default: false, null: false
-    t.text "comment"
+    t.bigint "user_id", null: false
+    t.integer "uses", default: 0, null: false
     t.index ["code"], name: "index_invites_on_code", unique: true
     t.index ["user_id"], name: "index_invites_on_user_id"
   end
 
   create_table "ip_blocks", force: :cascade do |t|
-    t.inet "ip", default: "0.0.0.0", null: false
-    t.integer "severity", default: 0, null: false
-    t.datetime "expires_at", precision: nil
     t.text "comment", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.datetime "expires_at", precision: nil
+    t.inet "ip", default: "0.0.0.0", null: false
+    t.integer "severity", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["ip"], name: "index_ip_blocks_on_ip", unique: true
   end
 
   create_table "list_accounts", force: :cascade do |t|
-    t.bigint "list_id", null: false
     t.bigint "account_id", null: false
     t.bigint "follow_id"
     t.bigint "follow_request_id"
+    t.bigint "list_id", null: false
     t.index ["account_id", "list_id"], name: "index_list_accounts_on_account_id_and_list_id", unique: true
     t.index ["follow_id"], name: "index_list_accounts_on_follow_id", where: "(follow_id IS NOT NULL)"
     t.index ["follow_request_id"], name: "index_list_accounts_on_follow_request_id", where: "(follow_request_id IS NOT NULL)"
@@ -887,9 +887,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "list_statuses", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "list_id", null: false
     t.bigint "status_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["list_id", "status_id"], name: "index_list_statuses_on_list_id_and_status_id", unique: true
     t.index ["status_id"], name: "index_list_statuses_on_status_id"
@@ -897,62 +897,62 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "lists", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "title", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.integer "replies_policy", default: 0, null: false
     t.boolean "exclusive", default: false, null: false
-    t.boolean "notify", default: false, null: false
     t.boolean "favourite", default: true, null: false
+    t.boolean "notify", default: false, null: false
+    t.integer "replies_policy", default: 0, null: false
+    t.string "title", default: "", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_lists_on_account_id"
   end
 
   create_table "login_activities", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.string "authentication_method"
-    t.string "provider"
-    t.boolean "success"
+    t.datetime "created_at", precision: nil
     t.string "failure_reason"
     t.inet "ip"
+    t.string "provider"
+    t.boolean "success"
     t.string "user_agent"
-    t.datetime "created_at", precision: nil
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_login_activities_on_user_id"
   end
 
   create_table "markers", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "timeline", default: "", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.bigint "last_read_id", default: 0, null: false
     t.integer "lock_version", default: 0, null: false
-    t.datetime "created_at", precision: nil, null: false
+    t.string "timeline", default: "", null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.bigint "user_id", null: false
     t.index ["user_id", "timeline"], name: "index_markers_on_user_id_and_timeline", unique: true
   end
 
   create_table "media_attachments", id: :bigint, default: -> { "timestamp_id('media_attachments'::text)" }, force: :cascade do |t|
-    t.bigint "status_id"
-    t.string "file_file_name"
-    t.string "file_content_type"
-    t.datetime "file_updated_at", precision: nil
-    t.string "remote_url", default: "", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "shortcode"
-    t.integer "type", default: 0, null: false
-    t.json "file_meta"
     t.bigint "account_id"
-    t.text "description"
-    t.bigint "scheduled_status_id"
     t.string "blurhash"
-    t.integer "processing"
-    t.integer "file_storage_schema_version"
-    t.string "thumbnail_file_name"
-    t.string "thumbnail_content_type"
-    t.datetime "thumbnail_updated_at", precision: nil
-    t.string "thumbnail_remote_url"
+    t.datetime "created_at", precision: nil, null: false
+    t.text "description"
+    t.string "file_content_type"
+    t.string "file_file_name"
     t.integer "file_file_size"
+    t.json "file_meta"
+    t.integer "file_storage_schema_version"
+    t.datetime "file_updated_at", precision: nil
+    t.integer "processing"
+    t.string "remote_url", default: "", null: false
+    t.bigint "scheduled_status_id"
+    t.string "shortcode"
+    t.bigint "status_id"
+    t.string "thumbnail_content_type"
+    t.string "thumbnail_file_name"
     t.integer "thumbnail_file_size"
+    t.string "thumbnail_remote_url"
     t.integer "thumbnail_storage_schema_version"
+    t.datetime "thumbnail_updated_at", precision: nil
+    t.integer "type", default: 0, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "status_id"], name: "index_media_attachments_on_account_id_and_status_id", order: { status_id: :desc }
     t.index ["id"], name: "index_media_attachments_vacuum", where: "((file_file_name IS NOT NULL) AND ((remote_url)::text <> ''::text))"
     t.index ["scheduled_status_id"], name: "index_media_attachments_on_scheduled_status_id", where: "(scheduled_status_id IS NOT NULL)"
@@ -961,102 +961,102 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "mentions", force: :cascade do |t|
-    t.bigint "status_id", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.bigint "account_id", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.boolean "silent", default: false, null: false
+    t.bigint "status_id", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "status_id"], name: "index_mentions_on_account_id_and_status_id", unique: true
     t.index ["status_id"], name: "index_mentions_on_status_id"
   end
 
   create_table "mutes", force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.boolean "hide_notifications", default: true, null: false
     t.bigint "account_id", null: false
-    t.bigint "target_account_id", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.datetime "expires_at", precision: nil
+    t.boolean "hide_notifications", default: true, null: false
+    t.bigint "target_account_id", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "target_account_id"], name: "index_mutes_on_account_id_and_target_account_id", unique: true
     t.index ["target_account_id"], name: "index_mutes_on_target_account_id"
   end
 
   create_table "ng_rule_histories", force: :cascade do |t|
-    t.bigint "ng_rule_id", null: false
     t.bigint "account_id"
-    t.string "text"
-    t.string "uri"
+    t.datetime "created_at", null: false
+    t.jsonb "data"
+    t.boolean "hidden", default: false, null: false
+    t.boolean "local", default: true, null: false
+    t.bigint "ng_rule_id", null: false
     t.integer "reason", null: false
     t.integer "reason_action", null: false
-    t.boolean "local", default: true, null: false
-    t.boolean "hidden", default: false, null: false
-    t.jsonb "data"
-    t.datetime "created_at", null: false
+    t.string "text"
     t.datetime "updated_at", null: false
+    t.string "uri"
     t.index ["created_at"], name: "index_ng_rule_histories_on_created_at"
     t.index ["ng_rule_id", "account_id"], name: "index_ng_rule_histories_on_ng_rule_id_and_account_id"
     t.index ["uri"], name: "index_ng_rule_histories_on_uri"
   end
 
   create_table "ng_rules", force: :cascade do |t|
-    t.string "title", default: "", null: false
-    t.boolean "available", default: true, null: false
-    t.boolean "record_history_also_local", default: true, null: false
-    t.string "account_domain", default: "", null: false
-    t.string "account_username", default: "", null: false
+    t.boolean "account_allow_followed_by_local", default: false, null: false
+    t.integer "account_avatar_state", default: 0, null: false
     t.string "account_display_name", default: "", null: false
-    t.string "account_note", default: "", null: false
+    t.string "account_domain", default: "", null: false
     t.string "account_field_name", default: "", null: false
     t.string "account_field_value", default: "", null: false
-    t.integer "account_avatar_state", default: 0, null: false
     t.integer "account_header_state", default: 0, null: false
     t.boolean "account_include_local", default: true, null: false
-    t.boolean "account_allow_followed_by_local", default: false, null: false
-    t.string "status_spoiler_text", default: "", null: false
-    t.string "status_text", default: "", null: false
-    t.string "status_tag", default: "", null: false
-    t.string "status_visibility", default: [], null: false, array: true
-    t.string "status_searchability", default: [], null: false, array: true
-    t.integer "status_media_state", default: 0, null: false
-    t.integer "status_sensitive_state", default: 0, null: false
-    t.integer "status_cw_state", default: 0, null: false
-    t.integer "status_poll_state", default: 0, null: false
-    t.integer "status_quote_state", default: 0, null: false
-    t.integer "status_reply_state", default: 0, null: false
-    t.integer "status_mention_state", default: 0, null: false
-    t.integer "status_reference_state", default: 0, null: false
-    t.integer "status_tag_threshold", default: -1, null: false
-    t.integer "status_media_threshold", default: -1, null: false
-    t.integer "status_poll_threshold", default: -1, null: false
-    t.integer "status_mention_threshold", default: -1, null: false
-    t.boolean "status_allow_follower_mention", default: true, null: false
-    t.integer "status_reference_threshold", default: -1, null: false
-    t.string "reaction_type", default: [], null: false, array: true
-    t.boolean "reaction_allow_follower", default: true, null: false
+    t.string "account_note", default: "", null: false
+    t.string "account_username", default: "", null: false
+    t.boolean "available", default: true, null: false
+    t.datetime "created_at", null: false
     t.string "emoji_reaction_name", default: "", null: false
     t.string "emoji_reaction_origin_domain", default: "", null: false
     t.datetime "expires_at"
-    t.datetime "created_at", null: false
+    t.boolean "reaction_allow_follower", default: true, null: false
+    t.string "reaction_type", default: [], null: false, array: true
+    t.boolean "record_history_also_local", default: true, null: false
+    t.boolean "status_allow_follower_mention", default: true, null: false
+    t.integer "status_cw_state", default: 0, null: false
+    t.integer "status_media_state", default: 0, null: false
+    t.integer "status_media_threshold", default: -1, null: false
+    t.integer "status_mention_state", default: 0, null: false
+    t.integer "status_mention_threshold", default: -1, null: false
+    t.integer "status_poll_state", default: 0, null: false
+    t.integer "status_poll_threshold", default: -1, null: false
+    t.integer "status_quote_state", default: 0, null: false
+    t.integer "status_reference_state", default: 0, null: false
+    t.integer "status_reference_threshold", default: -1, null: false
+    t.integer "status_reply_state", default: 0, null: false
+    t.string "status_searchability", default: [], null: false, array: true
+    t.integer "status_sensitive_state", default: 0, null: false
+    t.string "status_spoiler_text", default: "", null: false
+    t.string "status_tag", default: "", null: false
+    t.integer "status_tag_threshold", default: -1, null: false
+    t.string "status_text", default: "", null: false
+    t.string "status_visibility", default: [], null: false, array: true
+    t.string "title", default: "", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "ng_words", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.string "keyword", null: false
     t.boolean "regexp", default: false, null: false
     t.boolean "stranger", default: true, null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "ngword_histories", force: :cascade do |t|
-    t.string "uri", null: false
-    t.integer "target_type", null: false
-    t.integer "reason", null: false
-    t.string "text", null: false
-    t.string "keyword", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.string "keyword", null: false
+    t.integer "reason", null: false
+    t.integer "target_type", null: false
+    t.string "text", null: false
+    t.datetime "updated_at", null: false
+    t.string "uri", null: false
     t.index ["created_at"], name: "index_ngword_histories_on_created_at"
     t.index ["uri", "keyword", "created_at"], name: "index_ngword_histories_on_uri_and_keyword_and_created_at"
     t.index ["uri", "reason", "created_at"], name: "index_ngword_histories_on_uri_and_reason_and_created_at"
@@ -1064,8 +1064,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "notification_permissions", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "from_account_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "from_account_id", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_notification_permissions_on_account_id"
     t.index ["from_account_id"], name: "index_notification_permissions_on_from_account_id"
@@ -1074,21 +1074,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   create_table "notification_policies", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "for_not_following", default: 0, null: false
-    t.integer "for_not_followers", default: 0, null: false
-    t.integer "for_new_accounts", default: 0, null: false
-    t.integer "for_private_mentions", default: 1, null: false
     t.integer "for_limited_accounts", default: 1, null: false
+    t.integer "for_new_accounts", default: 0, null: false
+    t.integer "for_not_followers", default: 0, null: false
+    t.integer "for_not_following", default: 0, null: false
+    t.integer "for_private_mentions", default: 1, null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_notification_policies_on_account_id", unique: true
   end
 
   create_table "notification_requests", id: :bigint, default: -> { "timestamp_id('notification_requests'::text)" }, force: :cascade do |t|
     t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
     t.bigint "from_account_id", null: false
     t.bigint "last_status_id"
     t.bigint "notifications_count", default: 0, null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "from_account_id"], name: "index_notification_requests_on_account_id_and_from_account_id", unique: true
     t.index ["from_account_id"], name: "index_notification_requests_on_from_account_id"
@@ -1096,15 +1096,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "notifications", force: :cascade do |t|
+    t.bigint "account_id", null: false
     t.bigint "activity_id", null: false
     t.string "activity_type", null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.bigint "account_id", null: false
-    t.bigint "from_account_id", null: false
-    t.string "type"
     t.boolean "filtered", default: false, null: false
+    t.bigint "from_account_id", null: false
     t.string "group_key"
+    t.string "type"
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "group_key"], name: "index_notifications_on_account_id_and_group_key", where: "(group_key IS NOT NULL)"
     t.index ["account_id", "id", "type"], name: "index_notifications_on_account_id_and_id_and_type", order: { id: :desc }
     t.index ["account_id", "id", "type"], name: "index_notifications_on_filtered", order: { id: :desc }, where: "(filtered = false)"
@@ -1113,49 +1113,49 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
-    t.string "token", null: false
-    t.integer "expires_in", null: false
-    t.text "redirect_uri", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "revoked_at", precision: nil
-    t.string "scopes"
     t.bigint "application_id", null: false
-    t.bigint "resource_owner_id", null: false
     t.string "code_challenge"
     t.string "code_challenge_method"
+    t.datetime "created_at", precision: nil, null: false
+    t.integer "expires_in", null: false
+    t.text "redirect_uri", null: false
+    t.bigint "resource_owner_id", null: false
+    t.datetime "revoked_at", precision: nil
+    t.string "scopes"
+    t.string "token", null: false
     t.index ["resource_owner_id"], name: "index_oauth_access_grants_on_resource_owner_id"
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true
   end
 
   create_table "oauth_access_tokens", force: :cascade do |t|
-    t.string "token", null: false
-    t.string "refresh_token"
-    t.integer "expires_in"
-    t.datetime "revoked_at", precision: nil
-    t.datetime "created_at", precision: nil, null: false
-    t.string "scopes"
     t.bigint "application_id"
-    t.bigint "resource_owner_id"
+    t.datetime "created_at", precision: nil, null: false
+    t.integer "expires_in"
     t.datetime "last_used_at", precision: nil
     t.inet "last_used_ip"
+    t.string "refresh_token"
+    t.bigint "resource_owner_id"
+    t.datetime "revoked_at", precision: nil
+    t.string "scopes"
+    t.string "token", null: false
     t.index ["refresh_token"], name: "index_oauth_access_tokens_on_refresh_token", unique: true, opclass: :text_pattern_ops, where: "(refresh_token IS NOT NULL)"
     t.index ["resource_owner_id"], name: "index_oauth_access_tokens_on_resource_owner_id", where: "(resource_owner_id IS NOT NULL)"
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true
   end
 
   create_table "oauth_applications", force: :cascade do |t|
+    t.boolean "confidential", default: true, null: false
+    t.datetime "created_at", precision: nil
     t.string "name", null: false
-    t.string "uid", null: false
-    t.string "secret", null: false
+    t.bigint "owner_id"
+    t.string "owner_type"
     t.text "redirect_uri", null: false
     t.string "scopes", default: "", null: false
-    t.datetime "created_at", precision: nil
-    t.datetime "updated_at", precision: nil
+    t.string "secret", null: false
     t.boolean "superapp", default: false, null: false
+    t.string "uid", null: false
+    t.datetime "updated_at", precision: nil
     t.string "website"
-    t.string "owner_type"
-    t.bigint "owner_id"
-    t.boolean "confidential", default: true, null: false
     t.index ["owner_id", "owner_type"], name: "index_oauth_applications_on_owner_id_and_owner_type"
     t.index ["superapp"], name: "index_oauth_applications_on_superapp", where: "(superapp = true)"
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
@@ -1163,10 +1163,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "pending_follow_requests", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "target_account_id", null: false
-    t.string "uri", null: false
     t.datetime "created_at", null: false
+    t.bigint "target_account_id", null: false
     t.datetime "updated_at", null: false
+    t.string "uri", null: false
     t.index ["account_id", "target_account_id"], name: "idx_on_account_id_target_account_id_46f2a00f12", unique: true
     t.index ["target_account_id"], name: "index_pending_follow_requests_on_target_account_id"
     t.index ["uri"], name: "index_pending_follow_requests_on_uri", unique: true
@@ -1174,29 +1174,29 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "pending_statuses", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "fetch_account_id", null: false
-    t.string "uri", null: false
     t.datetime "created_at", null: false
+    t.bigint "fetch_account_id", null: false
     t.datetime "updated_at", null: false
+    t.string "uri", null: false
     t.index ["account_id"], name: "index_pending_statuses_on_account_id"
     t.index ["fetch_account_id"], name: "index_pending_statuses_on_fetch_account_id"
     t.index ["uri"], name: "index_pending_statuses_on_uri", unique: true
   end
 
   create_table "pghero_space_stats", force: :cascade do |t|
-    t.text "database"
-    t.text "schema"
-    t.text "relation"
-    t.bigint "size"
     t.datetime "captured_at", precision: nil
+    t.text "database"
+    t.text "relation"
+    t.text "schema"
+    t.bigint "size"
     t.index ["database", "captured_at"], name: "index_pghero_space_stats_on_database_and_captured_at"
   end
 
   create_table "poll_votes", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "poll_id", null: false
     t.integer "choice", default: 0, null: false
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "poll_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "uri"
     t.index ["account_id"], name: "index_poll_votes_on_account_id"
@@ -1205,76 +1205,78 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "polls", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "status_id", null: false
-    t.datetime "expires_at", precision: nil
-    t.string "options", default: [], null: false, array: true
     t.bigint "cached_tallies", default: [], null: false, array: true
-    t.boolean "multiple", default: false, null: false
-    t.boolean "hide_totals", default: false, null: false
-    t.bigint "votes_count", default: 0, null: false
-    t.datetime "last_fetched_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "expires_at", precision: nil
+    t.boolean "hide_totals", default: false, null: false
+    t.datetime "last_fetched_at", precision: nil
     t.integer "lock_version", default: 0, null: false
+    t.boolean "multiple", default: false, null: false
+    t.string "options", default: [], null: false, array: true
+    t.bigint "status_id", null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "voters_count"
+    t.bigint "votes_count", default: 0, null: false
     t.index ["account_id"], name: "index_polls_on_account_id"
     t.index ["status_id"], name: "index_polls_on_status_id"
   end
 
   create_table "preview_card_providers", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.string "domain", default: "", null: false
-    t.string "icon_file_name"
     t.string "icon_content_type"
+    t.string "icon_file_name"
     t.bigint "icon_file_size"
     t.datetime "icon_updated_at", precision: nil
-    t.boolean "trendable"
-    t.datetime "reviewed_at", precision: nil
     t.datetime "requested_review_at", precision: nil
-    t.datetime "created_at", null: false
+    t.datetime "reviewed_at", precision: nil
+    t.boolean "trendable"
     t.datetime "updated_at", null: false
     t.index ["domain"], name: "index_preview_card_providers_on_domain", unique: true
   end
 
   create_table "preview_card_trends", force: :cascade do |t|
-    t.bigint "preview_card_id", null: false
-    t.float "score", default: 0.0, null: false
-    t.integer "rank", default: 0, null: false
     t.boolean "allowed", default: false, null: false
     t.string "language"
+    t.bigint "preview_card_id", null: false
+    t.integer "rank", default: 0, null: false
+    t.float "score", default: 0.0, null: false
     t.index ["preview_card_id"], name: "index_preview_card_trends_on_preview_card_id", unique: true
   end
 
   create_table "preview_cards", force: :cascade do |t|
-    t.string "url", default: "", null: false
-    t.string "title", default: "", null: false
-    t.string "description", default: "", null: false
-    t.string "image_file_name"
-    t.string "image_content_type"
-    t.datetime "image_updated_at", precision: nil
-    t.integer "type", default: 0, null: false
-    t.text "html", default: "", null: false
+    t.bigint "author_account_id"
     t.string "author_name", default: "", null: false
     t.string "author_url", default: "", null: false
-    t.string "provider_name", default: "", null: false
-    t.string "provider_url", default: "", null: false
-    t.integer "width", default: 0, null: false
-    t.integer "height", default: 0, null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "embed_url", default: "", null: false
-    t.integer "image_storage_schema_version"
     t.string "blurhash"
+    t.datetime "created_at", precision: nil, null: false
+    t.string "description", default: "", null: false
+    t.string "embed_url", default: "", null: false
+    t.integer "height", default: 0, null: false
+    t.text "html", default: "", null: false
+    t.string "image_content_type"
+    t.string "image_description", default: "", null: false
+    t.string "image_file_name"
+    t.integer "image_file_size"
+    t.integer "image_storage_schema_version"
+    t.datetime "image_updated_at", precision: nil
     t.string "language"
+    t.integer "link_type"
     t.float "max_score"
     t.datetime "max_score_at", precision: nil
-    t.boolean "trendable"
-    t.integer "link_type"
+    t.string "provider_name", default: "", null: false
+    t.string "provider_url", default: "", null: false
     t.datetime "published_at"
-    t.string "image_description", default: "", null: false
-    t.integer "image_file_size"
-    t.bigint "author_account_id"
+    t.string "title", default: "", null: false
+    t.boolean "trendable"
+    t.integer "type", default: 0, null: false
+    t.bigint "unverified_author_account_id"
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "url", default: "", null: false
+    t.integer "width", default: 0, null: false
     t.index ["author_account_id"], name: "index_preview_cards_on_author_account_id", where: "(author_account_id IS NOT NULL)"
     t.index ["id"], name: "index_preview_cards_vacuum", where: "((image_file_name IS NOT NULL) AND ((image_file_name)::text <> ''::text))"
+    t.index ["unverified_author_account_id", "id"], name: "index_preview_cards_on_unverified_author_account_id_and_id", where: "(unverified_author_account_id IS NOT NULL)"
     t.index ["url"], name: "index_preview_cards_on_url", unique: true
   end
 
@@ -1286,15 +1288,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "quotes", id: :bigint, default: -> { "timestamp_id('quotes'::text)" }, force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "status_id", null: false
-    t.bigint "quoted_status_id"
-    t.bigint "quoted_account_id"
-    t.integer "state", default: 0, null: false
-    t.string "approval_uri"
     t.string "activity_uri"
+    t.string "approval_uri"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.boolean "legacy", default: false, null: false
+    t.bigint "quoted_account_id"
+    t.bigint "quoted_status_id"
+    t.integer "state", default: 0, null: false
+    t.bigint "status_id", null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id", "quoted_account_id", "id"], name: "index_quotes_on_account_id_and_quoted_account_id_and_id"
     t.index ["activity_uri"], name: "index_quotes_on_activity_uri", unique: true, where: "(activity_uri IS NOT NULL)"
     t.index ["approval_uri"], name: "index_quotes_on_approval_uri", where: "(approval_uri IS NOT NULL)"
@@ -1304,47 +1306,47 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "relationship_severance_events", force: :cascade do |t|
-    t.integer "type", null: false
-    t.string "target_name", null: false
-    t.boolean "purged", default: false, null: false
     t.datetime "created_at", null: false
+    t.boolean "purged", default: false, null: false
+    t.string "target_name", null: false
+    t.integer "type", null: false
     t.datetime "updated_at", null: false
     t.index ["type", "target_name"], name: "index_relationship_severance_events_on_type_and_target_name"
   end
 
   create_table "relays", force: :cascade do |t|
-    t.string "inbox_url", default: "", null: false
-    t.string "follow_activity_id"
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.string "follow_activity_id"
+    t.string "inbox_url", default: "", null: false
     t.integer "state", default: 0, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "report_notes", force: :cascade do |t|
-    t.text "content", null: false
-    t.bigint "report_id", null: false
     t.bigint "account_id", null: false
+    t.text "content", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "report_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_report_notes_on_account_id"
     t.index ["report_id"], name: "index_report_notes_on_report_id"
   end
 
   create_table "reports", force: :cascade do |t|
-    t.bigint "status_ids", default: [], null: false, array: true
+    t.bigint "account_id", null: false
+    t.datetime "action_taken_at", precision: nil
+    t.bigint "action_taken_by_account_id"
+    t.bigint "application_id"
+    t.bigint "assigned_account_id"
+    t.integer "category", default: 0, null: false
     t.text "comment", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.bigint "account_id", null: false
-    t.bigint "action_taken_by_account_id"
-    t.bigint "target_account_id", null: false
-    t.bigint "assigned_account_id"
-    t.string "uri"
     t.boolean "forwarded"
-    t.integer "category", default: 0, null: false
-    t.datetime "action_taken_at", precision: nil
     t.bigint "rule_ids", array: true
-    t.bigint "application_id"
+    t.bigint "status_ids", default: [], null: false, array: true
+    t.bigint "target_account_id", null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "uri"
     t.index ["account_id"], name: "index_reports_on_account_id"
     t.index ["action_taken_by_account_id"], name: "index_reports_on_action_taken_by_account_id", where: "(action_taken_by_account_id IS NOT NULL)"
     t.index ["assigned_account_id"], name: "index_reports_on_assigned_account_id", where: "(assigned_account_id IS NOT NULL)"
@@ -1352,29 +1354,29 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "rule_translations", force: :cascade do |t|
-    t.text "text", default: "", null: false
+    t.datetime "created_at", null: false
     t.text "hint", default: "", null: false
     t.string "language", null: false
     t.bigint "rule_id", null: false
-    t.datetime "created_at", null: false
+    t.text "text", default: "", null: false
     t.datetime "updated_at", null: false
     t.index ["rule_id", "language"], name: "index_rule_translations_on_rule_id_and_language", unique: true
   end
 
   create_table "rules", force: :cascade do |t|
-    t.integer "priority", default: 0, null: false
-    t.datetime "deleted_at", precision: nil
-    t.text "text", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deleted_at", precision: nil
     t.text "hint", default: "", null: false
+    t.integer "priority", default: 0, null: false
+    t.text "text", default: "", null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "scheduled_expiration_statuses", force: :cascade do |t|
     t.bigint "account_id"
-    t.bigint "status_id", null: false
-    t.datetime "scheduled_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
+    t.datetime "scheduled_at", precision: nil
+    t.bigint "status_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_scheduled_expiration_statuses_on_account_id"
     t.index ["scheduled_at"], name: "index_scheduled_expiration_statuses_on_scheduled_at"
@@ -1383,28 +1385,28 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
 
   create_table "scheduled_statuses", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.datetime "scheduled_at", precision: nil
     t.jsonb "params"
+    t.datetime "scheduled_at", precision: nil
     t.index ["account_id"], name: "index_scheduled_statuses_on_account_id"
     t.index ["scheduled_at"], name: "index_scheduled_statuses_on_scheduled_at"
   end
 
   create_table "sensitive_words", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.string "keyword", null: false
     t.boolean "regexp", default: false, null: false
     t.boolean "remote", default: false, null: false
     t.boolean "spoiler", default: true, null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "session_activations", force: :cascade do |t|
-    t.string "session_id", null: false
+    t.bigint "access_token_id"
     t.datetime "created_at", precision: nil, null: false
+    t.inet "ip"
+    t.string "session_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "user_agent", default: "", null: false
-    t.inet "ip"
-    t.bigint "access_token_id"
     t.bigint "user_id", null: false
     t.bigint "web_push_subscription_id"
     t.index ["access_token_id"], name: "index_session_activations_on_access_token_id"
@@ -1413,22 +1415,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "settings", force: :cascade do |t|
-    t.string "var", null: false
-    t.text "value"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
+    t.text "value"
+    t.string "var", null: false
     t.index ["var"], name: "index_settings_on_var", unique: true
   end
 
   create_table "severed_relationships", force: :cascade do |t|
-    t.bigint "relationship_severance_event_id", null: false
-    t.bigint "local_account_id", null: false
-    t.bigint "remote_account_id", null: false
-    t.integer "direction", null: false
-    t.boolean "show_reblogs"
-    t.boolean "notify"
-    t.string "languages", array: true
     t.datetime "created_at", null: false
+    t.integer "direction", null: false
+    t.string "languages", array: true
+    t.bigint "local_account_id", null: false
+    t.boolean "notify"
+    t.bigint "relationship_severance_event_id", null: false
+    t.bigint "remote_account_id", null: false
+    t.boolean "show_reblogs"
     t.datetime "updated_at", null: false
     t.index ["local_account_id", "relationship_severance_event_id"], name: "index_severed_relationships_on_local_account_and_event"
     t.index ["relationship_severance_event_id", "local_account_id", "direction", "remote_account_id"], name: "index_severed_relationships_on_unique_tuples", unique: true
@@ -1436,136 +1438,136 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "site_uploads", force: :cascade do |t|
-    t.string "var", default: "", null: false
-    t.string "file_file_name"
+    t.string "blurhash"
+    t.datetime "created_at", precision: nil, null: false
     t.string "file_content_type"
+    t.string "file_file_name"
+    t.integer "file_file_size"
     t.datetime "file_updated_at", precision: nil
     t.json "meta"
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.string "blurhash"
-    t.integer "file_file_size"
+    t.string "var", default: "", null: false
     t.index ["var"], name: "index_site_uploads_on_var", unique: true
   end
 
   create_table "software_updates", force: :cascade do |t|
-    t.string "version", null: false
-    t.boolean "urgent", default: false, null: false
-    t.integer "type", default: 0, null: false
-    t.string "release_notes", default: "", null: false
     t.datetime "created_at", null: false
+    t.string "release_notes", default: "", null: false
+    t.integer "type", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.boolean "urgent", default: false, null: false
+    t.string "version", null: false
     t.index ["version"], name: "index_software_updates_on_version", unique: true
   end
 
   create_table "specified_domains", force: :cascade do |t|
-    t.string "domain", null: false
-    t.integer "table", default: 0, null: false
-    t.jsonb "options", default: {}, null: false
     t.datetime "created_at", null: false
+    t.string "domain", null: false
+    t.jsonb "options", default: {}, null: false
+    t.integer "table", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["domain", "table"], name: "index_specified_domains_on_domain_and_table", unique: true
   end
 
   create_table "status_capability_tokens", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "status_id", null: false
     t.string "token"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["status_id"], name: "index_status_capability_tokens_on_status_id"
   end
 
   create_table "status_edits", force: :cascade do |t|
-    t.bigint "status_id", null: false
     t.bigint "account_id"
-    t.text "text", default: "", null: false
-    t.text "spoiler_text", default: "", null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "ordered_media_attachment_ids", array: true
-    t.text "media_descriptions", array: true
-    t.string "poll_options", array: true
-    t.boolean "sensitive"
     t.boolean "markdown", default: false
+    t.text "media_descriptions", array: true
+    t.bigint "ordered_media_attachment_ids", array: true
+    t.string "poll_options", array: true
     t.bigint "quote_id"
+    t.boolean "sensitive"
+    t.text "spoiler_text", default: "", null: false
+    t.bigint "status_id", null: false
+    t.text "text", default: "", null: false
+    t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_status_edits_on_account_id"
     t.index ["status_id"], name: "index_status_edits_on_status_id"
   end
 
   create_table "status_pins", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.bigint "status_id", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.bigint "status_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id", "status_id"], name: "index_status_pins_on_account_id_and_status_id", unique: true
     t.index ["status_id"], name: "index_status_pins_on_status_id"
   end
 
   create_table "status_references", force: :cascade do |t|
+    t.datetime "created_at", precision: nil, null: false
     t.bigint "status_id", null: false
     t.bigint "target_status_id", null: false
-    t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["status_id"], name: "index_status_references_on_status_id"
     t.index ["target_status_id"], name: "index_status_references_on_target_status_id"
   end
 
   create_table "status_stats", force: :cascade do |t|
-    t.bigint "status_id", null: false
-    t.bigint "replies_count", default: 0, null: false
-    t.bigint "reblogs_count", default: 0, null: false
-    t.bigint "favourites_count", default: 0, null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
+    t.integer "emoji_reaction_accounts_count", default: 0, null: false
     t.string "emoji_reactions"
     t.integer "emoji_reactions_count", default: 0, null: false
-    t.integer "emoji_reaction_accounts_count", default: 0, null: false
+    t.bigint "favourites_count", default: 0, null: false
+    t.bigint "quotes_count", default: 0, null: false
+    t.bigint "reblogs_count", default: 0, null: false
+    t.bigint "replies_count", default: 0, null: false
+    t.bigint "status_id", null: false
     t.integer "status_referred_by_count", default: 0, null: false
     t.bigint "untrusted_favourites_count"
     t.bigint "untrusted_reblogs_count"
-    t.bigint "quotes_count", default: 0, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["status_id"], name: "index_status_stats_on_status_id", unique: true
   end
 
   create_table "status_trends", force: :cascade do |t|
-    t.bigint "status_id", null: false
     t.bigint "account_id", null: false
-    t.float "score", default: 0.0, null: false
-    t.integer "rank", default: 0, null: false
     t.boolean "allowed", default: false, null: false
     t.string "language"
+    t.integer "rank", default: 0, null: false
+    t.float "score", default: 0.0, null: false
+    t.bigint "status_id", null: false
     t.index ["account_id"], name: "index_status_trends_on_account_id"
     t.index ["status_id"], name: "index_status_trends_on_status_id", unique: true
   end
 
   create_table "statuses", id: :bigint, default: -> { "timestamp_id('statuses'::text)" }, force: :cascade do |t|
-    t.string "uri"
-    t.text "text", default: "", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.bigint "in_reply_to_id"
-    t.bigint "reblog_of_id"
-    t.string "url"
-    t.boolean "sensitive", default: false, null: false
-    t.integer "visibility", default: 0, null: false
-    t.text "spoiler_text", default: "", null: false
-    t.boolean "reply", default: false, null: false
-    t.string "language"
-    t.bigint "conversation_id"
-    t.boolean "local"
     t.bigint "account_id", null: false
     t.bigint "application_id"
-    t.bigint "in_reply_to_account_id"
-    t.bigint "poll_id"
+    t.bigint "conversation_id"
+    t.datetime "created_at", precision: nil, null: false
     t.datetime "deleted_at", precision: nil
     t.datetime "edited_at", precision: nil
-    t.boolean "trendable"
-    t.bigint "ordered_media_attachment_ids", array: true
-    t.integer "searchability"
-    t.boolean "markdown", default: false
-    t.integer "limited_scope"
     t.datetime "fetched_replies_at"
+    t.bigint "in_reply_to_account_id"
+    t.bigint "in_reply_to_id"
+    t.string "language"
+    t.integer "limited_scope"
+    t.boolean "local"
+    t.boolean "markdown", default: false
+    t.bigint "ordered_media_attachment_ids", array: true
+    t.bigint "poll_id"
     t.integer "quote_approval_policy", default: 0, null: false
+    t.bigint "reblog_of_id"
+    t.boolean "reply", default: false, null: false
+    t.integer "searchability"
+    t.boolean "sensitive", default: false, null: false
+    t.text "spoiler_text", default: "", null: false
+    t.text "text", default: "", null: false
+    t.boolean "trendable"
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "uri"
+    t.string "url"
+    t.integer "visibility", default: 0, null: false
     t.index ["account_id", "id", "visibility", "updated_at"], name: "index_statuses_20190820", order: { id: :desc }, where: "(deleted_at IS NULL)"
     t.index ["account_id", "reblog_of_id", "deleted_at", "searchability"], name: "index_statuses_for_get_following_accounts_to_search", where: "((deleted_at IS NULL) AND (reblog_of_id IS NULL) AND (searchability = ANY (ARRAY[0, 10, 1])))"
     t.index ["account_id"], name: "index_statuses_on_account_id"
@@ -1587,133 +1589,133 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "tag_follows", force: :cascade do |t|
-    t.bigint "tag_id", null: false
     t.bigint "account_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "tag_id", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id", "tag_id"], name: "index_tag_follows_on_account_id_and_tag_id", unique: true
     t.index ["tag_id"], name: "index_tag_follows_on_tag_id"
   end
 
   create_table "tag_trends", force: :cascade do |t|
-    t.bigint "tag_id", null: false
-    t.float "score", default: 0.0, null: false
-    t.integer "rank", default: 0, null: false
     t.boolean "allowed", default: false, null: false
     t.string "language", default: "", null: false
+    t.integer "rank", default: 0, null: false
+    t.float "score", default: 0.0, null: false
+    t.bigint "tag_id", null: false
     t.index ["tag_id", "language"], name: "index_tag_trends_on_tag_id_and_language", unique: true
   end
 
   create_table "tags", force: :cascade do |t|
-    t.string "name", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.boolean "usable"
-    t.boolean "trendable"
-    t.boolean "listable"
-    t.datetime "reviewed_at", precision: nil
-    t.datetime "requested_review_at", precision: nil
+    t.string "display_name"
     t.datetime "last_status_at", precision: nil
+    t.boolean "listable"
     t.float "max_score"
     t.datetime "max_score_at", precision: nil
-    t.string "display_name"
+    t.string "name", default: "", null: false
+    t.datetime "requested_review_at", precision: nil
+    t.datetime "reviewed_at", precision: nil
+    t.boolean "trendable"
+    t.datetime "updated_at", precision: nil, null: false
+    t.boolean "usable"
     t.index "lower((name)::text) text_pattern_ops", name: "index_tags_on_name_lower_btree", unique: true
   end
 
   create_table "terms_of_services", force: :cascade do |t|
-    t.text "text", default: "", null: false
     t.text "changelog", default: "", null: false
-    t.datetime "published_at"
-    t.datetime "notification_sent_at"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.date "effective_date"
+    t.datetime "notification_sent_at"
+    t.datetime "published_at"
+    t.text "text", default: "", null: false
+    t.datetime "updated_at", null: false
     t.index ["effective_date"], name: "index_terms_of_services_on_effective_date", unique: true, where: "(effective_date IS NOT NULL)"
   end
 
   create_table "tombstones", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.string "uri", null: false
+    t.boolean "by_moderator"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.boolean "by_moderator"
+    t.string "uri", null: false
     t.index ["account_id"], name: "index_tombstones_on_account_id"
     t.index ["uri"], name: "index_tombstones_on_uri"
   end
 
   create_table "unavailable_domains", force: :cascade do |t|
-    t.string "domain", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.string "domain", default: "", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["domain"], name: "index_unavailable_domains_on_domain", unique: true
   end
 
   create_table "user_invite_requests", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.text "text"
     t.datetime "created_at", precision: nil, null: false
+    t.text "text"
     t.datetime "updated_at", precision: nil, null: false
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_user_invite_requests_on_user_id"
   end
 
   create_table "user_roles", force: :cascade do |t|
-    t.string "name", default: "", null: false
     t.string "color", default: "", null: false
-    t.integer "position", default: 0, null: false
-    t.bigint "permissions", default: 0, null: false
-    t.boolean "highlighted", default: false, null: false
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.boolean "highlighted", default: false, null: false
+    t.string "name", default: "", null: false
+    t.bigint "permissions", default: 0, null: false
+    t.integer "position", default: 0, null: false
     t.boolean "require_2fa", default: false, null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "username_blocks", force: :cascade do |t|
-    t.string "username", null: false
-    t.string "normalized_username", null: false
-    t.boolean "exact", default: false, null: false
     t.boolean "allow_with_approval", default: false, null: false
     t.datetime "created_at", null: false
+    t.boolean "exact", default: false, null: false
+    t.string "normalized_username", null: false
     t.datetime "updated_at", null: false
+    t.string "username", null: false
     t.index "lower((username)::text)", name: "index_username_blocks_on_username_lower_btree", unique: true
     t.index ["normalized_username"], name: "index_username_blocks_on_normalized_username"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at", precision: nil
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at", precision: nil
-    t.datetime "last_sign_in_at", precision: nil
+    t.bigint "account_id", null: false
+    t.datetime "age_verified_at"
+    t.boolean "approved", default: true, null: false
+    t.string "chosen_languages", array: true
+    t.datetime "confirmation_sent_at", precision: nil
     t.string "confirmation_token"
     t.datetime "confirmed_at", precision: nil
-    t.datetime "confirmation_sent_at", precision: nil
-    t.string "unconfirmed_email"
-    t.string "locale"
     t.integer "consumed_timestep"
-    t.boolean "otp_required_for_login", default: false, null: false
-    t.datetime "last_emailed_at", precision: nil
-    t.string "otp_backup_codes", array: true
-    t.bigint "account_id", null: false
-    t.boolean "disabled", default: false, null: false
-    t.bigint "invite_id"
-    t.string "chosen_languages", array: true
+    t.datetime "created_at", precision: nil, null: false
     t.bigint "created_by_application_id"
-    t.boolean "approved", default: true, null: false
-    t.string "sign_in_token"
-    t.datetime "sign_in_token_sent_at", precision: nil
-    t.string "webauthn_id"
-    t.inet "sign_up_ip"
-    t.boolean "skip_sign_in_token"
+    t.datetime "current_sign_in_at", precision: nil
+    t.boolean "disabled", default: false, null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.bigint "invite_id"
+    t.datetime "last_emailed_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
+    t.string "locale"
+    t.string "otp_backup_codes", array: true
+    t.boolean "otp_required_for_login", default: false, null: false
+    t.string "otp_secret"
+    t.boolean "require_tos_interstitial", default: false, null: false
+    t.datetime "reset_password_sent_at", precision: nil
+    t.string "reset_password_token"
     t.bigint "role_id"
     t.text "settings"
+    t.integer "sign_in_count", default: 0, null: false
+    t.string "sign_in_token"
+    t.datetime "sign_in_token_sent_at", precision: nil
+    t.inet "sign_up_ip"
+    t.boolean "skip_sign_in_token"
     t.string "time_zone"
-    t.string "otp_secret"
-    t.datetime "age_verified_at"
-    t.boolean "require_tos_interstitial", default: false, null: false
+    t.string "unconfirmed_email"
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "webauthn_id"
     t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_by_application_id"], name: "index_users_on_created_by_application_id", where: "(created_by_application_id IS NOT NULL)"
@@ -1724,47 +1726,47 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   end
 
   create_table "web_push_subscriptions", force: :cascade do |t|
-    t.string "endpoint", null: false
-    t.string "key_p256dh", null: false
-    t.string "key_auth", null: false
-    t.json "data"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
     t.bigint "access_token_id", null: false
-    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.json "data"
+    t.string "endpoint", null: false
+    t.string "key_auth", null: false
+    t.string "key_p256dh", null: false
     t.boolean "standard", default: false, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.bigint "user_id", null: false
     t.index ["access_token_id"], name: "index_web_push_subscriptions_on_access_token_id", where: "(access_token_id IS NOT NULL)"
     t.index ["user_id"], name: "index_web_push_subscriptions_on_user_id"
   end
 
   create_table "web_settings", force: :cascade do |t|
-    t.json "data"
     t.datetime "created_at", precision: nil, null: false
+    t.json "data"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_web_settings_on_user_id", unique: true
   end
 
   create_table "webauthn_credentials", force: :cascade do |t|
-    t.string "external_id", null: false
-    t.string "public_key", null: false
-    t.string "nickname", null: false
-    t.bigint "sign_count", default: 0, null: false
-    t.bigint "user_id"
     t.datetime "created_at", precision: nil, null: false
+    t.string "external_id", null: false
+    t.string "nickname", null: false
+    t.string "public_key", null: false
+    t.bigint "sign_count", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.bigint "user_id"
     t.index ["external_id"], name: "index_webauthn_credentials_on_external_id", unique: true
     t.index ["user_id", "nickname"], name: "index_webauthn_credentials_on_user_id_and_nickname", unique: true
   end
 
   create_table "webhooks", force: :cascade do |t|
-    t.string "url", null: false
+    t.datetime "created_at", null: false
+    t.boolean "enabled", default: true, null: false
     t.string "events", default: [], null: false, array: true
     t.string "secret", default: "", null: false
-    t.boolean "enabled", default: true, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.text "template"
+    t.datetime "updated_at", null: false
+    t.string "url", null: false
     t.index ["url"], name: "index_webhooks_on_url", unique: true
   end
 
@@ -1902,6 +1904,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_17_154542) do
   add_foreign_key "polls", "statuses", on_delete: :cascade
   add_foreign_key "preview_card_trends", "preview_cards", on_delete: :cascade
   add_foreign_key "preview_cards", "accounts", column: "author_account_id", on_delete: :nullify
+  add_foreign_key "preview_cards", "accounts", column: "unverified_author_account_id", on_delete: :nullify
   add_foreign_key "quotes", "accounts", column: "quoted_account_id", on_delete: :nullify
   add_foreign_key "quotes", "accounts", on_delete: :cascade
   add_foreign_key "quotes", "statuses", column: "quoted_status_id", on_delete: :nullify

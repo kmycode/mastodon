@@ -140,6 +140,8 @@ class Form::AdminSettings
     stop_link_preview_domains
   ).freeze
 
+  UPLOAD_MIME_TYPES = %w(image/jpeg image/png image/gif image/webp image/avif image/heic image/heif).freeze
+
   DESCRIPTION_LIMIT = 200
   DOMAIN_BLOCK_AUDIENCES = %w(disabled users all).freeze
   REGISTRATION_MODES = %w(open approved none).freeze

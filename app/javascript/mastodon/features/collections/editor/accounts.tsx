@@ -15,13 +15,16 @@ import { Account } from 'mastodon/components/account';
 import { Avatar } from 'mastodon/components/avatar';
 import { Badge } from 'mastodon/components/badge';
 import { Button } from 'mastodon/components/button';
-import { Callout } from 'mastodon/components/callout';
 import { DisplayName } from 'mastodon/components/display_name';
 import { EmptyState } from 'mastodon/components/empty_state';
 import { FormStack, Combobox } from 'mastodon/components/form_fields';
 import { Icon } from 'mastodon/components/icon';
 import { IconButton } from 'mastodon/components/icon_button';
-import ScrollableList from 'mastodon/components/scrollable_list';
+import {
+  Article,
+  ItemList,
+  Scrollable,
+} from 'mastodon/components/scrollable_list/components';
 import { useSearchAccounts } from 'mastodon/features/lists/use_search_accounts';
 import { useAccount } from 'mastodon/hooks/useAccount';
 import { me } from 'mastodon/initial_state';
@@ -36,7 +39,6 @@ import { getCollectionEditorState } from './state';
 import classes from './styles.module.scss';
 import { WizardStepHeader } from './wizard_step_header';
 
-const MIN_ACCOUNT_COUNT = 1;
 const MAX_ACCOUNT_COUNT = 25;
 
 function isOlderThanAWeek(date?: string): boolean {
@@ -160,9 +162,6 @@ export const CollectionAccounts: React.FC<{
   );
 
   const hasMaxAccounts = accountIds.length === MAX_ACCOUNT_COUNT;
-  const hasMinAccounts = accountIds.length === MIN_ACCOUNT_COUNT;
-  const hasTooFewAccounts = accountIds.length < MIN_ACCOUNT_COUNT;
-  const canSubmit = !hasTooFewAccounts;
 
   const {
     accountIds: suggestedAccountIds,
@@ -315,17 +314,13 @@ export const CollectionAccounts: React.FC<{
     (e: React.FormEvent) => {
       e.preventDefault();
 
-      if (!canSubmit) {
-        return;
-      }
-
       if (!id) {
         history.push(`/collections/new/details`, {
           account_ids: accountIds,
         });
       }
     },
-    [canSubmit, id, history, accountIds],
+    [id, history, accountIds],
   );
 
   const inputId = useId();
@@ -380,19 +375,8 @@ export const CollectionAccounts: React.FC<{
           />
         )}
 
-        {hasMinAccounts && (
-          <Callout>
-            <FormattedMessage
-              id='collections.hints.can_not_remove_more_accounts'
-              defaultMessage='Collections must contain at least {count, plural, one {# account} other {# accounts}}. Removing more accounts is not possible.'
-              values={{ count: MIN_ACCOUNT_COUNT }}
-            />
-          </Callout>
-        )}
-
-        <div className={classes.scrollableWrapper}>
-          <ScrollableList
-            scrollKey='collection-items'
+        <Scrollable className={classes.scrollableWrapper}>
+          <ItemList
             className={classes.scrollableInner}
             emptyMessage={
               <EmptyState
@@ -413,54 +397,44 @@ export const CollectionAccounts: React.FC<{
                 }
               />
             }
-            // TODO: Re-add `bindToDocument={!multiColumn}`
           >
-            {accountIds.map((accountId) => (
-              <AddedAccountItem
+            {accountIds.map((accountId, index) => (
+              <Article
                 key={accountId}
-                accountId={accountId}
-                isRemovable={!isEditMode || !hasMinAccounts}
-                onRemove={handleRemoveAccountItem}
-              />
+                aria-posinset={index}
+                aria-setsize={accountIds.length}
+              >
+                <AddedAccountItem
+                  accountId={accountId}
+                  isRemovable={!isEditMode}
+                  onRemove={handleRemoveAccountItem}
+                />
+              </Article>
             ))}
-          </ScrollableList>
-        </div>
+          </ItemList>
+        </Scrollable>
       </FormStack>
       {!isEditMode && (
         <div className={classes.stickyFooter}>
-          {hasTooFewAccounts ? (
-            <Callout icon={false} className={classes.submitDisabledCallout}>
-              <FormattedMessage
-                id='collections.hints.add_more_accounts'
-                defaultMessage='Add at least {count, plural, one {# account} other {# accounts}} to continue'
-                values={{ count: MIN_ACCOUNT_COUNT }}
-              />
-            </Callout>
-          ) : (
-            <div className={classes.actionWrapper}>
-              <FormattedMessage
-                id='collections.hints.accounts_counter'
-                defaultMessage='{count} / {max} accounts'
-                values={{ count: accountIds.length, max: MAX_ACCOUNT_COUNT }}
-              >
-                {(text) => (
-                  <div className={classes.itemCountReadout}>{text}</div>
-                )}
-              </FormattedMessage>
-              {canSubmit && (
-                <Button type='submit'>
-                  {id ? (
-                    <FormattedMessage id='lists.save' defaultMessage='Save' />
-                  ) : (
-                    <FormattedMessage
-                      id='collections.continue'
-                      defaultMessage='Continue'
-                    />
-                  )}
-                </Button>
+          <div className={classes.actionWrapper}>
+            <FormattedMessage
+              id='collections.hints.accounts_counter'
+              defaultMessage='{count} / {max} accounts'
+              values={{ count: accountIds.length, max: MAX_ACCOUNT_COUNT }}
+            >
+              {(text) => <div className={classes.itemCountReadout}>{text}</div>}
+            </FormattedMessage>
+            <Button type='submit'>
+              {id ? (
+                <FormattedMessage id='lists.save' defaultMessage='Save' />
+              ) : (
+                <FormattedMessage
+                  id='collections.continue'
+                  defaultMessage='Continue'
+                />
               )}
-            </div>
-          )}
+            </Button>
+          </div>
         </div>
       )}
     </form>

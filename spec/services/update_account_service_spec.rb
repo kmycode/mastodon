@@ -41,4 +41,18 @@ RSpec.describe UpdateAccountService do
       expect(ohagi.requested?(account)).to be true
     end
   end
+
+  describe 'adding domains to attribution_domains' do
+    let(:account) { Fabricate(:account) }
+    let!(:preview_card) { Fabricate(:preview_card, url: 'https://writer.example.com/article', unverified_author_account: account, author_account: nil) }
+    let!(:unattributable_preview_card) { Fabricate(:preview_card, url: 'https://otherwriter.example.com/article', unverified_author_account: account, author_account: nil) }
+    let!(:unrelated_preview_card) { Fabricate(:preview_card) }
+
+    it 'reattributes expected preview cards' do
+      expect { subject.call(account, { attribution_domains: ['writer.example.com'] }) }
+        .to change { preview_card.reload.author_account }.from(nil).to(account)
+        .and not_change { unattributable_preview_card.reload.author_account }
+        .and(not_change { unrelated_preview_card.reload.author_account })
+    end
+  end
 end

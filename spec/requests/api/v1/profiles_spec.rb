@@ -48,7 +48,8 @@ RSpec.describe 'Profile API' do
           'note' => account.note,
           'show_featured' => account.show_featured,
           'show_media' => account.show_media,
-          'show_media_replies' => account.show_media_replies
+          'show_media_replies' => account.show_media_replies,
+          'featured_tags' => []
         )
     end
   end
@@ -88,7 +89,7 @@ RSpec.describe 'Profile API' do
         expect(response.parsed_body)
           .to include(
             error: /Validation failed/,
-            details: include(note: contain_exactly(include(error: 'ERR_TOO_LONG', description: /character limit/)))
+            details: include(note: contain_exactly(include(error: 'ERR_TOO_LONG', description: /too long/)))
           )
       end
     end
