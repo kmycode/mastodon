@@ -89,7 +89,7 @@ RSpec.describe AccountStatusesFilter do
         let(:params) { { exclude_direct: true } }
 
         it 'returns only public statuses, public replies, and public reblogs' do
-          expect(results_unique_visibilities).to match_array %w(unlisted public)
+          expect(results_unique_visibilities).to match_array %w(unlisted public_unlisted public)
 
           expect(results_in_reply_to_ids).to_not be_empty
 
@@ -153,7 +153,7 @@ RSpec.describe AccountStatusesFilter do
         let(:params) { { exclude_direct: true } }
 
         it 'returns private statuses, replies, and reblogs' do
-          expect(results_unique_visibilities).to match_array %w(private unlisted public)
+          expect(results_unique_visibilities).to match_array %w(private unlisted public_unlisted login public)
 
           expect(results_in_reply_to_ids).to_not be_empty
 
@@ -213,7 +213,7 @@ RSpec.describe AccountStatusesFilter do
         let(:params) { { exclude_direct: true } }
 
         it 'returns private statuses, replies, and reblogs' do
-          expect(results_unique_visibilities).to match_array %w(unlisted public)
+          expect(results_unique_visibilities).to match_array %w(unlisted public_unlisted login public)
 
           expect(results_in_reply_to_ids).to_not be_empty
 
