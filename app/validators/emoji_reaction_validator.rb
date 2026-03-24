@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class EmojiReactionValidator < ActiveModel::Validator
-  SUPPORTED_EMOJIS = Oj.load_file(Rails.root.join('app', 'javascript', 'mastodon', 'features', 'emoji', 'emoji_map.json').to_s).keys.freeze
+  SUPPORTED_EMOJIS = JSON.load_file(Rails.root.join('app', 'javascript', 'mastodon', 'features', 'emoji', 'emoji_map.json').to_s).keys.freeze
 
   def validate(emoji_reaction)
     return if emoji_reaction.name.blank?

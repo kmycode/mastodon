@@ -50,8 +50,8 @@ RSpec.describe ActivityPub::FetchRemoteKeyService do
   end
 
   before do
-    stub_request(:get, 'https://example.com/alice').to_return(body: Oj.dump(actor), headers: { 'Content-Type': 'application/activity+json' })
-    stub_request(:get, 'https://example.com/.well-known/webfinger?resource=acct:alice@example.com').to_return(body: Oj.dump(webfinger), headers: { 'Content-Type': 'application/jrd+json' })
+    stub_request(:get, 'https://example.com/alice').to_return(body: actor.to_json, headers: { 'Content-Type': 'application/activity+json' })
+    stub_request(:get, 'https://example.com/.well-known/webfinger?resource=acct:alice@example.com').to_return(body: webfinger.to_json, headers: { 'Content-Type': 'application/jrd+json' })
     stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(body: '{}')
   end
 
@@ -60,7 +60,7 @@ RSpec.describe ActivityPub::FetchRemoteKeyService do
 
     context 'when the key is a sub-object from the actor' do
       before do
-        stub_request(:get, public_key_id).to_return(body: Oj.dump(actor), headers: { 'Content-Type': 'application/activity+json' })
+        stub_request(:get, public_key_id).to_return(body: actor.to_json, headers: { 'Content-Type': 'application/activity+json' })
       end
 
       it 'returns the expected account' do
@@ -72,7 +72,7 @@ RSpec.describe ActivityPub::FetchRemoteKeyService do
       let(:public_key_id) { 'https://example.com/alice-public-key.json' }
 
       before do
-        stub_request(:get, public_key_id).to_return(body: Oj.dump(key_json.merge({ '@context': ['https://w3id.org/security/v1'] })), headers: { 'Content-Type': 'application/activity+json' })
+        stub_request(:get, public_key_id).to_return(body: key_json.merge({ '@context': ['https://w3id.org/security/v1'] }).to_json, headers: { 'Content-Type': 'application/activity+json' })
       end
 
       it 'returns the expected account' do
@@ -85,7 +85,7 @@ RSpec.describe ActivityPub::FetchRemoteKeyService do
       let(:actor_public_key) { 'https://example.com/alice-public-key.json' }
 
       before do
-        stub_request(:get, public_key_id).to_return(body: Oj.dump(key_json.merge({ '@context': ['https://www.w3.org/ns/activitystreams', 'https://w3id.org/security/v1'] })), headers: { 'Content-Type': 'application/activity+json' })
+        stub_request(:get, public_key_id).to_return(body: key_json.merge({ '@context': ['https://www.w3.org/ns/activitystreams', 'https://w3id.org/security/v1'] }).to_json, headers: { 'Content-Type': 'application/activity+json' })
       end
 
       it 'returns the nil' do

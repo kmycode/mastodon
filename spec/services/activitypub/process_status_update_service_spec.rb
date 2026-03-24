@@ -29,7 +29,7 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
     }
   end
   let(:payload_override) { {} }
-  let(:json) { Oj.load(Oj.dump(payload.merge(payload_override))) }
+  let(:json) { JSON.parse(payload.merge(payload_override).to_json) }
 
   let(:alice) { Fabricate(:account) }
   let(:bob) { Fabricate(:account) }
@@ -863,8 +863,8 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
       }
     end
 
-    before do
-      stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: Oj.dump({
+    let(:quote_authorization_json) do
+      {
         '@context': [
           'https://www.w3.org/ns/activitystreams',
           {
@@ -889,7 +889,11 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
         attributedTo: ActivityPub::TagManager.instance.uri_for(quoted_status.account),
         interactingObject: ActivityPub::TagManager.instance.uri_for(status),
         interactionTarget: ActivityPub::TagManager.instance.uri_for(quoted_status),
-      }))
+      }
+    end
+
+    before do
+      stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: quote_authorization_json.to_json)
     end
 
     it 'updates the approval URI and verifies the quote' do
@@ -928,8 +932,8 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
       }
     end
 
-    before do
-      stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: Oj.dump({
+    let(:quote_authorization_json) do
+      {
         '@context': [
           'https://www.w3.org/ns/activitystreams',
           {
@@ -954,7 +958,11 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
         attributedTo: ActivityPub::TagManager.instance.uri_for(quoted_status.account),
         interactingObject: ActivityPub::TagManager.instance.uri_for(status),
         interactionTarget: ActivityPub::TagManager.instance.uri_for(quoted_status),
-      }))
+      }
+    end
+
+    before do
+      stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: quote_authorization_json.to_json)
     end
 
     it 'updates the approval URI and verifies the quote' do
@@ -1138,8 +1146,8 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
       }
     end
 
-    before do
-      stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: Oj.dump({
+    let(:quote_authorization_json) do
+      {
         '@context': [
           'https://www.w3.org/ns/activitystreams',
           {
@@ -1164,7 +1172,11 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
         attributedTo: ActivityPub::TagManager.instance.uri_for(quoted_status.account),
         interactingObject: ActivityPub::TagManager.instance.uri_for(status),
         interactionTarget: ActivityPub::TagManager.instance.uri_for(quoted_status),
-      }))
+      }
+    end
+
+    before do
+      stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: quote_authorization_json.to_json)
     end
 
     it 'updates the approval URI and verifies the quote' do
@@ -1203,8 +1215,8 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
       }
     end
 
-    before do
-      stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: Oj.dump({
+    let(:quote_authorization_json) do
+      {
         '@context': [
           'https://www.w3.org/ns/activitystreams',
           {
@@ -1229,7 +1241,11 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
         attributedTo: ActivityPub::TagManager.instance.uri_for(quoted_status.account),
         interactingObject: ActivityPub::TagManager.instance.uri_for(status),
         interactionTarget: ActivityPub::TagManager.instance.uri_for(quoted_status),
-      }))
+      }
+    end
+
+    before do
+      stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: quote_authorization_json.to_json)
     end
 
     it 'updates the approval URI but does not verify the quote' do
@@ -1482,8 +1498,8 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
       }
     end
 
-    before do
-      stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: Oj.dump({
+    let(:quote_authorization_json) do
+      {
         '@context': [
           'https://www.w3.org/ns/activitystreams',
           {
@@ -1508,7 +1524,11 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
         attributedTo: ActivityPub::TagManager.instance.uri_for(quoted_status.account),
         interactingObject: ActivityPub::TagManager.instance.uri_for(status),
         interactionTarget: ActivityPub::TagManager.instance.uri_for(quoted_status),
-      }))
+      }
+    end
+
+    before do
+      stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: quote_authorization_json.to_json)
     end
 
     it 'updates the URI and unverifies the quote' do
@@ -1590,8 +1610,8 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
       }
     end
 
-    before do
-      stub_request(:get, second_approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: Oj.dump({
+    let(:quote_authorization_json) do
+      {
         '@context': [
           'https://www.w3.org/ns/activitystreams',
           {
@@ -1616,7 +1636,11 @@ RSpec.describe ActivityPub::ProcessStatusUpdateService do
         attributedTo: ActivityPub::TagManager.instance.uri_for(second_quoted_status.account),
         interactingObject: ActivityPub::TagManager.instance.uri_for(status),
         interactionTarget: ActivityPub::TagManager.instance.uri_for(second_quoted_status),
-      }))
+      }
+    end
+
+    before do
+      stub_request(:get, second_approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: quote_authorization_json.to_json)
     end
 
     it 'updates the URI and unverifies the quote' do

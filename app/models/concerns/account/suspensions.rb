@@ -36,7 +36,7 @@ module Account::Suspensions
 
     # This terminates all connections for the given account with the streaming
     # server:
-    redis.publish("timeline:system:#{id}", Oj.dump(event: :kill)) if local?
+    redis.publish("timeline:system:#{id}", { event: :kill }.to_json) if local?
   end
 
   def unsuspend!

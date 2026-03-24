@@ -25,7 +25,7 @@ RSpec.describe ActivateRemoteStatusesService, type: :service do
       ],
     }
   end
-  let(:json) { Oj.dump(payload) }
+  let(:json) { payload.to_json }
 
   before do
     stub_request(:get, 'https://example.com/note').to_return(status: 200, body: json, headers: { 'Content-Type': 'application/activity+json' })

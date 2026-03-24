@@ -8,7 +8,7 @@
   = render 'shared/error_messages', object: current_user
 
   = f.simple_fields_for :settings, current_user.settings do |ff|
-    %h4= t 'preferences.visibility'
+    %h2= t 'preferences.visibility'
 
     .fields-group
       = ff.input :stay_privacy, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_stay_privacy'), hint: I18n.t('simple_form.hints.defaults.setting_stay_privacy')
@@ -31,7 +31,7 @@
                  required: false,
                  wrapper: :with_block_label
 
-    %h4= t 'preferences.searchability'
+    %h2= t 'preferences.searchability'
 
     - unless Chewy.enabled?
       %p.hint= t 'preferences.does_not_search'
@@ -44,7 +44,7 @@
                  hint: I18n.t('simple_form.hints.defaults.setting_disallow_unlisted_public_searchability')
 
     - if Chewy.enabled?
-      %h4= t 'preferences.search'
+      %h2= t 'preferences.search'
 
       .fields-row
         .fields-group.fields-row__column.fields-row__column-12

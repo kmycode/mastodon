@@ -144,7 +144,7 @@ RSpec.describe ProcessReferencesService, type: :service do
       let(:text) { 'BT:https://example.com/test_post' }
 
       before do
-        stub_request(:get, 'https://example.com/test_post').to_return(status: 200, body: Oj.dump(object_json), headers: { 'Content-Type' => 'application/activity+json' })
+        stub_request(:get, 'https://example.com/test_post').to_return(status: 200, body: object_json.to_json, headers: { 'Content-Type' => 'application/activity+json' })
         stub_request(:get, 'https://example.com/not_found').to_return(status: 404)
       end
 
@@ -220,7 +220,7 @@ RSpec.describe ProcessReferencesService, type: :service do
       end
 
       before do
-        stub_request(:get, 'https://example.com/test_post').to_return(status: 200, body: Oj.dump(object_json), headers: { 'Content-Type' => 'application/activity+json' })
+        stub_request(:get, 'https://example.com/test_post').to_return(status: 200, body: object_json.to_json, headers: { 'Content-Type' => 'application/activity+json' })
       end
 
       it_behaves_like 'reference once', 'https://example.com/test_post', 'https://example.com/test_post'

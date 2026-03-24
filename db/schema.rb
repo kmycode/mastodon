@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_03_144409) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_18_144837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -164,6 +164,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_144409) do
     t.string "avatar_remote_url"
     t.integer "avatar_storage_schema_version"
     t.datetime "avatar_updated_at", precision: nil
+    t.string "collections_url"
     t.datetime "created_at", precision: nil, null: false
     t.boolean "discoverable"
     t.string "display_name", default: "", null: false
@@ -508,7 +509,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_03_144409) do
   create_table "collections", id: :bigint, default: -> { "timestamp_id('collections'::text)" }, force: :cascade do |t|
     t.bigint "account_id", null: false
     t.datetime "created_at", null: false
-    t.text "description", null: false
+    t.text "description"
+    t.text "description_html"
     t.boolean "discoverable", null: false
     t.integer "item_count", default: 0, null: false
     t.string "language"

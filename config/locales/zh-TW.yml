@@ -762,6 +762,8 @@ zh-TW:
         administrator_description: 擁有此權限的使用者將會略過所有權限
         delete_user_data: 刪除使用者資料
         delete_user_data_description: 允許使用者立刻刪除其他使用者的資料
+        invite_bypass_approval: 邀請未經審核的使用者
+        invite_bypass_approval_description: 允許被這些使用者邀請至此伺服器的人們跳過管理審核許可
         invite_users: 邀請使用者
         invite_users_description: 允許使用者邀請新人加入伺服器
         manage_announcements: 管理公告
@@ -1260,6 +1262,7 @@ zh-TW:
     progress:
       confirm: 驗證電子郵件地址
       details: 您的個人資料
+      list: 註冊流程
       review: 我們的審核
       rules: 接受規則
     providers:
@@ -1275,6 +1278,7 @@ zh-TW:
       invited_by: 您可以藉由來自此處之邀請而加入 %{domain}
       preamble: 這些被 %{domain} 的管管們制定以及實施。
       preamble_invited: 在您繼續之前，請考慮由 %{domain} 管理員設立的伺服器規則。
+      read_more: 閱讀更多
       title: 一些基本守則。
       title_invited: 我們誠摯地邀請您。
     security: 登入資訊

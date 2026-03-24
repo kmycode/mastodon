@@ -778,6 +778,8 @@ da:
         administrator_description: Brugere med denne rolle kan omgå alle tilladelser
         delete_user_data: Slet brugerdata
         delete_user_data_description: Tillader brugere at slette andre brugeres data straks
+        invite_bypass_approval: Invitere brugere uden gennemgang
+        invite_bypass_approval_description: Gør det muligt for personer, der er inviteret til serveren af disse brugere, at undgå moderatorgodkendelse
         invite_users: Invitér brugere
         invite_users_description: Tillader brugere at invitere nye personer til serveren
         manage_announcements: Administrer annonceringer
@@ -1279,6 +1281,7 @@ da:
     progress:
       confirm: Bekræft e-mail
       details: Dine detaljer
+      list: Status for tilmelding
       review: Vores gennemgang
       rules: Acceptér regler
     providers:
@@ -1294,6 +1297,7 @@ da:
       invited_by: 'Du kan tilmelde dig %{domain} takket være den invitation, du har modtaget fra:'
       preamble: Disse er opsat og håndhæves af %{domain}-moderatorerne.
       preamble_invited: Før du fortsætter, bedes du overveje de grundregler, der er fastsat af moderatorerne af %{domain}.
+      read_more: Læs mere
       title: Nogle grundregler.
       title_invited: Du er blevet inviteret.
     security: Sikkerhed

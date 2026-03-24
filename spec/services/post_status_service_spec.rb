@@ -224,7 +224,7 @@ RSpec.describe PostStatusService do
     status = subject.call(account, text: 'test status update')
 
     expect(ProcessMentionsService).to have_received(:new)
-    expect(mention_service).to have_received(:call).with(status, limited_type: '', circle: nil, save_records: false)
+    expect(mention_service).to have_received(:call).with(status, limited_type: '', circle: nil)
   end
 
   it 'self-banned visibility is set' do

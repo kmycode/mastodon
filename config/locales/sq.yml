@@ -773,6 +773,8 @@ sq:
         administrator_description: Përdoruesit me këtë leje do të anashkalojnë çdo leje
         delete_user_data: Të Fshijë të Dhëna Përdoruesi
         delete_user_data_description: U lejon përdoruesve të fshijnë pa humbur kohë të dhëna përdoruesish të tjerë
+        invite_bypass_approval: Ftoni Përdorues pa shqyrtim
+        invite_bypass_approval_description: U lejon personave të ftuar te shërbyesi nga këta përdorues të anashkalojnë miratim nga moderimi
         invite_users: Të Ftojë Përdorues
         invite_users_description: U lejon përdoruesve të ftojë te shërbyesi persona të rinj
         manage_announcements: Të Administrojë Njoftime
@@ -1268,6 +1270,7 @@ sq:
     progress:
       confirm: Ripohoni email-in
       details: Hollësitë tuaja
+      list: Ecuri regjistrimi
       review: Shqyrtimi ynë
       rules: Pranoni rregulla
     providers:
@@ -1283,6 +1286,7 @@ sq:
       invited_by: 'Mund të bëheni pjesë e %{domain} falë ftesës që morët prej:'
       preamble: Këto vendosen dhe zbatimi i tyre është nën kujdesin e moderatorëve të %{domain}.
       preamble_invited: Para se të vazhdoni më tej, ju lutemi, shihni rregullat bazë të vendosura nga moderatorët e %{domain}.
+      read_more: Lexoni më tepër
       title: Disa rregulla bazë.
       title_invited: Jeni ftuar.
     security: Siguri

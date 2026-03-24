@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 
 import type { ModalType } from '@/mastodon/actions/modal';
 import { openModal } from '@/mastodon/actions/modal';
+import { AccountBio } from '@/mastodon/components/account_bio';
 import { Avatar } from '@/mastodon/components/avatar';
 import { Button } from '@/mastodon/components/button';
 import { DismissibleCallout } from '@/mastodon/components/callout/dismissible';
@@ -23,6 +24,7 @@ import { AccountEditColumn, AccountEditEmptyColumn } from './components/column';
 import { EditButton } from './components/edit_button';
 import { AccountField } from './components/field';
 import { AccountFieldActions } from './components/field_actions';
+import { AccountImageEdit } from './components/image_edit';
 import { AccountEditSection } from './components/section';
 import classes from './styles.module.scss';
 
@@ -164,8 +166,12 @@ export const AccountEdit: FC = () => {
       <header>
         <div className={classes.profileImage}>
           {headerSrc && <img src={headerSrc} alt='' />}
+          <AccountImageEdit location='header' />
         </div>
-        <Avatar account={account} size={80} className={classes.avatar} />
+        <div className={classes.avatar}>
+          <Avatar account={account} size={80} />
+          <AccountImageEdit location='avatar' />
+        </div>
       </header>
 
       <CustomEmojiProvider emojis={emojis}>
@@ -196,7 +202,11 @@ export const AccountEdit: FC = () => {
             />
           }
         >
-          <EmojiHTML htmlString={profile.bio} {...htmlHandlers} />
+          <AccountBio
+            showDropdown
+            accountId={profile.id}
+            className={classes.bio}
+          />
         </AccountEditSection>
 
         <AccountEditSection
@@ -205,24 +215,21 @@ export const AccountEdit: FC = () => {
           showDescription={!hasFields}
           buttons={
             <>
-              {profile.fields.length > 1 && (
-                <Button
-                  className={classes.editButton}
-                  onClick={handleCustomFieldReorder}
-                >
-                  <FormattedMessage
-                    id='account_edit.custom_fields.reorder_button'
-                    defaultMessage='Reorder fields'
-                  />
-                </Button>
-              )}
-              {hasFields && (
-                <EditButton
-                  item={messages.customFieldsName}
-                  onClick={handleCustomFieldAdd}
-                  disabled={profile.fields.length >= maxFieldCount}
+              <Button
+                className={classes.editButton}
+                onClick={handleCustomFieldReorder}
+                disabled={profile.fields.length <= 1}
+              >
+                <FormattedMessage
+                  id='account_edit.custom_fields.reorder_button'
+                  defaultMessage='Reorder fields'
                 />
-              )}
+              </Button>
+              <EditButton
+                item={messages.customFieldsName}
+                onClick={handleCustomFieldAdd}
+                disabled={profile.fields.length >= maxFieldCount}
+              />
             </>
           }
         >

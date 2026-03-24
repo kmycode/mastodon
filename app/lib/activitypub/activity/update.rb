@@ -48,7 +48,7 @@ class ActivityPub::Activity::Update < ActivityPub::Activity
   def forward_for_conversation
     return unless @status.conversation.present? && @status.conversation.local? && @json['signature'].present?
 
-    ActivityPub::ForwardConversationWorker.perform_async(Oj.dump(@json), @status.id, true)
+    ActivityPub::ForwardConversationWorker.perform_async(JSON.generate(@json), @status.id, true)
   end
 
   def object_too_old?

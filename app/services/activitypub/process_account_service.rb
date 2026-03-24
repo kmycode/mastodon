@@ -65,13 +65,14 @@ class ActivityPub::ProcessAccountService < BaseService
     unless @options[:only_key] || (@account.suspended? && !@account.remote_pending)
       check_featured_collection! if @json['featured'].present?
       check_featured_tags_collection! if @json['featuredTags'].present?
+      check_featured_collections_collection! if @json['featuredCollections'].present? && Mastodon::Feature.collections_federation_enabled?
       check_links! if @account.fields.any?(&:requires_verification?)
     end
 
     fetch_instance_info
 
     @account
-  rescue Oj::ParseError
+  rescue JSON::ParserError
     nil
   end
 
@@ -142,6 +143,7 @@ class ActivityPub::ProcessAccountService < BaseService
 
   def set_immediate_attributes!
     @account.featured_collection_url = valid_collection_uri(@json['featured'])
+    @account.collections_url         = valid_collection_uri(@json['featuredCollections'])
     @account.display_name            = (@json['name'] || '')[0...(Account::DISPLAY_NAME_LENGTH_HARD_LIMIT)]
     @account.note                    = (@json['summary'] || '')[0...(Account::NOTE_LENGTH_HARD_LIMIT)]
     @account.locked                  = @json['manuallyApprovesFollowers'] || false
@@ -237,6 +239,10 @@ class ActivityPub::ProcessAccountService < BaseService
     ActivityPub::SynchronizeFeaturedTagsCollectionWorker.perform_async(@account.id, @json['featuredTags'])
   end
 
+  def check_featured_collections_collection!
+    ActivityPub::SynchronizeFeaturedCollectionsCollectionWorker.perform_async(@account.id, @options[:request_id])
+  end
+
   def check_links!
     VerifyAccountLinksWorker.perform_in(rand(10.minutes.to_i), @account.id)
   end
@@ -273,7 +279,7 @@ class ActivityPub::ProcessAccountService < BaseService
       url = first_of_value(value['url'])
       url = url['href'] if url.is_a?(Hash)
       description = value['summary'].presence || value['name'].presence
-      description = description.strip[0...MediaAttachment::MAX_DESCRIPTION_LENGTH] if description.present?
+      description = description.strip[0...MediaAttachment::MAX_DESCRIPTION_HARD_LENGTH_LIMIT] if description.present?
     else
       url = value
     end

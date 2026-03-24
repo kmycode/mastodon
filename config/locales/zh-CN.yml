@@ -496,7 +496,7 @@ zh-CN:
       debug:
         callbacks:
           created_at: 创建于
-          delete: 刪除
+          delete: 删除
           ip: IP 地址
           request_body: 请求正文
           title: 调试回调
@@ -504,7 +504,7 @@ zh-CN:
         active: 有效
         base_url: 基础 URL
         callback: 回调
-        delete: 刪除
+        delete: 删除
         edit: 编辑提供商
         finish_registration: 完成注册
         name: 名称
@@ -762,6 +762,8 @@ zh-CN:
         administrator_description: 拥有此权限的用户将绕过所有权限限制。
         delete_user_data: 删除用户数据
         delete_user_data_description: 允许用户立即删除其他用户的数据
+        invite_bypass_approval: 邀请未经审核的用户
+        invite_bypass_approval_description: 允许被这些用户邀请到此服务器的人们绕过管理审核批准
         invite_users: 邀请用户
         invite_users_description: 允许用户邀请新人加入站点
         manage_announcements: 管理公告
@@ -930,7 +932,7 @@ zh-CN:
       with_media: 含有媒体文件
     strikes:
       actions:
-        delete_statuses: "%{name} 刪除了 %{target} 的嘟文"
+        delete_statuses: "%{name} 删除了 %{target} 的嘟文"
         disable: "%{name} 冻结了用户 %{target}"
         mark_statuses_as_sensitive: "%{name} 已将 %{target} 的嘟文标记为敏感内容"
         none: "%{name} 向 %{target} 发送了警告"
@@ -1258,6 +1260,7 @@ zh-CN:
     progress:
       confirm: 确认邮箱
       details: 你的详细信息
+      list: 注册流程
       review: 我们的审核
       rules: 接受规则
     providers:
@@ -1273,6 +1276,7 @@ zh-CN:
       invited_by: 欢迎加入%{domain}，你是通过以下用户的邀请加入的：
       preamble: 以下规则由 %{domain} 的管理员设定并执行。
       preamble_invited: 在继续操作前，请先阅读并同意 %{domain} 管理员设置的基本规则。
+      read_more: 查看更多
       title: 一些基本规则。
       title_invited: 通过邀请加入
     security: 账号安全

@@ -13,6 +13,12 @@ class REST::CollectionSerializer < ActiveModel::Serializer
     object.id.to_s
   end
 
+  def description
+    return object.description if object.local?
+
+    Sanitize.fragment(object.description_html, Sanitize::Config::MASTODON_STRICT)
+  end
+
   def items
     object.items_for(current_user&.account)
   end

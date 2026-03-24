@@ -38,7 +38,7 @@ RSpec.describe ActivityPub::Activity::Create do
     stub_request(:get, 'http://example.com/attachment.png').to_return(request_fixture('avatar.txt'))
     stub_request(:get, 'http://example.com/emoji.png').to_return(body: attachment_fixture('emojo.png'))
     stub_request(:get, 'http://example.com/emojib.png').to_return(body: attachment_fixture('emojo.png'), headers: { 'Content-Type' => 'application/octet-stream' })
-    stub_request(:get, 'http://example.com/conversation').to_return(body: Oj.dump(conversation_hash), headers: { 'Content-Type': 'application/activity+json' })
+    stub_request(:get, 'http://example.com/conversation').to_return(body: conversation_hash.to_json, headers: { 'Content-Type': 'application/activity+json' })
     stub_request(:get, 'http://example.com/invalid-conversation').to_return(status: 404)
   end
 
@@ -1233,8 +1233,8 @@ RSpec.describe ActivityPub::Activity::Create do
           end
 
           before do
-            stub_request(:get, 'https://foo.test').to_return(status: 200, body: Oj.dump(actor_json), headers: { 'Content-Type': 'application/activity+json' })
-            stub_request(:get, 'https://foo.test/.well-known/webfinger?resource=acct:actor@foo.test').to_return(status: 200, body: Oj.dump(webfinger), headers: { 'Content-Type': 'application/jrd+json' })
+            stub_request(:get, 'https://foo.test').to_return(status: 200, body: actor_json.to_json, headers: { 'Content-Type': 'application/activity+json' })
+            stub_request(:get, 'https://foo.test/.well-known/webfinger?resource=acct:actor@foo.test').to_return(status: 200, body: webfinger.to_json, headers: { 'Content-Type': 'application/jrd+json' })
             stub_request(:post, 'https://foo.test/inbox').to_return(status: 200)
             stub_request(:get, 'https://foo.test/.well-known/nodeinfo').to_return(status: 200, headers: { 'Content-Type': 'application/activity+json' })
           end
@@ -1839,8 +1839,8 @@ RSpec.describe ActivityPub::Activity::Create do
           )
         end
 
-        before do
-          stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: Oj.dump({
+        let(:quote_authorization_json) do
+          {
             '@context': [
               'https://www.w3.org/ns/activitystreams',
               {
@@ -1865,7 +1865,11 @@ RSpec.describe ActivityPub::Activity::Create do
             attributedTo: ActivityPub::TagManager.instance.uri_for(quoted_status.account),
             interactingObject: object_json[:id],
             interactionTarget: ActivityPub::TagManager.instance.uri_for(quoted_status),
-          }))
+          }
+        end
+
+        before do
+          stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: quote_authorization_json.to_json)
         end
 
         it 'creates a status with a verified quote' do
@@ -1917,8 +1921,8 @@ RSpec.describe ActivityPub::Activity::Create do
           )
         end
 
-        before do
-          stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: Oj.dump({
+        let(:quote_authorization_json) do
+          {
             '@context': [
               'https://www.w3.org/ns/activitystreams',
               {
@@ -1943,7 +1947,11 @@ RSpec.describe ActivityPub::Activity::Create do
             attributedTo: ActivityPub::TagManager.instance.uri_for(quoted_status.account),
             interactingObject: object_json[:id],
             interactionTarget: ActivityPub::TagManager.instance.uri_for(quoted_status),
-          }))
+          }
+        end
+
+        before do
+          stub_request(:get, approval_uri).to_return(headers: { 'Content-Type': 'application/activity+json' }, body: quote_authorization_json.to_json)
         end
 
         it 'creates a status without the verified quote' do
@@ -2715,7 +2723,7 @@ RSpec.describe ActivityPub::Activity::Create do
       before do
         stub_request(:get, object_json[:id])
           .with(headers: { Authorization: "Bearer #{token}" })
-          .to_return(body: Oj.dump(object_json), headers: { 'Content-Type': 'application/activity+json' })
+          .to_return(body: object_json.to_json, headers: { 'Content-Type': 'application/activity+json' })
 
         subject.perform
       end

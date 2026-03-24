@@ -10,7 +10,7 @@
 
   %p.lead= t('privacy_extra.hint_html')
 
-  %h4= t('privacy_extra.post_processing')
+  %h2= t('privacy_extra.post_processing')
 
   %p.lead= t('privacy_extra.post_processing_hint_html')
 
@@ -19,7 +19,7 @@
       = ff.input :translatable_private, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_translatable_private')
 
     - if Setting.enable_emoji_reaction
-      %h4= t 'preferences.emoji_reaction_permitting'
+      %h2= t 'preferences.emoji_reaction_permitting'
 
       .fields-row
         .fields-group.fields-row__column.fields-row__column-12
@@ -37,7 +37,7 @@
       .fields-group
         = ff.input :slip_local_emoji_reaction, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_slip_local_emoji_reaction')
 
-  %h4= t 'privacy_extra.stop_deliver'
+  %h2= t 'privacy_extra.stop_deliver'
 
   %p.lead= t('privacy_extra.stop_deliver_hint_html')
 

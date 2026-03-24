@@ -12,7 +12,9 @@ RSpec.describe BackupService do
   let!(:limited_status) { Fabricate(:status, account: user.account, text: 'sec mutual', visibility: :limited, limited_scope: :mutual) }
   let!(:reblog_status)  { Fabricate(:status, account: user.account, reblog_of_id: Fabricate(:status).id) }
   let!(:favourite)      { Fabricate(:favourite, account: user.account) }
+  let!(:more_favourite) { Fabricate(:favourite, account: user.account) }
   let!(:bookmark)       { Fabricate(:bookmark, account: user.account) }
+  let!(:more_bookmark)  { Fabricate(:bookmark, account: user.account) }
   let!(:backup)         { Fabricate(:backup, user: user) }
 
   def read_zip_file(backup, filename)
@@ -58,7 +60,7 @@ RSpec.describe BackupService do
 
   def expect_outbox_export
     body = export_json_raw(:outbox)
-    json = Oj.load(body)
+    json = JSON.parse(body)
 
     aggregate_failures do
       expect(body.scan('@context').count).to eq 1
@@ -75,21 +77,27 @@ RSpec.describe BackupService do
   end
 
   def expect_likes_export
-    json = export_json(:likes)
-
-    aggregate_failures do
-      expect(json['type']).to eq 'OrderedCollection'
-      expect(json['orderedItems']).to eq [ActivityPub::TagManager.instance.uri_for(favourite.status)]
-    end
+    expect(export_json(:likes).deep_symbolize_keys)
+      .to include(
+        id: 'likes.json',
+        type: 'OrderedCollection',
+        orderedItems: contain_exactly(
+          ActivityPub::TagManager.instance.uri_for(favourite.status),
+          ActivityPub::TagManager.instance.uri_for(more_favourite.status)
+        )
+      )
   end
 
   def expect_bookmarks_export
-    json = export_json(:bookmarks)
-
-    aggregate_failures do
-      expect(json['type']).to eq 'OrderedCollection'
-      expect(json['orderedItems']).to eq [ActivityPub::TagManager.instance.uri_for(bookmark.status)]
-    end
+    expect(export_json(:bookmarks).deep_symbolize_keys)
+      .to include(
+        id: 'bookmarks.json',
+        type: 'OrderedCollection',
+        orderedItems: contain_exactly(
+          ActivityPub::TagManager.instance.uri_for(bookmark.status),
+          ActivityPub::TagManager.instance.uri_for(more_bookmark.status)
+        )
+      )
   end
 
   def export_json_raw(type)
@@ -97,7 +105,7 @@ RSpec.describe BackupService do
   end
 
   def export_json(type)
-    Oj.load(export_json_raw(type))
+    JSON.parse(export_json_raw(type))
   end
 
   def include_create_item(status)

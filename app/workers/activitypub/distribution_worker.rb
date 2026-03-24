@@ -65,15 +65,15 @@ class ActivityPub::DistributionWorker < ActivityPub::RawDistributionWorker
   end
 
   def payload
-    @payload ||= Oj.dump(serialize_payload(@status, activity_serializer, serializer_options.merge(signer: @account, always_sign_unsafe: always_sign)))
+    @payload ||= serialize_payload(@status, activity_serializer, serializer_options.merge(signer: @account, always_sign_unsafe: always_sign)).to_json
   end
 
   def payload_for_misskey
-    @payload_for_misskey ||= Oj.dump(serialize_payload(@status, activity_serializer, serializer_options.merge(signer: @account, for_misskey: true)))
+    @payload_for_misskey ||= serialize_payload(@status, activity_serializer, serializer_options.merge(signer: @account, for_misskey: true)).to_json
   end
 
   def payload_for_friend
-    @payload_for_friend ||= Oj.dump(serialize_payload(@status, activity_serializer, serializer_options.merge(signer: @account, for_friend: true, always_sign_unsafe: always_sign)))
+    @payload_for_friend ||= serialize_payload(@status, activity_serializer, serializer_options.merge(signer: @account, for_friend: true, always_sign_unsafe: always_sign)).to_json
   end
 
   def activity_serializer

@@ -173,12 +173,16 @@ class User < ApplicationRecord
     invite_id.present? && invite.valid_for_use?
   end
 
+  def valid_bypassing_invitation?
+    valid_invitation? && invite.bypass_approval?
+  end
+
   def disable!
     update!(disabled: true)
 
     # This terminates all connections for the given account with the streaming
     # server:
-    redis.publish("timeline:system:#{account.id}", Oj.dump(event: :kill))
+    redis.publish("timeline:system:#{account.id}", { event: :kill }.to_json)
   end
 
   def enable!
@@ -214,8 +218,10 @@ class User < ApplicationRecord
 
     increment(:sign_in_count) if new_sign_in
 
-    save(validate: false) unless new_record?
-    prepare_returning_user!
+    unless new_record?
+      save(validate: false)
+      prepare_returning_user!
+    end
   end
 
   def disable_css
@@ -366,7 +372,7 @@ class User < ApplicationRecord
       # Revoke each access token for the Streaming API, since `update_all``
       # doesn't trigger ActiveRecord Callbacks:
       # TODO: #28793 Combine into a single topic
-      payload = Oj.dump(event: :kill)
+      payload = { event: :kill }.to_json
       redis.pipelined do |pipeline|
         batch.ids.each do |id|
           pipeline.publish("timeline:access_token:#{id}", payload)
@@ -439,7 +445,7 @@ class User < ApplicationRecord
       if requires_approval?
         false
       else
-        open_registrations? || valid_invitation? || external?
+        open_registrations? || valid_bypassing_invitation? || external?
       end
     end
   end
@@ -482,18 +488,15 @@ class User < ApplicationRecord
   end
 
   def sign_up_email_requires_approval?
-    return false if email.blank?
-
-    _, domain = email.split('@', 2)
-    return false if domain.blank?
+    return false if email_domain.blank?
 
     records = []
 
     # Doing this conditionally is not very satisfying, but this is consistent
     # with the MX records validations we do and keeps the specs tractable.
-    records = DomainResource.new(domain).mx unless self.class.skip_mx_check?
+    records = DomainResource.new(email_domain).mx unless self.class.skip_mx_check?
 
-    EmailDomainBlock.requires_approval?(records + [domain], attempt_ip: sign_up_ip)
+    EmailDomainBlock.requires_approval?(records + [email_domain], attempt_ip: sign_up_ip)
   end
 
   def sign_up_username_requires_approval?

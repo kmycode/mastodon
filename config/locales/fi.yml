@@ -778,6 +778,7 @@ fi:
         administrator_description: Käyttäjät, joilla on tämä käyttöoikeus, ohittavat jokaisen käyttöoikeuden
         delete_user_data: Poistaa käyttäjän tiedot
         delete_user_data_description: Sallii käyttäjien poistaa muiden käyttäjien tiedot viipymättä
+        invite_bypass_approval: Kutsu käyttäjiä arvioimatta
         invite_users: Kutsua käyttäjiä
         invite_users_description: Sallii käyttäjien kutsua uusia käyttäjiä palvelimelle
         manage_announcements: Hallita tiedotteita
@@ -1219,7 +1220,7 @@ fi:
     advanced_settings: Edistyneet asetukset
     animations_and_accessibility: Animaatiot ja saavutettavuus
     boosting_preferences: Tehostusasetukset
-    boosting_preferences_info_html: "<strong>Vihje:</strong> Asetuksista riippumatta <kbd>Vaihto</kbd> + <kbd>napsautus</kbd> %{icon} Tehosta-kuvakkeeseen tehostaa välittömästi."
+    boosting_preferences_info_html: "<strong>Vinkki:</strong> Asetuksista riippumatta <kbd>Vaihto</kbd> + <kbd>napsautus</kbd> %{icon} Tehosta-kuvakkeeseen tehostaa välittömästi."
     discovery: Löydettävyys
     localization:
       body: Mastodonin ovat kääntäneet vapaaehtoiset.
@@ -1279,6 +1280,7 @@ fi:
     progress:
       confirm: Vahvista sähköpostiosoite
       details: Omat tietosi
+      list: Rekisteröitymisprosessi
       review: Arviomme
       rules: Hyväksy säännöt
     providers:
@@ -1294,6 +1296,7 @@ fi:
       invited_by: 'Voit liittyä palvelimelle %{domain} kutsulla, jonka sait seuraavalta käyttäjältä:'
       preamble: Palvelimen %{domain} moderaattorit määrittävät ja valvovat sääntöjä.
       preamble_invited: Ennen kuin jatkat ota huomioon palvelimen %{domain} moderaattorien asettamat perussäännöt.
+      read_more: Lue lisää
       title: Joitakin perussääntöjä.
       title_invited: Sinut on kutsuttu.
     security: Turvallisuus
@@ -1333,7 +1336,7 @@ fi:
     title: Tekijän nimeäminen
   challenge:
     confirm: Jatka
-    hint_html: "<strong>Vihje:</strong> Emme pyydä sinulta salasanaa uudelleen seuraavan tunnin aikana."
+    hint_html: "<strong>Vinkki:</strong> Emme pyydä sinulta salasanaa uudelleen seuraavan tunnin aikana."
     invalid_password: Väärä salasana
     prompt: Jatka vahvistalla salasanasi
   color_scheme:
