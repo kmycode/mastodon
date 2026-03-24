@@ -410,7 +410,7 @@ class Status < ApplicationRecord
 
     permitted_account_ids = options[:permitted_account_ids]
 
-    (JSON.parse(status_stat&.emoji_reactions || '[]') || []).tap do |emoji_reactions|
+    JSON.parse(status_stat&.emoji_reactions.presence || '[]').tap do |emoji_reactions|
       if account.present?
         public_emoji_reactions = []
 
