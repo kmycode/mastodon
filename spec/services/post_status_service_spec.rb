@@ -566,6 +566,16 @@ RSpec.describe PostStatusService do
     expect(status.quote.quoted_status_id).to eq target_status.id
   end
 
+  it 'processes tagged objects' do
+    account = Fabricate(:account)
+    collection = Fabricate(:collection)
+
+    status = subject.call(account, text: "test #{ActivityPub::TagManager.instance.uri_for(collection)} #{ActivityPub::TagManager.instance.uri_for(collection)}")
+
+    expect(status.tagged_objects.map(&:object))
+      .to contain_exactly(collection)
+  end
+
   it 'gets distributed' do
     allow(DistributionWorker).to receive(:perform_async)
     allow(ActivityPub::DistributionWorker).to receive(:perform_async)

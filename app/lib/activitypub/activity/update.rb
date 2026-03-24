@@ -13,6 +13,8 @@ class ActivityPub::Activity::Update < ActivityPub::Activity
       update_account
     elsif supported_object_type? || converted_object_type?
       update_status
+    elsif equals_or_includes_any?(@object['type'], ['FeaturedCollection']) && Mastodon::Feature.collections_federation_enabled?
+      update_collection
     end
   end
 
@@ -49,6 +51,12 @@ class ActivityPub::Activity::Update < ActivityPub::Activity
     return unless @status.conversation.present? && @status.conversation.local? && @json['signature'].present?
 
     ActivityPub::ForwardConversationWorker.perform_async(JSON.generate(@json), @status.id, true)
+  end
+
+  def update_collection
+    return reject_payload! if non_matching_uri_hosts?(@account.uri, object_uri)
+
+    ActivityPub::ProcessFeaturedCollectionService.new.call(@account, @object)
   end
 
   def object_too_old?

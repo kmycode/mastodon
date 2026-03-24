@@ -52,6 +52,23 @@ class Status < ApplicationRecord
   include DtlHelper
   include Status::InteractionPolicyConcern
 
+  CACHEABLE_ASSOCIATIONS = [
+    :application,
+    :conversation,
+    :media_attachments,
+    :preloadable_poll,
+    :status_stat,
+    :tags,
+    :reference_objects,
+    :references,
+    :scheduled_expiration_status,
+    account: [:account_stat, user: :role],
+    active_mentions: :account,
+    tagged_objects: :object,
+    preview_cards_status: { preview_card: { author_account: [:account_stat, user: :role] } },
+    quote: { status: { account: [:account_stat, user: :role] } },
+  ].freeze
+
   MEDIA_ATTACHMENTS_LIMIT = 4
   MEDIA_ATTACHMENTS_LIMIT_WITH_POLL = 4
   MEDIA_ATTACHMENTS_LIMIT_FROM_REMOTE = 16
@@ -89,6 +106,7 @@ class Status < ApplicationRecord
   has_many :mentions, dependent: :destroy, inverse_of: :status
   has_many :mentioned_accounts, through: :mentions, source: :account, class_name: 'Account'
   has_many :media_attachments, dependent: :nullify
+  has_many :tagged_objects, dependent: :destroy
   has_many :quotes, foreign_key: 'quoted_status_id', inverse_of: :quoted_status, dependent: :nullify
   has_many :reference_objects, class_name: 'StatusReference', inverse_of: :status, dependent: :destroy
   has_many :references, through: :reference_objects, class_name: 'Status', source: :target_status
@@ -188,34 +206,11 @@ class Status < ApplicationRecord
   # the `dependent: destroy` callbacks remove relevant records
   before_destroy :unlink_from_conversations!, prepend: true
 
-  cache_associated :application,
-                   :media_attachments,
-                   :conversation,
-                   :status_stat,
-                   :tags,
-                   :preloadable_poll,
-                   :reference_objects,
-                   :references,
-                   :scheduled_expiration_status,
-                   quote: { status: { account: [:account_stat, user: :role] } },
-                   preview_cards_status: { preview_card: { author_account: [:account_stat, user: :role] } },
-                   account: [:account_stat, user: :role],
-                   active_mentions: :account,
-                   reblog: [
-                     :application,
-                     :media_attachments,
-                     :conversation,
-                     :status_stat,
-                     :tags,
-                     :preloadable_poll,
-                     :reference_objects,
-                     :scheduled_expiration_status,
-                     quote: { status: { account: [:account_stat, user: :role] } },
-                     preview_cards_status: { preview_card: { author_account: [:account_stat, user: :role] } },
-                     account: [:account_stat, user: :role],
-                     active_mentions: { account: :account_stat },
-                   ],
-                   thread: :account
+  cache_associated(
+    *CACHEABLE_ASSOCIATIONS,
+    reblog: [*CACHEABLE_ASSOCIATIONS],
+    thread: :account
+  )
 
   delegate :domain, :indexable?, to: :account, prefix: true
 

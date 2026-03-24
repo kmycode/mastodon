@@ -167,6 +167,7 @@ class PostStatusService < BaseService
     UpdateStatusExpirationService.new.call(@status)
 
     safeguard_private_mention_quote!(@status)
+    attach_tagged_objects!(@status)
     attach_quote!(@status)
 
     antispam = Antispam.new(@status)
@@ -201,6 +202,10 @@ class PostStatusService < BaseService
     elsif Setting.auto_accept_legacy_quotes
       status.quote.accept! if InstanceInfo.legacy_quote_software?(@quoted_status.account.domain)
     end
+  end
+
+  def attach_tagged_objects!(status)
+    ProcessLinksService.new.call(status)
   end
 
   def safeguard_mentions!(status)
