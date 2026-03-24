@@ -29,7 +29,7 @@ RSpec.describe Account::Avatar do
   describe 'convertable avatars', :attachment_processing do
     describe 'with AVIF' do
       it 'creates a jpeg static style' do
-        account = Fabricate(fabricator, avatar: attachment_fixture('avatar.avif'))
+        account = Fabricate(:account, avatar: attachment_fixture('avatar.avif'))
         expect(account.avatar_original_url.end_with?('.jpeg')).to be true
       end
     end

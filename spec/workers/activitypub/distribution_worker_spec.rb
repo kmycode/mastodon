@@ -32,9 +32,10 @@ RSpec.describe ActivityPub::DistributionWorker do
       end
 
       it 'delivers to followers' do
-        expect_push_bulk_to_match(ActivityPub::DeliveryWorker, [[kind_of(String), status.account.id, 'http://example.com', anything]]) do
-          subject.perform(status.id)
-        end
+        subject.perform(status.id)
+
+        expect(ActivityPub::DeliveryWorker)
+          .to have_enqueued_sidekiq_job(match_json_values(type: 'Create'), status.account.id, 'http://example.com', anything)
       end
     end
 
@@ -59,9 +60,10 @@ RSpec.describe ActivityPub::DistributionWorker do
       end
 
       it 'delivers to followers' do
-        expect_push_bulk_to_match(ActivityPub::DeliveryWorker, [[kind_of(String), status.account.id, 'http://example.com/follower/inbox', anything]]) do
-          subject.perform(status.id)
-        end
+        subject.perform(status.id)
+
+        expect(ActivityPub::DeliveryWorker)
+          .to have_enqueued_sidekiq_job(match_json_values(type: 'Create'), status.account.id, 'http://example.com/follower/inbox', anything)
       end
     end
 
@@ -91,9 +93,10 @@ RSpec.describe ActivityPub::DistributionWorker do
       end
 
       it 'delivers to followers' do
-        expect_push_bulk_to_match(ActivityPub::DeliveryWorker, [[kind_of(String), status.account.id, 'http://example.com/no_follower/inbox', anything]]) do
-          subject.perform(status.id)
-        end
+        subject.perform(status.id)
+
+        expect(ActivityPub::DeliveryWorker)
+          .to have_enqueued_sidekiq_job(match_json_values(type: 'Create'), status.account.id, 'http://example.com/no_follower/inbox', anything)
       end
     end
 

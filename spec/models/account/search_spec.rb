@@ -203,7 +203,7 @@ RSpec.describe Account::Search do
         )
         match.follow!(account)
 
-        results = described_class.advanced_search_for('A?l\i:c e', account, limit: 10, follower: true)
+        results = Account.advanced_search_for('A?l\i:c e', account, limit: 10, follower: true)
         expect(results).to eq [match]
       end
 
@@ -215,7 +215,7 @@ RSpec.describe Account::Search do
           domain: 'example.com'
         )
 
-        results = described_class.advanced_search_for('A?l\i:c e', account, limit: 10, follower: true)
+        results = Account.advanced_search_for('A?l\i:c e', account, limit: 10, follower: true)
         expect(results).to eq []
       end
     end
