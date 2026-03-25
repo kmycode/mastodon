@@ -15,9 +15,8 @@ class ActivityPub::VerifyQuoteService < BaseService
 
     fetch_quoted_post_if_needed!(fetchable_quoted_uri, prefetched_body: prefetched_quoted_object)
 
-    return quote.accept! if Setting.auto_accept_legacy_quotes && (quote.legacy || (legacy_quote_available? && quote.approval_uri == 'http://kmy.blue/ns#LegacyQuote'))
+    return quote.accept!(legacy: true) if Setting.auto_accept_legacy_quotes && (quote.legacy || (legacy_quote_available? && approval_uri == 'http://kmy.blue/ns#LegacyQuote'))
 
-    return if quote.approval_uri == 'http://kmy.blue/ns#LegacyQuote'
     return if quote.quoted_account&.local?
     return if fast_track_approval! || @approval_uri.blank?
 
