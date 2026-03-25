@@ -57,6 +57,10 @@ class Quote < ApplicationRecord
     reset_parent_cache! if attribute_previously_changed?(:state)
   end
 
+  def pend_legacy!
+    update!(approval_uri: 'http://kmy.blue/ns#LegacyQuote')
+  end
+
   def reject!
     if accepted?
       update!(state: :revoked, approval_uri: nil)

@@ -302,7 +302,9 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
     @quote_approval_uri = @status_parser.quote_approval_uri
     @quote_approval_uri = 'http://kmy.blue/ns#LegacyQuote' if @quote_approval_uri == 'kmyblue:LegacyQuote'
-    @quote_approval_uri = nil if unsupported_uri_scheme?(@quote_approval_uri) || (@quote_approval_uri != 'http://kmy.blue/ns#LegacyQuote' && TagManager.instance.local_url?(@quote_approval_uri))
+    @quote_approval_uri = nil if
+      unsupported_uri_scheme?(@quote_approval_uri) ||
+      (@quote_approval_uri != 'http://kmy.blue/ns#LegacyQuote' && TagManager.instance.local_url?(@quote_approval_uri))
     @quote = Quote.new(account: @account, approval_uri: nil, legacy: @status_parser.legacy_quote?, state: @status_parser.deleted_quote? ? :deleted : :pending)
   end
 
