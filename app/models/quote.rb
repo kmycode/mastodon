@@ -45,9 +45,11 @@ class Quote < ApplicationRecord
   after_destroy_commit :decrement_counter_caches!
   after_update_commit :update_counter_caches!
 
-  def accept!(approval_uri: nil)
+  def accept!(approval_uri: nil, legacy: false)
     if approval_uri.present?
       update!(state: :accepted, approval_uri:)
+    elsif legacy
+      update!(state: :accepted, approval_uri: 'http://kmy.blue/ns#LegacyQuote')
     else
       update!(state: :accepted)
     end
