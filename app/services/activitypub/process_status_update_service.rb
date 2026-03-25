@@ -62,7 +62,7 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
         create_edits!
       end
 
-      fetch_and_verify_quote!(@quote, @status_parser.quote_uri) if @quote.present?
+      fetch_and_verify_quote!(@quote, @quote_approval_uri, @status_parser.quote_uri) if @quote.present?
       update_references!
       download_media_files!
       queue_poll_notifications!
@@ -393,9 +393,9 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
     approval_uri = @status_parser.quote_approval_uri
     approval_uri = nil if unsupported_uri_scheme?(approval_uri) || TagManager.instance.local_url?(approval_uri)
 
-    quote.update(approval_uri: approval_uri, state: :pending, legacy: @status_parser.legacy_quote?) if quote.approval_uri != @status_parser.quote_approval_uri
+    quote.update(approval_uri: nil, state: :pending, legacy: @status_parser.legacy_quote?) if quote.approval_uri.present? && quote.approval_uri != @status_parser.quote_approval_uri
 
-    fetch_and_verify_quote!(quote, quote_uri)
+    fetch_and_verify_quote!(quote, approval_uri, quote_uri)
   end
 
   def update_quote!
@@ -411,18 +411,20 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
           # Revoke the quote while we get a chance… maybe this should be a `before_destroy` hook?
           RevokeQuoteService.new.call(@status.quote) if @status.quote.quoted_account&.local? && @status.quote.accepted?
           @status.quote.destroy
-          quote = Quote.create(status: @status, approval_uri: approval_uri, legacy: @status_parser.legacy_quote?, state: @status_parser.deleted_quote? ? :deleted : :pending)
+          quote = Quote.create(status: @status, approval_uri: nil, legacy: @status_parser.legacy_quote?, state: @status_parser.deleted_quote? ? :deleted : :pending)
           @quote_changed = true
         else
           quote = @status.quote
-          quote.update(approval_uri: approval_uri, state: :pending, legacy: @status_parser.legacy_quote?) if quote.approval_uri != approval_uri
+          quote.update(approval_uri: nil, state: :pending, legacy: @status_parser.legacy_quote?) if quote.approval_uri.present? && quote.approval_uri != approval_uri
         end
       else
-        quote = Quote.create(status: @status, approval_uri: approval_uri, legacy: @status_parser.legacy_quote?)
+        quote = Quote.create(status: @status, approval_uri: nil, legacy: @status_parser.legacy_quote?)
         @quote_changed = true
       end
 
       @quote = quote
+      @quote_approval_uri = approval_uri
+
       quote.save
     elsif @status.quote.present?
       @quote = nil
@@ -431,11 +433,11 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
     end
   end
 
-  def fetch_and_verify_quote!(quote, quote_uri)
+  def fetch_and_verify_quote!(quote, approval_uri, quote_uri)
     embedded_quote = safe_prefetched_embed(@account, @status_parser.quoted_object, @activity_json['context'])
-    ActivityPub::VerifyQuoteService.new.call(quote, fetchable_quoted_uri: quote_uri, prefetched_quoted_object: embedded_quote, request_id: @request_id)
+    ActivityPub::VerifyQuoteService.new.call(quote, approval_uri, fetchable_quoted_uri: quote_uri, prefetched_quoted_object: embedded_quote, request_id: @request_id)
   rescue Mastodon::UnexpectedResponseError, *Mastodon::HTTP_CONNECTION_ERRORS
-    ActivityPub::RefetchAndVerifyQuoteWorker.perform_in(rand(30..600).seconds, quote.id, quote_uri, { 'request_id' => @request_id })
+    ActivityPub::RefetchAndVerifyQuoteWorker.perform_in(rand(30..600).seconds, quote.id, quote_uri, { 'request_id' => @request_id, 'approval_uri' => approval_uri })
   end
 
   def update_counts!
@@ -519,6 +521,11 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
     # expiration date, and people have voted, schedule a notification
 
     return unless poll.present? && poll.expires_at.present? && poll.votes.exists?
+
+    # If the poll had previously expired, notifications should have already been sent out (or scheduled),
+    # and re-scheduling them would cause duplicate notifications for people who had already dismissed them
+    # (see #37948)
+    return if @previous_expires_at&.past?
 
     PollExpirationNotifyWorker.remove_from_scheduled(poll.id) if @previous_expires_at.present? && @previous_expires_at > poll.expires_at
     PollExpirationNotifyWorker.perform_at(poll.expires_at + 5.minutes, poll.id)
