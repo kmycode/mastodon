@@ -52,6 +52,23 @@ class Status < ApplicationRecord
   include DtlHelper
   include Status::InteractionPolicyConcern
 
+  CACHEABLE_ASSOCIATIONS = [
+    :application,
+    :conversation,
+    :media_attachments,
+    :preloadable_poll,
+    :status_stat,
+    :tags,
+    :reference_objects,
+    :references,
+    :scheduled_expiration_status,
+    account: [:account_stat, user: :role],
+    active_mentions: :account,
+    tagged_objects: :object,
+    preview_cards_status: { preview_card: { author_account: [:account_stat, user: :role] } },
+    quote: { status: { account: [:account_stat, user: :role] } },
+  ].freeze
+
   MEDIA_ATTACHMENTS_LIMIT = 4
   MEDIA_ATTACHMENTS_LIMIT_WITH_POLL = 4
   MEDIA_ATTACHMENTS_LIMIT_FROM_REMOTE = 16
@@ -89,6 +106,7 @@ class Status < ApplicationRecord
   has_many :mentions, dependent: :destroy, inverse_of: :status
   has_many :mentioned_accounts, through: :mentions, source: :account, class_name: 'Account'
   has_many :media_attachments, dependent: :nullify
+  has_many :tagged_objects, dependent: :destroy
   has_many :quotes, foreign_key: 'quoted_status_id', inverse_of: :quoted_status, dependent: :nullify
   has_many :reference_objects, class_name: 'StatusReference', inverse_of: :status, dependent: :destroy
   has_many :references, through: :reference_objects, class_name: 'Status', source: :target_status
@@ -188,34 +206,11 @@ class Status < ApplicationRecord
   # the `dependent: destroy` callbacks remove relevant records
   before_destroy :unlink_from_conversations!, prepend: true
 
-  cache_associated :application,
-                   :media_attachments,
-                   :conversation,
-                   :status_stat,
-                   :tags,
-                   :preloadable_poll,
-                   :reference_objects,
-                   :references,
-                   :scheduled_expiration_status,
-                   quote: { status: { account: [:account_stat, user: :role] } },
-                   preview_cards_status: { preview_card: { author_account: [:account_stat, user: :role] } },
-                   account: [:account_stat, user: :role],
-                   active_mentions: :account,
-                   reblog: [
-                     :application,
-                     :media_attachments,
-                     :conversation,
-                     :status_stat,
-                     :tags,
-                     :preloadable_poll,
-                     :reference_objects,
-                     :scheduled_expiration_status,
-                     quote: { status: { account: [:account_stat, user: :role] } },
-                     preview_cards_status: { preview_card: { author_account: [:account_stat, user: :role] } },
-                     account: [:account_stat, user: :role],
-                     active_mentions: { account: :account_stat },
-                   ],
-                   thread: :account
+  cache_associated(
+    *CACHEABLE_ASSOCIATIONS,
+    reblog: [*CACHEABLE_ASSOCIATIONS],
+    thread: :account
+  )
 
   delegate :domain, :indexable?, to: :account, prefix: true
 
@@ -410,7 +405,7 @@ class Status < ApplicationRecord
 
     permitted_account_ids = options[:permitted_account_ids]
 
-    (Oj.load(status_stat&.emoji_reactions || '', mode: :strict) || []).tap do |emoji_reactions|
+    JSON.parse(status_stat&.emoji_reactions.presence || '[]').tap do |emoji_reactions|
       if account.present?
         public_emoji_reactions = []
 
@@ -440,7 +435,7 @@ class Status < ApplicationRecord
 
   def generate_emoji_reactions_grouped_by_name
     records = emoji_reactions.group(:name).order(Arel.sql('MIN(created_at) ASC')).select('name, min(custom_emoji_id) as custom_emoji_id, count(*) as count, array_agg(account_id::text order by created_at) as account_ids')
-    Oj.dump(ActiveModelSerializers::SerializableResource.new(records, each_serializer: REST::EmojiReactionsGroupedByNameSerializer, scope: nil, scope_name: :current_user))
+    ActiveModelSerializers::SerializableResource.new(records, each_serializer: REST::EmojiReactionsGroupedByNameSerializer, scope: nil, scope_name: :current_user).to_json
   end
 
   def refresh_emoji_reactions_grouped_by_name!
@@ -504,7 +499,7 @@ class Status < ApplicationRecord
 
   class << self
     def favourites_map(status_ids, account_id)
-      Favourite.select(:status_id).where(status_id: status_ids).where(account_id: account_id).each_with_object({}) { |f, h| h[f.status_id] = true }
+      Favourite.select(:status_id).where(status_id: status_ids).where(account_id: account_id).to_h { |f| [f.status_id, true] }
     end
 
     def bookmarks_map(status_ids, account_id)
@@ -512,15 +507,15 @@ class Status < ApplicationRecord
     end
 
     def reblogs_map(status_ids, account_id)
-      unscoped.select(:reblog_of_id).where(reblog_of_id: status_ids).where(account_id: account_id).each_with_object({}) { |s, h| h[s.reblog_of_id] = true }
+      unscoped.select(:reblog_of_id).where(reblog_of_id: status_ids).where(account_id: account_id).to_h { |s| [s.reblog_of_id, true] }
     end
 
     def mutes_map(conversation_ids, account_id)
-      ConversationMute.select(:conversation_id).where(conversation_id: conversation_ids).where(account_id: account_id).each_with_object({}) { |m, h| h[m.conversation_id] = true }
+      ConversationMute.select(:conversation_id).where(conversation_id: conversation_ids).where(account_id: account_id).to_h { |m| [m.conversation_id, true] }
     end
 
     def pins_map(status_ids, account_id)
-      StatusPin.select(:status_id).where(status_id: status_ids).where(account_id: account_id).each_with_object({}) { |p, h| h[p.status_id] = true }
+      StatusPin.select(:status_id).where(status_id: status_ids).where(account_id: account_id).to_h { |p| [p.status_id, true] }
     end
 
     def emoji_reaction_allows_map(status_ids, account_id)

@@ -16,7 +16,7 @@ class ActivityPub::EmojiReactionDistributionWorker < ActivityPub::RawDistributio
   protected
 
   def payload
-    @payload ||= Oj.dump(serialize_payload(@emoji_reaction, ActivityPub::EmojiReactionSerializer, signer: @account))
+    @payload ||= serialize_payload(@emoji_reaction, ActivityPub::EmojiReactionSerializer, signer: @account).to_json
   end
 
   def inboxes

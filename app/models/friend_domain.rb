@@ -49,7 +49,7 @@ class FriendDomain < ApplicationRecord
 
   def follow!
     activity_id = ActivityPub::TagManager.instance.generate_uri_for(nil)
-    payload     = Oj.dump(follow_activity(activity_id))
+    payload     = follow_activity(activity_id).to_json
 
     update!(active_state: :pending, passive_state: :idle, active_follow_activity_id: activity_id)
     DeliveryFailureTracker.reset!(inbox_url)
@@ -58,7 +58,7 @@ class FriendDomain < ApplicationRecord
 
   def unfollow!
     activity_id = ActivityPub::TagManager.instance.generate_uri_for(nil)
-    payload     = Oj.dump(unfollow_activity(activity_id))
+    payload     = unfollow_activity(activity_id).to_json
 
     update!(active_state: :idle, passive_state: :idle, active_follow_activity_id: nil)
     DeliveryFailureTracker.reset!(inbox_url)
@@ -69,7 +69,7 @@ class FriendDomain < ApplicationRecord
     return if they_are_idle?
 
     activity_id = passive_follow_activity_id
-    payload     = Oj.dump(accept_follow_activity(activity_id))
+    payload     = accept_follow_activity(activity_id).to_json
 
     update!(passive_state: :accepted, active_state: :idle)
     DeliveryFailureTracker.reset!(inbox_url)
@@ -80,7 +80,7 @@ class FriendDomain < ApplicationRecord
     return if they_are_idle?
 
     activity_id = passive_follow_activity_id
-    payload     = Oj.dump(reject_follow_activity(activity_id))
+    payload     = reject_follow_activity(activity_id).to_json
 
     update!(passive_state: :rejected, active_state: :idle, passive_follow_activity_id: nil)
     DeliveryFailureTracker.reset!(inbox_url)
@@ -101,7 +101,7 @@ class FriendDomain < ApplicationRecord
 
   def delete_for_friend!
     activity_id = ActivityPub::TagManager.instance.generate_uri_for(nil)
-    payload     = Oj.dump(delete_follow_activity(activity_id))
+    payload     = delete_follow_activity(activity_id).to_json
 
     DeliveryFailureTracker.reset!(inbox_url)
     ActivityPub::DeliveryWorker.perform_async(payload, some_local_account.id, inbox_url)

@@ -224,7 +224,7 @@ RSpec.describe PostStatusService do
     status = subject.call(account, text: 'test status update')
 
     expect(ProcessMentionsService).to have_received(:new)
-    expect(mention_service).to have_received(:call).with(status, limited_type: '', circle: nil, save_records: false)
+    expect(mention_service).to have_received(:call).with(status, limited_type: '', circle: nil)
   end
 
   it 'self-banned visibility is set' do
@@ -564,6 +564,16 @@ RSpec.describe PostStatusService do
     expect(status).to be_persisted
     expect(status.quote).to be_persisted
     expect(status.quote.quoted_status_id).to eq target_status.id
+  end
+
+  it 'processes tagged objects' do
+    account = Fabricate(:account)
+    collection = Fabricate(:collection)
+
+    status = subject.call(account, text: "test #{ActivityPub::TagManager.instance.uri_for(collection)} #{ActivityPub::TagManager.instance.uri_for(collection)}")
+
+    expect(status.tagged_objects.map(&:object))
+      .to contain_exactly(collection)
   end
 
   it 'gets distributed' do

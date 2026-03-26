@@ -69,7 +69,7 @@
       = link_to t('appearance.localization.guide_link_text'), t('appearance.localization.guide_link'), target: '_blank', rel: 'noopener'
 
   = f.simple_fields_for :settings, current_user.settings do |ff|
-    %h4= t 'appearance.animations_and_accessibility'
+    %h2= t 'appearance.animations_and_accessibility'
 
     .fields-group
       = ff.input :'web.use_pending_items',
@@ -95,7 +95,7 @@
                  label: I18n.t('simple_form.labels.defaults.setting_content_font_size'),
                  wrapper: :with_label
 
-    %h4= t 'appearance.custom_emoji_and_emoji_reactions'
+    %h2= t 'appearance.custom_emoji_and_emoji_reactions'
 
     .fields-group
       = ff.input :'web.show_recent_emojis', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_recent_emojis'), hint: false
@@ -104,14 +104,14 @@
         = ff.input :'web.show_emoji_reaction_on_timeline', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_emoji_reaction_on_timeline')
         = ff.input :'web.show_emoji_reaction_count', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_emoji_reaction_count')
 
-    %h4= t 'appearance.remote_server_features'
+    %h2= t 'appearance.remote_server_features'
 
     .fields-group
       - if Setting.enable_emoji_reaction
         = ff.input :'web.hide_emoji_reaction_unavailable_server', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_hide_emoji_reaction_unavailable_server')
       = ff.input :'web.hide_status_reference_unavailable_server', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_hide_status_reference_unavailable_server')
 
-    %h4= t 'appearance.saved_posts'
+    %h2= t 'appearance.saved_posts'
 
     .fields-group
       = ff.input :'web.bookmark_category_needed',
@@ -121,12 +121,12 @@
                  hint: I18n.t('simple_form.hints.defaults.setting_bookmark_category_needed')
       = ff.input :'web.show_favourite_menu', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_favourite_menu')
 
-    %h4= t 'appearance.status_action_bar'
+    %h2= t 'appearance.status_action_bar'
 
     .fields-group
       = ff.input :'web.simple_timeline_menu', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_simple_timeline_menu')
 
-    %h4= t 'appearance.discovery'
+    %h2= t 'appearance.discovery'
 
     .fields-group
       = ff.input :'web.trends', wrapper: :with_label, label: I18n.t('simple_form.labels.defaults.setting_trends')
@@ -134,7 +134,7 @@
       - if Setting.enable_local_timeline
         = ff.input :'web.community_timeline_instead_of_search_menu', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_community_timeline_instead_of_search_menu')
 
-    %h4= t 'appearance.boosting_preferences'
+    %h2= t 'appearance.boosting_preferences'
 
     .fields-group
       = ff.input :'web.reblog_modal',
@@ -148,7 +148,7 @@
                  wrapper: :with_label
     .flash-message.hidden-on-touch-devices= t('appearance.boosting_preferences_info_html', icon: material_symbol('repeat'))
 
-    %h4= t 'appearance.sensitive_content'
+    %h2= t 'appearance.sensitive_content'
 
     .fields-group
       = ff.input :'web.display_media',
@@ -172,7 +172,7 @@
       = ff.input :'web.expand_content_warnings', wrapper: :with_label, label: I18n.t('simple_form.labels.defaults.setting_expand_spoilers')
       = ff.input :'web.show_avatar_on_filter', wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_avatar_on_filter')
 
-    %h4= t 'appearance.advanced_settings'
+    %h2= t 'appearance.advanced_settings'
 
     .fields-group
       = ff.input :'web.advanced_layout',

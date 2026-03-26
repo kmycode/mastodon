@@ -56,12 +56,12 @@ class UnEmojiReactService < BaseService
   end
 
   def build_json(emoji_reaction)
-    @build_json = Oj.dump(serialize_payload(emoji_reaction, ActivityPub::UndoEmojiReactionSerializer, signer: emoji_reaction.account))
+    @build_json = serialize_payload(emoji_reaction, ActivityPub::UndoEmojiReactionSerializer, signer: emoji_reaction.account).to_json
   end
 
   def render_emoji_reaction(emoji_group)
     # @rendered_emoji_reaction ||= InlineRenderer.render(emoji_group, nil, :emoji_reaction)
-    Oj.dump(event: :emoji_reaction, payload: emoji_group.to_json)
+    { event: :emoji_reaction, payload: emoji_group.to_json }.to_json
   end
 
   def relay_for_undo_emoji_reaction!(emoji_reaction)

@@ -2,13 +2,11 @@
 
 class ActivityPub::Activity::Delete < ActivityPub::Activity
   def perform
-    if @account.uri == object_uri
-      delete_person
-    elsif object_uri == ActivityPub::TagManager::COLLECTIONS[:public]
-      delete_friend
-    else
-      delete_object
-    end
+    return delete_person if @account.uri == object_uri
+    return delete_friend if object_uri == ActivityPub::TagManager::COLLECTIONS[:public]
+    return delete_feature_authorization! unless !Mastodon::Feature.collections_federation_enabled? || feature_authorization_from_object.nil?
+
+    delete_object
   end
 
   private
@@ -72,7 +70,7 @@ class ActivityPub::Activity::Delete < ActivityPub::Activity
   def forward_for_conversation
     return unless @status.conversation.present? && @status.conversation.local? && @json['signature'].present?
 
-    ActivityPub::ForwardConversationWorker.perform_async(Oj.dump(@json), @status.id, true)
+    ActivityPub::ForwardConversationWorker.perform_async(JSON.generate(@json), @status.id, true)
   end
 
   def delete_friend
@@ -80,7 +78,18 @@ class ActivityPub::Activity::Delete < ActivityPub::Activity
     friend&.destroy
   end
 
+  def delete_feature_authorization!
+    collection_item = feature_authorization_from_object
+    DeleteCollectionItemService.new.call(collection_item, revoke: true)
+  end
+
   def forwarder
     @forwarder ||= ActivityPub::Forwarder.new(@account, @json, @status)
+  end
+
+  def feature_authorization_from_object
+    return @collection_item if instance_variable_defined?(:@collection_item)
+
+    @collection_item = CollectionItem.local.find_by(approval_uri: value_or_id(@object), account_id: @account.id)
   end
 end

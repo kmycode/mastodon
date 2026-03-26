@@ -68,7 +68,7 @@ class ActivityPub::StatusUpdateDistributionWorker < ActivityPub::DistributionWor
   end
 
   def delete_activity
-    @delete_activity ||= Oj.dump(serialize_payload(@status, ActivityPub::DeleteNoteSerializer, signer: @account))
+    @delete_activity ||= serialize_payload(@status, ActivityPub::DeleteNoteSerializer, signer: @account).to_json
   end
 
   def distribute_delete_activity!

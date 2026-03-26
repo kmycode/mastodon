@@ -10,6 +10,7 @@ RSpec/MultipleMemoizedHelpers:
   Max: 20 # Overrides default of 5
   Exclude:
     - 'spec/services/delete_account_service_spec.rb'
+    - 'spec/services/activitypub/process_status_update_service_spec.rb'
 
 RSpec/NamedSubject:
   EnforcedStyle: named_only

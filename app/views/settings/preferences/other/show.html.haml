@@ -29,7 +29,7 @@
 
     - if @dtl_enabled
 
-      %h4= t 'preferences.dtl'
+      %h2= t 'preferences.dtl'
 
       %p.hint= t 'preferences.dtl_hint', tag: @dtl_tag
 
@@ -60,7 +60,7 @@
                    label_method: ->(item) { safe_join([t("simple_form.labels.dtl_force_searchability.#{item}")]) },
                    wrapper: :with_floating_label
 
-  %h4= t 'preferences.public_timelines'
+  %h2= t 'preferences.public_timelines'
 
   .fields-group
     = f.input :chosen_languages,

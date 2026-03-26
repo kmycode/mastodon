@@ -157,7 +157,7 @@ class PostStatusService < BaseService
 
   def process_status!
     @status = @account.statuses.new(status_attributes)
-    process_mentions_service.call(@status, limited_type: @status.limited_visibility? ? @limited_scope : '', circle: @circle, save_records: false)
+    process_mentions_service.call(@status, limited_type: @status.limited_visibility? ? @limited_scope : '', circle: @circle)
     safeguard_mentions!(@status)
     validate_status_ng_rules!
     validate_status_mentions!
@@ -167,6 +167,7 @@ class PostStatusService < BaseService
     UpdateStatusExpirationService.new.call(@status)
 
     safeguard_private_mention_quote!(@status)
+    attach_tagged_objects!(@status)
     attach_quote!(@status)
 
     antispam = Antispam.new(@status)
@@ -201,6 +202,10 @@ class PostStatusService < BaseService
     elsif Setting.auto_accept_legacy_quotes
       status.quote.accept! if InstanceInfo.legacy_quote_software?(@quoted_status.account.domain)
     end
+  end
+
+  def attach_tagged_objects!(status)
+    ProcessLinksService.new.call(status)
   end
 
   def safeguard_mentions!(status)

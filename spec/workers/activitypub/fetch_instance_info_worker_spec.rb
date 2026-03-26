@@ -27,8 +27,8 @@ RSpec.describe ActivityPub::FetchInstanceInfoWorker do
     }
   end
 
-  let(:wellknown_nodeinfo_json) { Oj.dump(wellknown_nodeinfo) }
-  let(:nodeinfo_json) { Oj.dump(nodeinfo) }
+  let(:wellknown_nodeinfo_json) { wellknown_nodeinfo.to_json }
+  let(:nodeinfo_json) { nodeinfo.to_json }
 
   context 'when success' do
     before do
@@ -59,7 +59,7 @@ RSpec.describe ActivityPub::FetchInstanceInfoWorker do
         protocols: ['activitypub'],
       }
     end
-    let(:new_nodeinfo_json) { Oj.dump(new_nodeinfo) }
+    let(:new_nodeinfo_json) { new_nodeinfo.to_json }
 
     before do
       stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(status: 200, body: wellknown_nodeinfo_json)

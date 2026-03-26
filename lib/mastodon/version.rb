@@ -35,7 +35,7 @@ module Mastodon
     end
 
     def default_prerelease
-      'alpha.5'
+      'alpha.6'
     end
 
     def prerelease
@@ -96,7 +96,7 @@ module Mastodon
 
     def api_versions
       {
-        mastodon: 8,
+        mastodon: 9,
         kmyblue: KMYBLUE_API_VERSION,
       }
     end

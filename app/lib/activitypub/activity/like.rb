@@ -164,6 +164,6 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
   end
 
   def render_emoji_reaction(emoji_group)
-    @render_emoji_reaction ||= Oj.dump(event: :emoji_reaction, payload: emoji_group.to_json)
+    @render_emoji_reaction ||= { event: :emoji_reaction, payload: emoji_group.to_json }.to_json
   end
 end

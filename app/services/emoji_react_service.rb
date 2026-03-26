@@ -75,11 +75,11 @@ class EmojiReactService < BaseService
   end
 
   def payload
-    @payload = Oj.dump(serialize_payload(@emoji_reaction, ActivityPub::EmojiReactionSerializer, signer: @emoji_reaction.account))
+    @payload = serialize_payload(@emoji_reaction, ActivityPub::EmojiReactionSerializer, signer: @emoji_reaction.account).to_json
   end
 
   def render_emoji_reaction(emoji_group)
     # @rendered_emoji_reaction ||= InlineRenderer.render(HashObject.new(emoji_group), nil, :emoji_reaction)
-    @render_emoji_reaction ||= Oj.dump(event: :emoji_reaction, payload: emoji_group.to_json)
+    @render_emoji_reaction ||= { event: :emoji_reaction, payload: emoji_group.to_json }.to_json
   end
 end

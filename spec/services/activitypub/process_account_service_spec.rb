@@ -454,6 +454,37 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
   end
 
+  context 'with collection URIs', feature: :collections_federation do
+    let(:payload) do
+      {
+        'id' => 'https://foo.test',
+        'type' => 'Actor',
+        'inbox' => 'https://foo.test/inbox',
+        'featured' => 'https://foo.test/featured',
+        'followers' => 'https://foo.test/followers',
+        'following' => 'https://foo.test/following',
+        'featuredCollections' => 'https://foo.test/featured_collections',
+      }
+    end
+
+    before do
+      stub_request(:get, %r{^https://foo\.test/follow})
+        .to_return(status: 200, body: '', headers: {})
+    end
+
+    it 'parses and sets the URIs, queues jobs to synchronize' do
+      account = subject.call('alice', 'example.com', payload)
+
+      expect(account.featured_collection_url).to eq 'https://foo.test/featured'
+      expect(account.followers_url).to eq 'https://foo.test/followers'
+      expect(account.following_url).to eq 'https://foo.test/following'
+      expect(account.collections_url).to eq 'https://foo.test/featured_collections'
+
+      expect(ActivityPub::SynchronizeFeaturedCollectionWorker).to have_enqueued_sidekiq_job
+      expect(ActivityPub::SynchronizeFeaturedCollectionsCollectionWorker).to have_enqueued_sidekiq_job
+    end
+  end
+
   context 'with attribution domains' do
     let(:payload) do
       {
@@ -471,6 +502,30 @@ RSpec.describe ActivityPub::ProcessAccountService do
 
       expect(account.attribution_domains)
         .to match_array(%w(example.com))
+    end
+  end
+
+  context 'with profile settings' do
+    let(:payload) do
+      {
+        id: 'https://foo.test',
+        type: 'Actor',
+        inbox: 'https://foo.test/inbox',
+        showMedia: true,
+        showRepliesInMedia: false,
+        showFeatured: false,
+      }.with_indifferent_access
+    end
+
+    it 'sets the profile settings as expected' do
+      account = subject.call('alice', 'example.com', payload)
+
+      expect(account)
+        .to have_attributes(
+          show_media: true,
+          show_media_replies: false,
+          show_featured: false
+        )
     end
   end
 
