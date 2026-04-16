@@ -14,20 +14,27 @@ import {
   fetchSuggestedTags,
   addFeaturedTags,
 } from '@/mastodon/reducers/slices/profile_edit';
-import { useAppSelector, useAppDispatch } from '@/mastodon/store';
+import {
+  useAppSelector,
+  useAppDispatch,
+  createAppSelector,
+} from '@/mastodon/store';
 
 import classes from './styles.module.scss';
 
 const MAX_SUGGESTED_TAGS = 3;
+
+const selectSuggestedTags = createAppSelector(
+  [(state) => state.profileEdit.tagSuggestions],
+  (tagSuggestions) => tagSuggestions?.slice(0, MAX_SUGGESTED_TAGS),
+);
 
 export const TagSuggestions: FC = () => {
   const { dismiss, wasDismissed } = useDismissible(
     'profile/featured_tag_suggestions',
   );
 
-  const suggestedTags = useAppSelector((state) =>
-    state.profileEdit.tagSuggestions?.slice(0, MAX_SUGGESTED_TAGS),
-  );
+  const suggestedTags = useAppSelector(selectSuggestedTags);
   const existingTagCount = useAppSelector(
     (state) => state.profileEdit.profile?.featuredTags.length,
   );
@@ -78,6 +85,7 @@ export const TagSuggestions: FC = () => {
           values={{
             link: (chunks) => <Link to='/profile/featured_tags'>{chunks}</Link>,
           }}
+          tagName='span'
         />
       </Callout>
     );
@@ -122,6 +130,7 @@ export const TagSuggestions: FC = () => {
             />
           ),
         }}
+        tagName='span'
       />
     </Callout>
   );

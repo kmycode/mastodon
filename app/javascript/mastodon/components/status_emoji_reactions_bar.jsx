@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
 
-import { injectIntl } from 'react-intl';
+import { injectIntl } from '@/mastodon/components/intl';
 
 import classNames from 'classnames';
 

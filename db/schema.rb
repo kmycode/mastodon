@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_19_142348) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_10_083500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -491,10 +491,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_142348) do
     t.integer "state", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "uri"
-    t.index ["account_id"], name: "index_collection_items_on_account_id"
+    t.index ["account_id", "collection_id"], name: "index_collection_items_on_account_id_and_collection_id", unique: true
     t.index ["approval_uri"], name: "index_collection_items_on_approval_uri", unique: true, where: "(approval_uri IS NOT NULL)"
     t.index ["collection_id"], name: "index_collection_items_on_collection_id"
-    t.index ["object_uri"], name: "index_collection_items_on_object_uri", unique: true, where: "(activity_uri IS NOT NULL)"
+    t.index ["uri"], name: "index_collection_items_on_uri", unique: true, where: "(uri IS NOT NULL)"
   end
 
   create_table "collection_reports", force: :cascade do |t|
@@ -523,6 +523,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_142348) do
     t.string "uri"
     t.index ["account_id"], name: "index_collections_on_account_id"
     t.index ["tag_id"], name: "index_collections_on_tag_id"
+    t.index ["uri"], name: "index_collections_on_uri", unique: true, where: "(uri IS NOT NULL)"
   end
 
   create_table "conversation_mutes", force: :cascade do |t|
@@ -653,6 +654,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_142348) do
     t.bigint "parent_id"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["domain"], name: "index_email_domain_blocks_on_domain", unique: true
+  end
+
+  create_table "email_subscriptions", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.string "locale", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "email"], name: "index_email_subscriptions_on_account_id_and_email", unique: true
+    t.index ["account_id"], name: "index_email_subscriptions_on_account_id"
+    t.index ["confirmation_token"], name: "index_email_subscriptions_on_confirmation_token", unique: true, where: "(confirmation_token IS NOT NULL)"
   end
 
   create_table "emoji_reactions", force: :cascade do |t|
@@ -875,6 +889,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_142348) do
     t.integer "severity", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["ip"], name: "index_ip_blocks_on_ip", unique: true
+  end
+
+  create_table "keypairs", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.string "private_key"
+    t.string "public_key", null: false
+    t.boolean "revoked", default: false, null: false
+    t.integer "type", null: false
+    t.datetime "updated_at", null: false
+    t.string "uri", null: false
+    t.index ["account_id"], name: "index_keypairs_on_account_id"
+    t.index ["uri"], name: "index_keypairs_on_uri", unique: true
   end
 
   create_table "list_accounts", force: :cascade do |t|
@@ -1855,6 +1883,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_142348) do
   add_foreign_key "custom_filter_statuses", "statuses", on_delete: :cascade
   add_foreign_key "custom_filters", "accounts", on_delete: :cascade
   add_foreign_key "email_domain_blocks", "email_domain_blocks", column: "parent_id", on_delete: :cascade
+  add_foreign_key "email_subscriptions", "accounts", on_delete: :cascade
   add_foreign_key "emoji_reactions", "accounts", on_delete: :cascade
   add_foreign_key "emoji_reactions", "custom_emojis", on_delete: :cascade
   add_foreign_key "emoji_reactions", "statuses", on_delete: :cascade
@@ -1878,6 +1907,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_142348) do
   add_foreign_key "identities", "users", name: "fk_bea040f377", on_delete: :cascade
   add_foreign_key "instance_moderation_notes", "accounts", on_delete: :cascade
   add_foreign_key "invites", "users", on_delete: :cascade
+  add_foreign_key "keypairs", "accounts", on_delete: :cascade
   add_foreign_key "list_accounts", "accounts", on_delete: :cascade
   add_foreign_key "list_accounts", "follow_requests", on_delete: :cascade
   add_foreign_key "list_accounts", "follows", on_delete: :cascade

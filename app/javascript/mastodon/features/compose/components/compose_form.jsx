@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { createRef } from 'react';
 
-import { defineMessages, injectIntl } from 'react-intl';
+import { defineMessages } from 'react-intl';
 
 import classNames from 'classnames';
 
@@ -16,6 +16,7 @@ import AutosuggestInput from 'mastodon/components/autosuggest_input';
 import AutosuggestTextarea from 'mastodon/components/autosuggest_textarea';
 import { Button } from 'mastodon/components/button';
 import CircleDropdownContainer from '../containers/circle_dropdown_container';
+import { injectIntl } from '@/mastodon/components/intl';
 import EmojiPickerDropdown from '../containers/emoji_picker_dropdown_container';
 import ExpirationDropdownContainer from '../containers/expiration_dropdown_container';
 import FeaturedTagsDropdownContainer from '../containers/featured_tags_dropdown_container';

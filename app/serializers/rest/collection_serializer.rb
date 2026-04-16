@@ -13,8 +13,13 @@ class REST::CollectionSerializer < ActiveModel::Serializer
     object.id.to_s
   end
 
+  def uri
+    ActivityPub::TagManager.instance.uri_for(object)
+  end
+
   def description
     return object.description if object.local?
+    return if object.description_html.nil?
 
     Sanitize.fragment(object.description_html, Sanitize::Config::MASTODON_STRICT)
   end

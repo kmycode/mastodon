@@ -13,11 +13,15 @@ import { Button } from '@/mastodon/components/button';
 import { DismissibleCallout } from '@/mastodon/components/callout/dismissible';
 import { CustomEmojiProvider } from '@/mastodon/components/emoji/context';
 import { EmojiHTML } from '@/mastodon/components/emoji/html';
+import { ToggleField } from '@/mastodon/components/form_fields';
 import { useElementHandledLink } from '@/mastodon/components/status/handled_link';
 import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useCurrentAccountId } from '@/mastodon/hooks/useAccountId';
 import { autoPlayGif } from '@/mastodon/initial_state';
-import { fetchProfile } from '@/mastodon/reducers/slices/profile_edit';
+import {
+  fetchProfile,
+  patchProfile,
+} from '@/mastodon/reducers/slices/profile_edit';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 
 import { AccountEditColumn, AccountEditEmptyColumn } from './components/column';
@@ -59,7 +63,7 @@ export const messages = defineMessages({
     defaultMessage: 'Add a short introduction to help others identify you.',
   },
   bioAddLabel: {
-    id: 'account_edit.bio.label',
+    id: 'account_edit.bio.add_label',
     defaultMessage: 'Add bio',
   },
   bioEditLabel: {
@@ -108,6 +112,10 @@ export const messages = defineMessages({
     id: 'account_edit.profile_tab.subtitle',
     defaultMessage: 'Customize the tabs on your profile and what they display.',
   },
+  advancedSettingsTitle: {
+    id: 'account_edit.advanced_settings.title',
+    defaultMessage: 'Advanced settings',
+  },
 });
 
 export const AccountEdit: FC = () => {
@@ -117,7 +125,7 @@ export const AccountEdit: FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const { profile } = useAppSelector((state) => state.profileEdit);
+  const { profile, isPending } = useAppSelector((state) => state.profileEdit);
   useEffect(() => {
     void dispatch(fetchProfile());
   }, [dispatch]);
@@ -161,6 +169,10 @@ export const AccountEdit: FC = () => {
   const handleFeaturedTagsEdit = useCallback(() => {
     history.push('/profile/featured_tags');
   }, [history]);
+
+  const handleBotToggle = useCallback(() => {
+    void dispatch(patchProfile({ bot: !profile?.bot }));
+  }, [dispatch, profile?.bot]);
 
   // Normally we would use the account emoji, but we want all custom emojis to be available to render after editing.
   const emojis = useAppSelector((state) => state.custom_emojis);
@@ -241,21 +253,23 @@ export const AccountEdit: FC = () => {
           showDescription={!hasFields}
           buttons={
             <div className={classes.fieldButtons}>
-              <Button
-                className={classes.editButton}
-                onClick={handleCustomFieldReorder}
-                disabled={profile.fields.length <= 1}
-              >
-                <FormattedMessage
-                  id='account_edit.custom_fields.reorder_button'
-                  defaultMessage='Reorder fields'
+              {profile.fields.length > 1 && (
+                <Button
+                  className={classes.editButton}
+                  onClick={handleCustomFieldReorder}
+                >
+                  <FormattedMessage
+                    id='account_edit.custom_fields.reorder_button'
+                    defaultMessage='Reorder fields'
+                  />
+                </Button>
+              )}
+              {profile.fields.length < maxFieldCount && (
+                <EditButton
+                  label={intl.formatMessage(messages.customFieldsAddLabel)}
+                  onClick={handleCustomFieldAdd}
                 />
-              </Button>
-              <EditButton
-                label={intl.formatMessage(messages.customFieldsAddLabel)}
-                onClick={handleCustomFieldAdd}
-                disabled={profile.fields.length >= maxFieldCount}
-              />
+              )}
             </div>
           }
         >
@@ -325,6 +339,26 @@ export const AccountEdit: FC = () => {
             </Button>
           }
         />
+
+        <AccountEditSection title={messages.advancedSettingsTitle}>
+          <ToggleField
+            checked={profile.bot}
+            onChange={handleBotToggle}
+            disabled={isPending}
+            label={
+              <FormattedMessage
+                id='account_edit.advanced_settings.bot_label'
+                defaultMessage='Automated account'
+              />
+            }
+            hint={
+              <FormattedMessage
+                id='account_edit.advanced_settings.bot_hint'
+                defaultMessage='Signal to others that the account mainly performs automated actions and might not be monitored'
+              />
+            }
+          />
+        </AccountEditSection>
       </CustomEmojiProvider>
     </AccountEditColumn>
   );

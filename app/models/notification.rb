@@ -37,7 +37,7 @@ class Notification < ApplicationRecord
     'Quote' => :quote,
   }.freeze
 
-  # Please update app/javascript/api_types/notification.ts if you change this
+  # Please update app/javascript/mastodon/api_types/notifications.ts if you change this
   PROPERTIES = {
     mention: {
       filterable: true,
@@ -96,6 +96,12 @@ class Notification < ApplicationRecord
     quoted_update: {
       filterable: false,
     }.freeze,
+    added_to_collection: {
+      filterable: true,
+    }.freeze,
+    collection_update: {
+      filterable: false,
+    }.freeze,
   }.freeze
 
   TYPES = PROPERTIES.keys.freeze
@@ -135,6 +141,8 @@ class Notification < ApplicationRecord
     belongs_to :account_relationship_severance_event, inverse_of: false
     belongs_to :generated_annual_report, inverse_of: false
     belongs_to :quote, inverse_of: :notification
+    belongs_to :collection_item, inverse_of: false # TODO: have an inverse?
+    belongs_to :collection, inverse_of: false # TODO: have an inverse?
   end
 
   validates :type, inclusion: { in: TYPES }
@@ -165,6 +173,15 @@ class Notification < ApplicationRecord
       quote&.status
     when :poll
       poll&.status
+    end
+  end
+
+  def target_collection
+    case type
+    when :added_to_collection
+      collection_item&.collection
+    when :collection_update
+      collection
     end
   end
 
@@ -243,8 +260,10 @@ class Notification < ApplicationRecord
     case activity_type
     when 'Status'
       self.from_account_id = type == :quoted_update ? activity&.quote&.quoted_account_id : activity&.account_id
-    when 'Follow', 'Favourite', 'EmojiReaction', 'EmojiReact', 'FollowRequest', 'Poll', 'Report', 'Quote'
+    when 'Follow', 'Favourite', 'EmojiReaction', 'EmojiReact', 'FollowRequest', 'Poll', 'Report', 'Quote', 'Collection'
       self.from_account_id = activity&.account_id
+    when 'CollectionItem'
+      self.from_account_id = activity&.collection&.account_id
     when 'Mention', 'StatusReference', 'ListStatus'
       self.from_account_id = activity&.status&.account_id
     when 'Account'

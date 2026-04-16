@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { injectIntl, defineMessages, FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage } from 'react-intl';
 
 import classNames from 'classnames';
 
@@ -26,6 +26,7 @@ import { MediaGallery, Video, Audio } from '../features/ui/util/async-components
 import { SensitiveMediaContext } from '../features/ui/util/sensitive_media_context';
 import { displayMedia, enableEmojiReaction, isShowItem, isHideItem } from '../initial_state';
 
+import { injectIntl } from './intl';
 import { StatusHeader } from './status/header'
 import { LinkedDisplayName } from './display_name';
 import { getHashtagBarForStatus } from './hashtag_bar';
@@ -447,7 +448,7 @@ class Status extends ImmutablePureComponent {
         <div className='status__prepend'>
           <div className='status__prepend__icon'><Icon id='retweet' icon={RepeatIcon} /></div>
           <div className='status__prepend__icon'><VisibilityIcon visibility={visibilityName} /></div>
-          <FormattedMessage id='status.reblogged_by' defaultMessage='{name} boosted' values={{ name }} />
+          <FormattedMessage id='status.reblogged_by' defaultMessage='{name} boosted' values={{ name }} tagName='span' />
         </div>
       );
 
@@ -459,7 +460,7 @@ class Status extends ImmutablePureComponent {
       prepend = (
         <div className='status__prepend'>
           <div className='status__prepend__icon'><Icon id='at' icon={AlternateEmailIcon} /></div>
-          <FormattedMessage id='status.direct_indicator' defaultMessage='Private mention' />
+          <FormattedMessage id='status.direct_indicator' defaultMessage='Private mention' tagName='span' />
         </div>
       );
     } else if (showThread && status.get('in_reply_to_id')) {

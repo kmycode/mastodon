@@ -22,6 +22,7 @@ import {
 } from 'mastodon/api/circles';
 import type { ApiAccountJSON } from 'mastodon/api_types/accounts';
 import { Avatar } from 'mastodon/components/avatar';
+import { VerifiedBadge } from 'mastodon/components/badge';
 import { Button } from 'mastodon/components/button';
 import { Column } from 'mastodon/components/column';
 import { ColumnHeader } from 'mastodon/components/column_header';
@@ -30,7 +31,6 @@ import { DisplayName } from 'mastodon/components/display_name';
 import { Icon } from 'mastodon/components/icon';
 import ScrollableList from 'mastodon/components/scrollable_list';
 import { ShortNumber } from 'mastodon/components/short_number';
-import { VerifiedBadge } from 'mastodon/components/verified_badge';
 import { ButtonInTabsBar } from 'mastodon/features/ui/util/columns_context';
 import { me } from 'mastodon/initial_state';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';

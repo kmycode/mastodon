@@ -4,7 +4,7 @@ de:
     hints:
       account:
         attribution_domains: Eine Domain pro Zeile. Dadurch können falsche Zuschreibungen unterbunden werden.
-        discoverable: Deine öffentlichen Beiträge und dein Profil können in verschiedenen Bereichen auf Mastodon vorgestellt oder empfohlen werden, ebenso kann dein Profil anderen vorgeschlagen werden.
+        discoverable: Dadurch kann dein Profil in Sammlungen von anderen Profilen vorgestellt werden. Ebenfalls können deine öffentlichen Beiträge in verschiedenen Bereichen auf Mastodon vorgestellt oder empfohlen werden.
         display_name: Dein richtiger Name oder dein Fantasiename.
         fields: Deine Website, Pronomen, dein Alter – alles, was du möchtest.
         indexable: Deine öffentlichen Beiträge können in den Suchergebnissen auf Mastodon erscheinen. Profile, die bereits mit deinen Beiträgen interagiert haben, können deine Beiträge immer auffinden.
@@ -153,7 +153,7 @@ de:
         jurisdiction: Gib das Land an, in dem die Person lebt, die alle Rechnungen bezahlt. Falls es sich dabei um ein Unternehmen oder eine andere Einrichtung handelt, gib das Land mit dem Sitz an, sowie die Stadt oder Region.
         min_age: Sollte nicht unter dem gesetzlich vorgeschriebenen Mindestalter liegen.
       user:
-        chosen_languages: Wenn du hier eine oder mehrere Sprachen auswählst, werden ausschließlich Beiträge in diesen Sprachen in deinen öffentlichen Timelines angezeigt
+        chosen_languages: Falls aktiviert, werden in öffentlichen Timelines nur Beiträge in den ausgewählten Sprachen angezeigt. Deine Startseite sowie Listen sind hiervon nicht betroffen.
         date_of_birth:
           one: Wir müssen sicherstellen, dass du mindestens %{count} Jahr alt bist, um %{domain} verwenden zu können. Wir werden diese Information nicht aufbewahren.
           other: Wir müssen sicherstellen, dass du mindestens %{count} Jahre alt bist, um %{domain} verwenden zu können. Wir werden diese Information nicht aufbewahren.
@@ -176,7 +176,7 @@ de:
     labels:
       account:
         attribution_domains: Websites, die auf dich verweisen dürfen
-        discoverable: Profil und Beiträge in Empfehlungsalgorithmen berücksichtigen
+        discoverable: Mich beim Entdecken berücksichtigen
         fields:
           name: Beschriftung
           value: Inhalt
@@ -337,13 +337,13 @@ de:
       notification_emails:
         appeal: Jemand hat Einspruch gegen eine Maßnahme erhoben
         digest: Zusammenfassung senden
-        favourite: wenn jemand meinen Beitrag favorisiert
+        favourite: Jemand favorisierte meinen Beitrag
         follow: Ein neues Profil folgt mir
-        follow_request: Ein Profil fragt an, mir zu folgen
-        mention: Ich wurde erwähnt
+        follow_request: Jemand möchte mir folgen
+        mention: Jemand erwähnte mich
         pending_account: Ein neues Konto muss überprüft werden
         quote: Jemand zitierte meinen Beitrag
-        reblog: wenn jemand meinen Beitrag teilt
+        reblog: Jemand teilte meinen Beitrag
         report: Eine neue Meldung wurde eingereicht
         software_updates:
           all: Über alle Updates informieren
@@ -356,6 +356,7 @@ de:
         hint: Zusätzliche Informationen
         text: Regel
       settings:
+        email_subscriptions: E-Mail-Abonnement aktivieren
         indexable: Profilseite in Suchmaschinen einbeziehen
         show_application: App anzeigen, über die ich einen Beitrag veröffentlicht habe
       tag:

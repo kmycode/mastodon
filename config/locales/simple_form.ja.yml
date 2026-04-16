@@ -4,7 +4,6 @@ ja:
     hints:
       account:
         attribution_domains: 1行につき1つずつ入力してください。この設定は関わりのないwebサイトに対して虚偽の帰属表示が行われることを防止する役割があります。
-        discoverable: プロフィールと公開投稿をMastodonのおすすめやハイライトとしてほかのユーザーに表示することを許可します。
         display_name: フルネーム、ハンドルネームなど
         fields: ホームページ、代名詞、年齢など何でも構いません。
         hide_collections: People will not be able to browse through your follows and followers. People that you follow will see that you follow them regardless.
@@ -66,6 +65,8 @@ ja:
         setting_boost_modal: 有効にすると、ブーストによって、まず、ブーストの公開範囲を設定できる確認ダイアログが表示されます。
         setting_custom_css_lead: '必ず覚えてください: 万が一カスタムCSSの入力を誤り、画面が正常に表示されなくなった場合は、サインイン画面の下にあるリンクよりカスタムCSSを無効化することができます。ブラウザのプライベートモードなどでサインイン画面を開き、無効化してください。'
         setting_default_searchability: kmyblue・Fedibirdでは検索許可設定に基づき検索されます。Misskeyでは当設定に関係なく、全ての公開・ローカル公開・非収載投稿が検索されます。Mastodon・Firefishでは検索許可の代わりにプロフィール設定の「公開投稿を他のサーバーで自由に検索できるようにする」設定が適用されます
+        setting_default_quote_policy_private: Mastodon で作成されたフォロワーのみの投稿は他人から引用できません。
+        setting_default_quote_policy_unlisted: 誰かがあなたを引用すると、その投稿もトレンドから非表示になります。
         setting_default_sensitive: 閲覧注意状態のメディアはデフォルトでは内容が伏せられ、クリックして初めて閲覧できるようになります
         setting_disallow_unlisted_public_searchability: この設定を有効にすると、非収載投稿と検索範囲「誰でも」は両立できず不特定多数からの検索が不可になります。Fedibirdと同じ挙動になります
         setting_display_media_default: 閲覧注意としてマークされたメディアは隠す
@@ -75,7 +76,7 @@ ja:
         setting_dtl_force_visibility: 'ハッシュタグ #%{tag} をつけて投稿するとき、公開範囲を強制的に置き換えるかを設定します'
         setting_emoji_reaction_policy: この設定をしてもkmyblue以外のサーバーのユーザーはその投稿に自由に絵文字をつけ、同じサーバーの中で共有できます。単にあなた自身の画面から絵文字リアクションを除去したいだけなら、外観設定から絵文字リアクションを無効にすることができます
         setting_emoji_reaction_streaming_notify_impl2: 当該サーバーの独自機能に対応したアプリを利用時に、絵文字リアクション機能を利用できます。動作確認していないため（そもそもそのようなアプリ自体を確認できていないため）正しく動かない場合があります
-        setting_emoji_style: 絵文字の表示方法。「オート」の場合、可能ならネイティブの絵文字を使用し、レガシーなブラウザではTwemojiで代替します。
+        setting_emoji_style: 絵文字の表示方法。「自動」の場合、可能ならネイティブの絵文字を使用し、レガシーなブラウザではTwemojiで代替します。
         setting_enable_emoji_reaction: この機能を無効にしても、他の人はあなたの投稿に絵文字をつけられます
         setting_enabled_visibilities: チェックを外した公開範囲は投稿することができなくなります。投稿しようとするとエラーが出ます
         setting_hide_network: フォローとフォロワーの情報がプロフィールページで見られないようにします
@@ -100,6 +101,7 @@ ja:
       featured_tag:
         name: 最近使用したハッシュタグ
       filters:
+        action: 投稿がフィルタに一致したときの動作を選択します
         actions:
           blur: メディアは警告して非表示にするが、テキストは表示する
           hide: フィルタに一致した投稿を完全に非表示にします
@@ -109,6 +111,7 @@ ja:
         app_icon: モバイル端末で表示されるデフォルトのアプリアイコンを独自のアイコンで上書きします。WEBP、PNG、GIF、JPGが利用可能です。
         auto_accept_legacy_quotes: Misskey、Fedibird形式の引用を無条件で承認し、またローカルアカウントが当該投稿を自由に引用できるようにします。各ユーザーの引用許可設定は無視されます
         backups_retention_period: ユーザーには、後でダウンロードするために投稿のアーカイブを生成する機能があります。正の値に設定すると、これらのアーカイブは指定された日数後に自動的にストレージから削除されます。
+        bootstrap_timeline_accounts: これらのアカウントは新規ユーザーへのフォローのお勧めの最初に固定されます。コンマ区切りでアカウントを列挙してください。
         closed_registrations_message: アカウント作成を停止している時に表示されます
         content_cache_retention_period: 他のサーバーからのすべての投稿（ブーストや返信を含む）は、指定された日数が経過すると、ローカルユーザーとのやりとりに関係なく削除されます。これには、ローカルユーザーがブックマークやお気に入りとして登録した投稿も含まれます。異なるサーバーのユーザー間の非公開な返信も失われ、復元することは不可能です。この設定の使用は特別な目的のインスタンスのためのものであり、一般的な目的のサーバーで使用した場合、多くのユーザーの期待を裏切ることになります。
         custom_css: ウェブ版のMastodonでカスタムスタイルを適用できます。
@@ -140,6 +143,7 @@ ja:
         thumbnail: サーバー情報と共に表示される、アスペクト比が約 2:1 の画像。
         trendable_by_default: トレンドの審査を省略します。トレンドは掲載後でも個別に除外できます。
         trends: トレンドは、サーバー上で人気を集めている投稿、ハッシュタグ、ニュース記事などが表示されます。
+        wrapstodon: ローカルユーザーが、1年間のMastodonの利用について楽しい概要を生成する機能です。この機能は、その年に、1つ以上の公開またはひかえめな公開での投稿をして、1つ以上のハッシュタグを使ったユーザーが、毎年12月10日から31日まで利用できます。
       form_challenge:
         current_password: セキュリティ上重要なエリアにアクセスしています
       imports:
@@ -181,7 +185,7 @@ ja:
         jurisdiction: 運営責任者が居住する国を記載します。企業や他の団体である場合は、その組織の所在国に加えて、市・区・州などの地域を記載します。
         min_age: お住まいの国や地域の法律によって定められている最低年齢を下回ってはなりません。
       user:
-        chosen_languages: 選択すると、選択した言語の投稿のみが公開タイムラインに表示されるようになります
+        chosen_languages: いずれかを選択すると、選択した言語の投稿のみが公開タイムラインに表示されます。この設定はホームタイムラインとリストには影響しません。
         role: そのロールは、ユーザーが持つ権限を制御します。
       user_role:
         color: UI 全体でロールの表示に使用される色（16進数RGB形式）
@@ -197,11 +201,7 @@ ja:
     labels:
       account:
         attribution_domains: あなたの著者表示を許可するwebサイト
-        discoverable: アカウントを見つけやすくする
         fields:
-          examples:
-            name_1: 例) GitHub
-            value_1: 例) https://github.com/xxxxxx
           name: ラベル
           value: 内容
         indexable: 公開投稿を検索できるようにする
@@ -239,7 +239,6 @@ ja:
       defaults:
         autofollow: 招待から参加後、あなたをフォロー
         avatar: アイコン
-        bot: これはBOTアカウントです
         chosen_languages: 表示する言語
         confirm_new_password: 新しいパスワード（確認用）
         confirm_password: パスワード（確認用）
@@ -253,7 +252,7 @@ ja:
         email: メールアドレス
         expires_in: 有効期限
         fields: プロフィール補足情報
-        group: これはグループアカウントです
+        filter_action: フィルターの動作
         header: ヘッダー
         honeypot: "%{label} (入力しない)"
         inbox_url: リレーサーバーの inbox URL
@@ -265,7 +264,6 @@ ja:
         note: プロフィール
         otp_attempt: 二要素認証コード
         password: パスワード
-        person: これは通常のアカウントです
         phrase: キーワードまたはフレーズ
         setting_advanced_layout: 上級者向けUIを有効にする
         setting_aggregate_reblogs: ブーストをまとめる
@@ -274,6 +272,7 @@ ja:
         setting_bio_markdown: プロフィールのMarkdownを有効にする
         setting_bookmark_category_needed: Webでブックマーク時にカテゴリの選択を必須にする
         setting_boost_modal: ブーストの公開範囲の設定
+        setting_color_scheme: カラースキーム
         setting_community_timeline_instead_of_search_menu: スマホ使用時の画面下ナビゲーションで、検索の代わりにローカルタイムラインを表示する
         setting_content_font_size: 投稿本文のフォントサイズ
         setting_content_font_size_items:
@@ -281,6 +280,7 @@ ja:
           medium: デフォルト
           x_large: 大きい大きい
           xx_large: 大きい大きい大きい
+        setting_contrast: コントラスト
         setting_custom_css: カスタムCSS
         setting_default_language: 投稿する言語
         setting_default_privacy: 投稿の公開範囲
@@ -431,6 +431,7 @@ ja:
         trendable_by_default: 審査前のトレンドの掲載を許可する
         trends: トレンドを有効にする
         unlocked_friend: 全てのフレンドサーバー申請を自動承認する
+        wrapstodon: Wrapstodonを有効にする
       interactions:
         must_be_follower: フォロワー以外からの通知をブロック
         must_be_following: フォローしていないユーザーからの通知をブロック
@@ -492,7 +493,9 @@ ja:
         jurisdiction: 裁判管轄
         min_age: 登録可能な最低年齢
       user:
+        date_of_birth_1i: 年
         date_of_birth_2i: 月
+        date_of_birth_3i: 日
         role: ロール
         time_zone: タイムゾーン
       user_role:

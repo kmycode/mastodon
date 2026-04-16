@@ -200,8 +200,10 @@ class Account < ApplicationRecord
            :role,
            :locale,
            :shows_application?,
+           :email_subscriptions_enabled?,
            :prefers_noindex?,
            :time_zone,
+           :can?,
            to: :user,
            prefix: true,
            allow_nil: true
@@ -514,8 +516,7 @@ class Account < ApplicationRecord
   end
 
   def featureable_by?(other_account)
-    return discoverable? if local?
-    return false unless Mastodon::Feature.collections_federation_enabled?
+    return discoverable? && (!locked? || followed_by?(other_account)) if local?
 
     feature_policy_for_account(other_account).in?(%i(automatic manual))
   end

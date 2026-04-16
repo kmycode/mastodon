@@ -80,4 +80,8 @@ class AccountPolicy < ApplicationPolicy
   def index_collections?
     current_account.nil? || !record.blocking_or_domain_blocking?(current_account)
   end
+
+  def index_featured_in_collections?
+    current_account.id == record.id
+  end
 end
