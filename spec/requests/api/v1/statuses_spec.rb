@@ -407,7 +407,7 @@ RSpec.describe '/api/v1/statuses' do
       end
 
       context 'with a quote in an unlisted message' do
-        let!(:quoted_status) { Fabricate(:status, quote_approval_policy: Status::QUOTE_APPROVAL_POLICY_FLAGS[:public] << 16) }
+        let!(:quoted_status) { Fabricate(:status, quote_approval_policy: InteractionPolicy::POLICY_FLAGS[:public] << 16) }
         let(:params) do
           {
             status: 'Hello, this is a quote',
