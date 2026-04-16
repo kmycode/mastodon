@@ -13,7 +13,7 @@ module Mastodon
     end
 
     def kmyblue_minor
-      0
+      1
     end
 
     def kmyblue_flag
@@ -35,7 +35,7 @@ module Mastodon
     end
 
     def default_prerelease
-      'alpha.6'
+      'alpha.7'
     end
 
     def prerelease
