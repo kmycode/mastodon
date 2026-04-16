@@ -35,9 +35,8 @@ class StatusPolicy < ApplicationPolicy
     following_author_domain?
   end
 
-  # This is about requesting a quote post, not validating it
   def quote?
-    show? && record.quote_policy_for_account(current_account, preloaded_relations: @preloaded_relations) != :denied
+    show? && !blocking_author? && record.quote_policy_for_account(current_account, preloaded_relations: @preloaded_relations) != :denied
   end
 
   def reblog?
