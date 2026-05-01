@@ -1180,7 +1180,6 @@ en:
     statuses:
       account: Author
       application: Application
-      are_you_sure: Are you sure?
       back_to_account: Back to account page
       back_to_report: Back to report page
       batch:
@@ -1190,8 +1189,6 @@ en:
       contents: Contents
       deleted: Deleted
       favourites: Favorites
-      force_cw: Force CW
-      force_nsfw: Force NSFW
       history: Version history
       in_reply_to: Replying to
       language: Language
@@ -1204,9 +1201,6 @@ en:
       original_status: Original post
       quotes: Quotes
       reblogs: Reblogs
-      remove: Remove
-      remove_history: Remove edit history
-      remove_media: Remove medias
       replied_to_html: Replied to %{acct_link}
       status_changed: Post changed
       status_title: Post by @%{name}

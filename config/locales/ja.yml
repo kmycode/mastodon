@@ -1137,7 +1137,6 @@ ja:
     statuses:
       account: 作成者
       application: アプリ
-      are_you_sure: 本当に実行しますか？
       back_to_account: アカウントページに戻る
       back_to_report: 通報ページに戻る
       batch:
@@ -1147,8 +1146,6 @@ ja:
       contents: 投稿内容
       deleted: 削除済み
       favourites: お気に入り
-      force_cw: 強制CW
-      force_nsfw: 強制NSFW
       history: 更新履歴
       in_reply_to: 返信先
       language: 言語
@@ -1161,9 +1158,6 @@ ja:
       original_status: オリジナルの投稿
       quotes: 引用
       reblogs: ブースト
-      remove: 削除
-      remove_history: 編集履歴を削除
-      remove_media: メディアを削除
       replied_to_html: "%{acct_link}さんへの返信"
       status_changed: 投稿を変更しました
       status_title: "@%{name} の投稿"
