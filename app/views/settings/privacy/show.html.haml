@@ -52,9 +52,6 @@
 
   %p.lead= t('privacy.privacy_hint_html')
 
-  .fields-group
-    = f.input :show_collections, as: :boolean, wrapper: :with_label
-
   = f.simple_fields_for :settings, current_user.settings do |ff|
     .fields-group
       = ff.input :show_statuses_count, as: :boolean, wrapper: :with_label, kmyblue: true, label: I18n.t('simple_form.labels.defaults.setting_show_statuses_count'), hint: false

@@ -30,6 +30,7 @@ interface AccountListProps {
   loadMore: () => void;
   prependAccountId?: string | null;
   scrollKey: string;
+  kind?: 'followers' | 'following' | null;
 }
 
 export const AccountList: FC<AccountListProps> = ({
@@ -42,11 +43,13 @@ export const AccountList: FC<AccountListProps> = ({
   loadMore,
   prependAccountId,
   scrollKey,
+  kind,
 }) => {
   const account = useAccount(accountId);
 
   const { blockedBy, hidden, suspended } = useAccountVisibility(accountId);
-  const isHideRelationships = isHideItem('relationships') && accountId === me;
+  const isHideRelationships =
+    isHideItem('relationships') && accountId === me && kind === 'followers';
   const forceEmptyState =
     blockedBy || hidden || suspended || isHideRelationships;
 

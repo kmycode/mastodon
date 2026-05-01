@@ -2224,7 +2224,7 @@ ja:
       public_unlisted: ローカル公開
       public_unlisted_long: 誰でも見ることができますが、他のサーバーの連合タイムラインには表示されません
       reply: 返信
-      unlisted: 非表示
+      unlisted: ひかえめな公開
       unlisted_long: Mastodonの検索結果、トレンド、公開タイムラインに表示しない
       unset: 設定なし
       unset_long: デフォルトの挙動に従います

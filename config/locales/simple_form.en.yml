@@ -71,9 +71,9 @@ en:
         setting_default_searchability: On kmyblue and Fedibird, the search is based on the search permission setting; on Misskey, all public, local public, and non-public posts are searched regardless of this setting; on Mastodon and Firefish, instead of search permission, the "Make public posts freely searchable on other servers" setting in the profile settings is applied. In Mastodon and Firefish, the "Make public posts freely searchable on other servers" setting in the profile settings is applied instead of the search permission.
         setting_default_sensitive: Sensitive media is hidden by default and can be revealed with a click
         setting_disallow_unlisted_public_searchability: この設定を有効にすると、非収載投稿と検索範囲「誰でも」は両立できず不特定多数からの検索が不可になります。Fedibirdと同じ挙動になります
-        setting_display_media_default: Hide media marked as sensitive
-        setting_display_media_hide_all: Always hide media
-        setting_display_media_show_all: Always show media
+        setting_display_media_default: Warn before showing media marked as sensitive
+        setting_display_media_hide_all: Warn before showing all media
+        setting_display_media_show_all: Show all media without warning, including media marked as sensitive
         setting_dtl_force_searchability: 'With using #%{tag} tag, your post settings will be changed forcibly'
         setting_dtl_force_visibility: 'With using #%{tag} tag, your post settings will be changed forcibly'
         setting_emoji_reaction_policy: Even with this setting, users on non-kmyblue servers are free to put their emoji reaction on the post and share it within the same server. If you simply want to remove the emoji reaction from your own screen, you can disable it from the appearance settings
@@ -144,6 +144,7 @@ en:
         streaming_other_servers_emoji_reaction: Check network lines and server load as large amounts of data are delivered. If the server load is high, try unchecking the box temporarily.
         theme: Theme that logged out visitors and new users see.
         thumbnail: A roughly 2:1 image displayed alongside your server information.
+        thumbnail_description: A description of the image to help people with visual impairments understand its content.
         trendable_by_default: Skip manual review of trending content. Individual items can still be removed from trends after the fact.
         trends: Trends show which posts, hashtags and news stories are gaining traction on your server.
         wrapstodon: Offer local users to generate a playful summary of their Mastodon use during the year. This feature is available between the 10th and 31st of December of each year, and is offered to users who made at least one Public or Quiet Public post and used at least one hashtag within the year.
@@ -195,6 +196,7 @@ en:
           other: We have to make sure you're at least %{count} to use %{domain}. We won't store this.
         role: The role controls which permissions the user has.
       user_role:
+        collection_limit: Limits the number of Collections that a single user with this role can create. Please note that when you decrease this number, users who are already at this limit will not lose any Collections. But they will not be able to create additional ones.
         color: Color to be used for the role throughout the UI, as RGB in hex format
         highlighted: This makes the role publicly visible
         name: Public name of the role, if role is set to be displayed as a badge
@@ -447,6 +449,7 @@ en:
         streaming_other_servers_emoji_reaction: Streaming emoji reactions between other server users
         theme: Default theme
         thumbnail: Server thumbnail
+        thumbnail_description: Thumbnail alt text
         trendable_by_default: Allow trends without prior review
         trends: Enable trends
         unlocked_friend: Accept all friend server follows automatically
@@ -519,6 +522,7 @@ en:
         role: Role
         time_zone: Time zone
       user_role:
+        collection_limit: Maximum number of Collections per user
         color: Badge color
         highlighted: Display role as badge on user profiles
         name: Name

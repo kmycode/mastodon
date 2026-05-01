@@ -37,6 +37,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import type { CustomEmoji } from 'emoji-mart';
 
 import MenuIcon from '@/material-icons/400-24px/menu.svg?react';
 import EmojiReactionIcon from '@/material-icons/400-24px/mood.svg?react';
@@ -47,10 +48,10 @@ import { ColumnHeader } from 'mastodon/components/column_header';
 import { Icon } from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import EmojiPickerDropdown from 'mastodon/features/compose/containers/emoji_picker_dropdown_container';
-import { autoPlayGif } from 'mastodon/initial_state';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 import emojify from '../emoji/emoji';
+import { usePickerEmojis } from '../emoji/picker';
 
 const messages = defineMessages({
   reaction_deck_add: { id: 'reaction_deck.add', defaultMessage: 'Add' },
@@ -60,11 +61,11 @@ const messages = defineMessages({
 const ReactionEmoji: React.FC<{
   index: number;
   emoji: string;
-  emojiMap: any;
+  mapEmoji?: CustomEmoji;
   overlay?: boolean;
   onChange?: (index: number, emoji: any) => void;
   onRemove?: (index: number) => void;
-}> = ({ index, emoji, emojiMap, overlay, onChange, onRemove }) => {
+}> = ({ index, emoji, mapEmoji, overlay, onChange, onRemove }) => {
   const handleChange = useCallback(
     (emoji: any) => {
       if (onChange) onChange(index, emoji);
@@ -85,12 +86,9 @@ const ReactionEmoji: React.FC<{
   };
 
   let content: ReactNode;
-  const mapEmoji = emojiMap.find((e: any) => e.get('shortcode') === emoji);
 
   if (mapEmoji) {
-    const filename = autoPlayGif
-      ? mapEmoji.get('url')
-      : mapEmoji.get('static_url');
+    const filename = mapEmoji.imageUrl;
     const shortCode = `:${emoji}:`;
 
     content = (
@@ -144,7 +142,7 @@ export const ReactionDeck: React.FC<{
   const dispatch = useAppDispatch();
   const intl = useIntl();
 
-  const emojiMap = useAppSelector((state) => state.custom_emojis);
+  const { customEmojis } = usePickerEmojis();
   const deck = useAppSelector((state) => state.reaction_deck);
 
   const onChange = useCallback(
@@ -268,7 +266,7 @@ export const ReactionDeck: React.FC<{
           {deck.map((emoji: any, index) => (
             <div key={index} id={index.toString()}>
               <ReactionEmoji
-                emojiMap={emojiMap}
+                mapEmoji={customEmojis?.find((c) => c.id === emoji.get('name'))}
                 emoji={emoji.get('name')}
                 index={index}
                 onChange={handleChange}
@@ -283,7 +281,9 @@ export const ReactionDeck: React.FC<{
             {activeId ? (
               <div style={{ position: 'fixed' }}>
                 <ReactionEmoji
-                  emojiMap={emojiMap}
+                  mapEmoji={customEmojis?.find(
+                    (c) => c.id === activeEmoji.get('name'),
+                  )}
                   emoji={activeEmoji.get('name')}
                   index={-1}
                   overlay

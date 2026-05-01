@@ -333,7 +333,7 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
               enableLocalTimeline &&
               !signedIn
                 ? '/public/local'
-                : '/public/remote'
+                : '/public'
             }
             icon='globe'
             iconComponent={PublicIcon}

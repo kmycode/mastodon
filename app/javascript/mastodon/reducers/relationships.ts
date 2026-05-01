@@ -31,6 +31,7 @@ import {
   unblockDomainSuccess,
 } from '../actions/domain_blocks_typed';
 import { notificationsUpdate } from '../actions/notifications_typed';
+import { isHideItem } from '../initial_state';
 
 const initialState = ImmutableMap<string, Relationship>();
 type State = typeof initialState;
@@ -44,8 +45,17 @@ const normalizeRelationships = (
   state: State,
   relationships: ApiRelationshipJSON[],
 ) => {
+  const isHideRelationships = isHideItem('relationships');
+
   relationships.forEach((relationship) => {
-    state = normalizeRelationship(state, relationship);
+    if (isHideRelationships) {
+      state = normalizeRelationship(state, {
+        ...relationship,
+        followed_by: false,
+      });
+    } else {
+      state = normalizeRelationship(state, relationship);
+    }
   });
 
   return state;

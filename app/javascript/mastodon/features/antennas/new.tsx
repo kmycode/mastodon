@@ -7,14 +7,17 @@ import { useParams, useHistory, Link } from 'react-router-dom';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import Toggle from 'react-toggle';
-
 import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import { fetchAntenna } from 'mastodon/actions/antennas';
 import { createAntenna, updateAntenna } from 'mastodon/actions/antennas_typed';
 import { fetchLists } from 'mastodon/actions/lists';
 import { Column } from 'mastodon/components/column';
 import { ColumnHeader } from 'mastodon/components/column_header';
+import {
+  SelectField,
+  TextInputField,
+  Toggle,
+} from 'mastodon/components/form_fields';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import { getOrderedLists } from 'mastodon/selectors/lists';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
@@ -270,133 +273,105 @@ const NewAntenna: React.FC<{
       <div className='scrollable'>
         <form className='simple_form app-form' onSubmit={handleSubmit}>
           <div className='fields-group'>
-            <div className='input with_label'>
-              <div className='label_input'>
-                <label htmlFor='antenna_title'>
-                  <FormattedMessage
-                    id='antennas.antenna_name'
-                    defaultMessage='Antenna name'
-                  />
-                </label>
-
-                <div className='label_input__wrapper'>
-                  <input
-                    id='antenna_title'
-                    type='text'
-                    value={title}
-                    onChange={handleTitleChange}
-                    maxLength={30}
-                    required
-                    placeholder=' '
-                  />
-                </div>
-              </div>
-            </div>
+            <TextInputField
+              label={
+                <FormattedMessage
+                  id='antennas.antenna_name'
+                  defaultMessage='Antenna name'
+                />
+              }
+              id='antenna_title'
+              type='text'
+              value={title}
+              onChange={handleTitleChange}
+              maxLength={30}
+              required
+              placeholder=' '
+            />
           </div>
 
           <div className='fields-group'>
-            <div className='input with_label'>
-              <div className='label_input'>
-                <label htmlFor='antenna_list'>
-                  <FormattedMessage id='antennas.mode' defaultMessage='Mode' />
-                </label>
-
-                <div className='label_input__wrapper'>
-                  <select
-                    id='antenna_insert_list'
-                    value={mode}
-                    onChange={handleModeChange}
-                  >
-                    <FormattedMessage
-                      id='antennas.mode.stl'
-                      defaultMessage='Social timeline mode'
-                    >
-                      {(msg) => <option value='stl'>{msg}</option>}
-                    </FormattedMessage>
-                    <FormattedMessage
-                      id='antennas.mode.ltl'
-                      defaultMessage='Local timeline mode'
-                    >
-                      {(msg) => <option value='ltl'>{msg}</option>}
-                    </FormattedMessage>
-                    <FormattedMessage
-                      id='antennas.mode.filtering'
-                      defaultMessage='Filtering'
-                    >
-                      {(msg) => <option value='filtering'>{msg}</option>}
-                    </FormattedMessage>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <SelectField
+              label={
+                <FormattedMessage id='antennas.mode' defaultMessage='Mode' />
+              }
+              value={mode}
+              onChange={handleModeChange}
+              id='antenna_insert_list'
+            >
+              <FormattedMessage
+                id='antennas.mode.stl'
+                defaultMessage='Social timeline mode'
+              >
+                {(msg) => <option value='stl'>{msg}</option>}
+              </FormattedMessage>
+              <FormattedMessage
+                id='antennas.mode.ltl'
+                defaultMessage='Local timeline mode'
+              >
+                {(msg) => <option value='ltl'>{msg}</option>}
+              </FormattedMessage>
+              <FormattedMessage
+                id='antennas.mode.filtering'
+                defaultMessage='Filtering'
+              >
+                {(msg) => <option value='filtering'>{msg}</option>}
+              </FormattedMessage>
+            </SelectField>
           </div>
 
           <div className='fields-group'>
-            <div className='input with_label'>
-              <div className='label_input'>
-                <label htmlFor='antenna_list'>
-                  <FormattedMessage
-                    id='antennas.destination'
-                    defaultMessage='Destination'
-                  />
-                </label>
-
-                <div className='label_input__wrapper'>
-                  <select
-                    id='antenna_insert_destination'
-                    value={destination}
-                    onChange={handleDestinationChange}
-                  >
-                    <FormattedMessage
-                      id='antennas.destination.home'
-                      defaultMessage='Insert to home'
-                    >
-                      {(msg) => <option value='home'>{msg}</option>}
-                    </FormattedMessage>
-                    <FormattedMessage
-                      id='antennas.destination.list'
-                      defaultMessage='Insert to list'
-                    >
-                      {(msg) => <option value='list'>{msg}</option>}
-                    </FormattedMessage>
-                    <FormattedMessage
-                      id='antennas.destination.timeline'
-                      defaultMessage='Antenna timeline only'
-                    >
-                      {(msg) => <option value='timeline'>{msg}</option>}
-                    </FormattedMessage>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <SelectField
+              label={
+                <FormattedMessage
+                  id='antennas.destination'
+                  defaultMessage='Destination'
+                />
+              }
+              value={destination}
+              onChange={handleDestinationChange}
+              id='antenna_insert_destination'
+            >
+              <FormattedMessage
+                id='antennas.destination.home'
+                defaultMessage='Insert to home'
+              >
+                {(msg) => <option value='home'>{msg}</option>}
+              </FormattedMessage>
+              <FormattedMessage
+                id='antennas.destination.list'
+                defaultMessage='Insert to list'
+              >
+                {(msg) => <option value='list'>{msg}</option>}
+              </FormattedMessage>
+              <FormattedMessage
+                id='antennas.destination.timeline'
+                defaultMessage='Antenna timeline only'
+              >
+                {(msg) => <option value='timeline'>{msg}</option>}
+              </FormattedMessage>
+            </SelectField>
           </div>
 
           {destination === 'list' && (
             <div className='fields-group'>
-              <div className='input with_label'>
-                <div className='label_input'>
-                  <label htmlFor='antenna_list'>
-                    <FormattedMessage
-                      id='antennas.list_selection'
-                      defaultMessage='List to insert'
-                    />
-                  </label>
-
-                  <div className='label_input__wrapper'>
-                    <select
-                      id='antenna_insert_list'
-                      value={listId}
-                      onChange={handleListIdChange}
-                    >
-                      {lists.map((list) => (
-                        <option key={list.id} value={list.id}>
-                          {list.title}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
+              <SelectField
+                label={
+                  <FormattedMessage
+                    id='antennas.list_selection'
+                    defaultMessage='List to insert'
+                  />
+                }
+                value={listId}
+                onChange={handleListIdChange}
+                id='antenna_insert_list'
+              >
+                {lists.map((list) => (
+                  <option key={list.id} value={list.id}>
+                    {list.title}
+                  </option>
+                ))}
+              </SelectField>
             </div>
           )}
 

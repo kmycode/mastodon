@@ -2,8 +2,6 @@ import { useCallback, useMemo } from 'react';
 
 import { defineMessages, useIntl } from 'react-intl';
 
-import { matchPath } from 'react-router';
-
 import { showAlert } from '@/mastodon/actions/alerts';
 import { initBlockModal } from '@/mastodon/actions/blocks';
 import { useAccount } from '@/mastodon/hooks/useAccount';
@@ -17,6 +15,7 @@ import type { MenuItem } from 'mastodon/models/dropdown_menu';
 import { useAppDispatch } from 'mastodon/store';
 
 import { messages as editorMessages } from '../editor';
+import { getCollectionPath } from '../utils';
 
 const messages = defineMessages({
   view: {
@@ -34,10 +33,6 @@ const messages = defineMessages({
   copyLinkConfirmation: {
     id: 'collections.copy_link_confirmation',
     defaultMessage: 'Copied collection link to clipboard',
-  },
-  viewOtherCollections: {
-    id: 'collections.view_other_collections_by_user',
-    defaultMessage: 'View other collections by this user',
   },
   delete: {
     id: 'collections.delete_collection',
@@ -126,7 +121,7 @@ export const CollectionMenu: React.FC<{
   const menu = useMemo(() => {
     const viewCollectionItem: MenuItem = {
       text: intl.formatMessage(messages.view),
-      to: `/collections/${id}`,
+      to: getCollectionPath(id),
     };
     const shareItems: MenuItem[] = [
       {
@@ -136,7 +131,7 @@ export const CollectionMenu: React.FC<{
       {
         text: intl.formatMessage(messages.copyLink),
         action: () => {
-          void navigator.clipboard.writeText(`/collections/${id}`);
+          void navigator.clipboard.writeText(getCollectionPath(id));
           dispatch(showAlert({ message: messages.copyLinkConfirmation }));
         },
       },
@@ -168,25 +163,11 @@ export const CollectionMenu: React.FC<{
         return ownerItems;
       }
     } else {
-      const nonOwnerItems: MenuItem[] = [viewCollectionItem, ...shareItems];
-
-      if (context !== 'notifications' && ownerAccount) {
-        const featuredCollectionsPath = `/@${ownerAccount.acct}/featured`;
-        // Don't show menu link to featured collections while on that very page
-        if (
-          !matchPath(location.pathname, {
-            path: featuredCollectionsPath,
-            exact: true,
-          })
-        ) {
-          nonOwnerItems.push({
-            text: intl.formatMessage(messages.viewOtherCollections),
-            to: featuredCollectionsPath,
-          });
-        }
-      }
-
-      nonOwnerItems.push(null);
+      const nonOwnerItems: MenuItem[] = [
+        viewCollectionItem,
+        ...shareItems,
+        null,
+      ];
 
       // Collection notifications already have a prominent 'Remove me' button
       if (currentAccountInCollection && context !== 'notifications') {
@@ -218,7 +199,6 @@ export const CollectionMenu: React.FC<{
     dispatch,
     openDeleteConfirmation,
     context,
-    ownerAccount,
     currentAccountInCollection,
     openReportModal,
     openBlockModal,

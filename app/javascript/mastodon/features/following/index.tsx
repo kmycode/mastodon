@@ -90,6 +90,7 @@ const Followers: FC = () => {
       loadMore={loadMore}
       prependAccountId={followedId}
       scrollKey='following'
+      kind='following'
     />
   );
 };

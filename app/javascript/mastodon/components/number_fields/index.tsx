@@ -26,9 +26,11 @@ export const NumberFieldsItem: React.FC<ItemProps> = ({
   children,
   className,
   isHide,
+  ...restProps
 }) => {
   return (
     <li
+      {...restProps}
       className={classNames(classes.item, className)}
       title={isHide ? undefined : hint}
     >
