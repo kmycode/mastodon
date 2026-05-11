@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -6,11 +6,13 @@ import { useHistory } from 'react-router-dom';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { ComboboxMenuItem } from '@/mastodon/components/form_fields/combobox_field';
+import { useAccount } from '@/mastodon/hooks/useAccount';
+import { useCurrentAccountId } from '@/mastodon/hooks/useAccountId';
 import { languages } from '@/mastodon/initial_state';
 import {
   hasSpecialCharacters,
   inputToHashtag,
-  trimHashFromStart,
 } from '@/mastodon/utils/hashtags';
 import type {
   ApiCreateCollectionPayload,
@@ -36,13 +38,15 @@ import {
 } from 'mastodon/reducers/slices/collections';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
+import { getCollectionPath } from '../utils';
+
 import classes from './styles.module.scss';
-import { WizardStepHeader } from './wizard_step_header';
+import { WizardStepTitle } from './wizard_step_title';
 
 export const CollectionDetails: React.FC = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const { id, name, description, topic, discoverable, sensitive, accountIds } =
+  const { id, name, description, topic, discoverable, sensitive, items } =
     useAppSelector((state) => state.collections.editor);
 
   const handleNameChange = useCallback(
@@ -93,6 +97,9 @@ export const CollectionDetails: React.FC = () => {
     [dispatch],
   );
 
+  const accountId = useCurrentAccountId();
+  const { acct: currentUserName } = useAccount(accountId) ?? {};
+
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
@@ -116,7 +123,7 @@ export const CollectionDetails: React.FC = () => {
           description,
           discoverable,
           sensitive,
-          account_ids: accountIds,
+          account_ids: items.map((item) => item.account_id),
         };
         if (topic) {
           payload.tag_name = topic;
@@ -128,8 +135,8 @@ export const CollectionDetails: React.FC = () => {
           }),
         ).then((result) => {
           if (isFulfilled(result)) {
-            history.replace(`/collections`);
-            history.push(`/collections/${result.payload.collection.id}`, {
+            history.replace(`/@${currentUserName}/collections`);
+            history.push(getCollectionPath(result.payload.collection.id), {
               newCollection: true,
             });
           }
@@ -145,7 +152,8 @@ export const CollectionDetails: React.FC = () => {
       sensitive,
       dispatch,
       history,
-      accountIds,
+      items,
+      currentUserName,
     ],
   );
 
@@ -153,7 +161,7 @@ export const CollectionDetails: React.FC = () => {
     <form onSubmit={handleSubmit} className={classes.form}>
       <FormStack className={classes.formFieldStack}>
         {!id && (
-          <WizardStepHeader
+          <WizardStepTitle
             step={2}
             title={
               <FormattedMessage
@@ -183,7 +191,7 @@ export const CollectionDetails: React.FC = () => {
         />
 
         <TextAreaField
-          required
+          required={false}
           label={
             <FormattedMessage
               id='collections.collection_description'
@@ -277,18 +285,16 @@ export const CollectionDetails: React.FC = () => {
       </FormStack>
 
       <div className={classes.stickyFooter}>
-        <div className={classes.actionWrapper}>
-          <Button type='submit'>
-            {id ? (
-              <FormattedMessage id='lists.save' defaultMessage='Save' />
-            ) : (
-              <FormattedMessage
-                id='collections.create_collection'
-                defaultMessage='Create collection'
-              />
-            )}
-          </Button>
-        </div>
+        <Button type='submit'>
+          {id ? (
+            <FormattedMessage id='lists.save' defaultMessage='Save' />
+          ) : (
+            <FormattedMessage
+              id='collections.create_collection'
+              defaultMessage='Create collection'
+            />
+          )}
+        </Button>
       </div>
     </form>
   );
@@ -297,14 +303,7 @@ export const CollectionDetails: React.FC = () => {
 const TopicField: React.FC = () => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
-  const { id, topic } = useAppSelector((state) => state.collections.editor);
-
-  const collection = useAppSelector((state) =>
-    id ? state.collections.collections[id] : undefined,
-  );
-  const [isInitialValue, setIsInitialValue] = useState(
-    () => trimHashFromStart(topic) === (collection?.tag?.name ?? ''),
-  );
+  const { topic } = useAppSelector((state) => state.collections.editor);
 
   const { tags, isLoading, searchTags } = useSearchTags({
     query: topic,
@@ -312,7 +311,6 @@ const TopicField: React.FC = () => {
 
   const handleTopicChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setIsInitialValue(false);
       dispatch(
         updateCollectionEditorField({
           field: 'topic',
@@ -340,6 +338,10 @@ const TopicField: React.FC = () => {
     () => hasSpecialCharacters(topic),
     [topic],
   );
+
+  const isCurrentTopicOnlySuggestion =
+    tags.length === 1 && tags[0]?.id === 'new';
+  const hideTagSuggestions = !tags.length || isCurrentTopicOnlySuggestion;
 
   return (
     <ComboboxField
@@ -379,12 +381,14 @@ const TopicField: React.FC = () => {
             }
           : undefined
       }
-      suppressMenu={isInitialValue}
+      suppressMenu={hideTagSuggestions}
     />
   );
 };
 
-const renderTagItem = (item: TagSearchResult) => item.label ?? `#${item.name}`;
+const renderTagItem = (item: TagSearchResult) => (
+  <ComboboxMenuItem>{item.label ?? `#${item.name}`}</ComboboxMenuItem>
+);
 
 const LanguageField: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -422,7 +426,6 @@ const LanguageField: React.FC = () => {
         <FormattedMessage
           id='collections.collection_language_none'
           defaultMessage='None'
-          tagName={Fragment}
         />
       </option>
       {languages?.map(([code, name, localName]) => (

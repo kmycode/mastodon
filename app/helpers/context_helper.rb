@@ -4,6 +4,7 @@ module ContextHelper
   NAMED_CONTEXT_MAP = {
     activitystreams: 'https://www.w3.org/ns/activitystreams',
     security: 'https://w3id.org/security/v1',
+    webfinger: 'https://purl.archive.org/socialweb/webfinger',
   }.freeze
 
   CONTEXT_EXTENSION_MAP = {
@@ -44,7 +45,7 @@ module ContextHelper
     },
     quote_requests: { 'QuoteRequest' => 'https://w3id.org/fep/044f#QuoteRequest' },
     quotes: {
-      'quote' => 'https://w3id.org/fep/044f#quote',
+      'quote' => { '@id' => 'https://w3id.org/fep/044f#quote', '@type' => '@id' },
       'quoteUri' => 'http://fedibird.com/ns#quoteUri',
       '_misskey_quote' => 'https://misskey-hub.net/ns#_misskey_quote',
       'quoteAuthorization' => { '@id' => 'https://w3id.org/fep/044f#quoteAuthorization', '@type' => '@id' },

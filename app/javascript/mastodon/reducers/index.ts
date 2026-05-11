@@ -14,7 +14,6 @@ import { circlesReducer } from './circles';
 import { composeReducer } from './compose';
 import { contextsReducer } from './contexts';
 import conversations from './conversations';
-import custom_emojis from './custom_emojis';
 import { dropdownMenuReducer } from './dropdown_menu';
 import filters from './filters';
 import height_cache from './height_cache';
@@ -71,7 +70,6 @@ const reducers = {
   notifications,
   notificationGroups: notificationGroupsReducer,
   height_cache,
-  custom_emojis,
   lists: listsReducer,
   antennas: antennasReducer,
   circles: circlesReducer,

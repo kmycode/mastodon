@@ -42,6 +42,7 @@ class UserSettings
   setting :dtl_force_searchability, default: :unchange, in: %w(unchange public public_unlisted)
   setting :lock_follow_from_bot, default: false
   setting :reject_send_limited_to_suspects, default: false
+  setting :email_subscriptions, default: false
 
   setting_inverse_alias :indexable, :noindex
   setting_inverse_alias :show_statuses_count, :hide_statuses_count
@@ -72,7 +73,7 @@ class UserSettings
     setting :missing_alt_text_modal, default: true
     setting :reduce_motion, default: false
     setting :expand_content_warnings, default: false
-    setting :display_media, default: 'default', in: %w(default show_all hide_all)
+    setting :display_media, default: 'default', in: %w(hide_all default show_all)
     setting :auto_play, default: true
     setting :emoji_style, default: 'auto', in: %w(auto native twemoji)
     setting :simple_timeline_menu, default: false

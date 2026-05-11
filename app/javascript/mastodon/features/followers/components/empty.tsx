@@ -2,7 +2,7 @@ import type { FC, ReactNode } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
-import { LimitedAccountHint } from '@/mastodon/features/account_timeline/components/limited_account_hint';
+import { LimitedAccountHint } from '@/mastodon/components/limited_account_hint';
 import { useAccountVisibility } from '@/mastodon/hooks/useAccountVisibility';
 import { isHideItem, me } from '@/mastodon/initial_state';
 import type { Account } from '@/mastodon/models/account';

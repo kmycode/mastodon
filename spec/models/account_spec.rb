@@ -732,9 +732,6 @@ RSpec.describe Account do
 
       it { is_expected.to_not allow_values(account_note_over_limit).for(:note) }
 
-      it { is_expected.to allow_value(fields_empty_name_value).for(:fields) }
-      it { is_expected.to_not allow_values(fields_over_limit, fields_empty_name).for(:fields) }
-
       it { is_expected.to validate_absence_of(:followers_url).on(:create) }
       it { is_expected.to validate_absence_of(:inbox_url).on(:create) }
       it { is_expected.to validate_absence_of(:shared_inbox_url).on(:create) }
@@ -775,18 +772,6 @@ RSpec.describe Account do
 
     def account_note_over_limit
       'a' * described_class::NOTE_LENGTH_LIMIT * 2
-    end
-
-    def fields_empty_name_value
-      Array.new(4) { { 'name' => '', 'value' => '' } }
-    end
-
-    def fields_over_limit
-      Array.new(described_class::DEFAULT_FIELDS_SIZE + 1) { { 'name' => 'Name', 'value' => 'Value', 'verified_at' => '01/01/1970' } }
-    end
-
-    def fields_empty_name
-      [{ 'name' => '', 'value' => 'Value', 'verified_at' => '01/01/1970' }]
     end
   end
 
@@ -973,19 +958,42 @@ RSpec.describe Account do
   end
 
   describe '#featureable_by?' do
-    subject { Fabricate.build(:account, domain: (local ? nil : 'example.com'), discoverable:, feature_approval_policy:) }
+    subject { Fabricate.build(:account, domain: (local ? nil : 'example.com'), discoverable:, locked:, feature_approval_policy:) }
 
+    let(:locked) { false }
     let(:local_account) { Fabricate(:account) }
 
     context 'when account is local' do
       let(:local) { true }
-      let(:feature_approval_policy) { nil }
+      let(:feature_approval_policy) { 0 }
 
       context 'when account is discoverable' do
         let(:discoverable) { true }
 
-        it 'returns `true`' do
-          expect(subject.featureable_by?(local_account)).to be true
+        context 'when the account is not locked' do
+          let(:locked) { false }
+
+          it 'returns `true`' do
+            expect(subject.featureable_by?(local_account)).to be true
+          end
+        end
+
+        context 'when the account is locked' do
+          let(:locked) { true }
+
+          it 'returns `false`' do
+            expect(subject.featureable_by?(local_account)).to be false
+          end
+
+          context 'when the other account is a follower' do
+            before do
+              local_account.follow!(subject)
+            end
+
+            it 'returns `true`' do
+              expect(subject.featureable_by?(local_account)).to be true
+            end
+          end
         end
       end
 
@@ -1003,23 +1011,17 @@ RSpec.describe Account do
       let(:discoverable) { true }
       let(:feature_approval_policy) { (0b10 << 16) | 0 }
 
-      it 'returns `false`' do
-        expect(subject.featureable_by?(local_account)).to be false
+      context 'when the policy allows it' do
+        it 'returns `true`' do
+          expect(subject.featureable_by?(local_account)).to be true
+        end
       end
 
-      context 'when collections federation is enabled', feature: :collections_federation do
-        context 'when the policy allows it' do
-          it 'returns `true`' do
-            expect(subject.featureable_by?(local_account)).to be true
-          end
-        end
+      context 'when the policy forbids it' do
+        let(:feature_approval_policy) { 0 }
 
-        context 'when the policy forbids it' do
-          let(:feature_approval_policy) { 0 }
-
-          it 'returns `false`' do
-            expect(subject.featureable_by?(local_account)).to be false
-          end
+        it 'returns `false`' do
+          expect(subject.featureable_by?(local_account)).to be false
         end
       end
     end

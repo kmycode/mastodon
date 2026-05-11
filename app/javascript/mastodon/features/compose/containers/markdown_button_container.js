@@ -1,4 +1,5 @@
-import { injectIntl, defineMessages } from 'react-intl';
+import { injectIntl } from '@/mastodon/components/intl';
+import { defineMessages } from 'react-intl';
 
 import { connect } from 'react-redux';
 

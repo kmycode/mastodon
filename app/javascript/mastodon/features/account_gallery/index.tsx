@@ -4,30 +4,27 @@ import { FormattedMessage } from 'react-intl';
 
 import { List as ImmutableList, isList } from 'immutable';
 
-import { isServerFeatureEnabled } from '@/mastodon/utils/environment';
-import { openModal } from 'mastodon/actions/modal';
-import { expandAccountMediaTimeline } from 'mastodon/actions/timelines';
-import { ColumnBackButton } from 'mastodon/components/column_back_button';
-import { RemoteHint } from 'mastodon/components/remote_hint';
-import ScrollableList from 'mastodon/components/scrollable_list';
-import { AccountHeader } from 'mastodon/features/account_timeline/components/account_header';
-import { LimitedAccountHint } from 'mastodon/features/account_timeline/components/limited_account_hint';
-import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';
-import Column from 'mastodon/features/ui/components/column';
-import { useAccountId } from 'mastodon/hooks/useAccountId';
-import { useAccountVisibility } from 'mastodon/hooks/useAccountVisibility';
-import type { MediaAttachment } from 'mastodon/models/media_attachment';
+import { openModal } from '@/mastodon/actions/modal';
+import { expandAccountMediaTimeline } from '@/mastodon/actions/timelines';
+import { AccountHeader } from '@/mastodon/components/account_header';
+import { ColumnBackButton } from '@/mastodon/components/column_back_button';
+import { LimitedAccountHint } from '@/mastodon/components/limited_account_hint';
+import { RemoteHint } from '@/mastodon/components/remote_hint';
+import ScrollableList from '@/mastodon/components/scrollable_list';
+import BundleColumnError from '@/mastodon/features/ui/components/bundle_column_error';
+import Column from '@/mastodon/features/ui/components/column';
+import { useAccountId } from '@/mastodon/hooks/useAccountId';
+import { useAccountVisibility } from '@/mastodon/hooks/useAccountVisibility';
+import type { MediaAttachment } from '@/mastodon/models/media_attachment';
 import {
   useAppSelector,
   useAppDispatch,
   createAppSelector,
-} from 'mastodon/store';
+} from '@/mastodon/store';
 
 import { MediaItem } from './components/media_item';
 
 const emptyList = ImmutableList<MediaAttachment>();
-
-const redesignEnabled = isServerFeatureEnabled('profile_redesign');
 
 const selectGalleryTimeline = createAppSelector(
   [
@@ -37,29 +34,39 @@ const selectGalleryTimeline = createAppSelector(
     (state) => state.statuses,
   ],
   (accountId, timelines, accounts, statuses) => {
-    if (!accountId) {
-      return null;
-    }
-    const account = accounts.get(accountId);
-    if (!account) {
-      return null;
-    }
-
     let items = emptyList;
-    const { show_media, show_media_replies } = account;
-    // If the account disabled showing media, don't display anything.
-    if (!show_media && redesignEnabled) {
+    if (!accountId) {
       return {
         items,
         hasMore: false,
         isLoading: false,
-        showingReplies: false,
+        withReplies: false,
+      };
+    }
+    const account = accounts.get(accountId);
+    if (!account) {
+      return {
+        items,
+        hasMore: false,
+        isLoading: false,
+        withReplies: false,
       };
     }
 
-    const showingReplies = show_media_replies && redesignEnabled;
+    const { show_media, show_media_replies } = account;
+    // If the account disabled showing media, don't display anything.
+    if (!show_media) {
+      return {
+        items,
+        hasMore: false,
+        isLoading: false,
+        withReplies: false,
+      };
+    }
+
+    const withReplies = show_media_replies;
     const timeline = timelines.get(
-      `account:${accountId}:media${showingReplies ? ':with_replies' : ''}`,
+      `account:${accountId}:media${withReplies ? ':with_replies' : ''}`,
     );
     const statusIds = timeline?.get('items');
 
@@ -77,8 +84,8 @@ const selectGalleryTimeline = createAppSelector(
     return {
       items,
       hasMore: !!timeline?.get('hasMore'),
-      isLoading: !!timeline?.get('isLoading'),
-      showingReplies,
+      isLoading: timeline?.get('isLoading') ? true : false,
+      withReplies,
     };
   },
 );
@@ -89,11 +96,11 @@ export const AccountGallery: React.FC<{
   const dispatch = useAppDispatch();
   const accountId = useAccountId();
   const {
-    isLoading = true,
-    hasMore = false,
-    items: attachments = emptyList,
-    showingReplies: withReplies = false,
-  } = useAppSelector((state) => selectGalleryTimeline(state, accountId)) ?? {};
+    isLoading,
+    items: attachments,
+    hasMore,
+    withReplies,
+  } = useAppSelector((state) => selectGalleryTimeline(state, accountId));
 
   const { suspended, blockedBy, hidden } = useAccountVisibility(accountId);
 

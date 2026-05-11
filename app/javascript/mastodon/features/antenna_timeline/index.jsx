@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
 
-import { FormattedMessage, defineMessages, injectIntl } from 'react-intl';
+import { injectIntl } from '@/mastodon/components/intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 
 
 import { Helmet } from 'react-helmet';

@@ -14,6 +14,7 @@ import { createCircle, updateCircle } from 'mastodon/actions/circles_typed';
 import { apiGetAccounts } from 'mastodon/api/circles';
 import { Column } from 'mastodon/components/column';
 import { ColumnHeader } from 'mastodon/components/column_header';
+import { TextInputField } from 'mastodon/components/form_fields';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
@@ -123,28 +124,21 @@ const NewCircle: React.FC<{
   return (
     <form className='simple_form app-form' onSubmit={handleSubmit}>
       <div className='fields-group'>
-        <div className='input with_label'>
-          <div className='label_input'>
-            <label htmlFor='circle_title'>
-              <FormattedMessage
-                id='circles.circle_name'
-                defaultMessage='Circle name'
-              />
-            </label>
-
-            <div className='label_input__wrapper'>
-              <input
-                id='circle_title'
-                type='text'
-                value={title}
-                onChange={handleTitleChange}
-                maxLength={30}
-                required
-                placeholder=' '
-              />
-            </div>
-          </div>
-        </div>
+        <TextInputField
+          label={
+            <FormattedMessage
+              id='circles.circle_name'
+              defaultMessage='Circle name'
+            />
+          }
+          id='circle_title'
+          type='text'
+          value={title}
+          onChange={handleTitleChange}
+          maxLength={30}
+          required
+          placeholder=' '
+        />
       </div>
 
       {id && (
