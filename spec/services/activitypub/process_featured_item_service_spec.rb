@@ -40,6 +40,17 @@ RSpec.describe ActivityPub::ProcessFeaturedItemService do
         end.to_not change(CollectionItem, :count)
       end
     end
+
+    context 'when the actor URI does not match the approval URI' do
+      let(:featured_object_uri) { 'https://example.com/actor/1' }
+      let(:feature_authorization_uri) { 'https://other.example.com/auth/1' }
+
+      it 'does not create a collection item and returns `nil`' do
+        expect do
+          expect(subject.call(collection, object, position:)).to be_nil
+        end.to_not change(CollectionItem, :count)
+      end
+    end
   end
 
   context 'when the collection item is inlined' do
@@ -72,15 +83,25 @@ RSpec.describe ActivityPub::ProcessFeaturedItemService do
       end
     end
 
-    context 'when item exists at a different position' do
+    context 'when item exists' do
       let!(:collection_item) do
         Fabricate(:collection_item, collection:, uri: featured_item_json['id'], position: 2)
       end
 
-      it 'updates the position' do
-        expect { subject.call(collection, object, position:) }.to_not change(collection.collection_items, :count)
+      context 'when no position is given' do
+        it 'does not change the position' do
+          expect { subject.call(collection, object) }.to_not change(collection.collection_items, :count)
 
-        expect(collection_item.reload.position).to eq 3
+          expect(collection_item.reload.position).to eq 2
+        end
+      end
+
+      context 'when a different position is given' do
+        it 'updates the position' do
+          expect { subject.call(collection, object, position:) }.to_not change(collection.collection_items, :count)
+
+          expect(collection_item.reload.position).to eq 3
+        end
       end
     end
 

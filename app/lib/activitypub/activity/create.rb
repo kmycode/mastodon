@@ -54,6 +54,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     @mentions             = []
     @tagged_objects       = []
     @unresolved_mentions  = []
+    @unresolved_collections = []
     @silenced_account_ids = []
     @params               = {}
     @raw_mention_uris     = []
@@ -80,6 +81,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
     resolve_thread(@status)
     resolve_unresolved_mentions(@status)
+    resolve_unresolved_collections(@status)
     fetch_replies(@status)
     fetch_and_verify_quote
     process_conversation! if @status.limited_visibility?
@@ -371,8 +373,11 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
     # TODO: We probably want to resolve unknown objects and push them to an `@unresolved_tagged_objects` on failure
     collection = ActivityPub::TagManager.instance.uri_to_resource(tag['id'], Collection)
+    collection ||= ActivityPub::FetchRemoteFeaturedCollectionService.new.call(tag['id'], request_id: @options[:request_id])
 
     @tagged_objects << TaggedObject.new(uri: ActivityPub::TagManager.instance.uri_for(collection), object: collection, ap_type: 'FeaturedCollection') if collection.present?
+  rescue Mastodon::UnexpectedResponseError, *Mastodon::HTTP_CONNECTION_ERRORS
+    @unresolved_collections << tag['id']
   end
 
   def process_attachments
@@ -476,6 +481,12 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def resolve_unresolved_mentions(status)
     @unresolved_mentions.uniq.each do |uri|
       MentionResolveWorker.perform_in(rand(PROCESSING_DELAY), status.id, uri, { 'request_id' => @options[:request_id] })
+    end
+  end
+
+  def resolve_unresolved_collections(status)
+    @unresolved_collections.uniq.each do |uri|
+      TaggedCollectionResolveWorker.perform_in(rand(PROCESSING_DELAY), status.id, uri, { 'request_id' => @options[:request_id] })
     end
   end
 

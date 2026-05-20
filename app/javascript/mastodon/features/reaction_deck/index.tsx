@@ -11,8 +11,6 @@ import { createPortal } from 'react-dom';
 
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
-import { Helmet } from 'react-helmet';
-
 import type {
   DragStartEvent,
   DragEndEvent,
@@ -37,8 +35,10 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Helmet } from '@unhead/react/helmet';
 import type { CustomEmoji } from 'emoji-mart';
 
+import { Emoji } from '@/mastodon/components/emoji';
 import MenuIcon from '@/material-icons/400-24px/menu.svg?react';
 import EmojiReactionIcon from '@/material-icons/400-24px/mood.svg?react';
 import { updateReactionDeck } from 'mastodon/actions/reaction_deck';
@@ -50,7 +50,6 @@ import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import EmojiPickerDropdown from 'mastodon/features/compose/containers/emoji_picker_dropdown_container';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
-import emojify from '../emoji/emoji';
 import { usePickerEmojis } from '../emoji/picker';
 
 const messages = defineMessages({
@@ -101,8 +100,7 @@ const ReactionEmoji: React.FC<{
       />
     );
   } else {
-    const html = { __html: emojify(emoji) };
-    content = <span dangerouslySetInnerHTML={html} />;
+    content = <Emoji code={emoji} />;
   }
 
   if (overlay) {

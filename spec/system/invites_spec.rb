@@ -20,7 +20,7 @@ RSpec.describe 'Invites' do
 
       within css_id(invite) do
         expect(page)
-          .to have_content(invite.uses)
+          .to have_text(invite.uses)
           .and have_private_cache_control
         expect(copyable_field.value)
           .to eq(public_invite_url(invite_code: invite.code))
@@ -49,7 +49,7 @@ RSpec.describe 'Invites' do
         .to change { invite.reload.expired? }.to(true)
 
       within css_id(invite) do
-        expect(page).to have_content I18n.t('invites.expired')
+        expect(page).to have_text I18n.t('invites.expired')
       end
     end
   end

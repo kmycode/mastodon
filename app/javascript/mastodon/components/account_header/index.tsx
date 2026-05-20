@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
 import classNames from 'classnames';
-import { Helmet } from 'react-helmet';
+
+import { Helmet } from '@unhead/react/helmet';
 
 import { openModal } from '@/mastodon/actions/modal';
-import FollowRequestNoteContainer from '@/mastodon/features/account/containers/follow_request_note_container';
 import { useLayout } from '@/mastodon/hooks/useLayout';
 import { useVisibility } from '@/mastodon/hooks/useVisibility';
 import {
@@ -21,10 +21,9 @@ import { Avatar } from '../avatar';
 import { AnimateEmojiProvider } from '../emoji/context';
 import { FamiliarFollowers } from '../familiar_followers';
 
+import { AccountBanners } from './banners';
 import { AccountButtons } from './buttons';
 import { AccountHeaderFields } from './fields';
-import { MemorialNote } from './memorial_note';
-import { MovedNote } from './moved_note';
 import { AccountName } from './name';
 import { AccountNote } from './note';
 import { AccountNumberFields } from './number_fields';
@@ -50,9 +49,6 @@ export const AccountHeader: React.FC<{
 }> = ({ accountId, hideTabs }) => {
   const dispatch = useAppDispatch();
   const account = useAppSelector((state) => state.accounts.get(accountId));
-  const relationship = useAppSelector((state) =>
-    state.relationships.get(accountId),
-  );
   const hidden = useAppSelector((state) => getAccountHidden(state, accountId));
 
   const handleOpenAvatar = useCallback(
@@ -96,22 +92,13 @@ export const AccountHeader: React.FC<{
   const isMe = me && account.id === me;
 
   return (
-    <div className='account-timeline__header'>
-      {!hidden && account.memorial && <MemorialNote />}
-      {!hidden && account.moved && (
-        <MovedNote accountId={account.id} targetAccountId={account.moved} />
-      )}
+    <div>
+      <AccountBanners account={account} />
 
       <AnimateEmojiProvider
-        className={classNames('account__header', {
-          inactive: !!account.moved,
-        })}
+        className={classNames(!!account.moved && classes.moved)}
       >
-        {!suspendedOrHidden && !account.moved && relationship?.requested_by && (
-          <FollowRequestNoteContainer account={account} />
-        )}
-
-        <div className={classNames('account__header__image', classes.header)}>
+        <div className={classes.header}>
           {!suspendedOrHidden && (
             <img
               src={autoPlayGif ? account.header : account.header_static}
@@ -121,21 +108,16 @@ export const AccountHeader: React.FC<{
           )}
         </div>
 
-        <div className={classNames('account__header__bar', classes.barWrapper)}>
-          <div
-            className={classNames(
-              'account__header__tabs',
-              classes.avatarWrapper,
-            )}
-          >
+        <div className={classes.barWrapper}>
+          <div className={classes.avatarWrapper}>
             <a
-              className='avatar'
               href={account.avatar}
               rel='noopener'
               target='_blank'
               onClick={handleOpenAvatar}
             >
               <Avatar
+                className={classes.avatar}
                 account={suspendedOrHidden ? undefined : account}
                 alt={account.avatar_description}
                 size={80}
@@ -143,12 +125,7 @@ export const AccountHeader: React.FC<{
             </a>
           </div>
 
-          <div
-            className={classNames(
-              'account__header__tabs__name',
-              classes.displayNameWrapper,
-            )}
-          >
+          <div className={classes.displayNameWrapper}>
             <AccountName accountId={accountId} />
             <AccountButtons
               accountId={accountId}
@@ -168,23 +145,16 @@ export const AccountHeader: React.FC<{
           )}
 
           {!suspendedOrHidden && (
-            <div className='account__header__extra'>
-              <div className='account__header__bio'>
-                {me && account.id !== me && (
-                  <AccountNote accountId={accountId} />
-                )}
+            <div className={classes.bioButtonsWrapper}>
+              {me && account.id !== me && <AccountNote accountId={accountId} />}
 
-                <AccountBio
-                  showDropdown
-                  accountId={accountId}
-                  className={classNames(
-                    'account__header__content',
-                    classes.bio,
-                  )}
-                />
+              <AccountBio
+                showDropdown
+                accountId={accountId}
+                className={classes.bio}
+              />
 
-                <AccountHeaderFields accountId={accountId} />
-              </div>
+              <AccountHeaderFields accountId={accountId} />
 
               {!me && account.email_subscriptions && (
                 <AccountSubscriptionForm accountId={accountId} />

@@ -36,6 +36,7 @@ import StatusEmojiReactionsBar from './status_emoji_reactions_bar';
 import { StatusThreadLabel } from './status_thread_label';
 import { VisibilityIcon } from './visibility_icon';
 import { CollectionPreviewCard } from '../features/collections/components/collection_preview_card';
+import { compareUrls } from '../utils/compare_urls';
 
 const domParser = new DOMParser();
 
@@ -575,7 +576,7 @@ class Status extends ImmutablePureComponent {
       ).find((item) => compareUrls(item.get('url'), cardUrl));
   
       if (taggedCollection) {
-        media = <CollectionPreviewCard collection={taggedCollection} />;
+        media = <CollectionPreviewCard collection={taggedCollection.toJS()} />;
       } else {
         media = (
           <Card
@@ -585,7 +586,7 @@ class Status extends ImmutablePureComponent {
           />
         );
       }
-    } else if (status.get('tagged_collections').size) {
+    } else if (status.get('tagged_collections').size && !status.get('quote')) {
       const firstLinkedCollection = status.get('tagged_collections').first();
       if (firstLinkedCollection) {
         media = (

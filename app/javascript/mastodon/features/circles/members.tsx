@@ -2,9 +2,9 @@ import { useCallback, useState, useEffect, useRef } from 'react';
 
 import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
 
-import { Helmet } from 'react-helmet';
 import { useParams, Link } from 'react-router-dom';
 
+import { Helmet } from '@unhead/react/helmet';
 import { useDebouncedCallback } from 'use-debounce';
 
 import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';

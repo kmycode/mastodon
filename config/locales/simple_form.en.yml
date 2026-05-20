@@ -121,6 +121,7 @@ en:
         enable_local_timeline: While enabling this feature will allow for interaction between like-minded users, it may also strengthen the internal atmosphere; since Mastodon is supposed to have a local timeline, we recommend annotating it in the server introduction if it is to be disabled.
         enable_public_unlisted_visibility: If true, your community maybe closed-minded. If turn it false, strongly recommend that you disclose that you have disabled this setting!
         enable_public_visibility: If disabled, public posts will be forcibly replaced with "Local public" or "Unlisted" posts.
+        email_footer_text: Optional text that appears in the footer of newsletter emails only.
         favicon: WEBP, PNG, GIF or JPG. Overrides the default Mastodon favicon with a custom icon.
         landing_page: Selects what page new visitors see when they first arrive on your server. If you select "Trends", then trends needs to be enabled in the Discovery Settings. If you select "Local feed", then "Access to live feeds featuring local posts" needs to be set to "Everyone" in the Discovery Settings.
         mascot: Overrides the illustration in the advanced web interface.
@@ -414,6 +415,7 @@ en:
         enable_local_timeline: Enable local timeline
         enable_public_unlisted_visibility: Enable public-unlisted visibility / public-unlisted searchability
         enable_public_visibility: Enable public visibility
+        email_footer_text: Additional footer text
         favicon: Favicon
         landing_page: Landing page for new visitors
         local_live_feed_access: Access to live feeds featuring local posts
@@ -454,6 +456,9 @@ en:
         trends: Enable trends
         unlocked_friend: Accept all friend server follows automatically
         wrapstodon: Enable Wrapstodon
+      form_email_subscriptions_confirmation:
+        agreement_email_volume: I understand that enabling this feature may significantly increase the volume of emails sent from the server and that I am solely responsible for any costs incurred.
+        agreement_privacy_and_terms: I have updated the Privacy Policy and Terms of Service.
       interactions:
         must_be_follower: Block notifications from non-followers
         must_be_following: Block notifications from people you don't follow

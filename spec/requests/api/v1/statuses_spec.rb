@@ -132,6 +132,7 @@ RSpec.describe '/api/v1/statuses' do
       end
     end
 
+    # Removed this test from original, but I can't find where this test is moved to...
     describe 'GET /api/v1/statuses/:id/context' do
       let(:scopes) { 'read:statuses' }
       let(:status) { Fabricate(:status, account: user.account) }
@@ -695,20 +696,6 @@ RSpec.describe '/api/v1/statuses' do
             .to start_with('application/json')
         end
       end
-
-      describe 'GET /api/v1/statuses/:id/context' do
-        before do
-          Fabricate(:status, thread: status)
-        end
-
-        it 'returns http unauthorized' do
-          get "/api/v1/statuses/#{status.id}/context"
-
-          expect(response).to have_http_status(404)
-          expect(response.content_type)
-            .to start_with('application/json')
-        end
-      end
     end
 
     context 'with a public status' do
@@ -717,20 +704,6 @@ RSpec.describe '/api/v1/statuses' do
       describe 'GET /api/v1/statuses/:id' do
         it 'returns http success' do
           get "/api/v1/statuses/#{status.id}"
-
-          expect(response).to have_http_status(200)
-          expect(response.content_type)
-            .to start_with('application/json')
-        end
-      end
-
-      describe 'GET /api/v1/statuses/:id/context' do
-        before do
-          Fabricate(:status, thread: status)
-        end
-
-        it 'returns http success' do
-          get "/api/v1/statuses/#{status.id}/context"
 
           expect(response).to have_http_status(200)
           expect(response.content_type)

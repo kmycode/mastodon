@@ -33,6 +33,7 @@ namespace :api, format: false do
         resources :mentioned_by, controller: :mentioned_accounts, only: :index
         resources :bookmark_categories, only: :index
         resource :reblog, only: :create
+        resource :context, only: :show
         post :unreblog, to: 'reblogs#destroy'
 
         resources :quotes, only: :index do
@@ -64,10 +65,6 @@ namespace :api, format: false do
         post :emoji_unreaction, to: 'emoji_reactions#destroy'
         post '/react/:id', to: 'emoji_reactions#create', constraints: { id: %r{[^/]+} }
         post '/unreact/:id', to: 'emoji_reactions#destroy', constraints: { id: %r{[^/]+} }
-      end
-
-      member do
-        get :context
       end
     end
 

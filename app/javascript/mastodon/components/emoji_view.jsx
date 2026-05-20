@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { PureComponent } from 'react';
 
-import emojify from '../features/emoji/emoji';
+import { Emoji } from './emoji';
 
 export default class EmojiView extends PureComponent {
 
@@ -14,18 +14,11 @@ export default class EmojiView extends PureComponent {
   render () {
     const { name, url, staticUrl } = this.props;
 
-    let emojiHtml = null;
     if (url) {
-      let customEmojis = {};
-      customEmojis[`:${name}:`] = { url, static_url: staticUrl };
-      emojiHtml = emojify(`:${name}:`, customEmojis);
+      return <Emoji code={`:${name}:`} />
     } else {
-      emojiHtml = emojify(name);
+      return <Emoji code={name} />
     }
-
-    return (
-      <span className='emoji' dangerouslySetInnerHTML={{ __html: emojiHtml }} />
-    );
   }
 
 }

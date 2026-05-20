@@ -2,10 +2,11 @@ import { useCallback, useState, useEffect } from 'react';
 
 import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
 
-import { Helmet } from 'react-helmet';
 import { useParams, useHistory, Link } from 'react-router-dom';
 
 import { isFulfilled } from '@reduxjs/toolkit';
+
+import { Helmet } from '@unhead/react/helmet';
 
 import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import { fetchAntenna } from 'mastodon/actions/antennas';
