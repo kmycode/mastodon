@@ -22,7 +22,7 @@ import Column from 'mastodon/features/ui/components/column';
 
 
 
-import EmojiView from '../../components/emoji_view';
+import { EmojiView } from '../../components/emoji_view';
 import { LoadingIndicator } from '../../components/loading_indicator';
 
 const messages = defineMessages({

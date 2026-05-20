@@ -9,7 +9,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 
 import { isHideItem } from 'mastodon/initial_state';
 
-import EmojiView from './emoji_view';
+import { EmojiView } from './emoji_view';
 
 class EmojiReactionButton extends PureComponent {
 
