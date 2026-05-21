@@ -16,7 +16,6 @@ on:
       - '**/*.css'
       - '**/*.scss'
       - '.github/workflows/lint-css.yml'
-      - '.github/stylelint-matcher.json'
 
   pull_request:
     paths:
@@ -27,7 +26,6 @@ on:
       - '**/*.css'
       - '**/*.scss'
       - '.github/workflows/lint-css.yml'
-      - '.github/stylelint-matcher.json'
 
 jobs:
   lint:

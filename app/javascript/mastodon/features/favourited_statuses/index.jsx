@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from '@/mastodon/components/intl';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { Helmet } from 'react-helmet';
+import { Helmet } from '@unhead/react/helmet';
 
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';

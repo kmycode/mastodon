@@ -29,6 +29,7 @@ interface AccountListProps {
   list?: AccountList | null;
   loadMore: () => void;
   prependAccountId?: string | null;
+  withoutFollowsYouBadge?: boolean;
   scrollKey: string;
   kind?: 'followers' | 'following' | null;
 }
@@ -42,6 +43,7 @@ export const AccountList: FC<AccountListProps> = ({
   list,
   loadMore,
   prependAccountId,
+  withoutFollowsYouBadge,
   scrollKey,
   kind,
 }) => {
@@ -63,6 +65,7 @@ export const AccountList: FC<AccountListProps> = ({
           key={followerId}
           accountId={followerId}
           withBio={false}
+          badge={withoutFollowsYouBadge ? false : null}
         />
       )) ?? [];
 
@@ -72,11 +75,12 @@ export const AccountList: FC<AccountListProps> = ({
           key={prependAccountId}
           accountId={prependAccountId}
           withBio={false}
+          badge={withoutFollowsYouBadge ? false : null}
         />,
       );
     }
     return children;
-  }, [prependAccountId, list, forceEmptyState]);
+  }, [prependAccountId, list, forceEmptyState, withoutFollowsYouBadge]);
 
   const { multiColumn } = useLayout();
 

@@ -7,7 +7,6 @@ import { isHideItem } from 'mastodon/initial_state';
 
 import { useEmoji } from '../../../actions/emojis';
 import { changeSetting } from '../../../actions/settings';
-import { unicodeMapping } from '../../emoji/emoji_unicode_mapping_light';
 import EmojiPickerDropdown from '../components/emoji_picker_dropdown';
 
 
@@ -43,8 +42,7 @@ const getFrequentlyUsedEmojis = createSelector([
   let deckEmojis = reactionDeck
     .toArray()
     .map((e) => e.get('name'))
-    .filter((e) => e)
-    .map((e) => unicodeMapping[e] ? unicodeMapping[e].shortCode : e);
+    .filter((e) => e);
   deckEmojis = [...new Set(deckEmojis)];
 
   let emojis;

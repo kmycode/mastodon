@@ -2,8 +2,9 @@ import { useEffect, useRef, useCallback } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
-import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
+
+import { Helmet } from '@unhead/react/helmet';
 
 import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';
 import {

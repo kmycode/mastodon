@@ -30,7 +30,7 @@ export const ListItemWrapper: React.FC<WrapperProps> = ({
   return (
     <div {...otherProps} className={classNames(classes.wrapper, className)}>
       {icon}
-      <div>{children}</div>
+      <div className={classes.main}>{children}</div>
       {sideContent && (
         <span className={classes.sideContent}>{sideContent}</span>
       )}
@@ -67,9 +67,14 @@ interface LinkProps
   extends React.ComponentPropsWithoutRef<typeof Link>, ContentProps {}
 
 export const ListItemLink = polymorphicForwardRef<'h3', LinkProps>(
-  ({ as, subtitle, children, className, ...otherProps }, ref) => {
+  ({ as, subtitle, subtitleId, children, className, ...otherProps }, ref) => {
     return (
-      <ListItemContent ref={ref} as={as} subtitle={subtitle}>
+      <ListItemContent
+        ref={ref}
+        as={as}
+        subtitle={subtitle}
+        subtitleId={subtitleId}
+      >
         <Link className={classNames(className, 'focusable')} {...otherProps}>
           {children}
         </Link>
@@ -82,9 +87,14 @@ interface ButtonProps
   extends React.ComponentPropsWithoutRef<'button'>, ContentProps {}
 
 export const ListItemButton = polymorphicForwardRef<'h3', ButtonProps>(
-  ({ as, subtitle, children, className, ...otherProps }, ref) => {
+  ({ as, subtitle, subtitleId, children, className, ...otherProps }, ref) => {
     return (
-      <ListItemContent as={as} ref={ref} subtitle={subtitle}>
+      <ListItemContent
+        as={as}
+        ref={ref}
+        subtitle={subtitle}
+        subtitleId={subtitleId}
+      >
         <button
           type='button'
           className={classNames(className, 'focusable')}

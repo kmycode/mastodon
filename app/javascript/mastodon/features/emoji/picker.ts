@@ -28,8 +28,16 @@ export async function fetchCustomEmojiData() {
 
   const { loadAllCustomEmoji } = await import('./database');
   const emojisRaw = await loadAllCustomEmoji();
-  if (emojisRaw.length === 0) {
+
+  // If it returns null then custom emojis aren't even loaded yet.
+  if (emojisRaw === null) {
     return [];
+  }
+
+  // If it's empty, then they are loaded but there aren't any.
+  if (emojisRaw.length === 0) {
+    customEmojis = [];
+    return customEmojis;
   }
 
   const categories = new Set(['custom']);
@@ -67,6 +75,36 @@ export async function fetchCustomEmojiData() {
   );
 
   return customEmojis;
+}
+
+type LegacyEmoji =
+  | { id: string; custom?: false; native: string }
+  | {
+      id: string;
+      custom: true;
+    };
+
+// Replicates the old legacy search function.
+export async function emojiMartSearch(
+  token: string,
+  locale: string,
+  limit = 5,
+): Promise<LegacyEmoji[]> {
+  const query = token.replace(':', '').toLowerCase().trim();
+  if (!query.length) {
+    return [];
+  }
+
+  const { search } = await import('./database');
+  const results = await search({ query, locale, limit });
+  return results.map((emoji) =>
+    'shortcode' in emoji
+      ? { id: emoji.shortcode, custom: true }
+      : {
+          id: emoji.label.replaceAll(' ', '_').toLowerCase(),
+          native: emoji.unicode,
+        },
+  );
 }
 
 export function usePickerEmojis() {
