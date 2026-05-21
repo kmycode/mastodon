@@ -25,5 +25,5 @@ export const EmojiView: React.FC<EmojiViewProps> = ({
     return <EmojiHTML htmlString={`:${name}:`} extraEmojis={extraEmojis} />;
   }
 
-  return <EmojiHTML htmlString={name} />;
+  return <EmojiHTML htmlString={name} className='unicode' />;
 };

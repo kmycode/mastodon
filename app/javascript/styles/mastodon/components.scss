@@ -1821,6 +1821,10 @@ body > [data-popper-placement] {
         margin-bottom: 0;
         height: 24px;
       }
+
+      .unicode {
+        font-size: var(--content-emoji-size);
+      }
     }
 
     .count {
@@ -11028,6 +11032,10 @@ noscript {
 
             img {
               height: 20px;
+            }
+
+            .unicode {
+              font-size: var(--content-emoji-size);
             }
           }
 
