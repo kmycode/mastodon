@@ -349,6 +349,7 @@ fr-CA:
       back_to_report: Retour à la page du signalement
       batch:
         add_to_report: 'Ajouter au signalement #%{id}'
+        remove_from_report: Retirer du signalement
         report: Signaler
       collection_title: Collection par %{name}
       contents: Contenu
@@ -745,7 +746,7 @@ fr-CA:
       action_log: Journal d’audit
       action_taken_by: Intervention de
       actions:
-        delete_description_html: Les messages signalés seront supprimés et une sanction sera enregistrée pour vous aider à prendre les mesures appropriées en cas d'infractions futures par le même compte.
+        delete_description_html: Les messages ou les collections signalés seront supprimés et une sanction sera enregistrée pour vous aider à prendre les mesures appropriées en cas de nouvelles infractions par le même compte.
         mark_as_sensitive_description_html: Les médias des messages signalés seront marqués comme sensibles et une sanction sera enregistrée pour vous aider à prendre les mesures appropriées en cas d'infractions futures par le même compte.
         other_description_html: Voir plus d'options pour contrôler le comportement du compte et personnaliser la communication vers le compte signalé.
         resolve_description_html: Aucune mesure ne sera prise contre le compte signalé, aucune sanction ne sera enregistrée et le sigalement sera clôturé.
@@ -772,7 +773,7 @@ fr-CA:
       confirm: Confirmer
       confirm_action: Confirmer l'action de modération contre @%{acct}
       created_at: Signalé
-      delete_and_resolve: Supprimer les messages
+      delete_and_resolve: Supprimer le contenu
       forwarded: Transféré
       forwarded_replies_explanation: Ce rapport provient d'un utilisateur sur une autre instance et concerne du contenu non-local. Il vous a été transmis car le contenu signalé est en réponse à l'un de vos utilisateurs.
       forwarded_to: Transféré à %{domain}
@@ -955,9 +956,15 @@ fr-CA:
           disabled: Nécessite un rôle spécifique
           public: Tout le monde
       landing_page:
+        hints:
+          about_html: Une page avec la description, les informations de contact, les règles et d'autres informations concernant ce serveur.
+          local_feed_html: Un flux en direct avec les messages les plus récents des utilisateur·rice·s sur ce serveur.
+          overview_html: Une page montrant la description de votre serveur avec les derniers messages locaux des utilisateur·rice·s sur ce serveur.
+          trends_html: Une page présentant ce qui est populaire sur ce serveur en ce moment.
         values:
-          about: À propos
-          local_feed: Fil local
+          about: Page À propos
+          local_feed: Flux local en direct
+          overview: Aperçu 
           trends: Tendances
       registrations:
         moderation_recommandation: Veuillez vous assurer d'avoir une équipe de modération adéquate et réactive avant d'ouvrir les inscriptions à tout le monde !
@@ -978,6 +985,7 @@ fr-CA:
     site_uploads:
       delete: Supprimer le fichier téléversé
       destroyed_msg: Téléversement sur le site supprimé avec succès !
+    skip_to_content: Accéder au contenu
     software_updates:
       critical_update: Critique — veuillez mettre à jour au plus vite
       description: Il est recommandé de maintenir votre installation de Mastodon à jour afin de bénéficier des derniers correctifs et fonctionnalités. Par ailleurs, il est parfois critique de mettre à jour Mastodon rapidement de manière à éviter les incidents relatifs à la sécurité. Pour ces raisons, Mastodon examine la disponibilté des mises à jour toutes les 30 minutes, et vous en avisera en fonction de vos préférences de notification par courriel.
@@ -1561,7 +1569,9 @@ fr-CA:
     blocks: Vous bloquez
     bookmarks: Marque-pages
     csv: CSV
+    custom_filters: Filtres
     domain_blocks: Blocages de domaine
+    json: JSON
     lists: Listes
     mutes: Vous masquez
     storage: Médias stockés

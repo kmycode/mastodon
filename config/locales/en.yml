@@ -971,7 +971,7 @@ en:
       action_log: Audit log
       action_taken_by: Action taken by
       actions:
-        delete_description_html: The reported posts will be deleted and a strike will be recorded to help you escalate on future infractions by the same account.
+        delete_description_html: The reported posts and/or collections will be deleted and a strike will be recorded to help you escalate on future infractions by the same account.
         force_cw_description_html: The sensitive message in the reported posts will be added content warning and a strike will be recorded to help you escalate on future infractions by the same account.
         mark_as_sensitive_description_html: The media in the reported posts will be marked as sensitive and a strike will be recorded to help you escalate on future infractions by the same account.
         other_description_html: See more options for controlling the account's behaviour and customize communication to the reported account.
@@ -999,7 +999,7 @@ en:
       confirm: Confirm
       confirm_action: Confirm moderation action against @%{acct}
       created_at: Reported
-      delete_and_resolve: Delete posts
+      delete_and_resolve: Delete content
       force_cw: Add warning
       forwarded: Forwarded
       forwarded_replies_explanation: This report is from a remote user and about remote content. It has been forwarded to you because the reported content is in reply to one of your users.
@@ -1205,10 +1205,16 @@ en:
           disabled: Require specific user role
           public: Everyone
       landing_page:
+        hints:
+          about_html: A page with the description, contact information, rules and other information regarding this server.
+          local_feed_html: A live feed featuring most recent posts by users on this server.
+          overview_html: A page showcasing the description of your server alongside the most recent local posts by users on this server.
+          trends_html: A page featuring what's popular on this server right now.
         values:
-          about: About
-          local_feed: Local feed
-          trends: Trends
+          about: About page
+          local_feed: Local live feed
+          overview: Overview
+          trends: Trending
       registrations:
         moderation_recommandation: Please make sure you have an adequate and reactive moderation team before you open registrations to everyone!
         preamble: Control who can create an account on your server.
@@ -1228,6 +1234,7 @@ en:
     site_uploads:
       delete: Delete uploaded file
       destroyed_msg: Site upload successfully deleted!
+    skip_to_content: Skip to content
     software_updates:
       critical_update: Critical — please update quickly
       description: It is recommended to keep your Mastodon installation up to date to benefit from the latest fixes and features. Moreover, it is sometimes critical to update Mastodon in a timely manner to avoid security issues. For these reasons, Mastodon checks for updates every 30 minutes, and will notify you according to your email notification preferences.
@@ -1858,7 +1865,9 @@ en:
     blocks: You block
     bookmarks: Bookmarks
     csv: CSV
+    custom_filters: Filters
     domain_blocks: Domain blocks
+    json: JSON
     lists: Lists
     mutes: You mute
     storage: Media storage

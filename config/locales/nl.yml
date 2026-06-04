@@ -746,7 +746,7 @@ nl:
       action_log: Auditlog
       action_taken_by: Maatregel genomen door
       actions:
-        delete_description_html: De gerapporteerde berichten worden verwijderd en er wordt een overtreding geregistreerd om toekomstige overtredingen van hetzelfde account sneller af te kunnen handelen.
+        delete_description_html: De gerapporteerde berichten en/of verzamelingen worden verwijderd en er wordt een overtreding geregistreerd om toekomstige overtredingen door hetzelfde account sneller af te kunnen handelen.
         mark_as_sensitive_description_html: De media in de gerapporteerde berichten worden gemarkeerd als gevoelig en er wordt een overtreding geregistreerd om toekomstige overtredingen van hetzelfde account sneller af te kunnen handelen.
         other_description_html: Bekijk meer opties voor het controleren van het gedrag van en de communicatie met het gerapporteerde account.
         resolve_description_html: Er wordt tegen het gerapporteerde account geen maatregel genomen, geen overtreding geregistreerd en de rapportage wordt gemarkeerd als opgelost.
@@ -773,7 +773,7 @@ nl:
       confirm: Bevestigen
       confirm_action: Bevestig moderatiemaatregel tegen @%{acct}
       created_at: Gerapporteerd op
-      delete_and_resolve: Bericht verwijderen
+      delete_and_resolve: Inhoud verwijderen
       forwarded: Doorgestuurd
       forwarded_replies_explanation: Dit rapport komt van een externe gebruiker en gaat over externe inhoud. Het is naar je doorgestuurd omdat de gerapporteerde inhoud een reactie is op een van jouw gebruikers.
       forwarded_to: Doorgestuurd naar %{domain}
@@ -800,7 +800,7 @@ nl:
       reported_with_application: Gerapporteerd met applicatie
       resolved: Opgelost
       resolved_msg: Rapportage succesvol opgelost!
-      skip_to_actions: Ga direct naar de maatregelen
+      skip_to_actions: Ga naar de acties
       status: Rapportages
       statuses: Berichten (%{count})
       statuses_description_html: De problematische inhoud wordt aan het gerapporteerde account medegedeeld
@@ -956,9 +956,15 @@ nl:
           disabled: Specifieke gebruikersrol vereisen
           public: Iedereen
       landing_page:
+        hints:
+          about_html: Een pagina met de beschrijving, contactgegevens, regels en andere informatie over deze server.
+          local_feed_html: Een openbaar toegankelijke tijdlijn met de meest recente berichten van gebruikers op deze server.
+          overview_html: Een pagina die de beschrijving van je server laat zien, naast de meest recente lokale berichten van gebruikers op deze server.
+          trends_html: Een pagina met wat momenteel populair op deze server is.
         values:
-          about: Over
-          local_feed: Lokale tijdlijn
+          about: Pagina over ons
+          local_feed: Openbare lokale tijdlijn
+          overview: Overzicht
           trends: Trends
       registrations:
         moderation_recommandation: Zorg ervoor dat je een adequaat en responsief moderatieteam hebt voordat je registraties voor iedereen openstelt!
@@ -979,6 +985,7 @@ nl:
     site_uploads:
       delete: Geüpload bestand verwijderen
       destroyed_msg: Verwijderen website-upload geslaagd!
+    skip_to_content: Ga naar de inhoud
     software_updates:
       critical_update: Kritiek — update snel
       description: Het wordt aanbevolen om je Mastodon-installatie up-to-date te houden om gebruik te kunnen maken van de nieuwste oplossingen en functies. Bovendien is het soms cruciaal om Mastodon tijdig bij te werken om veiligheidsproblemen te voorkomen. Om deze redenen controleert Mastodon elke 30 minuten updates en brengt je hiervan op de hoogte volgens jouw voorkeuren voor e-mailmeldingen.
@@ -1562,7 +1569,9 @@ nl:
     blocks: Geblokkeerde accounts
     bookmarks: Bladwijzers
     csv: CSV
+    custom_filters: Filters
     domain_blocks: Geblokkeerde domeinen
+    json: JSON
     lists: Lijsten
     mutes: Genegeerde accounts
     storage: Mediabestanden

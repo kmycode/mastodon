@@ -746,7 +746,7 @@ es:
       action_log: Registro de auditoría
       action_taken_by: Acción tomada por
       actions:
-        delete_description_html: Los mensajes denunciados serán eliminados y se registrará una amonestación para ayudarte a escalar en futuras infracciones por la misma cuenta.
+        delete_description_html: Las publicaciones y/o colecciones informadas se borrarán, y se aplicará una amonestación para ayudarte a escalar futuras acciones sobre la misma cuenta.
         mark_as_sensitive_description_html: Los archivos multimedia en los mensajes informados se marcarán como sensibles y se aplicará una amonestación para ayudarte a escalar las futuras infracciones de la misma cuenta.
         other_description_html: Ver más opciones para controlar el comportamiento de la cuenta y personalizar la comunicación de la cuenta reportada.
         resolve_description_html: No se tomarán medidas contra la cuenta denunciada, no se registrará la amonestación, y se cerrará el informe.
@@ -773,7 +773,7 @@ es:
       confirm: Confirmar
       confirm_action: Confirmar acción de moderación contra @%{acct}
       created_at: Denunciado
-      delete_and_resolve: Eliminar publicaciones
+      delete_and_resolve: Borrar contenido
       forwarded: Reenviado
       forwarded_replies_explanation: Este informe es de un usuario remoto y sobre contenido remoto. Se le ha enviado porque el contenido reportado es en respuesta a uno de sus usuarios.
       forwarded_to: Reenviado a %{domain}
@@ -956,10 +956,16 @@ es:
           disabled: Requerir un rol de usuario específico
           public: Todos
       landing_page:
+        hints:
+          about_html: Una página con la descripción, información de contacto, reglas y otra información relevante de este servidor.
+          local_feed_html: Una cronología con los mensajes más recientes de los usuarios en este servidor.
+          overview_html: Una página que muestra la descripción de tu servidor junto a las publicaciones locales más recientes de los usuarios en este servidor.
+          trends_html: Una página destacando lo que es popular en este servidor en este momento.
         values:
-          about: Acerca de
+          about: Página sobre el servidor
           local_feed: Cronología local
-          trends: Tendencias
+          overview: Resumen
+          trends: En tendencia
       registrations:
         moderation_recommandation: Por favor, ¡asegúrate de tener un equipo de moderación adecuado y reactivo antes de abrir los registros a todo el mundo!
         preamble: Controla quién puede crear una cuenta en tu servidor.
@@ -979,6 +985,7 @@ es:
     site_uploads:
       delete: Eliminar archivo subido
       destroyed_msg: "¡Carga del sitio eliminada con éxito!"
+    skip_to_content: Saltar al contenido
     software_updates:
       critical_update: Crítica— por favor actualiza rápidamente
       description: Se recomienda mantener actualizada tu instalación de Mastodon para beneficiarte de las últimas correcciones y características. Además, a veces es crítico actualizar Mastodon de manera oportuna para evitar problemas de seguridad. Por estas razones, Mastodon comprueba si hay actualizaciones cada 30 minutos, y te notificará de acuerdo a tus preferencias de notificación por correo electrónico.
@@ -1562,7 +1569,9 @@ es:
     blocks: Personas que has bloqueado
     bookmarks: Marcadores
     csv: CSV
+    custom_filters: Filtros
     domain_blocks: Bloqueos de dominios
+    json: JSON
     lists: Listas
     mutes: Tienes en silencio
     storage: Almacenamiento

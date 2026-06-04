@@ -738,7 +738,7 @@ fi:
       action_log: Tarkastusloki
       action_taken_by: Toimen tehnyt
       actions:
-        delete_description_html: Raportoidut julkaisut poistetaan ja kirjataan varoitus, joka auttaa suhtautumaan vakavammin saman tilin tuleviin rikkomuksiin.
+        delete_description_html: Raportoidut julkaisut ja/tai kokoelmat poistetaan ja kirjataan varoitus, joka auttaa suhtautumaan vakavammin saman tilin tuleviin rikkomuksiin.
         mark_as_sensitive_description_html: Raportoitujen julkaisujen media merkitään arkaluonteiseksi ja kirjataan varoitus, joka auttaa suhtautumaan vakavammin saman tilin tuleviin rikkomuksiin.
         other_description_html: Katso lisää vaihtoehtoja tilin käytöksen hallitsemiseksi ja raportoidulle tilille kohdistuvan viestinnän mukauttamiseksi.
         resolve_description_html: Ilmoitettua tiliä kohtaan ei ryhdytä toimiin, varoitusta ei kirjata ja raportti suljetaan.
@@ -765,7 +765,7 @@ fi:
       confirm: Vahvista
       confirm_action: Vahvista moderointitoimi käyttäjää @%{acct} kohtaan
       created_at: Raportoitu
-      delete_and_resolve: Poista julkaisut
+      delete_and_resolve: Poista sisältö
       forwarded: Välitetty
       forwarded_replies_explanation: Tämä raportti on etäkäyttäjältä ja koskee etäsisältöä. Se on välitetty sinulle, koska raportoitu sisältö on vastaus jollekin käyttäjällesi.
       forwarded_to: Välitetty palvelimelle %{domain}
@@ -948,10 +948,16 @@ fi:
           disabled: Vaadi tiettyä käyttäjäroolia
           public: Kaikki
       landing_page:
+        hints:
+          about_html: Sivu, jolla on kuvaus, yhteystiedot, säännöt ja muita tietoja tästä palvelimesta.
+          local_feed_html: Livesyöte, joka esittelee tämän palvelimen viimeisimpiä julkaisuja.
+          overview_html: Sivu, joka esittelee palvelimesi kuvauksen viimeisimpien tämän palvelimen käyttäjien paikallisten julkaisujen ohella.
+          trends_html: Sivu, joka esittelee, mikä on suosittua palvelimella juuri nyt.
         values:
-          about: Tietoja
-          local_feed: Paikallinen syöte
-          trends: Trendit
+          about: Tietoja-sivu
+          local_feed: Paikallinen livesyöte
+          overview: Yleiskatsaus
+          trends: Suosittua
       registrations:
         moderation_recommandation: Varmista, että sinulla on riittävä ja toimintavalmis joukko moderaattoreita, ennen kuin avaat rekisteröitymisen kaikille!
         preamble: Määritä, kuka voi luoda tilin palvelimellesi.
@@ -971,6 +977,7 @@ fi:
     site_uploads:
       delete: Poista lähetetty tiedosto
       destroyed_msg: Sivustolatauksen poisto onnistui!
+    skip_to_content: Siirry sisältöön
     software_updates:
       critical_update: Kriittinen – päivitä viivyttelemättä
       description: On suositeltavaa pitää Mastodon-asennus ajantasaisena ja siten hyödyntää uusimpia korjauksia sekä ominaisuuksia. Lisäksi joskus on ratkaisevan tärkeää päivittää Mastodon ajoissa tietoturvaongelmien välttämiseksi. Näistä syistä Mastodon tarkistaa päivitykset 30 minuutin välein, ja ilmoittaa sinulle sähköposti-ilmoitusasetustesi mukaisesti.
@@ -1554,7 +1561,9 @@ fi:
     blocks: Estot
     bookmarks: Kirjanmerkit
     csv: CSV
+    custom_filters: Suodattimet
     domain_blocks: Verkkotunnusten estot
+    json: JSON
     lists: Listat
     mutes: Mykistykset
     storage: Mediatiedostot

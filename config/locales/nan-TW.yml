@@ -345,6 +345,7 @@ nan-TW:
       back_to_report: Tńg去檢舉ê頁
       batch:
         add_to_report: '加kàu檢舉 #%{id}'
+        remove_from_report: Tuì檢舉suá掉
         report: 檢舉
       collection_title: "%{name} ê收藏"
       contents: 內容
@@ -505,6 +506,52 @@ nan-TW:
       compliance_settings:
         additional_footer_text:
           action: 管理
+          hint: Kan-ta佇電子報ê phue ê註kha出現ê通選ê文字
+          title: 其他註kha ê文字
+        lead: 電子報ê phue可能hőng掠做行銷ê電子批，根據lí pháng ê服侍器ê司法管轄區決定。
+        privacy_policy:
+          action: 管理
+          hint: 逐封電子phue ê下kha lóng ē有連kàu tsit ê政策ê連結
+          title: 隱私權政策
+        title: 守法ê設定
+      danger_zone:
+        disable_feature:
+          action: 停止使用
+          hint: 替逐ê口座關tsit ê功能
+          title: Kā功能停止使用
+        erase_all_data:
+          action: 消除資料
+          hint: 佇逐ê郵件列單內底ê逐封phue lóng永永thâi掉
+          title: 消除所有資料
+        title: 危險ê所在
+      disabled_msg: 停止使用訂電子批成功ah。
+      index:
+        disabled:
+          cannot_be_enabled: Lí ê技術提供者iáu buē替lí ê服侍器啟用tsit ê功能。
+          description: Tsit ê功能允准特定口座加widget kàu in ê個人檔案，予無Mastodon口座ê訪客通用電子phue收著in ê PO文。
+          get_started: 開始用
+        lead: 允准訪客用電子phue，接受tsit臺服侍器ê專用口座ê PO文。
+        title: 電子報
+      purged_msg: 逐ê訂電子報ê資料當leh hú掉。
+      roles:
+        accounts: 口座
+        edit_role: 編輯角色
+        empty:
+          hint: 無半位有權用tsit ê功能。
+          no_roles_added: Iáu buē加角色
+        lead: 有下kha ê角色ê口座，ē當佇in ê個人資料內底，啟用tsit ê功能。
+        manage_roles: 管理角色
+        role_name: 角色ê名
+        title: 角色
+      setups:
+        show:
+          enable_feature: 啟用功能
+          important_information: 重大資訊
+          list:
+            1_permission_explanation: 佇啟用tsit ê功能ê時，有指定權限ê口座，通佇伊ê個人資料加電子phue收集表。
+            2_feature_explanation: 訪客佇口座ê個人資料頁註冊，koh確認beh訂了後，佇chit ê口座貼新ê公開PO文ê時陣，in ē開始收著電子phue ê更新。
+            3_privacy_policy_warning: 服侍器ê管理員ē通接近使用收著ê通辨別ê個人資料（電子phue地址）。因此，tsit臺服侍器ê隱私權政策kap服務規定佇用tsit ê功能進前，愛更新。
+            4_cost_warning: 照服侍器設定ê方式，送電子phue可能ē加費用。請佇啟用進前，kap lí ê服務提供者討論，因為tsit ê功能可能ē予lí ê服侍器送ê電子phue數量增長siunn大。
     export_domain_allows:
       new:
         title: 輸入允准ê域名
@@ -685,7 +732,6 @@ nan-TW:
       action_log: 審查日誌
       action_taken_by: 操作由
       actions:
-        delete_description_html: 受檢舉ê PO文ē thâi掉，而且ē用tsi̍t ue̍h橫tsuā記錄，幫tsān lí提升kâng tsi̍t ê用戶未來ê違規。
         mark_as_sensitive_description_html: 受檢舉ê PO文內ê媒體ē標做敏感，而且ē用tsi̍t ue̍h橫tsuā記錄，幫tsān lí提升kâng tsi̍t ê用戶未來ê違規。
         other_description_html: 看其他控制tsit ê口座ê所行，kap自訂聯絡受檢舉ê口座ê選項。
         resolve_description_html: Buē用行動控制受檢舉ê口座，mā無用橫tsuā記錄，而且tsit ê報告ē關掉。
@@ -712,7 +758,6 @@ nan-TW:
       confirm: 確認
       confirm_action: 確認kā %{acct} 管理ê動作
       created_at: 檢舉tī
-      delete_and_resolve: Thâi掉PO文
       forwarded: 轉送ah
       forwarded_replies_explanation: 本報告是tuì別站ê用者送ê，關係別站ê內容。本報告轉hōo lí，因為受檢舉ê內容是回應lí ê服侍器ê用者。
       forwarded_to: 有轉送kàu %{domain}
@@ -804,6 +849,7 @@ nan-TW:
         manage_custom_emojis: 管理自訂ê Emoji
         manage_custom_emojis_description: 允准用者管理佇tsit ê服侍器ê自訂Emoji
         manage_email_subscriptions: 管理訂電子phue
+        manage_email_subscriptions_description: 允准有tsit ê權限ê用者，啟用in口座ê電子報功能
         manage_federation: 管理聯邦
         manage_federation_description: 允准用者封鎖á是允准kap其他域名相連，mā控制寄送ê能力
         manage_invites: 管理邀請
@@ -891,11 +937,6 @@ nan-TW:
           authenticated: Kan-ta hōo登入ê用者
           disabled: 愛特別ê用者角色
           public: Ta̍k lâng
-      landing_page:
-        values:
-          about: 關係本站
-          local_feed: 本地ê動態
-          trends: 趨勢
       registrations:
         moderation_recommandation: 佇開放hōo ta̍k ê lâng註冊進前，請確認lí有夠額koh主動反應ê管理團隊！
         preamble: 控制ē當佇lí ê服侍器註冊ê人。

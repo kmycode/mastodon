@@ -63,7 +63,7 @@ const mapStateToProps = state => ({
   lang: state.getIn(['compose', 'language']),
   circleId: state.getIn(['compose', 'circle_id']),
   isCircleNeeded: state.getIn(['compose', 'privacy']) === 'circle' && !state.getIn(['compose', 'id']),
-  maxChars: state.getIn(['server', 'server', 'configuration', 'statuses', 'max_characters'], 500),
+  maxChars: state.getIn(['server', 'server', 'item', 'configuration', 'statuses', 'max_characters'], 500),
 });
 
 const mapDispatchToProps = (dispatch, props) => ({

@@ -732,7 +732,6 @@ zh-CN:
       action_log: 审计日志
       action_taken_by: 操作执行者
       actions:
-        delete_description_html: 被举报的嘟文将被删除，同时该账号将被标记一次处罚，以供未来同一账号再次违规时参考。
         mark_as_sensitive_description_html: 被举报的嘟文将被标记为敏感，同时该账号将被标记一次处罚，以供未来同一账号再次违规时参考。
         other_description_html: 查看更多控制该账号行为的选项，并自定义编写与被举报账号的通信。
         resolve_description_html: 不会对被举报账号采取任何动作，举报将被关闭，也不会留下处罚记录。
@@ -759,7 +758,6 @@ zh-CN:
       confirm: 确认
       confirm_action: 确认对 @%{acct} 的管理操作
       created_at: 举报时间
-      delete_and_resolve: 删除嘟文
       forwarded: 已转发
       forwarded_replies_explanation: 该举报来自外站用户，涉及外站内容。之所以转发给你，是因为被举报的内容是对你站点一位用户的回复。
       forwarded_to: 转发举报到 %{domain}
@@ -940,10 +938,16 @@ zh-CN:
           disabled: 需要特定的用户角色
           public: 每个人
       landing_page:
+        hints:
+          about_html: 关于此服务器的描述、联系信息、规则及其他信息的页面。
+          local_feed_html: 展示此服务器用户最新嘟文的实时动态。
+          overview_html: 展示你的服务器描述及本站用户最新嘟文的页面。
+          trends_html: 展示此服务器当前热门内容的页面。
         values:
-          about: 关于
-          local_feed: 本站动态
-          trends: 热门
+          about: 关于本站
+          local_feed: 本站实时动态
+          overview: 概览
+          trends: 当前热门
       registrations:
         moderation_recommandation: 在向每个人开放注册之前，请确保你拥有一个人手足够且反应迅速的管理团队！
         preamble: 控制谁可以在你的服务器上创建账号。
@@ -963,6 +967,7 @@ zh-CN:
     site_uploads:
       delete: 删除已上传的文件
       destroyed_msg: 站点上传的文件已经成功删除！
+    skip_to_content: 跳转到内容
     software_updates:
       critical_update: 紧急 — 请尽快更新
       description: 建议你及时更新Mastodon实例，以便获得最新修复和功能。此外，为避免安全问题，有时及时更新Mastodon是至关重要的。出于这些原因，Mastodon每30分钟检查一次更新，并根据你的邮件通知偏好向你发送通知。
@@ -1540,7 +1545,9 @@ zh-CN:
     blocks: 屏蔽的用户
     bookmarks: 书签
     csv: CSV
+    custom_filters: 过滤器
     domain_blocks: 站点屏蔽列表
+    json: JSON
     lists: 列表
     mutes: 已被你隐藏的
     storage: 媒体文件存储

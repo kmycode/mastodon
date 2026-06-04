@@ -104,7 +104,7 @@ export const ensureComposeIsVisible = (getState) => {
 
 export function setComposeToStatus(status, text, spoiler_text) {
   return (dispatch, getState) => {
-    const maxOptions = getState().server.getIn(['server', 'configuration', 'polls', 'max_options']);
+    const maxOptions = getState().server.server.item?.configuration.polls.max_options;
 
     dispatch({
       type: COMPOSE_SET_STATUS,
@@ -344,7 +344,7 @@ export function submitComposeFail(error) {
 
 export function uploadCompose(files) {
   return function (dispatch, getState) {
-    const uploadLimit = getState().getIn(['server', 'server', 'configuration', 'statuses', 'max_media_attachments']);
+    const uploadLimit = getState().getIn(['server', 'server', 'item', 'configuration', 'statuses', 'max_media_attachments']);
     const media = getState().getIn(['compose', 'media_attachments']);
     const pending = getState().getIn(['compose', 'pending_media_attachments']);
     const defaultSensitive = getState().getIn(['compose', 'default_sensitive']);

@@ -423,7 +423,6 @@ kab:
       comment:
         none: Ula yiwen
       confirm: Sentem
-      delete_and_resolve: Kkes tisuffaɣ
       mark_as_resolved: Creḍ-it yefra
       mark_as_unresolved: Creḍ-it ur yefra ara
       no_one_assigned: Ula yiwen
@@ -498,10 +497,6 @@ kab:
       feed_access:
         modes:
           public: Yal yiwen
-      landing_page:
-        values:
-          about: Ɣef
-          trends: Inezzaɣ
       registrations:
         title: Ajerred
       registrations_mode:

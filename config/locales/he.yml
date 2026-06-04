@@ -357,6 +357,7 @@ he:
       back_to_report: חזרה לעמוד הדיווח
       batch:
         add_to_report: להוסיף לדו"ח מספר %{id}
+        remove_from_report: הסרה מהדוח
         report: דווח
       collection_title: אוספים מאת %{name}
       contents: תוכן
@@ -773,7 +774,6 @@ he:
       action_log: ביקורת יומן
       action_taken_by: פעולה בוצעה ע"י
       actions:
-        delete_description_html: ההודעות המדווחות יימחקו ותרשם עבירה על מנת להקל בהעלאה של דיווחים עתידיים על אותו החשבון.
         mark_as_sensitive_description_html: המדיה בהודעות מדווחות תסומן כרגישה ועבירה תרשם כדי לעזור לך להסלים באינטראקציות עתידיות עם אותו החשבון.
         other_description_html: ראו אפשרויות נוספות לשליטה בהתנהגות החשבון וכדי לבצע התאמות בתקשורת עם החשבון המדווח.
         resolve_description_html: אף פעולה לא תבוצע נגד החשבון עליו דווח, לא תירשם עבירה, והדיווח ייסגר.
@@ -800,7 +800,6 @@ he:
       confirm: אישור
       confirm_action: נא לאשר פעולת משמעת לגבי חשבון %{acct}
       created_at: מדווח
-      delete_and_resolve: מחיקת הודעות
       forwarded: קודם
       forwarded_replies_explanation: דווח זה הגיע מחשבון משתמש חיצוני על תוכן חיצוני. הוא הועבר אליך כיוון שהתוכן שדווח הוא בתשובה למשתמש.ת שלך.
       forwarded_to: קודם ל-%{domain}
@@ -987,10 +986,16 @@ he:
           disabled: נדרש תפקיד משתמש מסוים
           public: כולם
       landing_page:
+        hints:
+          about_html: עמוד עם תיאור השרת, פרטי התקשרות, חוקים ושאר המידע.
+          local_feed_html: זרם הודעות חי של הפרסומים האחרונים של משתמשים בשרת זה.
+          overview_html: עמוד המציג את תיאור השרת לצד ההודעות המקומיות האחרונות של משתמשיו ומשתמשותיו.
+          trends_html: עמוד המציג את התכנים המושכים כניין כרגע על שרת זה.
         values:
-          about: אודות
-          local_feed: פיד מקומי
-          trends: נושאים חמים
+          about: דף אודות השרת
+          local_feed: זרם הודעות בזמן אמת
+          overview: סקירה כללית
+          trends: מגמות
       registrations:
         moderation_recommandation: יש לוודא שלאתר יש צוות מנחות ומנחי שיחה מספק ושירותי בטרם תבחרו לפתוח הרשמה לכולם!
         preamble: שליטה בהרשאות יצירת חשבון בשרת שלך.
@@ -1010,6 +1015,7 @@ he:
     site_uploads:
       delete: מחיקת קובץ שהועלה
       destroyed_msg: העלאת אתר נמחקה בהצלחה!
+    skip_to_content: דילוג לתוכן
     software_updates:
       critical_update: חשוב -- יש לעדכן במהירות
       description: מומלץ לשמור את התקנת המסטודון שלך עדכנית כדי להרוויח מהיכולות והתיקונים האחרונים. למעלה מכך, לעיתים קריטי לעדכן את מסטודון בהקדם כדי להמנע מפרצות אבטחה. מסיבות אלו, השרת יבדוק כל 30 דקות, ויודיע לך לפי העדפות הדואל שלך.
@@ -1605,7 +1611,9 @@ he:
     blocks: רשימת חסימות
     bookmarks: סימניות
     csv: CSV
+    custom_filters: מסננים
     domain_blocks: חסימות דומיינים
+    json: JSON
     lists: רשימות
     mutes: רשימת השתקות
     storage: אחסון מדיה

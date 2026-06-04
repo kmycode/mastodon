@@ -868,7 +868,6 @@ ja:
       action_log: 監査ログ
       action_taken_by: 通報処理者
       actions:
-        delete_description_html: 報告された投稿は削除され、ストライクが記録されます。同じアカウントによる今後の違反行為のエスカレーションに役立てられます。
         force_cw_description_html: 報告された投稿には強制的に警告文が追加され、ストライクが記録され、同じアカウントによる今後の違反行為のエスカレーションに役立てられます。
         mark_as_sensitive_description_html: 報告された投稿のメディアは閲覧注意となり、ストライクが記録され、同じアカウントによる今後の違反行為のエスカレーションに役立てられます。
         other_description_html: アカウントの動作を制御するためのオプションや、報告されたアカウントへの通信をカスタマイズするためのオプションを確認してください。
@@ -896,7 +895,6 @@ ja:
       confirm: 確認
       confirm_action: "@%{acct} さんに対するアクション"
       created_at: 通報日時
-      delete_and_resolve: 投稿を削除
       force_cw: 強制的にCWにする
       forwarded: 転送済み
       forwarded_replies_explanation: これはリモートユーザーによる、リモートコンテンツについての報告です。問題のコンテンツはあなたのサーバー利用者への返信なので、こちらにも転送されて来ました。
@@ -1088,9 +1086,6 @@ ja:
           authenticated: ログイン済みユーザーのみ
           disabled: 特定ロールのユーザーのみ
           public: 制限なし
-      landing_page:
-        values:
-          trends: トレンド
       registrations:
         moderation_recommandation: 登録受付を開始する前に、迅速かつ適切にモデレーションを行うチームを編成しましょう！
         preamble: あなたのサーバー上でアカウントを作成できるユーザーを制御します。
