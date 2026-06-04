@@ -112,7 +112,7 @@ class StatusCacheHydrator
           elsif nested
             payload[:quoted_status_id] = quote.quoted_status_id&.to_s
           else
-            payload[:quoted_status] = StatusCacheHydrator.new(quote.quoted_status).hydrate(account, nested: true)
+            payload[:quoted_status] = StatusCacheHydrator.new(quote.quoted_status).hydrate(account.id, nested: true)
           end
         end
       else
