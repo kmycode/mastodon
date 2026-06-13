@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 
 import { Helmet } from '@unhead/react/helmet';
 
+import { NotSignedInIndicator } from '@/mastodon/components/not_signed_in_indicator';
+import { useIdentity } from '@/mastodon/identity_context';
 import AddIcon from '@/material-icons/400-24px/add.svg?react';
 import BookmarkIcon from '@/material-icons/400-24px/bookmark-fill.svg?react';
 import BookmarksIcon from '@/material-icons/400-24px/bookmarks.svg?react';
@@ -96,10 +98,13 @@ const BookmarkCategories: React.FC<{
   const bookmark_categories = useAppSelector((state) =>
     getOrderedBookmarkCategories(state),
   );
+  const { signedIn } = useIdentity();
 
   useEffect(() => {
-    void dispatch(fetchBookmarkCategories());
-  }, [dispatch]);
+    if (signedIn) {
+      void dispatch(fetchBookmarkCategories());
+    }
+  }, [signedIn, dispatch]);
 
   const emptyMessage = (
     <>
@@ -130,14 +135,16 @@ const BookmarkCategories: React.FC<{
         iconComponent={BookmarkIcon}
         multiColumn={multiColumn}
         extraButton={
-          <Link
-            to='/bookmark_categories/new'
-            className='column-header__button'
-            title={intl.formatMessage(messages.create)}
-            aria-label={intl.formatMessage(messages.create)}
-          >
-            <Icon id='plus' icon={AddIcon} />
-          </Link>
+          signedIn && (
+            <Link
+              to='/bookmark_categories/new'
+              className='column-header__button'
+              title={intl.formatMessage(messages.create)}
+              aria-label={intl.formatMessage(messages.create)}
+            >
+              <Icon id='plus' icon={AddIcon} />
+            </Link>
+          )
         }
       />
 
@@ -160,13 +167,17 @@ const BookmarkCategories: React.FC<{
           </div>
         }
       >
-        {bookmark_categories.map((bookmark_category) => (
-          <BookmarkCategoryItem
-            key={bookmark_category.id}
-            id={bookmark_category.id}
-            title={bookmark_category.title}
-          />
-        ))}
+        {signedIn ? (
+          bookmark_categories.map((bookmark_category) => (
+            <BookmarkCategoryItem
+              key={bookmark_category.id}
+              id={bookmark_category.id}
+              title={bookmark_category.title}
+            />
+          ))
+        ) : (
+          <NotSignedInIndicator />
+        )}
       </ScrollableList>
 
       <Helmet>

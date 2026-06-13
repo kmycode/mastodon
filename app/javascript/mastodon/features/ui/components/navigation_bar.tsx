@@ -18,6 +18,7 @@ import { toggleNavigation } from 'mastodon/actions/navigation';
 import { fetchServer } from 'mastodon/actions/server';
 import { Icon } from 'mastodon/components/icon';
 import { IconWithBadge } from 'mastodon/components/icon_with_badge';
+import type { MastodonLocationDescriptor } from 'mastodon/components/router';
 import { useIdentity } from 'mastodon/identity_context';
 import {
   communityTimelineInsteadOfSearchMenu,
@@ -45,12 +46,14 @@ export const messages = defineMessages({
 });
 
 const IconLabelButton: React.FC<{
-  to: string;
+  to: MastodonLocationDescriptor;
   icon?: React.ReactNode;
   activeIcon?: React.ReactNode;
   title: string;
 }> = ({ to, icon, activeIcon, title }) => {
-  const match = useRouteMatch(to);
+  const match = useRouteMatch(
+    typeof to === 'string' ? to : (to.pathname ?? ''),
+  );
 
   return (
     <NavLink
@@ -204,7 +207,7 @@ export const NavigationBar: React.FC = () => {
             )}
             <IconLabelButton
               title={intl.formatMessage(messages.publish)}
-              to='/publish'
+              to={{ pathname: '/publish', state: { focusTarget: false } }}
               icon={<Icon id='' icon={AddIcon} />}
             />
             <NotificationsButton />

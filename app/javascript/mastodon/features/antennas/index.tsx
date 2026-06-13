@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 
 import { Helmet } from '@unhead/react/helmet';
 
+import { NotSignedInIndicator } from '@/mastodon/components/not_signed_in_indicator';
+import { useIdentity } from '@/mastodon/identity_context';
 import AddIcon from '@/material-icons/400-24px/add.svg?react';
 import MoreHorizIcon from '@/material-icons/400-24px/more_horiz.svg?react';
 import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
@@ -114,10 +116,13 @@ const Antennas: React.FC<{
   const dispatch = useAppDispatch();
   const intl = useIntl();
   const antennas = useAppSelector((state) => getOrderedAntennas(state));
+  const { signedIn } = useIdentity();
 
   useEffect(() => {
-    void dispatch(fetchAntennas());
-  }, [dispatch]);
+    if (signedIn) {
+      void dispatch(fetchAntennas());
+    }
+  }, [signedIn, dispatch]);
 
   const emptyMessage = (
     <>
@@ -148,14 +153,16 @@ const Antennas: React.FC<{
         iconComponent={AntennaIcon}
         multiColumn={multiColumn}
         extraButton={
-          <Link
-            to='/antennas/new'
-            className='column-header__button'
-            title={intl.formatMessage(messages.create)}
-            aria-label={intl.formatMessage(messages.create)}
-          >
-            <Icon id='plus' icon={AddIcon} />
-          </Link>
+          signedIn && (
+            <Link
+              to='/antennas/new'
+              className='column-header__button'
+              title={intl.formatMessage(messages.create)}
+              aria-label={intl.formatMessage(messages.create)}
+            >
+              <Icon id='plus' icon={AddIcon} />
+            </Link>
+          )
         }
       />
 
@@ -164,18 +171,22 @@ const Antennas: React.FC<{
         emptyMessage={emptyMessage}
         bindToDocument={!multiColumn}
       >
-        {antennas.map((antenna) => (
-          <AntennaItem
-            key={antenna.id}
-            id={antenna.id}
-            title={antenna.title}
-            insert_feeds={antenna.insert_feeds}
-            isList={!!antenna.list}
-            listTitle={antenna.list?.title}
-            stl={antenna.stl}
-            ltl={antenna.ltl}
-          />
-        ))}
+        {signedIn ? (
+          antennas.map((antenna) => (
+            <AntennaItem
+              key={antenna.id}
+              id={antenna.id}
+              title={antenna.title}
+              insert_feeds={antenna.insert_feeds}
+              isList={!!antenna.list}
+              listTitle={antenna.list?.title}
+              stl={antenna.stl}
+              ltl={antenna.ltl}
+            />
+          ))
+        ) : (
+          <NotSignedInIndicator />
+        )}
       </ScrollableList>
 
       <Helmet>
