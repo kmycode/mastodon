@@ -41,7 +41,7 @@ class MediaAttachment < ApplicationRecord
 
   SHORTCODE_LENGTH = 19
 
-  MAX_DESCRIPTION_LENGTH = 1_500
+  MAX_DESCRIPTION_LENGTH = 10_000
   MAX_DESCRIPTION_HARD_LENGTH_LIMIT = 10_000
 
   IMAGE_LIMIT = 16.megabytes
@@ -206,7 +206,7 @@ class MediaAttachment < ApplicationRecord
   remotable_attachment :thumbnail, IMAGE_LIMIT, suppress_errors: true, download_on_assign: false
 
   validates :account, presence: true
-  validates :description, length: { maximum: MAX_DESCRIPTION_LENGTH }
+  validates :description, length: { maximum: MAX_DESCRIPTION_LENGTH }, if: :local?
   validates :file, presence: true, if: :local?
   validates :thumbnail, absence: true, if: -> { local? && !audio_or_video? }
 

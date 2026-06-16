@@ -62,7 +62,6 @@ lt:
         setting_default_sensitive: Jautrioji medija pagal numatytuosius nustatymus yra paslėpta ir gali būti atskleista spustelėjus.
         setting_emoji_style: Kaip rodyti emodžius. „Auto“ bandys naudoti vietinius jaustukus, bet senesnėse naršyklėse grįš prie Tvejaustukų.
         setting_quick_boosting_html: Kai ši funkcija įjungta, paspaudus ant %{boost_icon} Paryškinimo piktogramos, įrašas bus iškart paryškintas, o ne atidarytas išskleidžiamasis meniu „paryškinti/cituoti“. Citavimo veiksmas perkeliamas į %{options_icon} meniu.
-        setting_system_scrollbars_ui: Taikoma tik darbalaukio naršyklėms, karkasiniais „Safari“ ir „Chrome“.
         setting_use_blurhash: Gradientai pagrįsti paslėptų vizualizacijų spalvomis, bet užgožia bet kokias detales.
         setting_use_pending_items: Slėpti laiko skalės naujienas po paspaudimo, vietoj automatinio srauto slinkimo.
         username: Gali naudoti raides, skaičius ir pabraukimus
@@ -148,6 +147,7 @@ lt:
         avatar: Profilio nuotrauka
         bot: Tai automatinė paskyra
         chosen_languages: Filtruoti kalbas
+        confirm_password: Patvirtink slaptažodį
         display_name: Rodomas vardas
         email: El. pašto adresas
         expires_in: Nustoja galioti po
@@ -261,7 +261,9 @@ lt:
         jurisdiction: Teisinis teismingumas
         min_age: Mažiausias amžius
       user:
+        date_of_birth_1i: Metai
         date_of_birth_2i: Mėnuo
+        date_of_birth_3i: Diena
         role: Vaidmuo
         time_zone: Laiko juosta
       user_role:

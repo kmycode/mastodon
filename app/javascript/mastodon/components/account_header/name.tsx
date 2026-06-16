@@ -7,19 +7,19 @@ import classNames from 'classnames';
 
 import Overlay from 'react-overlays/esm/Overlay';
 
-import { showAlert } from '@/mastodon/actions/alerts';
 import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useRelationship } from '@/mastodon/hooks/useRelationship';
-import { useAppDispatch, useAppSelector } from '@/mastodon/store';
+import { useAppSelector } from '@/mastodon/store';
 import AtIcon from '@/material-icons/400-24px/alternate_email.svg?react';
 import ContentCopyIcon from '@/material-icons/400-24px/content_copy.svg?react';
 import HelpIcon from '@/material-icons/400-24px/help.svg?react';
 import DomainIcon from '@/material-icons/400-24px/language.svg?react';
 
 import { FollowsYouBadge } from '../badge';
-import { Button } from '../button';
+import { CopyButton } from '../copy_button';
 import { DisplayName } from '../display_name';
 import { Icon } from '../icon';
+import { NavigationFocusTarget } from '../navigation_focus_target';
 
 import { AccountBadges } from './badges';
 import classes from './styles.module.scss';
@@ -57,9 +57,9 @@ export const AccountName: FC<{ accountId: string }> = ({ accountId }) => {
   return (
     <div className={classes.nameWrapper}>
       <div className={classes.name}>
-        <h1>
+        <NavigationFocusTarget as='h1'>
           <DisplayName account={account} variant='simple' />
-        </h1>
+        </NavigationFocusTarget>
         {relationship?.followed_by && <FollowsYouBadge />}
       </div>
 
@@ -91,17 +91,6 @@ const AccountNameHelp: FC<{
   }, []);
 
   const handle = `@${username}@${domain}`;
-
-  const dispatch = useAppDispatch();
-  const [copied, setCopied] = useState(false);
-  const handleCopy = useCallback(() => {
-    void navigator.clipboard.writeText(handle);
-    setCopied(true);
-    dispatch(showAlert({ message: messages.copied }));
-    setTimeout(() => {
-      setCopied(false);
-    }, 700);
-  }, [handle, dispatch]);
 
   return (
     <>
@@ -187,21 +176,25 @@ const AccountNameHelp: FC<{
               tagName='p'
             />
 
-            <Button onClick={handleCopy} className={classes.handleCopy}>
-              <Icon id='copy' icon={ContentCopyIcon} />
-              {!copied && (
-                <FormattedMessage
-                  id='account.name.copy'
-                  defaultMessage='Copy handle'
-                />
+            <CopyButton value={handle} className={classes.handleCopy}>
+              {(wasCopied) => (
+                <>
+                  <Icon id='copy' icon={ContentCopyIcon} />
+                  {!wasCopied && (
+                    <FormattedMessage
+                      id='account.name.copy'
+                      defaultMessage='Copy handle'
+                    />
+                  )}
+                  {wasCopied && (
+                    <FormattedMessage
+                      id='copypaste.copied'
+                      defaultMessage='Copied'
+                    />
+                  )}
+                </>
               )}
-              {copied && (
-                <FormattedMessage
-                  id='copypaste.copied'
-                  defaultMessage='Copied'
-                />
-              )}
-            </Button>
+            </CopyButton>
           </div>
         )}
       </Overlay>

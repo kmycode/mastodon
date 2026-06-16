@@ -500,11 +500,9 @@ de:
     email_subscriptions:
       accounts:
         account: Konto
-        active: Aktiviert
         empty:
           hint: Bisher wurden keine Konten abonniert.
           no_lists_yet: Noch keine Listen vorhanden
-        inactive: Deaktiviert
         last_email: Letzte E-Mail
         lead: Konten, die die Funktion aktiviert haben und abonniert wurden, werden unten angezeigt.
         status: Status
@@ -746,7 +744,7 @@ de:
       action_log: Protokoll
       action_taken_by: Maßnahme ergriffen von
       actions:
-        delete_description_html: Der gemeldete Beitrag wird gelöscht und die ergriffene Maßnahme wird aufgezeichnet, um dir bei zukünftigen Verstößen des gleichen Kontos zu helfen.
+        delete_description_html: Die gemeldeten Beiträge/Sammlungen werden gelöscht und die ergriffene Maßnahme wird aufgezeichnet, um dir bei zukünftigen Verstößen des gleichen Kontos zu helfen.
         mark_as_sensitive_description_html: Die Medien in den gemeldeten Beiträgen werden mit einer Inhaltswarnung versehen und der Vorfall wird vermerkt, um bei zukünftigen Verstößen desselben Kontos besser reagieren zu können.
         other_description_html: Weitere Optionen zur Steuerung des Kontoverhaltens und zur Anpassung der Kommunikation mit dem gemeldeten Konto.
         resolve_description_html: Es wird keine Maßnahme gegen das gemeldete Konto ergriffen und der Vorgang wird nicht aufgezeichnet – die Meldung wird hiermit geschlossen.
@@ -773,7 +771,7 @@ de:
       confirm: Bestätigen
       confirm_action: Maßnahme gegen @%{acct} bestätigen
       created_at: Gemeldet am
-      delete_and_resolve: Beiträge löschen
+      delete_and_resolve: Inhalt löschen
       forwarded: Weitergeleitet
       forwarded_replies_explanation: Diese Meldung stammt von einem externen Profil und betrifft einen externen Inhalt. Der Inhalt wurde an dich weitergeleitet, weil er eine Antwort auf ein bei dir registriertes Profil ist.
       forwarded_to: Weitergeleitet an %{domain}
@@ -956,10 +954,16 @@ de:
           disabled: Bestimmte Rolle erforderlich
           public: Alle
       landing_page:
+        hints:
+          about_html: Eine Seite mit der Beschreibung, den Kontaktinformationen, den Regeln und weiteren Informationen zu diesem Server.
+          local_feed_html: Ein Live-Feed mit den neuesten Beiträgen der Nutzer auf diesem Server.
+          overview_html: Eine Seite, die die Beschreibung deines Servers zusammen mit den neuesten lokalen Beiträgen der Nutzer zeigt.
+          trends_html: Eine Seite mit dem, was auf diesem Server gerade im Trend liegt.
         values:
-          about: Über
-          local_feed: Lokaler Feed
-          trends: Trends
+          about: Über-Seite
+          local_feed: Lokaler Live-Feed
+          overview: Übersicht
+          trends: Trendet
       registrations:
         moderation_recommandation: Bitte vergewissere dich, dass du ein geeignetes und reaktionsschnelles Moderationsteam hast, bevor du die Registrierungen uneingeschränkt zulässt!
         preamble: Lege fest, wer auf deinem Server ein Konto erstellen darf.
@@ -979,6 +983,7 @@ de:
     site_uploads:
       delete: Hochgeladene Datei löschen
       destroyed_msg: Upload erfolgreich gelöscht!
+    skip_to_content: Zum Inhalt wechseln
     software_updates:
       critical_update: Kritisch — bitte zügig aktualisieren
       description: Es wird empfohlen, deine Mastodon-Installation auf dem aktuellen Stand zu halten, um von den neuesten Fehlerkorrekturen und Funktionen zu profitieren. Darüber hinaus ist es wichtig, Mastodon zeitnah zu aktualisieren, um Sicherheitslücken zu schließen. Aus diesen Gründen prüft Mastodon alle 30 Minuten auf Updates und du wirst deinen Einstellungen entsprechend per E-Mail informiert.
@@ -1494,6 +1499,7 @@ de:
       your_appeal_rejected: Dein Einspruch wurde abgelehnt
   edit_profile:
     other: Andere
+    privacy_redesign_body: Die Option, deine Follower und „Folge ich“ allen anzuzeigen oder sie vor allen zu verbergen, findest du jetzt auch direkt in deinen Profileinstellungen.
     redesign_body: Dein Profil kannst du jetzt direkt auf deiner Profilseite bearbeiten.
     redesign_button: Loslegen
     redesign_title: Es gibt eine brandneue Möglichkeit, das Profil zu bearbeiten
@@ -1562,7 +1568,9 @@ de:
     blocks: Blockierte Profile
     bookmarks: Lesezeichen
     csv: CSV
+    custom_filters: Filter
     domain_blocks: Blockierte Domains
+    json: JSON
     lists: Listen
     mutes: Stummgeschaltete Profile
     storage: Medienspeicher
@@ -1640,7 +1648,9 @@ de:
       empty: Leere CSV-Datei
       incompatible_type: Inkompatibel mit dem ausgewählten Importtyp
       invalid_csv_file: 'Ungültige CSV-Datei. Fehler: %{error}'
+      invalid_json_file: 'Ungültige JSON-Datei. Fehler: %{error}'
       over_rows_processing_limit: enthält mehr als %{count} Zeilen
+      status_not_found_warning: Einige deiner Filter blenden bestimmte Beiträge aus, die diesem Server nicht bekannt sind. Diese Beiträge werden nicht automatisch gefiltert, wenn sie dem Server später bekannt werden.
       too_large: Datei ist zu groß
     failures: Fehler
     imported: Importiert
@@ -1657,6 +1667,9 @@ de:
       bookmarks_html:
         one: Du bist dabei, <strong>deine Lesezeichen</strong> aus <strong>%{filename}</strong> durch bis zu <strong>%{count} Beitrag</strong> zu ersetzen.
         other: Du bist dabei, <strong>deine Lesezeichen</strong> aus <strong>%{filename}</strong> durch bis zu <strong>%{count} Beiträge</strong> zu ersetzen.
+      custom_filters_html:
+        one: Du bist dabei, <strong>deine Filter</strong> mit dem Inhalt aus <strong>%{filename}</strong> zu <strong>ersetzen</strong>. Bis zu <strong>%{count} Filter</strong> wird zu neuen Filtern hinzugefügt.
+        other: Du bist dabei, <strong>deine Filter</strong> mit dem Inhalt aus <strong>%{filename}</strong> zu <strong>ersetzen</strong>. Bis zu <strong>%{count} Filter</strong> werden zu neuen Filtern hinzugefügt.
       domain_blocking_html:
         one: Du bist dabei, <strong>deine Liste blockierter Domains</strong> aus <strong>%{filename}</strong> durch bis zu <strong>%{count} Domain</strong> zu ersetzen.
         other: Du bist dabei, <strong>deine Liste blockierter Domains</strong> aus <strong>%{filename}</strong> durch bis zu <strong>%{count} Domains</strong> zu ersetzen.
@@ -1676,6 +1689,9 @@ de:
       bookmarks_html:
         one: Du bist dabei, bis zu <strong>%{count} Beitrag</strong> aus <strong>%{filename}</strong> zu deinen <strong>Lesezeichen hinzuzufügen</strong>.
         other: Du bist dabei, bis zu <strong>%{count} Beiträge</strong> aus <strong>%{filename}</strong> zu deinen <strong>Lesezeichen hinzuzufügen</strong>.
+      custom_filters_html:
+        one: Du bist dabei, bis zu <strong>%{count} Filter</strong> aus <strong>%{filename}</strong> zu deinen <strong>Filtern hinzuzufügen</strong>.
+        other: Du bist dabei, bis zu <strong>%{count} Filter</strong> aus <strong>%{filename}</strong> zu deinen <strong>Filtern hinzuzufügen</strong>.
       domain_blocking_html:
         one: Du bist dabei, bis zu <strong>%{count} Domain</strong> aus <strong>%{filename}</strong> zu <strong>blockieren</strong>.
         other: Du bist dabei, bis zu <strong>%{count} Domains</strong> aus <strong>%{filename}</strong> zu <strong>blockieren</strong>.
@@ -1712,6 +1728,7 @@ de:
     types:
       blocking: Blockierte Profile
       bookmarks: Lesezeichen
+      custom_filters: Filter
       domain_blocking: Blockierte Domains
       following: Folge ich
       lists: Listen

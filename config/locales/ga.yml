@@ -361,6 +361,7 @@ ga:
       back_to_report: Ar ais chuig leathanach na tuarascála
       batch:
         add_to_report: 'Cuir le tuarascáil #%{id}'
+        remove_from_report: Bain den tuarascáil
         report: Tuairisc
       collection_title: Bailiúchán le %{name}
       contents: Ábhar
@@ -529,13 +530,26 @@ ga:
     email_subscriptions:
       accounts:
         account: Cuntas
-        active: Gníomhach
         empty:
           hint: Níl aon síntiúsóirí ag aon chuntas go fóill.
           no_lists_yet: Gan aon liostaí fós
-        inactive: Neamhghníomhach
         last_email: Ríomhphost deireanach
         lead: Taispeánfar thíos cuntais a bhfuil an ghné cumasaithe acu agus a bhfuil síntiúsóirí acu.
+        show:
+          confirm_disable_feature: An bhfuil tú ag iarraidh nuachtlitreacha ríomhphoist a dhíchumasú do %{name}? Ní sheolfar nuashonruithe ríomhphoist don chuntas seo a thuilleadh. Beidh an t-úsáideoir fós in ann an ghné a athchumasú ina socruithe cuntais. Chun rochtain ar an ngné seo a bhaint go buan, cuir cead an chuntais in eagar i Róil.
+          confirm_remove_subscriber: Ní bhfaighidh %{email} ríomhphoist ó %{name} a thuilleadh. Ní féidir an gníomh seo a chealú.
+          consent: Níor thoiligh síntiúsóirí ach le poist a fháil trí ríomhphost. Ná húsáid an liosta seo chun críocha eile.
+          date: Dáta an chláraithe
+          disable_feature: Díchumasaigh gné
+          disabled: Díchumasaíodh an ghné agus níl ríomhphoist á seoladh chuig an liosta seo a thuilleadh.
+          email: Seoladh ríomhphoist
+          empty:
+            hint: Níl aon duine cláraithe leis an gcuntas seo go fóill.
+            no_subscribers_yet: Gan aon síntiúsóirí fós
+          enable_feature: Cumasaigh gné
+          no_access_html: Níl na ceadanna riachtanacha ag an gcuntas seo a thuilleadh chun an ghné a chumasú. Athraigh seo i <a href="%{roles_path}">Róil</a>.
+          title: Nuachtlitreacha ríomhphoist ó %{name}
+          view_account: Féach ar an gcuntas
         status: Stádas
         subscribers: Síntiúsóirí
         title: Liostaí poist
@@ -787,7 +801,7 @@ ga:
       action_log: Loga iniúchta
       action_taken_by: Gníomh arna ghlacadh ag
       actions:
-        delete_description_html: Scriosfar na postálacha tuairiscithe agus déanfar stailc a thaifeadadh chun cabhrú leat dul in airde ar sháruithe sa todhchaí tríd an gcuntas céanna.
+        delete_description_html: Scriosfar na poist agus/nó na bailiúcháin a tuairiscíodh agus taifeadfar stailc chun cabhrú leat sárú dlí amach anseo ag an gcuntas céanna a chur chun cinn.
         mark_as_sensitive_description_html: Déanfar na meáin sna poist tuairiscithe a mharcáil mar íogair agus déanfar stailc a thaifeadadh chun cabhrú leat sárú a dhéanamh ar sháruithe sa todhchaí tríd an gcuntas céanna.
         other_description_html: Féach ar a thuilleadh roghanna chun iompar an chuntais a rialú agus cumarsáid a shaincheapadh chuig an gcuntas tuairiscithe.
         resolve_description_html: Ní dhéanfar aon ghníomhaíocht i gcoinne an chuntais thuairiscithe, ní dhéanfar aon stailc a thaifeadadh, agus dúnfar an tuarascáil.
@@ -814,7 +828,7 @@ ga:
       confirm: Deimhnigh
       confirm_action: Deimhnigh gníomh modhnóireachta i gcoinne @%{acct}
       created_at: Tuairiscithe
-      delete_and_resolve: Scrios postálacha
+      delete_and_resolve: Scrios ábhar
       forwarded: Ar aghaidh
       forwarded_replies_explanation: Is ó chianúsáideoir an tuairisc seo agus faoi chianábhar. Tá sé curtha ar aghaidh chugat toisc go bhfuil an t-ábhar tuairiscithe mar fhreagra ar cheann de na húsáideoirí atá agat.
       forwarded_to: Ar aghaidh chuig %{domain}
@@ -1003,10 +1017,16 @@ ga:
           disabled: Éiligh ról úsáideora sonrach
           public: Gach duine
       landing_page:
+        hints:
+          about_html: Leathanach leis an gcur síos, eolas teagmhála, rialacha agus faisnéis eile maidir leis an bhfreastalaí seo.
+          local_feed_html: Fotha beo ina bhfuil na postálacha is déanaí ó úsáideoirí ar an bhfreastalaí seo.
+          overview_html: Leathanach a thaispeánann cur síos ar do fhreastalaí in éineacht leis na postálacha áitiúla is déanaí ó úsáideoirí ar an bhfreastalaí seo.
+          trends_html: Leathanach ar a bhfuil an-tóir ar an bhfreastalaí seo faoi láthair.
         values:
-          about: Maidir
-          local_feed: Fotha áitiúil
-          trends: Treochtaí
+          about: Maidir le leathanach
+          local_feed: Beatha beo áitiúil
+          overview: Forbhreathnú
+          trends: Treocht
       registrations:
         moderation_recommandation: Cinntigh le do thoil go bhfuil foireann mhodhnóireachta imoibríoch leordhóthanach agat sula n-osclaíonn tú clárúcháin do gach duine!
         preamble: Rialú cé atá in ann cuntas a chruthú ar do fhreastalaí.
@@ -1026,6 +1046,7 @@ ga:
     site_uploads:
       delete: Scrios comhad uaslódáilte
       destroyed_msg: D'éirigh le huaslódáil an tsuímh a scriosadh!
+    skip_to_content: Léim go dtí an t-ábhar
     software_updates:
       critical_update: Criticiúil - nuashonraigh go tapa le do thoil
       description: Moltar do shuiteáil Mastodon a choinneáil cothrom le dáta chun leas a bhaint as na socruithe agus na gnéithe is déanaí. Ina theannta sin, tá sé ríthábhachtach uaireanta Mastodon a nuashonrú go tráthúil chun saincheisteanna slándála a sheachaint. Ar na cúiseanna seo, seiceálann Mastodon nuashonruithe gach 30 nóiméad, agus tabharfaidh sé fógra duit de réir do shainroghanna fógra ríomhphoist.
@@ -1558,6 +1579,7 @@ ga:
       your_appeal_rejected: Diúltaíodh do d'achomharc
   edit_profile:
     other: Eile
+    privacy_redesign_body: Déantar an rogha chun do leanúna agus do leanúna a thaispeáint go díreach ó do phróifíl anois.
     redesign_body: Is féidir rochtain a fháil ar eagarthóireacht próifíle go díreach ón leathanach próifíle anois.
     redesign_button: Téigh ann
     redesign_title: Tá taithí nua eagarthóireachta próifíle ann
@@ -1593,7 +1615,9 @@ ga:
         success_html: Tosóidh tú ag fáil ríomhphoist anois nuair a fhoilseoidh %{name} poist nua. Cuir %{sender} le do theagmhálaithe ionas nach gcríochnóidh na poist seo i do fhillteán Turscair.
         title: Tá tú cláraithe
         unsubscribe: Díliostáil
+    disabled: Míchumasaithe
     inactive: Neamhghníomhach
+    no_access: Gan rochtain
     status: Stádas
     subscribers: Síntiúsóirí
   emoji_styles:
@@ -1629,7 +1653,9 @@ ga:
     blocks: Bac leat
     bookmarks: Leabharmharcanna
     csv: CSV
+    custom_filters: Scagairí
     domain_blocks: Bloic fearainn
+    json: JSON
     lists: Liostaí
     mutes: Balbhaíonn tú
     storage: Stóráil meáin
@@ -1728,7 +1754,9 @@ ga:
       empty: Comhad CSV folamh
       incompatible_type: Neamh-chomhoiriúnach leis an gcineál iompórtála roghnaithe
       invalid_csv_file: 'Comhad CSV neamhbhailí. Earráid: %{error}'
+      invalid_json_file: 'Comhad JSON neamhbhailí. Earráid: %{error}'
       over_rows_processing_limit: níos mó ná %{count} sraitheanna
+      status_not_found_warning: Cuireann cuid de do scagairí poist shonracha i bhfolach nach bhfuil ar eolas ag an bhfreastalaí seo. Ní scagfar na poist seo go huathoibríoch má aimsíonn an freastalaí iad níos déanaí.
       too_large: Tá an comhad ró-mhór
     failures: Teipeanna
     imported: Iompórtáilte
@@ -1751,6 +1779,12 @@ ga:
         one: Tá tú ar tí <strong>do leabharmharcanna</strong> a chur in ionad suas le <strong>%{count} postáil</strong> ó <strong>%{filename}</strong>.
         other: Tá tú ar tí <strong>do leabharmharcanna</strong> a chur in ionad suas le <strong>%{count} postáil</strong> ó <strong>%{filename}</strong>.
         two: Tá tú ar tí <strong>do leabharmharcanna</strong> a chur in ionad suas le <strong>%{count} postáil</strong> ó <strong>%{filename}</strong>.
+      custom_filters_html:
+        few: Tá tú ar tí <strong>do scagairí a athsholáthar</strong> le hábhar <strong>%{filename}</strong>. Cuirfear suas le <strong>%{count} scagairí</strong> leis na scagairí nua.
+        many: Tá tú ar tí <strong>do scagairí a athsholáthar</strong> le hábhar <strong>%{filename}</strong>. Cuirfear suas le <strong>%{count} scagairí</strong> leis na scagairí nua.
+        one: Tá tú ar tí <strong>do scagairí a athsholáthar</strong> le hábhar <strong>%{filename}</strong>. Cuirfear suas le <strong>%{count} scagaire</strong> leis na scagairí nua.
+        other: Tá tú ar tí <strong>do scagairí a athsholáthar</strong> le hábhar <strong>%{filename}</strong>. Cuirfear suas le <strong>%{count} scagairí</strong> leis na scagairí nua.
+        two: Tá tú ar tí <strong>do scagairí a athsholáthar</strong> le hábhar <strong>%{filename}</strong>. Cuirfear suas le <strong>%{count} scagairí</strong> leis na scagairí nua.
       domain_blocking_html:
         few: Tá tú ar tí <strong>do liosta bloc fearainn</strong> a chur in ionad suas le <strong>%{count} fearainn</strong> ó <strong>%{filename}</strong>.
         many: Tá tú ar tí <strong>do liosta bloc fearainn</strong> a chur in ionad suas le <strong>%{count} fearainn</strong> ó <strong>%{filename}</strong>.
@@ -1788,6 +1822,12 @@ ga:
         one: Tá tú ar tí <strong>%{count} postáil</strong> ó <strong>%{filename}</strong> a chur le do <strong>leabharmharcanna</strong>.
         other: Tá tú ar tí <strong>%{count} postáil</strong> ó <strong>%{filename}</strong> a chur le do <strong>leabharmharcanna</strong>.
         two: Tá tú ar tí <strong>%{count} postáil</strong> ó <strong>%{filename}</strong> a chur le do <strong>leabharmharcanna</strong>.
+      custom_filters_html:
+        few: Tá tú ar tí suas le <strong>%{count} scagairí</strong> ó <strong>%{filename}</strong> a chur le do <strong>scagairí</strong>.
+        many: Tá tú ar tí suas le <strong>%{count} scagairí</strong> ó <strong>%{filename}</strong> a chur le do <strong>scagairí</strong>.
+        one: Tá tú ar tí suas le <strong>%{count} scagaire</strong> ó <strong>%{filename}</strong> a chur le do <strong>scagairí</strong>.
+        other: Tá tú ar tí suas le <strong>%{count} scagairí</strong> ó <strong>%{filename}</strong> a chur le do <strong>scagairí</strong>.
+        two: Tá tú ar tí suas le <strong>%{count} scagairí</strong> ó <strong>%{filename}</strong> a chur le do <strong>scagairí</strong>.
       domain_blocking_html:
         few: Tá tú ar tí <strong>bhac</strong> suas le <strong>%{count} bhfearainn</strong> ó <strong>%{filename}</strong>.
         many: Tá tú ar tí <strong>bhac</strong> suas le <strong>%{count} bhfearainn</strong> ó <strong>%{filename}</strong>.
@@ -1836,6 +1876,7 @@ ga:
     types:
       blocking: Liosta blocála
       bookmarks: Leabharmharcanna
+      custom_filters: Scagairí
       domain_blocking: Liosta blocála fearainn
       following: Liosta ina dhiaidh sin
       lists: Liostaí

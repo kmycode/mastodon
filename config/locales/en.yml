@@ -4,6 +4,7 @@ en:
     about_mastodon_html: 'The social network of the future: No ads, no corporate surveillance, ethical design, and decentralization! Own your data with Mastodon!'
     contact_missing: Not set
     contact_unavailable: N/A
+    default_thumbnail_description: Two smiling cartoon mastodons (who look like elephants) toss a paper plane between them. They're surrounded by a bright blue sky and floating planets with trees and more mastodons on them.
     hosted_on: Mastodon hosted on %{domain}
     title: About
   accounts:
@@ -552,13 +553,26 @@ en:
     email_subscriptions:
       accounts:
         account: Account
-        active: Active
         empty:
           hint: No accounts have subscribers yet.
           no_lists_yet: No lists yet
-        inactive: Inactive
         last_email: Last email
         lead: Accounts who have enabled the feature and have subscribers will show below.
+        show:
+          confirm_disable_feature: Disable email newsletters for %{name}? Email updates will no longer be sent for this account. The user will still be able to re-enable the feature in their account settings. To permanently remove access to this feature, edit the account’s permission in Roles.
+          confirm_remove_subscriber: "%{email} will no longer receive emails from %{name}. This action cannot be undone."
+          consent: Subscribers have only consented to receiving posts via email. Do not use this list for other purposes.
+          date: Date of sign-up
+          disable_feature: Disable feature
+          disabled: The feature was disabled and emails are no longer being sent to this list.
+          email: Email address
+          empty:
+            hint: Nobody has subscribed to this account yet.
+            no_subscribers_yet: No subscribers yet
+          enable_feature: Enable feature
+          no_access_html: This account no longer has the permissions required to enable the feature. Change this in <a href="%{roles_path}">Roles</a>.
+          title: Email newsletters of %{name}
+          view_account: View account
         status: Status
         subscribers: Subscribers
         title: Mailing lists
@@ -971,7 +985,7 @@ en:
       action_log: Audit log
       action_taken_by: Action taken by
       actions:
-        delete_description_html: The reported posts will be deleted and a strike will be recorded to help you escalate on future infractions by the same account.
+        delete_description_html: The reported posts and/or collections will be deleted and a strike will be recorded to help you escalate on future infractions by the same account.
         force_cw_description_html: The sensitive message in the reported posts will be added content warning and a strike will be recorded to help you escalate on future infractions by the same account.
         mark_as_sensitive_description_html: The media in the reported posts will be marked as sensitive and a strike will be recorded to help you escalate on future infractions by the same account.
         other_description_html: See more options for controlling the account's behaviour and customize communication to the reported account.
@@ -999,7 +1013,7 @@ en:
       confirm: Confirm
       confirm_action: Confirm moderation action against @%{acct}
       created_at: Reported
-      delete_and_resolve: Delete posts
+      delete_and_resolve: Delete content
       force_cw: Add warning
       forwarded: Forwarded
       forwarded_replies_explanation: This report is from a remote user and about remote content. It has been forwarded to you because the reported content is in reply to one of your users.
@@ -1205,10 +1219,16 @@ en:
           disabled: Require specific user role
           public: Everyone
       landing_page:
+        hints:
+          about_html: A page with the description, contact information, rules and other information regarding this server.
+          local_feed_html: A live feed featuring most recent posts by users on this server.
+          overview_html: A page showcasing the description of your server alongside the most recent local posts by users on this server.
+          trends_html: A page featuring what's popular on this server right now.
         values:
-          about: About
-          local_feed: Local feed
-          trends: Trends
+          about: About page
+          local_feed: Local live feed
+          overview: Overview
+          trends: Trending
       registrations:
         moderation_recommandation: Please make sure you have an adequate and reactive moderation team before you open registrations to everyone!
         preamble: Control who can create an account on your server.
@@ -1228,6 +1248,7 @@ en:
     site_uploads:
       delete: Delete uploaded file
       destroyed_msg: Site upload successfully deleted!
+    skip_to_content: Skip to content
     software_updates:
       critical_update: Critical — please update quickly
       description: It is recommended to keep your Mastodon installation up to date to benefit from the latest fixes and features. Moreover, it is sometimes critical to update Mastodon in a timely manner to avoid security issues. For these reasons, Mastodon checks for updates every 30 minutes, and will notify you according to your email notification preferences.
@@ -1790,6 +1811,7 @@ en:
       your_appeal_rejected: Your appeal has been rejected
   edit_profile:
     other: Other
+    privacy_redesign_body: The choice to show your follows and followers is now made directly from your profile.
     redesign_body: Profile editing can now be accessed directly from the profile page.
     redesign_button: Go there
     redesign_title: There’s a new profile editing experience
@@ -1822,7 +1844,9 @@ en:
         success_html: You'll now start receiving emails when %{name} publishes new posts. Add %{sender} to your contacts so these posts don't end up in your Spam folder.
         title: You're signed up
         unsubscribe: Unsubscribe
+    disabled: Disabled
     inactive: Inactive
+    no_access: No access
     status: Status
     subscribers: Subscribers
   emoji_styles:
@@ -1858,7 +1882,9 @@ en:
     blocks: You block
     bookmarks: Bookmarks
     csv: CSV
+    custom_filters: Filters
     domain_blocks: Domain blocks
+    json: JSON
     lists: Lists
     mutes: You mute
     storage: Media storage
@@ -1939,7 +1965,9 @@ en:
       empty: Empty CSV file
       incompatible_type: Incompatible with the selected import type
       invalid_csv_file: 'Invalid CSV file. Error: %{error}'
+      invalid_json_file: 'Invalid JSON file. Error: %{error}'
       over_rows_processing_limit: contains more than %{count} rows
+      status_not_found_warning: Some of your filters hide specific posts that are not known by this server. These posts will not be automatically filtered if they are discovered later by the server.
       too_large: File is too large
     failures: Failures
     imported: Imported
@@ -1956,6 +1984,9 @@ en:
       bookmarks_html:
         one: You are about to <strong>replace your bookmarks</strong> with up to <strong>%{count} post</strong> from <strong>%{filename}</strong>.
         other: You are about to <strong>replace your bookmarks</strong> with up to <strong>%{count} posts</strong> from <strong>%{filename}</strong>.
+      custom_filters_html:
+        one: You are about to <strong>replace your filters</strong> with contents of <strong>%{filename}</strong>. Up to <strong>%{count} filter</strong> will be added to new filters.
+        other: You are about to <strong>replace your filters</strong> with contents of <strong>%{filename}</strong>. Up to <strong>%{count} filters</strong> will be added to new filters.
       domain_blocking_html:
         one: You are about to <strong>replace your domain block list</strong> with up to <strong>%{count} domain</strong> from <strong>%{filename}</strong>.
         other: You are about to <strong>replace your domain block list</strong> with up to <strong>%{count} domains</strong> from <strong>%{filename}</strong>.
@@ -1975,6 +2006,9 @@ en:
       bookmarks_html:
         one: You are about to add up to <strong>%{count} post</strong> from <strong>%{filename}</strong> to your <strong>bookmarks</strong>.
         other: You are about to add up to <strong>%{count} posts</strong> from <strong>%{filename}</strong> to your <strong>bookmarks</strong>.
+      custom_filters_html:
+        one: You are about to add up to <strong>%{count} filter</strong> from <strong>%{filename}</strong> to your <strong>filters</strong>.
+        other: You are about to add up to <strong>%{count} filters</strong> from <strong>%{filename}</strong> to your <strong>filters</strong>.
       domain_blocking_html:
         one: You are about to <strong>block</strong> up to <strong>%{count} domain</strong> from <strong>%{filename}</strong>.
         other: You are about to <strong>block</strong> up to <strong>%{count} domains</strong> from <strong>%{filename}</strong>.
@@ -2011,6 +2045,7 @@ en:
     types:
       blocking: Blocking list
       bookmarks: Bookmarks
+      custom_filters: Filters
       domain_blocking: Domain blocking list
       following: Following list
       lists: Lists

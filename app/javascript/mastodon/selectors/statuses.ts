@@ -1,13 +1,14 @@
-import { createSelector } from '@reduxjs/toolkit';
 import type { OrderedSet as ImmutableOrderedSet } from 'immutable';
 import { List as ImmutableList } from 'immutable';
 
-import type { RootState } from 'mastodon/store';
+import { createAppSelector } from 'mastodon/store';
 
-export const getStatusList = createSelector(
+import type { StatusShape } from '../models/status';
+
+export const getStatusList = createAppSelector(
   [
     (
-      state: RootState,
+      state,
       type:
         | 'favourites'
         | 'bookmarks'
@@ -20,9 +21,9 @@ export const getStatusList = createSelector(
   (items) => items.toList(),
 );
 
-export const getSubStatusList = createSelector(
+export const getSubStatusList = createAppSelector(
   [
-    (state: RootState, type: 'bookmark_category' | 'circle', id: string) =>
+    (state, type: 'bookmark_category' | 'circle', id: string) =>
       state.status_lists.getIn([
         `${type}_statuses`,
         id,
@@ -30,4 +31,14 @@ export const getSubStatusList = createSelector(
       ]) as ImmutableOrderedSet<string> | null,
   ],
   (items) => (items ? items.toList() : ImmutableList()),
+);
+
+export const selectPlainStatus = createAppSelector(
+  [(state, statusId: string) => state.statuses.get(statusId)],
+  (status) => {
+    if (!status) {
+      return null;
+    }
+    return status.toJS() as unknown as StatusShape;
+  },
 );

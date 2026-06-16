@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 
 import { Helmet } from '@unhead/react/helmet';
 
+import { NotSignedInIndicator } from '@/mastodon/components/not_signed_in_indicator';
+import { useIdentity } from '@/mastodon/identity_context';
 import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';
 import AddIcon from '@/material-icons/400-24px/add.svg?react';
 import MoreHorizIcon from '@/material-icons/400-24px/more_horiz.svg?react';
@@ -78,10 +80,13 @@ const Circles: React.FC<{
   const dispatch = useAppDispatch();
   const intl = useIntl();
   const circles = useAppSelector((state) => getOrderedCircles(state));
+  const { signedIn } = useIdentity();
 
   useEffect(() => {
-    void dispatch(fetchCircles());
-  }, [dispatch]);
+    if (signedIn) {
+      void dispatch(fetchCircles());
+    }
+  }, [signedIn, dispatch]);
 
   const emptyMessage = (
     <>
@@ -112,14 +117,16 @@ const Circles: React.FC<{
         iconComponent={CircleIcon}
         multiColumn={multiColumn}
         extraButton={
-          <Link
-            to='/circles/new'
-            className='column-header__button'
-            title={intl.formatMessage(messages.create)}
-            aria-label={intl.formatMessage(messages.create)}
-          >
-            <Icon id='plus' icon={AddIcon} />
-          </Link>
+          signedIn && (
+            <Link
+              to='/circles/new'
+              className='column-header__button'
+              title={intl.formatMessage(messages.create)}
+              aria-label={intl.formatMessage(messages.create)}
+            >
+              <Icon id='plus' icon={AddIcon} />
+            </Link>
+          )
         }
       />
 
@@ -128,9 +135,13 @@ const Circles: React.FC<{
         emptyMessage={emptyMessage}
         bindToDocument={!multiColumn}
       >
-        {circles.map((circle) => (
-          <CircleItem key={circle.id} id={circle.id} title={circle.title} />
-        ))}
+        {signedIn ? (
+          circles.map((circle) => (
+            <CircleItem key={circle.id} id={circle.id} title={circle.title} />
+          ))
+        ) : (
+          <NotSignedInIndicator />
+        )}
       </ScrollableList>
 
       <Helmet>

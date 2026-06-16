@@ -2,8 +2,6 @@
 
 ENV['RAILS_ENV'] ||= 'test'
 
-require 'simplecov' if ENV.fetch('COVERAGE', false)
-
 # This needs to be defined before Rails is initialized
 STREAMING_PORT = ENV.fetch('TEST_STREAMING_PORT', '4020')
 STREAMING_HOST = ENV.fetch('TEST_STREAMING_HOST', 'localhost')
@@ -84,6 +82,7 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include ActionMailer::TestHelper
   config.include Paperclip::Shoulda::Matchers
+  config.include ActiveSupport::Testing::NotificationAssertions
   config.include ActiveSupport::Testing::TimeHelpers
   config.include Chewy::Rspec::Helpers
   config.include Redisable
@@ -93,6 +92,7 @@ RSpec.configure do |config|
   config.include CommandLineHelpers, type: :cli
   config.include SystemHelpers, type: :system
   config.include Shoulda::Matchers::ActiveModel, type: :validator
+  config.include HtmlHeadInspection, type: :request
 
   # TODO: Remove when Devise fixes https://github.com/heartcombo/devise/issues/5705
   config.before do

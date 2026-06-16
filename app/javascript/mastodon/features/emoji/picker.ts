@@ -1,81 +1,17 @@
-import { useEffect, useState } from 'react';
-
 import type { CategoryName, CustomEmoji } from 'emoji-mart';
 
 import { autoPlayGif } from '@/mastodon/initial_state';
+import {
+  createAppSelector,
+  useAppSelector,
+} from '@/mastodon/store/typed_functions';
+import { createLimitedCache } from '@/mastodon/utils/cache';
 
 import { emojiLogger } from './utils';
 
 const log = emojiLogger('picker');
 
-let customEmojis: CustomEmoji[] | null = null;
-let customCategories = [
-  'recent',
-  'people',
-  'nature',
-  'foods',
-  'activity',
-  'places',
-  'objects',
-  'symbols',
-  'flags',
-] as CategoryName[];
-
-export async function fetchCustomEmojiData() {
-  if (customEmojis !== null) {
-    return customEmojis;
-  }
-
-  const { loadAllCustomEmoji } = await import('./database');
-  const emojisRaw = await loadAllCustomEmoji();
-
-  // If it returns null then custom emojis aren't even loaded yet.
-  if (emojisRaw === null) {
-    return [];
-  }
-
-  // If it's empty, then they are loaded but there aren't any.
-  if (emojisRaw.length === 0) {
-    customEmojis = [];
-    return customEmojis;
-  }
-
-  const categories = new Set(['custom']);
-  const emojis = [];
-  for (const emoji of emojisRaw) {
-    const name = emoji.shortcode.replaceAll(':', '');
-    const aliases = emoji.aliases;
-    emojis.push({
-      name,
-      id: name,
-      custom: true,
-      short_names: [name],
-      keywords: aliases ? [name, ...aliases] : [name],
-      imageUrl: autoPlayGif ? emoji.url : emoji.static_url,
-      customCategory: emoji.category,
-    });
-
-    if (emoji.category) {
-      categories.add(`custom-${emoji.category}`);
-    }
-  }
-
-  customEmojis = emojis.toSorted((a, b) => {
-    return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-  });
-  customCategories = customCategories.toSpliced(
-    1,
-    0,
-    ...(Array.from(categories).toSorted() as CategoryName[]),
-  );
-  log(
-    'loaded %d custom emojis in %d categories',
-    customEmojis.length,
-    categories.size,
-  );
-
-  return customEmojis;
-}
+const searchCache = createLimitedCache<LegacyEmoji[]>({ maxSize: 10, log });
 
 type LegacyEmoji =
   | { id: string; custom?: false; native: string }
@@ -90,36 +26,93 @@ export async function emojiMartSearch(
   locale: string,
   limit = 5,
 ): Promise<LegacyEmoji[]> {
-  const query = token.replace(':', '').toLowerCase().trim();
+  const query = token.replace(':', '').trim();
   if (!query.length) {
     return [];
   }
 
+  const cacheKey = `${query}|${locale}|${limit}`;
+  const cachedResult = searchCache.get(cacheKey);
+  if (cachedResult) {
+    return cachedResult;
+  }
+
   const { search } = await import('./database');
   const results = await search({ query, locale, limit });
-  return results.map((emoji) =>
+  const legacyResults = results.map((emoji) =>
     'shortcode' in emoji
-      ? { id: emoji.shortcode, custom: true }
+      ? ({ id: emoji.shortcode, custom: true } as const)
       : {
           id: emoji.label.replaceAll(' ', '_').toLowerCase(),
           native: emoji.unicode,
         },
   );
+  searchCache.set(cacheKey, legacyResults);
+
+  return legacyResults;
 }
 
-export function usePickerEmojis() {
-  const [, setLoaded] = useState(customEmojis !== null);
+const defaultCategories = [
+  'people',
+  'nature',
+  'foods',
+  'activity',
+  'places',
+  'objects',
+  'symbols',
+  'flags',
+] as CategoryName[];
 
-  useEffect(() => {
-    if (customEmojis === null) {
-      void fetchCustomEmojiData().then(() => {
-        setLoaded(true);
-      });
+const selectPickerData = createAppSelector(
+  [(state) => state.emojis.custom, (state) => state.emojis.customCategories],
+  (emojis, categories) => {
+    // Create a map of shortcode to category name.
+    const categoryMap = new Map<string, string>();
+    for (const category in categories) {
+      const catEmojis = categories[category];
+      if (!catEmojis?.length) {
+        continue;
+      }
+      for (const shortcode of catEmojis) {
+        categoryMap.set(shortcode, category);
+      }
     }
-  }, []);
 
-  return {
-    customEmojis,
-    customCategories,
-  };
+    const customEmojis: CustomEmoji[] = [];
+    for (const shortcode in emojis) {
+      const emoji = emojis[shortcode];
+      if (!emoji) {
+        continue;
+      }
+
+      customEmojis.push({
+        name: shortcode,
+        id: shortcode,
+        custom: true,
+        short_names: [shortcode],
+        imageUrl: autoPlayGif ? emoji.url : emoji.static_url,
+        customCategory: categoryMap.get(shortcode),
+        keywords: emoji.aliases,
+      } as CustomEmoji);
+    }
+
+    searchCache.clear();
+    log('regenerated the picker data');
+
+    return {
+      emojis: customEmojis,
+      categories: [
+        'recent',
+        'custom',
+        ...Object.keys(categories)
+          .toSorted()
+          .map((category) => `custom-${category}`),
+        ...defaultCategories,
+      ] as CategoryName[],
+    };
+  },
+);
+
+export function usePickerEmojis() {
+  return useAppSelector(selectPickerData);
 }

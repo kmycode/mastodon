@@ -36,9 +36,10 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Helmet } from '@unhead/react/helmet';
-import type { CustomEmoji } from 'emoji-mart';
 
 import { Emoji } from '@/mastodon/components/emoji';
+import { useCustomEmojis } from '@/mastodon/hooks/useCustomEmojis';
+import { autoPlayGif } from '@/mastodon/initial_state';
 import MenuIcon from '@/material-icons/400-24px/menu.svg?react';
 import EmojiReactionIcon from '@/material-icons/400-24px/mood.svg?react';
 import { updateReactionDeck } from 'mastodon/actions/reaction_deck';
@@ -50,7 +51,7 @@ import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import EmojiPickerDropdown from 'mastodon/features/compose/containers/emoji_picker_dropdown_container';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
-import { usePickerEmojis } from '../emoji/picker';
+import type { CustomEmojiData } from '../emoji/types';
 
 const messages = defineMessages({
   reaction_deck_add: { id: 'reaction_deck.add', defaultMessage: 'Add' },
@@ -60,7 +61,9 @@ const messages = defineMessages({
 const ReactionEmoji: React.FC<{
   index: number;
   emoji: string;
-  mapEmoji?: CustomEmoji;
+  mapEmoji?:
+    | Pick<CustomEmojiData, 'url' | 'static_url' | 'shortcode'>
+    | undefined;
   overlay?: boolean;
   onChange?: (index: number, emoji: any) => void;
   onRemove?: (index: number) => void;
@@ -87,7 +90,7 @@ const ReactionEmoji: React.FC<{
   let content: ReactNode;
 
   if (mapEmoji) {
-    const filename = mapEmoji.imageUrl;
+    const filename = autoPlayGif ? mapEmoji.url : mapEmoji.static_url;
     const shortCode = `:${emoji}:`;
 
     content = (
@@ -140,7 +143,7 @@ export const ReactionDeck: React.FC<{
   const dispatch = useAppDispatch();
   const intl = useIntl();
 
-  const { customEmojis } = usePickerEmojis();
+  const customEmojis = useCustomEmojis();
   const deck = useAppSelector((state) => state.reaction_deck);
 
   const onChange = useCallback(
@@ -264,7 +267,7 @@ export const ReactionDeck: React.FC<{
           {deck.map((emoji: any, index) => (
             <div key={index} id={index.toString()}>
               <ReactionEmoji
-                mapEmoji={customEmojis?.find((c) => c.id === emoji.get('name'))}
+                mapEmoji={customEmojis[emoji.get('name')]}
                 emoji={emoji.get('name')}
                 index={index}
                 onChange={handleChange}
@@ -279,9 +282,7 @@ export const ReactionDeck: React.FC<{
             {activeId ? (
               <div style={{ position: 'fixed' }}>
                 <ReactionEmoji
-                  mapEmoji={customEmojis?.find(
-                    (c) => c.id === activeEmoji.get('name'),
-                  )}
+                  mapEmoji={customEmojis[activeEmoji.get('name')]}
                   emoji={activeEmoji.get('name')}
                   index={-1}
                   overlay

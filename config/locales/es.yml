@@ -500,13 +500,28 @@ es:
     email_subscriptions:
       accounts:
         account: Cuenta
-        active: Activa
         empty:
           hint: Aún no hay cuentas con suscriptores.
           no_lists_yet: Aún no hay listas
-        inactive: Inactiva
         last_email: Último correo electrónico
         lead: Las cuentas que han habilitado la función y tienen suscriptores se mostrarán a continuación.
+        show:
+          confirm_disable_feature: |-
+            ¿Desactivar boletines de correo electrónico de %{name}? No se enviarán actualizaciones por correo electrónico para esta cuenta. El usuario aún podrá reactivar esta función en los ajustes de su cuenta.
+            Para eliminar el acceso a esta función permanentemente, modifica los permisos de la cuenta en Roles.
+          confirm_remove_subscriber: "%{email} no recibirá más correos electrónicos de %{name}. Esta acción no se puede deshacer."
+          consent: Los subscriptores solo han autorizado recibir publicaciones por email. No utilices esta lista para otros propósitos.
+          date: Fecha de suscripción
+          disable_feature: Desactivar función
+          disabled: La función ha sido desactivada y ya no se enviarán correos electrónicos a esta lista.
+          email: Dirección de correo electrónico
+          empty:
+            hint: Nadie se ha suscrito a esta cuenta aún.
+            no_subscribers_yet: Sin suscriptores aún
+          enable_feature: Activar función
+          no_access_html: Esta cuenta ya no tiene los permisos necesarios para activar la función. Modifica esto en <a href="%{roles_path}">Roles</a>.
+          title: Boletines de correo electrónico de %{name}
+          view_account: Ver cuenta
         status: Estado
         subscribers: Suscriptores
         title: Listas de correo
@@ -746,7 +761,7 @@ es:
       action_log: Registro de auditoría
       action_taken_by: Acción tomada por
       actions:
-        delete_description_html: Los mensajes denunciados serán eliminados y se registrará una amonestación para ayudarte a escalar en futuras infracciones por la misma cuenta.
+        delete_description_html: Las publicaciones y/o colecciones informadas se borrarán, y se aplicará una amonestación para ayudarte a escalar futuras acciones sobre la misma cuenta.
         mark_as_sensitive_description_html: Los archivos multimedia en los mensajes informados se marcarán como sensibles y se aplicará una amonestación para ayudarte a escalar las futuras infracciones de la misma cuenta.
         other_description_html: Ver más opciones para controlar el comportamiento de la cuenta y personalizar la comunicación de la cuenta reportada.
         resolve_description_html: No se tomarán medidas contra la cuenta denunciada, no se registrará la amonestación, y se cerrará el informe.
@@ -773,7 +788,7 @@ es:
       confirm: Confirmar
       confirm_action: Confirmar acción de moderación contra @%{acct}
       created_at: Denunciado
-      delete_and_resolve: Eliminar publicaciones
+      delete_and_resolve: Borrar contenido
       forwarded: Reenviado
       forwarded_replies_explanation: Este informe es de un usuario remoto y sobre contenido remoto. Se le ha enviado porque el contenido reportado es en respuesta a uno de sus usuarios.
       forwarded_to: Reenviado a %{domain}
@@ -956,10 +971,16 @@ es:
           disabled: Requerir un rol de usuario específico
           public: Todos
       landing_page:
+        hints:
+          about_html: Una página con la descripción, información de contacto, reglas y otra información relevante de este servidor.
+          local_feed_html: Una cronología con los mensajes más recientes de los usuarios en este servidor.
+          overview_html: Una página que muestra la descripción de tu servidor junto a las publicaciones locales más recientes de los usuarios en este servidor.
+          trends_html: Una página destacando lo que es popular en este servidor en este momento.
         values:
-          about: Acerca de
+          about: Página sobre el servidor
           local_feed: Cronología local
-          trends: Tendencias
+          overview: Resumen
+          trends: En tendencia
       registrations:
         moderation_recommandation: Por favor, ¡asegúrate de tener un equipo de moderación adecuado y reactivo antes de abrir los registros a todo el mundo!
         preamble: Controla quién puede crear una cuenta en tu servidor.
@@ -979,6 +1000,7 @@ es:
     site_uploads:
       delete: Eliminar archivo subido
       destroyed_msg: "¡Carga del sitio eliminada con éxito!"
+    skip_to_content: Saltar al contenido
     software_updates:
       critical_update: Crítica— por favor actualiza rápidamente
       description: Se recomienda mantener actualizada tu instalación de Mastodon para beneficiarte de las últimas correcciones y características. Además, a veces es crítico actualizar Mastodon de manera oportuna para evitar problemas de seguridad. Por estas razones, Mastodon comprueba si hay actualizaciones cada 30 minutos, y te notificará de acuerdo a tus preferencias de notificación por correo electrónico.
@@ -1494,6 +1516,7 @@ es:
       your_appeal_rejected: Tu apelación ha sido rechazada
   edit_profile:
     other: Otros
+    privacy_redesign_body: La opción de mostrar a quién sigues y tus seguidores ahora está directamente en tu perfil.
     redesign_body: Ahora puedes acceder a la edición del perfil desde la propia página de perfil.
     redesign_button: Llévame allí
     redesign_title: Hay una nueva experiencia de edición de perfil
@@ -1526,7 +1549,9 @@ es:
         success_html: Ahora empezarás a recibir correos electrónicos cuando %{name} publique algo nuevo. Añade %{sender} a tus contactos para que estas publicaciones no terminen en tu carpeta de Spam.
         title: Estás suscrito
         unsubscribe: Cancelar suscripición
+    disabled: Desactivado
     inactive: Inactiva
+    no_access: Sin acceso
     status: Estado
     subscribers: Suscriptores
   emoji_styles:
@@ -1562,7 +1587,9 @@ es:
     blocks: Personas que has bloqueado
     bookmarks: Marcadores
     csv: CSV
+    custom_filters: Filtros
     domain_blocks: Bloqueos de dominios
+    json: JSON
     lists: Listas
     mutes: Tienes en silencio
     storage: Almacenamiento
@@ -1640,7 +1667,9 @@ es:
       empty: Archivo CSV vacío
       incompatible_type: Incompatible con el tipo de importación seleccionado
       invalid_csv_file: 'Archivo CSV no válido. Error: %{error}'
+      invalid_json_file: 'Fichero JSON no válido. Error: %{error}'
       over_rows_processing_limit: contiene más de %{count} filas
+      status_not_found_warning: Algunos de tus filtros ocultan publicaciones específicas que no son conocidas por este servidor. Estas publicaciones no se filtrarán automáticamente si más tarde son descubiertas por el servidor.
       too_large: El archivo es demasiado grande
     failures: Fallos
     imported: Importado
@@ -1676,6 +1705,9 @@ es:
       bookmarks_html:
         one: Está a punto de añadir <strong>%{count} publicación</strong> proveniente de <strong>%{filename}</strong> a tus <strong>marcadores</strong>.
         other: Está a punto de añadir hasta <strong>%{count} publicaciones</strong> provenientes de <strong>%{filename}</strong> a tus <strong>marcadores</strong>.
+      custom_filters_html:
+        one: Estás a punto de añadir hasta <strong>%{count} filtro</strong> desde <strong>%{filename}</strong> a tus <strong>filtros</strong>.
+        other: Estás a punto de añadir hasta <strong>%{count} filtros</strong> desde <strong>%{filename}</strong> a tus <strong>filtros</strong>.
       domain_blocking_html:
         one: Estás a punto de <strong>bloquear</strong> <strong>%{count} dominio</strong> proveniente de <strong>%{filename}</strong>.
         other: Estás a punto de <strong>bloquear</strong> hasta <strong>%{count} dominios</strong> provenientes de <strong>%{filename}</strong>.
@@ -1712,6 +1744,7 @@ es:
     types:
       blocking: Lista de bloqueados
       bookmarks: Marcadores
+      custom_filters: Filtros
       domain_blocking: Lista de dominios bloqueados
       following: Lista de seguidos
       lists: Listas

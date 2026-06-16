@@ -199,7 +199,7 @@ RSpec.describe '/api/v1/statuses' do
           expect(response).to have_http_status(200)
           expect(response.content_type)
             .to start_with('application/json')
-          expect(response.headers['Mastodon-Async-Refresh']).to match(/result_count=0/)
+          expect(response.headers['Mastodon-Async-Refresh']).to include('result_count=0')
         end
       end
 
@@ -497,7 +497,7 @@ RSpec.describe '/api/v1/statuses' do
             .to start_with('application/json')
           expect(response.parsed_body[:quote]).to be_present
           expect(response.parsed_body[:spoiler_text]).to eq 'this is a CW'
-          expect(response.parsed_body[:content]).to match(/RE: /)
+          expect(response.parsed_body[:content]).to include('RE: ')
           expect(response.headers['X-RateLimit-Limit']).to eq RateLimiter::FAMILIES[:statuses][:limit].to_s
           expect(response.headers['X-RateLimit-Remaining']).to eq (RateLimiter::FAMILIES[:statuses][:limit] - 1).to_s
         end

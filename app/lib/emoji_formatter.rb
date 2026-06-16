@@ -72,7 +72,7 @@ class EmojiFormatter
 
   def emoji_map
     # from emoji_reactions_grouped_by_name (status_stat)
-    return @emoji_map ||= custom_emojis.each_with_object({}) { |e, h| h[e.name] = [e.url, e.static_url] } if custom_emojis.first&.image.blank?
+    return @emoji_map ||= custom_emojis.to_h { |e| [e.name, [e.url, e.static_url]] } if custom_emojis.first&.image.blank?
 
     @emoji_map ||= custom_emojis.to_h { |e| [e.shortcode, [full_asset_url(e.image.url), full_asset_url(e.image.url(:static))]] }
   end

@@ -15,15 +15,14 @@ import { useAppSelector, useAppDispatch } from 'mastodon/store';
 
 import { CollectionListItem } from '../components/collection_list_item';
 import classes from '../styles.module.scss';
-import { areCollectionsEnabled } from '../utils';
 
-import { CollectionListError } from './created_by_you';
+import { CollectionListError } from './created_by_account';
 
 function useCollectionsFeaturing(accountId: string | null | undefined) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (accountId && areCollectionsEnabled()) {
+    if (accountId) {
       void dispatch(fetchCollectionsFeaturingAccount({ accountId }));
     }
   }, [dispatch, accountId]);
