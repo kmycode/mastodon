@@ -27,7 +27,7 @@ module Mastodon
     end
 
     def minor
-      6
+      7
     end
 
     def patch
@@ -35,7 +35,7 @@ module Mastodon
     end
 
     def default_prerelease
-      'rc.1'
+      'alpha.1'
     end
 
     def prerelease
