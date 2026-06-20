@@ -9,7 +9,7 @@ module Mastodon
     # If you change the version number, also change the image version in docker-compose.yml.
 
     def kmyblue_major
-      22
+      24
     end
 
     def kmyblue_minor
@@ -17,8 +17,8 @@ module Mastodon
     end
 
     def kmyblue_flag
-      # 'LTS'
-      'dev'
+      'lts'
+      # 'dev'
       # nil
     end
 
@@ -27,7 +27,7 @@ module Mastodon
     end
 
     def minor
-      7
+      6
     end
 
     def patch
@@ -35,7 +35,7 @@ module Mastodon
     end
 
     def default_prerelease
-      'alpha.1'
+      ''
     end
 
     def prerelease
