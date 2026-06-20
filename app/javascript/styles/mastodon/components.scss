@@ -10969,18 +10969,18 @@ noscript {
           display: flex;
           justify-content: start;
 
-          .emoji {
-            display: inline-block;
-            width: 40px;
-            align-self: center;
+          .unicode,
+          .emojione {
+            margin-top: 0.2ex;
+            margin-right: 16px;
+          }
 
-            img {
-              height: 20px;
-            }
+          .emojione {
+            height: 24px;
+          }
 
-            .unicode {
-              font-size: var(--content-emoji-size);
-            }
+          .unicode {
+            font-size: 24px;
           }
 
           .notification-group__avatar-group {
@@ -11080,6 +11080,10 @@ noscript {
 
       p {
         margin-bottom: 8px;
+      }
+
+      .emojione {
+        height: var(--content-emoji-size);
       }
     }
 
