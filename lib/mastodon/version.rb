@@ -13,7 +13,7 @@ module Mastodon
     end
 
     def kmyblue_minor
-      0
+      1
     end
 
     def kmyblue_flag
@@ -31,7 +31,7 @@ module Mastodon
     end
 
     def patch
-      0
+      1
     end
 
     def default_prerelease
@@ -96,7 +96,7 @@ module Mastodon
 
     def api_versions
       {
-        mastodon: 10,
+        mastodon: 11,
         kmyblue: KMYBLUE_API_VERSION,
       }
     end
