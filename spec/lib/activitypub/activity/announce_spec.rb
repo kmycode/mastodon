@@ -143,6 +143,21 @@ RSpec.describe ActivityPub::Activity::Announce do
       end
     end
 
+    context 'without rejecting relay received from no-relay' do
+      let(:object_json) do
+        ActivityPub::TagManager.instance.uri_for(status)
+      end
+
+      before do
+        Fabricate(:domain_block, domain: sender.domain, reject_relay: true)
+        subject.perform
+      end
+
+      it 'creates a reblog' do
+        expect(sender.reblogged?(status)).to be true
+      end
+    end
+
     context 'when the sender is relayed' do
       subject { described_class.new(json, sender, relayed_through_actor: relay_account) }
 
@@ -164,6 +179,18 @@ RSpec.describe ActivityPub::Activity::Announce do
         it 'fetches the remote status' do
           expect(a_request(:get, 'https://example.com/actor/hello-world')).to have_been_made
           expect(Status.find_by(uri: 'https://example.com/actor/hello-world').text).to eq 'Hello world'
+        end
+      end
+
+      context 'with rejecting relay' do
+        before do
+          Fabricate(:domain_block, domain: sender.domain, reject_relay: true)
+          relay.update(state: :accepted)
+          subject.perform
+        end
+
+        it 'does not reblog' do
+          expect(sender.statuses.count).to eq 0
         end
       end
 
