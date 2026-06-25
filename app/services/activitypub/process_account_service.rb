@@ -159,7 +159,7 @@ class ActivityPub::ProcessAccountService < BaseService
     @account.settings                = other_settings
     @account.master_settings         = (@account.master_settings || {}).merge(master_settings(@account.note))
     @account.memorial                = @json['memorial'] || false
-    @account.attribution_domains     = as_array(@json['attributionDomains'] || []).take(Account::ATTRIBUTION_DOMAINS_HARD_LIMIT).filter { |item| item.is_a?(String) }
+    @account.attribution_domains     = as_array(@json['attributionDomains'] || []).take(Account::ATTRIBUTION_DOMAINS_HARD_LIMIT).grep(String)
   end
 
   def blocking_new_account?
