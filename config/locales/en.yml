@@ -821,6 +821,8 @@ en:
       new:
         title: Create new IP rule
       no_ip_block_selected: No IP rules were changed as none were selected
+      reset: Reset
+      search: Search
       title: IP rules
     ng_rule_histories:
       back_to_ng_rule: Back to NG rule
