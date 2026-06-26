@@ -9,7 +9,7 @@ module Mastodon
     # If you change the version number, also change the image version in docker-compose.yml.
 
     def kmyblue_major
-      22
+      25
     end
 
     def kmyblue_minor
@@ -31,7 +31,7 @@ module Mastodon
     end
 
     def patch
-      0
+      1
     end
 
     def default_prerelease
@@ -96,7 +96,7 @@ module Mastodon
 
     def api_versions
       {
-        mastodon: 10,
+        mastodon: 11,
         kmyblue: KMYBLUE_API_VERSION,
       }
     end
