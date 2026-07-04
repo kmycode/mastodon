@@ -5,6 +5,7 @@ import { useIntl, defineMessages } from 'react-intl';
 import classNames from 'classnames';
 
 import { Popover } from '@/mastodon/components/popover';
+import { createAppSelector, useAppSelector } from '@/mastodon/store';
 import TagIcon from '@/material-icons/400-24px/tag.svg?react';
 import { Icon } from 'mastodon/components/icon';
 import { featuredTags } from 'mastodon/initial_state';
@@ -127,6 +128,16 @@ const FeaturedTagDropdownMenu: React.FC<{
   );
 };
 
+const getTags = createAppSelector(
+  [(state) => state.profileEdit.profile?.featuredTags, () => featuredTags],
+  (editTags, initialTags) => {
+    if (editTags) {
+      return editTags.map((tag) => tag.name);
+    }
+    return initialTags;
+  },
+);
+
 export const FeaturedTagDropdown: React.FC<{
   onPickTag: (tag: string) => void;
 }> = ({ onPickTag }) => {
@@ -136,7 +147,7 @@ export const FeaturedTagDropdown: React.FC<{
 
   const intl = useIntl();
 
-  const tags = featuredTags;
+  const tags = useAppSelector(getTags);
   const unavailable = tags.length === 0;
 
   const handleMouseDown = useCallback(() => {
