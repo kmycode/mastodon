@@ -13,7 +13,7 @@ module Mastodon
     end
 
     def kmyblue_minor
-      1
+      2
     end
 
     def kmyblue_flag
@@ -31,7 +31,7 @@ module Mastodon
     end
 
     def patch
-      2
+      3
     end
 
     def default_prerelease
