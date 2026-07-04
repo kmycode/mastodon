@@ -1496,10 +1496,10 @@ en:
           other: Used by %{count} people over the last week
       title: Recommendations & Trends
       trending: Trending
+    update_available: Update available
     update_pendings:
       major: Major update available
       patch: Patch update available
-    update_available: Update available
     username_blocks:
       add_new: Add new
       block_registrations: Block registrations

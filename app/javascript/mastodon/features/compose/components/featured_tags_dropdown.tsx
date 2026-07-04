@@ -39,7 +39,7 @@ const FeaturedTagDropdownMenu: React.FC<{
       onClose();
       onChange(value);
     },
-    [onClose, onChange, items],
+    [onClose, onChange],
   );
 
   const handleKeyDown = useCallback(
