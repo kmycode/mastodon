@@ -14,7 +14,7 @@ export const EmojiView: React.FC<EmojiViewProps> = ({
   staticUrl,
 }) => {
   if (url && staticUrl) {
-    const extraEmojis: CustomEmojiMapArg = [
+    const extraEmojis: CustomEmojiMapArg & { visible_in_picker: boolean }[] = [
       {
         shortcode: name,
         static_url: staticUrl,

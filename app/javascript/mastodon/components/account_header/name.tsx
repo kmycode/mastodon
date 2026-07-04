@@ -1,11 +1,9 @@
-import { useCallback, useId, useRef, useState } from 'react';
+import { useCallback, useId, useState } from 'react';
 import type { FC } from 'react';
 
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import classNames from 'classnames';
-
-import Overlay from 'react-overlays/esm/Overlay';
 
 import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useRelationship } from '@/mastodon/hooks/useRelationship';
@@ -20,6 +18,7 @@ import { CopyButton } from '../copy_button';
 import { DisplayName } from '../display_name';
 import { Icon } from '../icon';
 import { NavigationFocusTarget } from '../navigation_focus_target';
+import { Popover } from '../popover';
 
 import { AccountBadges } from './badges';
 import classes from './styles.module.scss';
@@ -84,7 +83,8 @@ const AccountNameHelp: FC<{
   const accessibilityId = useId();
   const intl = useIntl();
   const [open, setOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [triggerElement, setTriggerElement] =
+    useState<HTMLButtonElement | null>(null);
 
   const handleClick = useCallback(() => {
     setOpen((prev) => !prev);
@@ -96,7 +96,7 @@ const AccountNameHelp: FC<{
     <>
       <button
         type='button'
-        ref={triggerRef}
+        ref={setTriggerElement}
         className={classes.handleHelpButton}
         onClick={handleClick}
         aria-expanded={open}
@@ -110,12 +110,11 @@ const AccountNameHelp: FC<{
         />
       </button>
 
-      <Overlay
-        show={open}
-        rootClose
-        target={triggerRef}
-        onHide={handleClick}
-        offset={[5, 5]}
+      <Popover
+        isOpen={open}
+        reference={triggerElement}
+        onClose={handleClick}
+        offset={5}
       >
         {({ props }) => (
           <div
@@ -197,7 +196,7 @@ const AccountNameHelp: FC<{
             </CopyButton>
           </div>
         )}
-      </Overlay>
+      </Popover>
     </>
   );
 };

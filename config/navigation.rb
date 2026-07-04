@@ -6,11 +6,21 @@ SimpleNavigation::Configuration.run do |navigation|
   navigation.items do |n|
     n.item :web, safe_join([material_symbol('chevron_left'), t('settings.back')]), root_path
 
-    if Rails.configuration.x.mastodon.software_update_url.present? && current_user.can?(:view_devops)
-      n.item :software_updates, safe_join([material_symbol('report'), t('admin.critical_update_pending')]), admin_software_updates_path, if: -> { SoftwareUpdate.urgent_pending? }, html: { class: 'warning' }
-      n.item :software_updates, safe_join([material_symbol('report'), t('admin.update_pendings.major')]), admin_software_updates_path, if: -> { !SoftwareUpdate.urgent_pending? && SoftwareUpdate.major_pending? }, html: { class: 'warning' }
-      n.item :software_updates, safe_join([material_symbol('report'), t('admin.update_pendings.patch')]), admin_software_updates_path, if: -> { !SoftwareUpdate.urgent_pending? && SoftwareUpdate.patch_pending? }, html: { class: 'warning' }
-    end
+    n.item :software_updates,
+           safe_join(
+             if SoftwareUpdate.urgent_pending?
+               [material_symbol('report'), t('admin.critical_update_pending')]
+             elsif SoftwareUpdate.major_pending?
+               [material_symbol('report'), t('admin.update_pendings.major')]
+             elsif SoftwareUpdate.patch_pending?
+               [material_symbol('report'), t('admin.update_pendings.patch')]
+             else
+               [material_symbol('system_update_alt'), t('admin.update_available')]
+             end
+           ),
+           admin_software_updates_path,
+           html: { class: SoftwareUpdate.urgent_pending? ? 'warning' : nil },
+           if: -> { Rails.configuration.x.mastodon.software_update_url.present? && current_user.can?(:view_devops) && SoftwareUpdate.pending? }
 
     n.item :profile, safe_join([material_symbol('person'), t('settings.profile')]), settings_profile_path, if: -> { current_user.functional? && !self_destruct }, highlights_on: %r{/settings/profile|/settings/featured_tags|/settings/verification}
     n.item :privacy, safe_join([material_symbol('globe'), t('privacy.title')]), settings_privacy_path, if: -> { current_user.functional? && !self_destruct }, highlights_on: %r{/settings/privacy}
