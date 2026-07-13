@@ -289,7 +289,11 @@ es-MX:
         enable_relay_html: "%{name} activó el relé %{target}"
         enable_sign_in_token_auth_user_html: "%{name} activó autenticación por token de correo electrónico para %{target}"
         enable_user_html: "%{name} habilitó el inicio de sesión para el usuario %{target}"
+        listable_tag_html: puede ser recomendada
         memorialize_account_html: "%{name} convirtió la cuenta de %{target} en una página in memoriam"
+        not_listable_tag_html: no puede ser recomendada
+        not_trendable_tag_html: no puede aparecer en tendencia
+        not_usable_tag_html: no se puede usar
         promote_user_html: "%{name} promoción al usuario %{target}"
         publish_terms_of_service_html: "%{name} publicó actualizaciones de las condiciones del servicio"
         reject_appeal_html: "%{name} rechazó la solicitud de moderación de %{target}"
@@ -302,6 +306,7 @@ es-MX:
         sensitive_account_html: "%{name} marcó la multimedia de %{target} como sensible"
         silence_account_html: "%{name} silenció la cuenta de %{target}"
         suspend_account_html: "%{name} suspendió la cuenta de %{target}"
+        trendable_tag_html: puede aparecer en tendencia
         unassigned_report_html: "%{name} des-asignó el informe %{target}"
         unblock_email_account_html: "%{name} ha desbloqueado la dirección de correo de %{target}"
         unsensitive_account_html: "%{name} desmarcó la multimedia de %{target} como sensible"
@@ -314,8 +319,10 @@ es-MX:
         update_ip_block_html: "%{name} cambió la regla para la IP %{target}"
         update_report_html: "%{name} actualizó el informe %{target}"
         update_status_html: "%{name} actualizó la publicación de %{target}"
+        update_tag_html: "%{name} cambió la configuración de %{target} a: "
         update_user_role_html: "%{name} cambió el rol %{target}"
         update_username_block_html: "%{name} actualizó una regla para los nombres de usuario que contienen %{target}"
+        usable_tag_html: se puede usar;
       deleted_account: cuenta eliminada
       empty: No se encontraron registros.
       filter_by_action: Filtrar por acción
@@ -1006,13 +1013,17 @@ es-MX:
       critical_update: Crítico — por favor actualiza rápidamente
       description: Se recomienda mantener tu instalación de Mastodon actualizada para beneficiarte de las últimas correcciones y características. Además, a veces es crítico actualizar Mastodon a tiempo para evitar problemas de seguridad. Por estas razones, Mastodon busca actualizaciones cada 30 minutos, y le notificará de acuerdo a sus preferencias de notificación por correo electrónico.
       documentation_link: Saber más
+      nearing_eol: El soporte para la versión que estás ejecutando actualmente finalizará el %{date}; te recomendamos que consideres actualizarla.
       release_notes: Notas de la versión
+      supported_until: El soporte termina el %{date}
       title: Actualizaciones disponibles
       type: Tipo
       types:
         major: Versión principal
         minor: Versión menor
         patch: Versión del parche — correcciones de errores y cambios fáciles de aplicar
+      unsupported_branch: La versión que estás utilizando actualmente no tiene soporte; actualízala lo antes posible.
+      unsupported_since: Sin soporte desde el %{date}
       version: Versión
     statuses:
       account: Autor
@@ -1228,6 +1239,7 @@ es-MX:
           other: Usada por %{count} personas durante la última semana
       title: Recomendaciones y Tendencias
       trending: En tendencia
+    update_available: Actualización disponible
     username_blocks:
       add_new: Añadir nuevo
       block_registrations: Bloquear registros
@@ -1277,6 +1289,15 @@ es-MX:
     auto_close_registrations:
       body: Debido al faltante de actividad reciente de moderación, los registros en %{instance} han cambiado automáticamente para requerir la revisión manial, para evitar que %{instance} se utilice como una plataforma para potenciales malos actores. Puedes revertir este cambio en los registros en cualquier momento.
       subject: Los registros para %{instance} han sido cambiados automáticamente para requerir aprobación
+    end_of_support_out_of_support_warning:
+      body: La versión de Mastodon que se utiliza actualmente en tu servidor ya no es compatible. ¡Te recomendamos que la actualices lo antes posible!
+      subject: "¡La versión %{branch} de Mastodon utilizada en %{instance} ya no es compatible!"
+    end_of_support_three_months_warning:
+      body: La versión de Mastodon que se utiliza actualmente en tu servidor dejará de recibir soporte dentro de 3 meses. Quizás te convenga actualizar a una versión más reciente antes de esa fecha.
+      subject: El soporte para Mastodon %{branch} utilizado en %{instance} finalizará en 3 meses.
+    end_of_support_two_weeks_warning:
+      body: La versión de Mastodon que se utiliza actualmente en tu servidor dejará de recibir soporte en 2 semanas. Te recomendamos que actualices a una versión más reciente con anticipación.
+      subject: El soporte para Mastodon %{branch} utilizado en %{instance} finalizará en 2 semanas.
     new_appeal:
       actions:
         delete_statuses: para eliminar sus publicaciones
@@ -1912,6 +1933,7 @@ es-MX:
     administration_emails: Notificaciones de administración por correo electrónico
     email_events: Eventos para notificaciones por correo electrónico
     email_events_hint: 'Selecciona los eventos para los que deseas recibir notificaciones:'
+    moderation_emails: Notificaciones por correo electrónico sobre moderación
   number:
     human:
       decimal_units:
@@ -1935,7 +1957,7 @@ es-MX:
     next: Próximo
     older: Más antiguo
     prev: Anterior
-    truncate: "&hellip;"
+    truncate_html: "&hellip;"
   polls:
     errors:
       already_voted: Ya has votado en esta encuesta

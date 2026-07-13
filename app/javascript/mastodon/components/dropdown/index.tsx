@@ -1,21 +1,19 @@
-import { useCallback, useId, useMemo, useRef, useState } from 'react';
-import type { ComponentPropsWithoutRef, FC } from 'react';
+import { useCallback, useId, useMemo, useState } from 'react';
+import type { ComponentPropsWithoutRef, FC, RefObject } from 'react';
 
 import { useIntl } from 'react-intl';
 import type { MessageDescriptor } from 'react-intl';
 
 import classNames from 'classnames';
 
-import type { Placement } from 'react-overlays/esm/usePopper';
-import Overlay from 'react-overlays/Overlay';
+import type { Placement } from '@floating-ui/react-dom';
 
 import UnfoldMoreIcon from '@/material-icons/400-24px/unfold_more.svg?react';
 
 import type { SelectItem } from '../dropdown_selector';
 import { DropdownSelector } from '../dropdown_selector';
 import { Icon } from '../icon';
-
-import { matchWidth } from './utils';
+import { Popover } from '../popover';
 
 interface DropdownProps {
   disabled?: boolean;
@@ -27,7 +25,7 @@ interface DropdownProps {
   emptyText?: MessageDescriptor;
   classPrefix: string;
   placement?: Placement;
-  target?: React.RefObject<HTMLElement>;
+  target?: React.RefObject<HTMLElement> | RefObject<HTMLElement | null>;
 }
 
 export const Dropdown: FC<
@@ -47,7 +45,9 @@ export const Dropdown: FC<
   ...buttonProps
 }) => {
   const intl = useIntl();
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [buttonElement, setButtonElement] = useState<HTMLButtonElement | null>(
+    null,
+  );
   const uniqueId = useId();
   const buttonId = id ?? `${uniqueId}-button`;
   const listboxId = `${uniqueId}-listbox`;
@@ -57,16 +57,16 @@ export const Dropdown: FC<
   const handleToggle = useCallback(() => {
     if (!disabled) {
       setOpen((prevOpen) => {
-        buttonRef.current?.focus();
+        buttonElement?.focus();
         return !prevOpen;
       });
     }
-  }, [disabled]);
+  }, [buttonElement, disabled]);
 
   const handleClose = useCallback(() => {
     setOpen(false);
-    buttonRef.current?.focus();
-  }, []);
+    buttonElement?.focus();
+  }, [buttonElement]);
 
   const currentText = useMemo(
     () =>
@@ -98,7 +98,7 @@ export const Dropdown: FC<
           },
           className,
         )}
-        ref={buttonRef}
+        ref={setButtonElement}
       >
         {currentText}
         <Icon
@@ -108,17 +108,13 @@ export const Dropdown: FC<
         />
       </button>
 
-      <Overlay
-        show={open}
-        offset={[0, 0]}
+      <Popover
+        matchReferenceWidth
+        isOpen={open}
+        offset={0}
         placement={placement ?? 'bottom-start'}
-        onHide={handleClose}
-        flip
-        target={target?.current ? target : buttonRef}
-        popperConfig={{
-          strategy: 'fixed',
-          modifiers: [matchWidth],
-        }}
+        onClose={handleClose}
+        reference={target?.current ?? buttonElement}
       >
         {({ props, placement }) => (
           <div {...props} className={`${classPrefix}__overlay`}>
@@ -140,7 +136,7 @@ export const Dropdown: FC<
             </div>
           </div>
         )}
-      </Overlay>
+      </Popover>
     </>
   );
 };

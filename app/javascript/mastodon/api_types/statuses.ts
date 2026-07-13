@@ -29,6 +29,13 @@ export type StatusSearchability =
   | 'limited'
   | 'public_unlisted';
 
+export type StatusLimitedScope =
+  | 'none'
+  | 'circle'
+  | 'mutual'
+  | 'personal'
+  | 'reply';
+
 export interface ApiStatusApplicationJSON {
   name: string;
   website: string;
@@ -104,7 +111,9 @@ export interface ApiStatusJSON {
   sensitive: boolean;
   spoiler_text?: string;
   visibility: StatusVisibility;
+  visibility_ex: StatusVisibility;
   searchability: StatusSearchability;
+  limited_scope: StatusLimitedScope;
   language: string;
   uri: string;
   url: string;
@@ -112,7 +121,9 @@ export interface ApiStatusJSON {
   reblogs_count: number;
   favourites_count: number;
   quotes_count: number;
+  status_references_count: number;
   edited_at?: string;
+  expires_at?: string;
 
   favourited?: boolean;
   reblogged?: boolean;

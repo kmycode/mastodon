@@ -15,11 +15,8 @@ import { missingAltTextModal } from 'mastodon/initial_state';
 import AutosuggestInput from 'mastodon/components/autosuggest_input';
 import AutosuggestTextarea from 'mastodon/components/autosuggest_textarea';
 import { Button } from 'mastodon/components/button';
-import CircleDropdownContainer from '../containers/circle_dropdown_container';
 import { injectIntl } from '@/mastodon/components/intl';
 import EmojiPickerDropdown from '../containers/emoji_picker_dropdown_container';
-import ExpirationDropdownContainer from '../containers/expiration_dropdown_container';
-import FeaturedTagsDropdownContainer from '../containers/featured_tags_dropdown_container';
 import MarkdownButtonContainer from '../containers/markdown_button_container';
 import PollButtonContainer from '../containers/poll_button_container';
 import SpoilerButtonContainer from '../containers/spoiler_button_container';
@@ -29,6 +26,9 @@ import { countableText } from '../util/counter';
 import { CharacterCounter } from './character_counter';
 import { EditIndicator } from './edit_indicator';
 import { LanguageDropdown } from './language_dropdown';
+import { CircleDropdown } from './circle_dropdown';
+import { ExpirationDropdown } from './expiration_dropdown';
+import { FeaturedTagDropdown } from './featured_tags_dropdown';
 import { NavigationBar } from './navigation_bar';
 import { PollForm } from "./poll_form";
 import { ReplyIndicator } from './reply_indicator';
@@ -290,12 +290,12 @@ class ComposeForm extends ImmutablePureComponent {
           <div className='compose-form__dropdowns'>
             <VisibilityButton disabled={this.props.isEditing} />
             <LanguageDropdown />
-            <ExpirationDropdownContainer onPickExpiration={this.handleExpirationPick} />
-            <FeaturedTagsDropdownContainer onPickTag={this.handleFeaturedTagPick} />
+            <ExpirationDropdown onPickExpiration={this.handleExpirationPick} />
+            <FeaturedTagDropdown onPickTag={this.handleFeaturedTagPick} />
           </div>
           {isCircleNeeded && (
             <div className='compose-form__dropdowns compose-form__dropdowns__second'>
-              <CircleDropdownContainer />
+              <CircleDropdown />
             </div>
           )}
 

@@ -1115,7 +1115,7 @@ RSpec.describe ActivityPub::Activity::Create do
         let(:mentioned_account) { Fabricate(:account, domain: 'example.com', uri: 'http://example.com/bob', inbox_url: 'http://example.com/bob/inbox', shared_inbox_url: 'http://exmaple.com/inbox') }
         let(:local_mentioned_account) { Fabricate(:account, domain: nil) }
         let(:original_status) { Fabricate(:status, conversation: conversation, account: ancestor_account) }
-        let!(:conversation) { Fabricate(:conversation) }
+        let!(:conversation) { Fabricate(:conversation, uri: 'http://example.com/conversation', inbox_url: 'http://example.com/actor/inbox') }
         let(:recipient) { Fabricate(:account) }
         let(:delivered_to_account_id) { recipient.id }
 
@@ -1150,51 +1150,9 @@ RSpec.describe ActivityPub::Activity::Create do
           stub_request(:post, 'http://example.com/bob/inbox').to_return(status: 200)
         end
 
-        it 'creates status' do
-          expect { subject.perform }.to change(sender.statuses, :count).by(1)
-
-          status = sender.statuses.first
-
-          expect(status).to_not be_nil
-          expect(status.conversation_id).to eq conversation.id
-          expect(status.thread.id).to eq original_status.id
-          expect(status.mentions.map(&:account_id)).to contain_exactly(recipient.id, ancestor_account.id, mentioned_account.id, local_mentioned_account.id)
-        end
-
-        it 'forwards to observers', :inline_jobs do
-          expect { subject.perform }.to change(sender.statuses, :count).by(1)
-
-          expect(a_request(:post, 'http://or.example.com/actor/inbox')).to have_been_made.once
-          expect(a_request(:post, 'http://example.com/bob/inbox')).to have_been_made.once
-        end
-
-        context 'when new mention is added' do
-          let(:new_mentioned_account) { Fabricate(:account, domain: 'example.com', uri: 'http://example.com/alice', inbox_url: 'http://example.com/alice/inbox', shared_inbox_url: 'http://exmaple.com/inbox') }
-          let(:new_local_mentioned_account) { Fabricate(:account, domain: nil) }
-
-          let(:object_json) do
-            {
-              id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
-              type: 'Note',
-              content: 'Lorem ipsum',
-              groupContext: ActivityPub::TagManager.instance.uri_for(conversation, group: true),
-              inReplyTo: ActivityPub::TagManager.instance.uri_for(original_status),
-              tag: [
-                {
-                  type: 'Mention',
-                  href: ActivityPub::TagManager.instance.uri_for(new_mentioned_account),
-                },
-                {
-                  type: 'Mention',
-                  href: ActivityPub::TagManager.instance.uri_for(new_local_mentioned_account),
-                },
-              ],
-            }
-          end
-
-          before do
-            stub_request(:post, 'http://example.com/alice/inbox').to_return(status: 200)
-          end
+        context 'when local conversation' do
+          let(:ancestor_account) { Fabricate(:account) }
+          let(:conversation) { Fabricate(:conversation) }
 
           it 'creates status' do
             expect { subject.perform }.to change(sender.statuses, :count).by(1)
@@ -1202,71 +1160,117 @@ RSpec.describe ActivityPub::Activity::Create do
             status = sender.statuses.first
 
             expect(status).to_not be_nil
-            expect(status.mentions.map(&:account_id)).to contain_exactly(recipient.id, ancestor_account.id, mentioned_account.id, local_mentioned_account.id, new_mentioned_account.id, new_local_mentioned_account.id)
+            expect(status.conversation_id).to eq conversation.id
+            expect(status.thread.id).to eq original_status.id
+            expect(status.mentions.map(&:account_id)).to contain_exactly(recipient.id, ancestor_account.id, mentioned_account.id, local_mentioned_account.id)
           end
 
           it 'forwards to observers', :inline_jobs do
             expect { subject.perform }.to change(sender.statuses, :count).by(1)
 
-            expect(a_request(:post, 'http://or.example.com/actor/inbox')).to have_been_made.once
             expect(a_request(:post, 'http://example.com/bob/inbox')).to have_been_made.once
-            expect(a_request(:post, 'http://example.com/alice/inbox')).to have_been_made.once
-          end
-        end
-
-        context 'when unknown mentioned account' do
-          let(:actor_json) do
-            {
-              '@context': 'https://www.w3.org/ns/activitystreams',
-              id: 'https://foo.test',
-              type: 'Person',
-              preferredUsername: 'actor',
-              name: 'Tomas Cat',
-              inbox: 'https://foo.test/inbox',
-            }.with_indifferent_access
-          end
-          let!(:webfinger) { { subject: 'acct:actor@foo.test', links: [{ rel: 'self', href: 'https://foo.test', type: 'application/activity+json' }] } }
-
-          let(:object_json) do
-            {
-              id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
-              type: 'Note',
-              content: 'Lorem ipsum',
-              groupContext: ActivityPub::TagManager.instance.uri_for(conversation, group: true),
-              inReplyTo: ActivityPub::TagManager.instance.uri_for(original_status),
-              tag: [
-                {
-                  type: 'Mention',
-                  href: 'https://foo.test',
-                },
-              ],
-            }
           end
 
-          before do
-            stub_request(:get, 'https://foo.test').to_return(status: 200, body: actor_json.to_json, headers: { 'Content-Type': 'application/activity+json' })
-            stub_request(:get, 'https://foo.test/.well-known/webfinger?resource=acct:actor@foo.test').to_return(status: 200, body: webfinger.to_json, headers: { 'Content-Type': 'application/jrd+json' })
-            stub_request(:post, 'https://foo.test/inbox').to_return(status: 200)
-            stub_request(:get, 'https://foo.test/.well-known/nodeinfo').to_return(status: 200, headers: { 'Content-Type': 'application/activity+json' })
+          context 'when new mention is added' do
+            let(:new_mentioned_account) { Fabricate(:account, domain: 'example.com', uri: 'http://example.com/alice', inbox_url: 'http://example.com/alice/inbox', shared_inbox_url: 'http://exmaple.com/inbox') }
+            let(:new_local_mentioned_account) { Fabricate(:account, domain: nil) }
+
+            let(:object_json) do
+              {
+                id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+                type: 'Note',
+                content: 'Lorem ipsum',
+                groupContext: ActivityPub::TagManager.instance.uri_for(conversation, group: true),
+                inReplyTo: ActivityPub::TagManager.instance.uri_for(original_status),
+                tag: [
+                  {
+                    type: 'Mention',
+                    href: ActivityPub::TagManager.instance.uri_for(new_mentioned_account),
+                  },
+                  {
+                    type: 'Mention',
+                    href: ActivityPub::TagManager.instance.uri_for(new_local_mentioned_account),
+                  },
+                ],
+              }
+            end
+
+            before do
+              stub_request(:post, 'http://example.com/alice/inbox').to_return(status: 200)
+            end
+
+            it 'creates status' do
+              expect { subject.perform }.to change(sender.statuses, :count).by(1)
+
+              status = sender.statuses.first
+
+              expect(status).to_not be_nil
+              expect(status.mentions.map(&:account_id)).to contain_exactly(recipient.id, ancestor_account.id, mentioned_account.id, local_mentioned_account.id, new_mentioned_account.id, new_local_mentioned_account.id)
+            end
+
+            it 'forwards to observers', :inline_jobs do
+              expect { subject.perform }.to change(sender.statuses, :count).by(1)
+
+              expect(a_request(:post, 'http://example.com/bob/inbox')).to have_been_made.once
+              expect(a_request(:post, 'http://example.com/alice/inbox')).to have_been_made.once
+            end
           end
 
-          it 'creates status', :inline_jobs do
-            expect { subject.perform }.to change(sender.statuses, :count).by(1)
+          context 'when unknown mentioned account' do
+            let(:actor_json) do
+              {
+                '@context': 'https://www.w3.org/ns/activitystreams',
+                id: 'https://foo.test',
+                type: 'Person',
+                preferredUsername: 'actor',
+                name: 'Tomas Cat',
+                inbox: 'https://foo.test/inbox',
+              }.with_indifferent_access
+            end
+            let!(:webfinger) { { subject: 'acct:actor@foo.test', links: [{ rel: 'self', href: 'https://foo.test', type: 'application/activity+json' }] } }
 
-            status = sender.statuses.first
+            let(:object_json) do
+              {
+                id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
+                type: 'Note',
+                content: 'Lorem ipsum',
+                groupContext: ActivityPub::TagManager.instance.uri_for(conversation, group: true),
+                inReplyTo: ActivityPub::TagManager.instance.uri_for(original_status),
+                tag: [
+                  {
+                    type: 'Mention',
+                    href: 'https://foo.test',
+                  },
+                ],
+              }
+            end
 
-            expect(status).to_not be_nil
-            expect(status.mentioned_accounts.map(&:uri)).to include 'https://foo.test'
-          end
+            before do
+              stub_request(:get, 'https://foo.test').to_return(status: 200, body: actor_json.to_json, headers: { 'Content-Type': 'application/activity+json' })
+              stub_request(:get, 'https://foo.test/.well-known/webfinger?resource=acct:actor@foo.test').to_return(status: 200, body: webfinger.to_json, headers: { 'Content-Type': 'application/jrd+json' })
+              stub_request(:post, 'https://foo.test/inbox').to_return(status: 200)
+              stub_request(:get, 'https://foo.test/.well-known/nodeinfo').to_return(status: 200, headers: { 'Content-Type': 'application/activity+json' })
+            end
 
-          it 'forwards to observers', :inline_jobs do
-            expect { subject.perform }.to change(sender.statuses, :count).by(1)
+            it 'creates status', :inline_jobs do
+              expect { subject.perform }.to change(sender.statuses, :count).by(1)
 
-            expect(a_request(:post, 'https://foo.test/inbox')).to have_been_made.once
+              status = sender.statuses.first
+
+              expect(status).to_not be_nil
+              expect(status.mentioned_accounts.map(&:uri)).to include 'https://foo.test'
+            end
+
+            it 'forwards to observers', :inline_jobs do
+              expect { subject.perform }.to change(sender.statuses, :count).by(1)
+
+              expect(a_request(:post, 'https://foo.test/inbox')).to have_been_made.once
+            end
           end
         end
 
         context 'when remote conversation' do
+          let(:ancestor_account) { Fabricate(:account, domain: 'example.com', inbox_url: 'http://example.com/actor/inbox') }
           let(:conversation) { Fabricate(:conversation, uri: 'http://example.com/conversation', inbox_url: 'http://example.com/actor/inbox') }
 
           it 'creates status' do
@@ -1278,6 +1282,12 @@ RSpec.describe ActivityPub::Activity::Create do
             expect(status.conversation_id).to eq conversation.id
             expect(status.thread.id).to eq original_status.id
             expect(status.mentions.map(&:account_id)).to contain_exactly(recipient.id)
+          end
+
+          it 'send to conversation', :inline_jobs do
+            expect { subject.perform }.to change(sender.statuses, :count).by(1)
+
+            expect(a_request(:post, 'http://example.com/actor/inbox')).to_not have_been_made
           end
 
           it 'do not forward to observers', :inline_jobs do

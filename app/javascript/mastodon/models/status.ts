@@ -2,7 +2,15 @@ import type { RecordOf } from 'immutable';
 
 import type { ApiCollectionJSON } from '@/mastodon/api_types/collections';
 import type { ApiCustomEmojiJSON } from '@/mastodon/api_types/custom_emoji';
-import type { ApiMediaAttachmentJSON } from '@/mastodon/api_types/media_attachments';
+import type {
+  ApiAudioAttachmentJSON,
+  ApiGifvAttachmentJSON,
+  ApiImageAttachmentJSON,
+  ApiMediaAttachmentJSON,
+  ApiUnknownAttachmentJSON,
+  ApiVideoAttachmentJSON,
+  MediaAttachmentType,
+} from '@/mastodon/api_types/media_attachments';
 import type {
   ApiQuoteJSON,
   ApiQuotePolicyJSON,
@@ -14,8 +22,11 @@ import type {
   ApiPreviewCardJSON,
   ApiStatusTranslationJSON,
   ApiTagJSON,
+  StatusLimitedScope,
   StatusVisibility,
 } from '@/mastodon/api_types/statuses';
+
+import type { AccountShapeFull } from './account';
 
 export type { StatusVisibility } from '@/mastodon/api_types/statuses';
 
@@ -37,9 +48,10 @@ export interface StatusShape {
   pinned: boolean;
   filtered: FilterResult[];
   sensitive: boolean;
-  collapsed: boolean;
+  collapsed: boolean | null;
   uri: string;
   url: string | null;
+  isLoading?: boolean;
 
   // Content
   content: string;
@@ -49,6 +61,7 @@ export interface StatusShape {
   search_index?: string;
   spoilerHtml?: string;
   spoiler_text?: string;
+  expires_at?: string;
 
   // Embeds
   card?: CardShape;
@@ -73,8 +86,15 @@ export interface StatusShape {
   reblogged: boolean;
   reblogs_count: number;
   replies_count: number;
+  status_references_count: number;
   visibility: StatusVisibility;
+  visibility_ex: StatusVisibility;
+  limited_scope: StatusLimitedScope;
 }
+export type ExpandedStatusShape = Omit<StatusShape, 'account' | 'reblog'> & {
+  account: AccountShapeFull;
+  reblog?: Omit<ExpandedStatusShape, 'reblog'>;
+};
 
 export type CardShape = Omit<ApiPreviewCardJSON, 'authors'> & {
   authors: (Omit<ApiPreviewCardAuthorJSON, 'author'> & {
@@ -86,13 +106,41 @@ export type Card = RecordOf<CardShape>;
 
 export type MediaAttachment = Immutable.Map<string, unknown>;
 
-export type MediaAttachmentShape = Omit<
-  ApiMediaAttachmentJSON,
-  'remote_url'
-> & {
+export type MediaAttachmentShape<
+  TAttachmentJSON extends ApiMediaAttachmentJSON = ApiMediaAttachmentJSON,
+> = Omit<TAttachmentJSON, 'remote_url'> & {
   remote_url: string | null;
-  translation?: string;
+  translation?: {
+    description: string;
+  };
 };
+
+export function isMediaAttachmentOfType(
+  attachment: MediaAttachmentShape,
+  type: 'image',
+): attachment is MediaAttachmentShape<ApiImageAttachmentJSON>;
+export function isMediaAttachmentOfType(
+  attachment: MediaAttachmentShape,
+  type: 'video',
+): attachment is MediaAttachmentShape<ApiVideoAttachmentJSON>;
+export function isMediaAttachmentOfType(
+  attachment: MediaAttachmentShape,
+  type: 'gifv',
+): attachment is MediaAttachmentShape<ApiGifvAttachmentJSON>;
+export function isMediaAttachmentOfType(
+  attachment: MediaAttachmentShape,
+  type: 'audio',
+): attachment is MediaAttachmentShape<ApiAudioAttachmentJSON>;
+export function isMediaAttachmentOfType(
+  attachment: MediaAttachmentShape,
+  type: 'unknown',
+): attachment is MediaAttachmentShape<ApiUnknownAttachmentJSON>;
+export function isMediaAttachmentOfType(
+  attachment: MediaAttachmentShape,
+  type: MediaAttachmentType,
+) {
+  return attachment.type === type;
+}
 
 export type CollectionAttachment = RecordOf<ApiCollectionJSON>;
 

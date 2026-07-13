@@ -19,7 +19,7 @@ gem 'blurhash', '~> 0.1'
 gem 'fog-core', '<= 2.6.0'
 gem 'fog-openstack', '~> 1.0', require: false
 gem 'jd-paperclip-azure', '~> 3.0', require: false
-gem 'kt-paperclip', '~> 7.2'
+gem 'kt-paperclip', '~> 8.0'
 gem 'ruby-vips', '~> 2.2', require: false
 
 gem 'active_model_serializers', '~> 0.10'
@@ -96,6 +96,7 @@ gem 'webauthn', '~> 3.0'
 gem 'webpush', github: 'mastodon/webpush', ref: '9631ac63045cfabddacc69fc06e919b4c13eb913'
 
 gem 'json'
+gem 'json-canonicalization', '~> 1.0'
 gem 'json-ld'
 gem 'json-ld-preloaded', '~> 3.2'
 gem 'rdf-normalize', '~> 0.5'
