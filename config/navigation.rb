@@ -19,7 +19,7 @@ SimpleNavigation::Configuration.run do |navigation|
              end
            ),
            admin_software_updates_path,
-           html: { class: SoftwareUpdate.urgent_pending? ? 'warning' : nil },
+           html: { class: SoftwareUpdate.urgent_pending? || SoftwareDeprecation.current&.unsupported? ? 'warning' : nil },
            if: -> { Rails.configuration.x.mastodon.software_update_url.present? && current_user.can?(:view_devops) && SoftwareUpdate.pending? }
 
     n.item :profile, safe_join([material_symbol('person'), t('settings.profile')]), settings_profile_path, if: -> { current_user.functional? && !self_destruct }, highlights_on: %r{/settings/profile|/settings/featured_tags|/settings/verification}

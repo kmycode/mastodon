@@ -14,6 +14,7 @@ import { useEmoji } from './emojis';
 import { importFetchedAccounts, importFetchedStatus } from './importer';
 import { openModal } from './modal';
 import { updateTimeline } from './timelines';
+import { insertStatusIntoAccountTimelines } from './timelines_typed';
 
 /** @type {AbortController | undefined} */
 let fetchComposeSuggestionsAccountsController;
@@ -194,7 +195,7 @@ export function directCompose(account) {
 
 export function submitCompose(successCallback) {
   return function (dispatch, getState) {
-    const status   = getState().getIn(['compose', 'text'], '');
+    const statusText   = getState().getIn(['compose', 'text'], '');
     const media    = getState().getIn(['compose', 'media_attachments']);
     const statusId = getState().getIn(['compose', 'id'], null);
     const circleId = getState().getIn(['compose', 'circle_id'], null);
@@ -202,7 +203,7 @@ export function submitCompose(successCallback) {
     const hasQuote = !!getState().getIn(['compose', 'quoted_status_id']);
     const spoiler_text = getState().getIn(['compose', 'spoiler']) ? getState().getIn(['compose', 'spoiler_text'], '') : '';
 
-    const fulltext = `${spoiler_text ?? ''}${countableText(status ?? '')}`;
+    const fulltext = `${spoiler_text ?? ''}${countableText(statusText ?? '')}`;
     const hasText = fulltext.trim().length > 0;
 
     if (!(hasText || media.size !== 0 || (hasQuote && spoiler_text?.length))) {
@@ -241,7 +242,7 @@ export function submitCompose(successCallback) {
       url: statusId === null ? '/api/v1/statuses' : `/api/v1/statuses/${statusId}`,
       method: statusId === null ? 'post' : 'put',
       data: {
-        status,
+        status: statusText,
         spoiler_text,
         in_reply_to_id: getState().getIn(['compose', 'in_reply_to'], null),
         media_ids: media.map(item => item.get('id')),
@@ -264,7 +265,7 @@ export function submitCompose(successCallback) {
         browserHistory.goBack();
       }
 
-      dispatch(insertIntoTagHistory(response.data.tags, status));
+      dispatch(insertIntoTagHistory(response.data.tags, statusText));
       dispatch(submitComposeSuccess({ ...response.data }));
       if (typeof successCallback === 'function') {
         successCallback(response.data);
@@ -297,6 +298,7 @@ export function submitCompose(successCallback) {
       if (statusId === null && privacy === 'circle' && circleId !== null && circleId !== 0) {
         dispatch(submitComposeWithCircleSuccess({ ...response.data }, `${circleId}`));
       }
+      dispatch(insertStatusIntoAccountTimelines({ ...response.data }))
 
       dispatch(showAlert({
         message: statusId === null ? messages.published : messages.saved,

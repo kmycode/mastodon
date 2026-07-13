@@ -22,6 +22,7 @@ import type {
   ApiPreviewCardJSON,
   ApiStatusTranslationJSON,
   ApiTagJSON,
+  StatusLimitedScope,
   StatusVisibility,
 } from '@/mastodon/api_types/statuses';
 
@@ -50,6 +51,7 @@ export interface StatusShape {
   collapsed: boolean | null;
   uri: string;
   url: string | null;
+  isLoading?: boolean;
 
   // Content
   content: string;
@@ -59,6 +61,7 @@ export interface StatusShape {
   search_index?: string;
   spoilerHtml?: string;
   spoiler_text?: string;
+  expires_at?: string;
 
   // Embeds
   card?: CardShape;
@@ -83,7 +86,10 @@ export interface StatusShape {
   reblogged: boolean;
   reblogs_count: number;
   replies_count: number;
+  status_references_count: number;
   visibility: StatusVisibility;
+  visibility_ex: StatusVisibility;
+  limited_scope: StatusLimitedScope;
 }
 export type ExpandedStatusShape = Omit<StatusShape, 'account' | 'reblog'> & {
   account: AccountShapeFull;

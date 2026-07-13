@@ -2,8 +2,7 @@ import { defineMessages } from 'react-intl';
 import type { MessageDescriptor } from 'react-intl';
 
 import { isHideItem } from '@/mastodon/initial_state';
-import type { Status, StatusVisibility } from '@/mastodon/models/status';
-import { createAppSelector } from '@/mastodon/store';
+import type { StatusConditions } from '@/mastodon/selectors/statuses';
 import FormatQuote from '@/material-icons/400-24px/format_quote-fill.svg?react';
 import FormatQuoteOff from '@/material-icons/400-24px/format_quote_off-fill.svg?react';
 import ReferenceIcon from '@/material-icons/400-24px/link.svg?react';
@@ -77,50 +76,6 @@ export const messages = defineMessages({
   quote_link: { id: 'status.quote_link', defaultMessage: 'Insert quote link' },
 });
 
-export const selectStatusState = createAppSelector(
-  [
-    (state) => state.meta.get('me') as string | undefined,
-    (_, status: Status) => status,
-  ],
-  (userId, status) => {
-    const isPublic = [
-      'public',
-      'unlisted',
-      'public_unlisted',
-      'login',
-    ].includes(status.get('visibility_ex') as StatusVisibility);
-    const isMineAndPrivate =
-      userId === status.getIn(['account', 'id']) &&
-      status.get('visibility_ex') === 'private';
-    return {
-      isLoggedIn: !!userId,
-      isPublic,
-      isMine: userId === status.getIn(['account', 'id']),
-      isPrivateReblog:
-        userId === status.getIn(['account', 'id']) &&
-        status.get('visibility_ex') === 'private',
-      isReblogged: !!status.get('reblogged'),
-      isReblogAllowed: isPublic || isMineAndPrivate,
-      isQuoteAutomaticallyAccepted:
-        status.getIn(['quote_approval', 'current_user']) === 'automatic' &&
-        (isPublic || isMineAndPrivate),
-      isQuoteManuallyAccepted:
-        status.getIn(['quote_approval', 'current_user']) === 'manual' &&
-        (isPublic || isMineAndPrivate),
-      isQuoteFollowersOnly:
-        status.getIn(['quote_approval', 'automatic', 0]) === 'followers' ||
-        status.getIn(['quote_approval', 'manual', 0]) === 'followers',
-      isStatusReferenceAvailableServer: !!status.getIn([
-        'account',
-        'server_features',
-        'status_reference',
-      ]),
-    };
-  },
-);
-
-export type StatusState = ReturnType<typeof selectStatusState>;
-
 export interface MenuItemState {
   title: MessageDescriptor;
   meta?: MessageDescriptor;
@@ -129,10 +84,10 @@ export interface MenuItemState {
 }
 
 export function boostItemState(
-  { isPublic, isPrivateReblog, isReblogged }: StatusState,
+  { isPublic, isPrivateReblog, isBoosted }: StatusConditions,
   isForceModal = false,
 ): MenuItemState {
-  if (isReblogged) {
+  if (isBoosted) {
     return {
       title: messages.reblog_cancel,
       iconComponent: isPublic ? RepeatActiveIcon : RepeatPrivateActiveIcon,
@@ -162,7 +117,7 @@ export function quoteItemState(
     isQuoteManuallyAccepted,
     isQuoteFollowersOnly,
     isPublic,
-  }: StatusState,
+  }: StatusConditions,
   isLink = false,
 ): MenuItemState {
   const iconText: MenuItemState = {
@@ -198,7 +153,7 @@ export function quoteItemState(
 export function referenceItemState({
   isPublic,
   isStatusReferenceAvailableServer,
-}: StatusState): MenuItemState {
+}: StatusConditions): MenuItemState {
   const iconText: MenuItemState = {
     title: messages.reference_link,
     iconComponent: ReferenceIcon,

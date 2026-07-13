@@ -145,8 +145,10 @@ RSpec.describe ActivityPub::Activity::Update do
       end
     end
 
-    context 'when the status is limited post and has conversation' do
-      let(:status) { Fabricate(:status, visibility: :limited, account: sender, uri: 'https://example.com/note', text: 'Ohagi is koshian') }
+    context 'when the status is limited post and has local conversation' do
+      let(:conversation) { Fabricate(:conversation) }
+      let(:status) { Fabricate(:status, visibility: :limited, account: sender, uri: 'https://example.com/note', text: 'Ohagi is koshian', conversation: conversation) }
+      let(:mentioned_account) { Fabricate(:account, protocol: :activitypub, domain: 'example.com', inbox_url: 'https://example.com/actor/inbox', shared_inbox_url: 'https://example.com/inbox') }
       let(:json) do
         {
           '@context': 'https://www.w3.org/ns/activitystreams',
@@ -158,12 +160,14 @@ RSpec.describe ActivityPub::Activity::Update do
             type: 'Note',
             id: status.uri,
             content: 'Ohagi is tsubuan',
+            groupContext: ActivityPub::TagManager.instance.uri_for(conversation, group: true),
           },
         }.with_indifferent_access
       end
 
       before do
-        status.mentions << Fabricate(:mention, silent: true, account: Fabricate(:account, protocol: :activitypub, domain: 'example.com', inbox_url: 'https://example.com/actor/inbox', shared_inbox_url: 'https://example.com/inbox'))
+        Fabricate(:status, conversation: conversation)
+        status.mentions << Fabricate(:mention, silent: true, account: mentioned_account)
         status.save
         stub_request(:post, 'https://example.com/inbox').to_return(status: 200)
         subject.perform

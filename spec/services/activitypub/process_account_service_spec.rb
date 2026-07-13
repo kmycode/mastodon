@@ -5,12 +5,24 @@ require 'rails_helper'
 RSpec.describe ActivityPub::ProcessAccountService do
   subject { described_class.new }
 
-  before do
-    stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(status: 404)
+  def stub_webfinger!(software: '')
+    webfinger = {
+      subject: "acct:#{payload['preferredUsername']}@#{Addressable::URI.parse(payload['id']).host}",
+      links: [
+        {
+          rel: 'self',
+          href: payload['id'],
+          type: 'application/activity+json',
+        },
+      ],
+    }.deep_stringify_keys
+    stub_request(:get, "#{Addressable::URI.parse(payload['id']).origin}/.well-known/webfinger?resource=#{webfinger['subject']}").to_return(body: webfinger.to_json, headers: { 'Content-Type': 'application/jrd+json' })
+    stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(body: "{\"software\":\"#{software}\"}", headers: { 'Content-Type': 'application/jrd+json' })
+    stub_request(:get, 'https://foo.test/.well-known/nodeinfo').to_return(body: "{\"software\":\"#{software}\"}", headers: { 'Content-Type': 'application/jrd+json' })
   end
 
   describe 'about blocking new remote account' do
-    subject { described_class.new.call('alice', 'example.com', payload) }
+    subject { described_class.new.call(payload) }
 
     let(:hold_remote_new_accounts) { true }
     let(:permit_domain) { nil }
@@ -19,12 +31,14 @@ RSpec.describe ActivityPub::ProcessAccountService do
         id: 'https://foo.test',
         type: 'Actor',
         inbox: 'https://foo.test/inbox',
+        preferredUsername: 'alice',
         actor_type: 'Person',
         summary: 'new bio',
       }.with_indifferent_access
     end
 
     before do
+      stub_webfinger!
       Setting.hold_remote_new_accounts = hold_remote_new_accounts
       Fabricate(:specified_domain, domain: permit_domain, table: 0) if permit_domain
     end
@@ -57,7 +71,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
 
       context 'with has existing account' do
         before do
-          Fabricate(:account, uri: 'https://foo.test', domain: 'example.com', username: 'alice', note: 'old bio')
+          Fabricate(:account, uri: 'https://foo.test', domain: 'foo.test', username: 'alice', note: 'old bio')
         end
 
         it 'updated account' do
@@ -70,7 +84,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
 
       context 'with has existing suspended pending account' do
         before do
-          Fabricate(:account, uri: 'https://foo.test', domain: 'example.com', username: 'alice', note: 'old bio', suspended_at: 1.day.ago, remote_pending: true, suspension_origin: :local)
+          Fabricate(:account, uri: 'https://foo.test', domain: 'foo.test', username: 'alice', note: 'old bio', suspended_at: 1.day.ago, remote_pending: true, suspension_origin: :local)
         end
 
         it 'updated account' do
@@ -84,7 +98,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
 
       context 'with has existing suspended account' do
         before do
-          Fabricate(:account, uri: 'https://foo.test', domain: 'example.com', username: 'alice', note: 'old bio', suspended_at: 1.day.ago, suspension_origin: :local)
+          Fabricate(:account, uri: 'https://foo.test', domain: 'foo.test', username: 'alice', note: 'old bio', suspended_at: 1.day.ago, suspension_origin: :local)
         end
 
         it 'does not update account' do
@@ -98,7 +112,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     context 'when is in whitelist' do
-      let(:permit_domain) { 'example.com' }
+      let(:permit_domain) { 'foo.test' }
 
       it 'does not create account' do
         expect(subject).to_not be_nil
@@ -110,7 +124,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
   end
 
   context 'with searchability' do
-    subject { described_class.new.call('alice', 'example.com', payload) }
+    subject { described_class.new.call(payload) }
 
     let(:software) { 'mastodon' }
     let(:searchable_by) { 'https://www.w3.org/ns/activitystreams#Public' }
@@ -121,7 +135,8 @@ RSpec.describe ActivityPub::ProcessAccountService do
         id: 'https://foo.test',
         type: 'Actor',
         inbox: 'https://foo.test/inbox',
-        followers: 'https://example.com/followers',
+        preferredUsername: 'alice',
+        followers: 'https://foo.test/followers',
         searchableBy: searchable_by,
         indexable: indexable,
         summary: sender_bio,
@@ -130,9 +145,9 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     before do
-      Fabricate(:instance_info, domain: 'example.com', software: software)
-      stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(body: '{}')
-      stub_request(:get, 'https://example.com/followers').to_return(body: '[]')
+      stub_webfinger!(software: software)
+      Fabricate(:instance_info, domain: 'foo.test', software: software)
+      stub_request(:get, 'https://foo.test/followers').to_return(body: '[]')
     end
 
     context 'when public' do
@@ -142,7 +157,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     context 'when private' do
-      let(:searchable_by) { 'https://example.com/followers' }
+      let(:searchable_by) { 'https://foo.test/followers' }
 
       it 'searchability is private' do
         expect(subject.searchability).to eq 'private'
@@ -219,7 +234,8 @@ RSpec.describe ActivityPub::ProcessAccountService do
             id: 'https://foo.test',
             type: 'Actor',
             inbox: 'https://foo.test/inbox',
-            followers: 'https://example.com/followers',
+            preferredUsername: 'alice',
+            followers: 'https://foo.test/followers',
             searchableBy: searchable_by,
             summary: sender_bio,
           }.with_indifferent_access
@@ -269,7 +285,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
   end
 
   context 'with subscription policy' do
-    subject { described_class.new.call('alice', 'example.com', payload) }
+    subject { described_class.new.call(payload) }
 
     let(:subscribable_by) { 'https://www.w3.org/ns/activitystreams#Public' }
     let(:sender_bio) { '' }
@@ -278,7 +294,8 @@ RSpec.describe ActivityPub::ProcessAccountService do
         id: 'https://foo.test',
         type: 'Actor',
         inbox: 'https://foo.test/inbox',
-        followers: 'https://example.com/followers',
+        preferredUsername: 'alice',
+        followers: 'https://foo.test/followers',
         subscribableBy: subscribable_by,
         summary: sender_bio,
         actor_type: 'Person',
@@ -286,8 +303,8 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     before do
-      stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(body: '{}')
-      stub_request(:get, 'https://example.com/followers').to_return(body: '[]')
+      stub_webfinger!
+      stub_request(:get, 'https://foo.test/followers').to_return(body: '[]')
     end
 
     context 'when public' do
@@ -297,7 +314,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     context 'when private' do
-      let(:subscribable_by) { 'https://example.com/followers' }
+      let(:subscribable_by) { 'https://foo.test/followers' }
 
       it 'subscription policy is followers_only' do
         expect(subject.subscription_policy.to_s).to eq 'followers_only'
@@ -339,6 +356,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
         id: 'https://foo.test',
         type: 'Actor',
         inbox: 'https://foo.test/inbox',
+        preferredUsername: 'alice',
         attachment: [
           { type: 'PropertyValue', name: 'Pronouns', value: 'They/them' },
           { type: 'PropertyValue', name: 'Occupation', value: 'Unit test' },
@@ -358,17 +376,17 @@ RSpec.describe ActivityPub::ProcessAccountService do
             },
           ],
         },
-      }.with_indifferent_access
+      }.deep_stringify_keys
     end
 
     before do
-      stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(body: '{}')
+      stub_webfinger!
       stub_request(:get, 'https://foo.test/image.png').to_return(request_fixture('avatar.txt'))
       stub_request(:get, 'https://foo.test/icon.png').to_return(request_fixture('avatar.txt'))
     end
 
     it 'parses property values, avatar and profile header as expected' do
-      account = subject.call('alice', 'example.com', payload)
+      account = subject.call(payload)
 
       expect(account.fields)
         .to be_an(Array)
@@ -398,6 +416,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
         id: 'https://foo.test',
         type: 'Actor',
         inbox: 'https://foo.test/inbox',
+        preferredUsername: 'alice',
         otherSetting: [
           { type: 'PropertyValue', name: 'Pronouns', value: 'They/them' },
           { type: 'PropertyValue', name: 'Occupation', value: 'Unit test' },
@@ -406,11 +425,11 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     before do
-      stub_request(:get, 'https://example.com/.well-known/nodeinfo').to_return(body: '{}')
+      stub_webfinger!
     end
 
     it 'parses out of attachment' do
-      account = subject.call('alice', 'example.com', payload)
+      account = subject.call(payload)
       expect(account.settings).to be_a Hash
       expect(account.settings.size).to eq 2
       expect(account.settings['Pronouns']).to eq 'They/them'
@@ -419,15 +438,19 @@ RSpec.describe ActivityPub::ProcessAccountService do
   end
 
   context 'when account is using note contains ng words' do
-    subject { described_class.new.call(account.username, account.domain, payload) }
+    subject do
+      stub_webfinger!
+      described_class.new.call(payload)
+    end
 
-    let!(:account) { Fabricate(:account, username: 'alice', domain: 'example.com') }
+    let!(:account) { Fabricate(:account, username: 'alice', domain: 'foo.test') }
 
     let(:payload) do
       {
         id: 'https://foo.test',
         type: 'Actor',
         inbox: 'https://foo.test/inbox',
+        preferredUsername: 'alice',
         name: 'Ohagi',
       }.with_indifferent_access
     end
@@ -459,6 +482,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
       {
         'id' => 'https://foo.test',
         'type' => 'Actor',
+        'preferredUsername' => 'alice',
         'inbox' => 'https://foo.test/inbox',
         'featured' => 'https://foo.test/featured',
         'followers' => 'https://foo.test/followers',
@@ -468,12 +492,13 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     before do
+      stub_webfinger!
       stub_request(:get, %r{^https://foo\.test/follow})
         .to_return(status: 200, body: '', headers: {})
     end
 
     it 'parses and sets the URIs, queues jobs to synchronize' do
-      account = subject.call('alice', 'example.com', payload)
+      account = subject.call(payload)
 
       expect(account.featured_collection_url).to eq 'https://foo.test/featured'
       expect(account.followers_url).to eq 'https://foo.test/followers'
@@ -499,11 +524,13 @@ RSpec.describe ActivityPub::ProcessAccountService do
           owner: 'https://foo.test/actor',
           publicKeyPem: public_key,
         },
-      }.with_indifferent_access
+      }.deep_stringify_keys
     end
 
+    before { stub_webfinger! }
+
     it 'stores the key' do
-      account = subject.call('alice', 'example.com', payload)
+      account = subject.call(payload)
 
       expect(account.public_key).to eq ''
       expect(account.keypairs).to contain_exactly(
@@ -516,17 +543,17 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     context 'when the account was known with a legacy key' do
-      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'example.com', username: 'alice', legacy_keypair: true) }
+      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'foo.test', username: 'alice', legacy_keypair: true) }
 
       it 'invalidates the legacy key and stores the new key' do
-        expect { subject.call('alice', 'example.com', payload) }
+        expect { subject.call(payload) }
           .to change { alice.reload.public_key }.to('')
           .and change { alice.reload.keypairs.to_a }.from([]).to(contain_exactly(have_attributes({ uri: 'https://foo.test/actor#key1', type: 'rsa', public_key: })))
       end
     end
 
     context 'when the account was known with an old key' do
-      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'example.com', username: 'alice') }
+      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'foo.test', username: 'alice') }
 
       before do
         alice.keypairs.delete_all
@@ -534,7 +561,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
       end
 
       it 'invalidates the old key and stores the new key' do
-        expect { subject.call('alice', 'example.com', payload) }
+        expect { subject.call(payload) }
           .to change { alice.reload.keypairs.to_a }.from(contain_exactly(have_attributes({ uri: 'https://foo.test/actor#old-key' }))).to(contain_exactly(have_attributes({ uri: 'https://foo.test/actor#key1', type: 'rsa', public_key: })))
 
         expect(alice.reload.public_key)
@@ -566,11 +593,12 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     before do
+      stub_webfinger!
       stub_request(:get, key_id).to_return(status: 200, body: key_document.to_json, headers: { 'Content-Type': 'application/activity+json' })
     end
 
     it 'stores the key' do
-      account = subject.call('alice', 'example.com', payload)
+      account = subject.call(payload)
 
       expect(account.public_key).to eq ''
       expect(account.keypairs).to contain_exactly(
@@ -600,7 +628,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
       let(:key_document) { payload }
 
       it 'stores the key' do
-        account = subject.call('alice', 'example.com', payload)
+        account = subject.call(payload)
 
         expect(account.public_key).to eq ''
         expect(account.keypairs).to contain_exactly(
@@ -614,17 +642,17 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     context 'when the account was known with a legacy key' do
-      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'example.com', username: 'alice', legacy_keypair: true) }
+      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'foo.test', username: 'alice', legacy_keypair: true) }
 
       it 'invalidates the legacy key and stores the new key' do
-        expect { subject.call('alice', 'example.com', payload) }
+        expect { subject.call(payload) }
           .to change { alice.reload.public_key }.to('')
           .and change { alice.reload.keypairs.to_a }.from([]).to(contain_exactly(have_attributes({ uri: key_id, type: 'rsa', public_key: })))
       end
     end
 
     context 'when the account was known with an old key' do
-      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'example.com', username: 'alice') }
+      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'foo.test', username: 'alice') }
 
       before do
         alice.keypairs.delete_all
@@ -632,7 +660,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
       end
 
       it 'invalidates the legacy key and stores the new key' do
-        expect { subject.call('alice', 'example.com', payload) }
+        expect { subject.call(payload) }
           .to change { alice.reload.keypairs.to_a }.from(contain_exactly(have_attributes({ uri: 'https://foo.test/actor#old-key' }))).to(contain_exactly(have_attributes({ uri: key_id, type: 'rsa', public_key: })))
 
         expect(alice.reload.public_key)
@@ -660,11 +688,13 @@ RSpec.describe ActivityPub::ProcessAccountService do
             publicKeyPem: 'bar',
           },
         ],
-      }.with_indifferent_access
+      }.deep_stringify_keys
     end
 
+    before { stub_webfinger! }
+
     it 'stores the keys' do
-      account = subject.call('alice', 'example.com', payload)
+      account = subject.call(payload)
 
       expect(account.public_key).to eq ''
       expect(account.keypairs).to contain_exactly(
@@ -682,10 +712,10 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     context 'when the account was known with a legacy key' do
-      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'example.com', username: 'alice', legacy_keypair: true) }
+      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'foo.test', username: 'alice', legacy_keypair: true) }
 
       it 'invalidates the legacy key and stores the new keys' do
-        expect { subject.call('alice', 'example.com', payload) }
+        expect { subject.call(payload) }
           .to change { alice.reload.public_key }.to('')
           .and change { alice.keypairs.to_a }.from([]).to(
             contain_exactly(
@@ -718,11 +748,13 @@ RSpec.describe ActivityPub::ProcessAccountService do
             publicKeyMultibase: 'z2MGw4gk84USotaWf4AkJ83DcnrfgGaceF86KQXRYMfQ7xqnUG81FVWa2N5inzNigXsDkm2LxpuyYSajqZr1CwHqnJbVEw1rhN25tbJSFyej6TejRh3k67CK9nTVHdXFoVKgAFxLwgiqJwCyyYWesaQKXAQfwXYqCBxPyaDjFfWkya6xeLaNuKFYGLcVzZZQjL99dnzUpNiENFPkVmJokE1wKPpHttGpLgm9sizHNDFuwHaz2ZZRnnZ6CT95FzdrMmaDXofn1ikbKBTdumuiRWSVwwZXffcXRN6Ti1a8NfhxQDdqhT7CAmM9NjQhnrqs1vss6YdcrHP5GmQN2Mz8GenQZFnyhJZK2iPxETnxq7YJRqTduN8KC8SMfjLVB8LD7rBM5d6s8dopdgJCVBpy2p', # rubocop:disable Layout/LineLength
           },
         ],
-      }.with_indifferent_access
+      }.deep_stringify_keys
     end
 
+    before { stub_webfinger! }
+
     it 'stores the keys' do
-      account = subject.call('alice', 'example.com', payload)
+      account = subject.call(payload)
 
       expect(account.public_key).to eq ''
       expect(account.keypairs).to contain_exactly(
@@ -738,10 +770,10 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     context 'when the account was known with a legacy key' do
-      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'example.com', username: 'alice', legacy_keypair: true) }
+      let!(:alice) { Fabricate(:account, uri: 'https://foo.test/actor', domain: 'foo.test', username: 'alice', legacy_keypair: true) }
 
       it 'invalidates the legacy key and stores the new keys' do
-        expect { subject.call('alice', 'example.com', payload) }
+        expect { subject.call(payload) }
           .to change { alice.reload.public_key }.to('')
           .and change { alice.keypairs.to_a }.from([]).to(
             contain_exactly(
@@ -759,14 +791,17 @@ RSpec.describe ActivityPub::ProcessAccountService do
         id: 'https://foo.test',
         type: 'Actor',
         inbox: 'https://foo.test/inbox',
+        preferredUsername: 'alice',
         attributionDomains: [
           'example.com',
         ],
-      }.with_indifferent_access
+      }.deep_stringify_keys
     end
 
+    before { stub_webfinger! }
+
     it 'parses attribution domains' do
-      account = subject.call('alice', 'example.com', payload)
+      account = subject.call(payload)
 
       expect(account.attribution_domains)
         .to match_array(%w(example.com))
@@ -779,14 +814,17 @@ RSpec.describe ActivityPub::ProcessAccountService do
         id: 'https://foo.test',
         type: 'Actor',
         inbox: 'https://foo.test/inbox',
+        preferredUsername: 'alice',
         showMedia: true,
         showRepliesInMedia: false,
         showFeatured: false,
-      }.with_indifferent_access
+      }.deep_stringify_keys
     end
 
+    before { stub_webfinger! }
+
     it 'sets the profile settings as expected' do
-      account = subject.call('alice', 'example.com', payload)
+      account = subject.call(payload)
 
       expect(account)
         .to have_attributes(
@@ -803,6 +841,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
         id: 'https://foo.test',
         type: 'Actor',
         inbox: 'https://foo.test/inbox',
+        preferredUsername: 'alice',
         featured: {
           type: 'OrderedCollection',
           orderedItems: ['https://example.com/statuses/1'],
@@ -810,8 +849,10 @@ RSpec.describe ActivityPub::ProcessAccountService do
       }.deep_stringify_keys
     end
 
+    before { stub_webfinger! }
+
     it 'queues featured collection synchronization', :aggregate_failures do
-      account = subject.call('alice', 'example.com', payload)
+      account = subject.call(payload)
 
       expect(account.featured_collection_url).to eq ''
       expect(ActivityPub::SynchronizeFeaturedCollectionWorker).to have_enqueued_sidekiq_job(account.id, { 'hashtag' => true, 'request_id' => anything, 'collection' => payload['featured'] })
@@ -819,20 +860,23 @@ RSpec.describe ActivityPub::ProcessAccountService do
   end
 
   context 'when account is not suspended' do
-    subject { described_class.new.call(account.username, account.domain, payload) }
-
-    let!(:account) { Fabricate(:account, username: 'alice', domain: 'example.com') }
+    subject { described_class.new.call(payload) }
 
     let(:payload) do
       {
-        id: 'https://foo.test',
+        id: 'https://example.com',
+        preferredUsername: 'alice',
         type: 'Actor',
-        inbox: 'https://foo.test/inbox',
+        inbox: 'https://example.com/inbox',
         suspended: true,
-      }.with_indifferent_access
+      }.deep_stringify_keys
     end
 
     before do
+      stub_webfinger!
+
+      Fabricate(:account, username: 'alice', domain: 'example.com')
+
       allow(Admin::SuspensionWorker).to receive(:perform_async)
     end
 
@@ -848,21 +892,24 @@ RSpec.describe ActivityPub::ProcessAccountService do
   end
 
   context 'when account is suspended' do
-    subject { described_class.new.call('alice', 'example.com', payload) }
+    subject { described_class.new.call(payload) }
 
     let!(:account) { Fabricate(:account, username: 'alice', domain: 'example.com', display_name: '') }
 
     let(:payload) do
       {
-        id: 'https://foo.test',
+        id: 'https://example.com',
+        preferredUsername: 'alice',
         type: 'Actor',
-        inbox: 'https://foo.test/inbox',
+        inbox: 'https://example.com/inbox',
         suspended: false,
         name: 'Hoge',
-      }.with_indifferent_access
+      }.deep_stringify_keys
     end
 
     before do
+      stub_webfinger!
+
       allow(Admin::UnsuspensionWorker).to receive(:perform_async)
 
       account.suspend!(origin: suspension_origin)
@@ -904,17 +951,27 @@ RSpec.describe ActivityPub::ProcessAccountService do
         domain = "test#{i}.testdomain.com"
         json = {
           id: "https://#{domain}/users/1",
+          preferredUsername: 'alice',
           type: 'Actor',
           inbox: "https://#{domain}/inbox",
-        }.with_indifferent_access
-        described_class.new.call('alice', domain, json)
+        }.deep_stringify_keys
+        described_class.new.call(json)
       end
     end
 
     before do
       stub_const 'ActivityPub::ProcessAccountService::SUBDOMAINS_RATELIMIT', 5
+
       8.times do |i|
-        stub_request(:get, "https://test#{i}.testdomain.com/.well-known/nodeinfo").to_return(body: '{}')
+        domain = "test#{i}.testdomain.com"
+
+        webfinger = {
+          subject: "acct:alice@#{domain}",
+          links: [{ rel: 'self', href: "https://#{domain}/users/1", type: 'application/activity+json' }],
+        }.deep_stringify_keys
+
+        stub_request(:get, "https://#{domain}/.well-known/webfinger?resource=acct:alice@#{domain}").to_return(body: webfinger.to_json, headers: { 'Content-Type': 'application/jrd+json' })
+        stub_request(:get, "https://#{domain}/.well-known/nodeinfo").to_return(body: '{}')
       end
     end
 
@@ -934,7 +991,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
         inbox: 'https://foo.test/inbox',
         featured: 'https://foo.test/users/1/featured',
         preferredUsername: 'user1',
-      }.with_indifferent_access
+      }.deep_stringify_keys
     end
 
     before do
@@ -948,7 +1005,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
           inbox: 'https://foo.test/inbox',
           featured: "https://foo.test/users/#{i}/featured",
           preferredUsername: "user#{i}",
-        }.with_indifferent_access
+        }.deep_stringify_keys
         status_json = {
           '@context': ['https://www.w3.org/ns/activitystreams'],
           id: "https://foo.test/users/#{i}/status",
@@ -963,18 +1020,18 @@ RSpec.describe ActivityPub::ProcessAccountService do
             },
           ],
           to: ['as:Public', "https://foo.test/users/#{i + 1}"],
-        }.with_indifferent_access
+        }.deep_stringify_keys
         featured_json = {
           '@context': ['https://www.w3.org/ns/activitystreams'],
           id: "https://foo.test/users/#{i}/featured",
           type: 'OrderedCollection',
           totalItems: 1,
           orderedItems: [status_json],
-        }.with_indifferent_access
+        }.deep_stringify_keys
         webfinger = {
           subject: "acct:user#{i}@foo.test",
           links: [{ rel: 'self', href: "https://foo.test/users/#{i}", type: 'application/activity+json' }],
-        }.with_indifferent_access
+        }.deep_stringify_keys
         stub_request(:get, "https://foo.test/users/#{i}").to_return(status: 200, body: actor_json.to_json, headers: { 'Content-Type': 'application/activity+json' })
         stub_request(:get, "https://foo.test/users/#{i}/featured").to_return(status: 200, body: featured_json.to_json, headers: { 'Content-Type': 'application/activity+json' })
         stub_request(:get, "https://foo.test/users/#{i}/status").to_return(status: 200, body: status_json.to_json, headers: { 'Content-Type': 'application/activity+json' })
@@ -984,7 +1041,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
     end
 
     it 'creates accounts without exceeding rate limit', :inline_jobs do
-      expect { subject.call('user1', 'foo.test', payload) }
+      expect { subject.call(payload) }
         .to create_some_remote_accounts
         .and create_fewer_than_rate_limit_accounts
     end
@@ -994,6 +1051,7 @@ RSpec.describe ActivityPub::ProcessAccountService do
     let(:payload) do
       {
         id: 'https://foo.test',
+        preferredUsername: 'alice',
         type: 'Actor',
         inbox: 'https://foo.test/inbox',
         followers: 'https://foo.test/followers',
@@ -1007,17 +1065,19 @@ RSpec.describe ActivityPub::ProcessAccountService do
             ],
           },
         },
-      }.with_indifferent_access
+      }.deep_stringify_keys
     end
 
     before do
+      stub_webfinger!
+
       stub_request(:get, %r{^https://foo\.test/follow})
         .to_return(status: 200, body: '', headers: {})
     end
 
     context 'when collections feature is enabled' do
       it 'sets the interaction policy to the correct value' do
-        account = subject.call('user1', 'foo.test', payload)
+        account = subject.call(payload)
 
         expect(account.feature_approval_policy).to eq 0b100000000000000001100
       end

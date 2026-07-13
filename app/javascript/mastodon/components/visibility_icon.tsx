@@ -14,6 +14,8 @@ import LimitedIcon from '@/material-icons/400-24px/shield.svg?react';
 import PersonalIcon from '@/material-icons/400-24px/sticky_note.svg?react';
 import type { StatusVisibility } from 'mastodon/models/status';
 
+import type { StatusLimitedScope } from '../api_types/statuses';
+
 import { Icon } from './icon';
 
 const messages = defineMessages({
@@ -61,9 +63,9 @@ const messages = defineMessages({
   banned_short: { id: 'privacy.banned.short', defaultMessage: 'No posting' },
 });
 
-export const VisibilityIcon: React.FC<{ visibility: StatusVisibility }> = ({
-  visibility,
-}) => {
+export const VisibilityIcon: React.FC<{
+  visibility: StatusVisibility | StatusLimitedScope;
+}> = ({ visibility }) => {
   const intl = useIntl();
 
   const visibilityIconInfo = {
@@ -93,6 +95,12 @@ export const VisibilityIcon: React.FC<{ visibility: StatusVisibility }> = ({
       text: intl.formatMessage(messages.private_short),
     },
     limited: {
+      icon: 'get-pocket',
+      iconComponent: LimitedIcon,
+      text: intl.formatMessage(messages.limited_short),
+    },
+    none: {
+      // limited_scope = none
       icon: 'get-pocket',
       iconComponent: LimitedIcon,
       text: intl.formatMessage(messages.limited_short),
