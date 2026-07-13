@@ -1,6 +1,6 @@
 import type { FC, HTMLAttributes, MouseEventHandler, ReactNode } from 'react';
 
-import { defineMessage, useIntl } from 'react-intl';
+import { defineMessage, defineMessages, useIntl } from 'react-intl';
 
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -19,6 +19,21 @@ import { LinkedDisplayName } from '../display_name';
 import { Icon } from '../icon';
 import { RelativeTimestamp } from '../relative_timestamp';
 import { VisibilityIcon } from '../visibility_icon';
+
+const messages = defineMessages({
+  statusLimited: {
+    id: 'status.limited',
+    defaultMessage: 'Limited',
+  },
+  statusReference: {
+    id: 'status.status_reference',
+    defaultMessage: 'Link',
+  },
+  statusExpiration: {
+    id: 'status.expiration',
+    defaultMessage: 'Expiration',
+  },
+});
 
 export interface StatusHeaderProps {
   statusId: string;
@@ -45,6 +60,7 @@ export const StatusHeader: FC<StatusHeaderProps> = ({
   contentAfterDate,
   onHeaderClick,
 }) => {
+  const intl = useIntl();
   const status = useAppSelector((state) =>
     selectAccountStatus(state, statusId),
   );
@@ -58,18 +74,27 @@ export const StatusHeader: FC<StatusHeaderProps> = ({
     status.visibility_ex === 'limited' && status.limited_scope !== 'none';
 
   const withLimited = hasLimitedLabel ? (
-    <span className='status__visibility-icon' title='Limited'>
+    <span
+      className='status__visibility-icon'
+      title={intl.formatMessage(messages.statusLimited)}
+    >
       <Icon id='get-pocket' icon={LimitedIcon} />
     </span>
   ) : null;
   const withReference =
     status.status_references_count > 0 ? (
-      <span className='status__visibility-icon' title='Link'>
+      <span
+        className='status__visibility-icon'
+        title={intl.formatMessage(messages.statusReference)}
+      >
         <Icon id='link' icon={ReferenceIcon} />
       </span>
     ) : null;
   const withExpiration = status.expires_at ? (
-    <span className='status__visibility-icon' title='Expiration'>
+    <span
+      className='status__visibility-icon'
+      title={intl.formatMessage(messages.statusExpiration)}
+    >
       <Icon id='clock-o' icon={TimerIcon} />
     </span>
   ) : null;
