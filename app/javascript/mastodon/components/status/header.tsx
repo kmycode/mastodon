@@ -63,7 +63,7 @@ export const StatusHeader: FC<StatusHeaderProps> = ({
     </span>
   ) : null;
   const withReference =
-    (status.status_references_count) > 0 ? (
+    status.status_references_count > 0 ? (
       <span className='status__visibility-icon' title='Link'>
         <Icon id='link' icon={ReferenceIcon} />
       </span>
