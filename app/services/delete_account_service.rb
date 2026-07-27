@@ -4,16 +4,19 @@ class DeleteAccountService < BaseService
   include Payloadable
   include RegistrationLimitationHelper
 
-  ASSOCIATIONS_ON_SUSPEND = %w(
+  ASSOCIATIONS_ON_PURGE = %w(
     account_notes
     account_pins
     active_relationships
     aliases
     antennas
+    antenna_accounts
     block_relationships
     blocked_by_relationships
     bookmark_categories
     circles
+    circle_accounts
+    collections
     conversation_mutes
     conversations
     custom_filters
@@ -34,6 +37,7 @@ class DeleteAccountService < BaseService
     scheduled_statuses
     scheduled_expiration_statuses
     status_pins
+    tag_follows
   ).freeze
 
   # The following associations have no important side-effects
@@ -335,9 +339,9 @@ class DeleteAccountService < BaseService
 
   def associations_for_destruction
     if keep_account_record?
-      ASSOCIATIONS_ON_SUSPEND
+      ASSOCIATIONS_ON_PURGE
     else
-      ASSOCIATIONS_ON_SUSPEND + ASSOCIATIONS_ON_DESTROY
+      ASSOCIATIONS_ON_PURGE + ASSOCIATIONS_ON_DESTROY
     end
   end
 
