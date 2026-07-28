@@ -10,10 +10,12 @@ class DeleteAccountService < BaseService
     active_relationships
     aliases
     antennas
+    antenna_accounts
     block_relationships
     blocked_by_relationships
     bookmark_categories
     circles
+    circle_accounts
     collections
     conversation_mutes
     conversations

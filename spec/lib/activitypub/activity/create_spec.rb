@@ -2931,12 +2931,10 @@ RSpec.describe ActivityPub::Activity::Create do
 
       let!(:local_status) { Fabricate(:status) }
       let(:object_json) do
-        {
-          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
-          type: 'Note',
-          content: 'Lorem ipsum',
-          quote: ActivityPub::TagManager.instance.uri_for(local_status),
-        }
+        build_object(
+          to: 'https://www.w3.org/ns/activitystreams#Public',
+          quote: ActivityPub::TagManager.instance.uri_for(local_status)
+        )
       end
 
       before do
@@ -3024,11 +3022,9 @@ RSpec.describe ActivityPub::Activity::Create do
       before { Fabricate(:relay, inbox_url: sender.inbox_url, state: :accepted) }
 
       let(:object_json) do
-        {
-          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
-          type: 'Note',
-          content: 'Lorem ipsum',
-        }
+        build_object(
+          to: 'https://www.w3.org/ns/activitystreams#Public'
+        )
       end
 
       it 'creates status' do
@@ -3054,11 +3050,9 @@ RSpec.describe ActivityPub::Activity::Create do
 
       let!(:friend) { Fabricate(:friend_domain, domain: sender.domain, active_state: :accepted) }
       let(:object_json) do
-        {
-          id: [ActivityPub::TagManager.instance.uri_for(sender), '#bar'].join,
-          type: 'Note',
-          content: 'Lorem ipsum',
-        }
+        build_object(
+          to: 'kmyblue:LocalPublic'
+        )
       end
 
       it 'creates status' do
