@@ -14,7 +14,19 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   private
 
   def create_status
-    return reject_payload! if unsupported_object_type? || non_matching_uri_hosts?(@account.uri, object_uri) || tombstone_exists? || !related_to_local_activity?
+    return reject_payload! if unsupported_object_type? || non_matching_uri_hosts?(@account.uri, object_uri) || tombstone_exists?
+
+    @status_parser = ActivityPub::Parser::StatusParser.new(
+      @json,
+      followers_collection: @account.followers_url,
+      following_collection: @account.following_url,
+      actor_uri: ActivityPub::TagManager.instance.uri_for(@account),
+      object: @object,
+      account: @account,
+      friend_domain: friend_domain?
+    )
+
+    return reject_payload! unless related_to_local_activity?
 
     if @account.suspended?
       process_pending_status if @account.remote_pending?
@@ -30,6 +42,9 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
 
       if @status.nil?
         process_status
+      elsif @status.account_id != @account.id
+        Rails.logger.debug { "Not processing #{object_uri}: authorship change is not supported" }
+        return reject_payload!
       elsif @options[:delivered_to_account_id].present?
         postprocess_audience_and_deliver
       end
@@ -38,13 +53,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     @status || reject_payload!
   end
 
-  def audience_to
-    as_array(@object['to'] || @json['to']).map { |x| value_or_id(x) }
-  end
-
-  def audience_cc
-    as_array(@object['cc'] || @json['cc']).map { |x| value_or_id(x) }
-  end
+  delegate :audience_to, :audience_cc, to: :@status_parser
 
   def process_status
     @tags                 = []
@@ -94,20 +103,10 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def find_existing_status
     status   = status_from_uri(object_uri)
     status ||= Status.find_by(uri: @object['atomUri']) if @object['atomUri'].present?
-    status if status&.account_id == @account.id
+    status
   end
 
   def process_status_params
-    @status_parser = ActivityPub::Parser::StatusParser.new(
-      @json,
-      followers_collection: @account.followers_url,
-      following_collection: @account.following_url,
-      actor_uri: ActivityPub::TagManager.instance.uri_for(@account),
-      object: @object,
-      account: @account,
-      friend_domain: friend_domain?
-    )
-
     attachment_ids = process_attachments.take(Status::MEDIA_ATTACHMENTS_LIMIT_FROM_REMOTE).map(&:id)
 
     @params = {
@@ -581,8 +580,16 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   end
 
   def related_to_local_activity?
-    fetch? || followed_by_local_accounts? || through_relay? ||
-      responds_to_followed_account? || addresses_local_accounts? || quote_local? || free_friend_domain?
+    return true if fetch?
+
+    case @status_parser.visibility
+    when :public, :public_unlisted, :login, :unlisted
+      followed_by_local_accounts? || through_relay? || responds_to_followed_account? || addresses_local_accounts? || quote_local? || free_friend_domain?
+    when :private
+      followed_by_local_accounts? || addresses_local_accounts?
+    when :direct, :limited
+      addresses_local_accounts?
+    end
   end
 
   def quote_local?
