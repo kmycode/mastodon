@@ -98,6 +98,34 @@ RSpec.describe Request do
       end
     end
 
+    context 'with server that only supports RFC 9421' do
+      let(:account) { Fabricate(:account) }
+
+      before do
+        # cavage-12
+        stub_request(:get, 'http://example.com')
+          .with { |request| request.headers.key?('Signature') && !request.headers.key?('Signature-Input') }
+          .to_return(status: 401)
+
+        # RFC 9421
+        stub_request(:get, 'http://example.com')
+          .with { |request| request.headers.key?('Signature') && request.headers.key?('Signature-Input') }
+          .to_return(status: 200)
+      end
+
+      it 'makes two valid requests with the specific signatures' do
+        expect { |block| subject.on_behalf_of(account).perform(&block) }.to yield_control
+
+        # Makes a valid request using cavage-12
+        expect(a_request(:get, 'http://example.com').with { |request| verified_signed_mocked_request?(request, account.keypair) && !request.headers.key?('Signature-Input') })
+          .to have_been_made.once
+
+        # Makes a valid request using RFC 9421
+        expect(a_request(:get, 'http://example.com').with { |request| verified_signed_mocked_request?(request, account.keypair) && request.headers.key?('Signature-Input') })
+          .to have_been_made.once
+      end
+    end
+
     context 'with a redirect and HTTP signatures' do
       let(:account) { Fabricate(:account) }
 
@@ -136,6 +164,30 @@ RSpec.describe Request do
       it 'raises Mastodon::ValidationError' do
         expect { subject.perform }
           .to raise_error Mastodon::ValidationError
+      end
+
+      context 'when the request is signed' do
+        it 'raises Mastodon::ValidationError' do
+          expect { subject.on_behalf_of(Fabricate(:account)).perform }
+            .to raise_error Mastodon::ValidationError
+        end
+
+        context 'when resolving changes between requests' do
+          # rubocop:disable RSpec/SubjectStub -- found no better way than this due to the WebMock interaction
+          before do
+            request =  instance_double(HTTP::Request)
+            connection = instance_double(HTTP::Connection)
+            allow(subject).to receive(:perform_cavage_signed_request).and_return(HTTP::Response.new(status: 401, version: '1.1', connection:, request:))
+          end
+
+          it 'performs the first request and raises Mastodon::ValidationError on the second' do
+            expect { subject.on_behalf_of(Fabricate(:account)).perform }
+              .to raise_error Mastodon::ValidationError
+
+            expect(subject).to have_received(:perform_cavage_signed_request).once
+          end
+          # rubocop:enable RSpec/SubjectStub
+        end
       end
     end
 

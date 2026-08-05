@@ -25,6 +25,8 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
     @quote_changed             = false
     @request_id                = request_id
     @quote                     = nil
+    @next_media_attachments    = []
+    @next_links                = []
 
     return @status if !expected_type? || already_updated_more_recently?
 
@@ -98,9 +100,14 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   def update_media_attachments!
     previous_media_attachments     = @status.media_attachments.to_a
     previous_media_attachments_ids = @status.ordered_media_attachment_ids || previous_media_attachments.map(&:id)
-    @next_media_attachments        = []
 
     as_array(@json['attachment']).each do |attachment|
+      if attachment['href'].present?
+        preview_card_parser = ActivityPub::Parser::PreviewCardParser.new(attachment)
+        @next_links << preview_card_parser.url if preview_card_parser.url.present?
+        next
+      end
+
       media_attachment_parser = ActivityPub::Parser::MediaAttachmentParser.new(attachment)
 
       next if media_attachment_parser.remote_url.blank? || @next_media_attachments.size > Status::MEDIA_ATTACHMENTS_LIMIT_FROM_REMOTE
@@ -483,7 +490,8 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
 
   def update_counts!
     likes = @status_parser.favourites_count
-    shares =  @status_parser.reblogs_count
+    shares = @status_parser.reblogs_count
+
     return if likes.nil? && shares.nil?
 
     @status.status_stat.tap do |status_stat|
@@ -548,7 +556,7 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
 
   def reset_preview_card!
     @status.reset_preview_card!
-    LinkCrawlWorker.perform_in(rand(CRAWL_DELAY), @status.id)
+    LinkCrawlWorker.perform_in(rand(CRAWL_DELAY), @status.id, @next_links.first)
   end
 
   def broadcast_updates!

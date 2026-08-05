@@ -103,7 +103,7 @@ gem 'rdf-normalize', '~> 0.5'
 
 gem 'prometheus_exporter', '~> 2.2', require: false
 
-gem 'opentelemetry-api', '~> 1.10.0'
+gem 'opentelemetry-api', '~> 1.11.0'
 
 group :opentelemetry do
   gem 'opentelemetry-exporter-otlp', '~> 0.34.0', require: false
@@ -136,7 +136,7 @@ group :test do
   # Browser integration testing
   gem 'capybara', '~> 3.39'
   gem 'capybara-playwright-driver'
-  gem 'playwright-ruby-client', '1.60.0', require: false # Pinning the exact version as it needs to be kept in sync with the installed npm package
+  gem 'playwright-ruby-client', require: false
 
   # Used to reset the database between system tests
   gem 'database_cleaner-active_record'
@@ -153,7 +153,7 @@ group :test do
   gem 'shoulda-matchers'
 
   # Coverage formatter for RSpec
-  gem 'simplecov', '~> 0.22', require: false
+  gem 'simplecov', require: false
   gem 'simplecov-lcov', '~> 0.8', require: false
 
   # Stub web requests for specs
