@@ -13,7 +13,7 @@ import {
 } from '@/mastodon/store/typed_functions';
 
 import type { ApiQuotePolicy } from '../api_types/quotes';
-import type { StatusSearchability , ApiStatusJSON } from '../api_types/statuses';
+import type { StatusSearchability, ApiStatusJSON } from '../api_types/statuses';
 import type { Status, StatusVisibility } from '../models/status';
 import type { RootState } from '../store';
 
