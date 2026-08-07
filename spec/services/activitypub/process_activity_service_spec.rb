@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ActivityPub::ProcessCollectionService do
+RSpec.describe ActivityPub::ProcessActivityService do
   subject { described_class.new }
 
   let(:actor) { Fabricate(:account, domain: 'example.com', uri: 'http://example.com/account') }
@@ -320,6 +320,23 @@ RSpec.describe ActivityPub::ProcessCollectionService do
 
           expect(Status.exists?(uri: 'https://example.com/users/bob/fake-status')).to be false
         end
+      end
+    end
+
+    context 'with OpenTelemetry traces' do
+      let(:span) { instance_double(OpenTelemetry::Trace::Span) }
+
+      before do
+        allow(OpenTelemetry::Trace).to receive(:current_span).and_return(span)
+        allow(span).to receive(:recording?).and_return(true)
+        allow(span).to receive(:set_attribute)
+      end
+
+      it 'adds attributes to current span' do
+        subject.call(json, actor)
+
+        expect(span).to have_received(:set_attribute).with('activitypub.activity.id', payload[:id])
+        expect(span).to have_received(:set_attribute).with('activitypub.activity.type', payload[:type])
       end
     end
   end

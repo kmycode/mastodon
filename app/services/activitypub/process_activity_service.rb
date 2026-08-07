@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ActivityPub::ProcessCollectionService < BaseService
+class ActivityPub::ProcessActivityService < BaseService
   include JsonLdHelper
   include DomainControlHelper
 
@@ -10,6 +10,8 @@ class ActivityPub::ProcessCollectionService < BaseService
     @options = options
 
     return unless @json.is_a?(Hash)
+
+    ActivityPub::OpenTelemetry.decorate_current_span(payload: @json)
 
     # Ideally, we should treat all ActivityPub payloads as proper JSON-LD.
     # However, some implementations do not produce valid JSON-LD, and processing JSON-LD is pretty expensive.
@@ -68,14 +70,8 @@ class ActivityPub::ProcessCollectionService < BaseService
     @json['type'] = 'EmojiReact' if original_json['type'] == 'EmojiReact'
     @json['type'] = 'EmojiReaction' if original_json['type'] == 'EmojiReaction'
 
-    case @json['type']
-    when 'Collection', 'CollectionPage'
-      process_items @json['items']
-    when 'OrderedCollection', 'OrderedCollectionPage'
-      process_items @json['orderedItems']
-    else
-      process_items [@json]
-    end
+    activity = ActivityPub::Activity.factory(@json, @account, **@options)
+    activity&.perform
   rescue JSON::ParserError
     nil
   end
@@ -96,15 +92,6 @@ class ActivityPub::ProcessCollectionService < BaseService
 
   def activity_allowed_while_remote_pending?
     %w(Follow Create).include?(@json['type']) || activity_allowed_while_suspended?
-  end
-
-  def process_items(items)
-    items.reverse_each.filter_map { |item| process_item(item) }
-  end
-
-  def process_item(item)
-    activity = ActivityPub::Activity.factory(item, @account, **@options)
-    activity&.perform
   end
 
   def actor_from_verified_ld_signature

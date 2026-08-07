@@ -145,6 +145,7 @@ export const accountDefaultValues: AccountShape = {
   hide_collections: false,
   other_settings: AccountOtherSettingsFactory(),
   email_subscriptions: false,
+  invalid_handle: false,
   // This comes from `ApiMutedAccountJSON`, but we should eventually
   // store that in a different object.
   mute_expires_at: null,
