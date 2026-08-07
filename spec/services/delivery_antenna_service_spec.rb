@@ -22,7 +22,7 @@ RSpec.describe DeliveryAntennaService, type: :service do
     status
   end
 
-  let!(:alice) { Fabricate(:account, domain: domain, uri: domain ? "https://#{domain}.com/alice" : '') }
+  let!(:alice) { Fabricate(:account, domain: domain) }
   let!(:bob)   { Fabricate(:user, current_sign_in_at: last_active_at).account }
   let!(:tom)   { Fabricate(:user, current_sign_in_at: last_active_at_tom).account }
   let!(:ohagi) { Fabricate(:user, current_sign_in_at: last_active_at).account }
