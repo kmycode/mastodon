@@ -64,7 +64,7 @@ RSpec.describe Admin::NgRule do
     end
 
     context 'with note rule' do
-      let(:uri) { '' }
+      let(:uri) { nil }
       let(:account) { Fabricate(:account, note: 'ohagi is good') }
       let(:ng_rule) { Fabricate(:ng_rule, account_note: 'ohagi', account_include_local: true) }
 
@@ -72,7 +72,7 @@ RSpec.describe Admin::NgRule do
     end
 
     context 'with display name rule' do
-      let(:uri) { '' }
+      let(:uri) { nil }
       let(:account) { Fabricate(:account, display_name: '') }
       let(:ng_rule) { Fabricate(:ng_rule, account_display_name: "?^$\r\n?[a-z0-9]{10}", account_include_local: true) }
 
