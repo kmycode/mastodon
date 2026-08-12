@@ -289,6 +289,8 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     return if @object['tag'].nil?
 
     as_array(@object['tag']).each do |tag|
+      next if tag.nil?
+
       if equals_or_includes?(tag['type'], 'Hashtag')
         process_hashtag tag
       elsif equals_or_includes?(tag['type'], 'Mention')
@@ -516,7 +518,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
   def fetch_and_verify_quote
     return if @quote.nil?
 
-    embedded_quote = safe_prefetched_embed(@account, @status_parser.quoted_object, @json['context'])
+    embedded_quote = safe_prefetched_embed(@account, @status_parser.quoted_object, @json['@context'])
     ActivityPub::VerifyQuoteService.new.call(@quote, @quote_approval_uri, fetchable_quoted_uri: @quote_uri, prefetched_quoted_object: embedded_quote, request_id: @options[:request_id], depth: @options[:depth])
   rescue Mastodon::RecursionLimitExceededError, Mastodon::UnexpectedResponseError, *Mastodon::HTTP_CONNECTION_ERRORS
     ActivityPub::RefetchAndVerifyQuoteWorker.perform_in(rand(PROCESSING_DELAY), @quote.id, @quote_uri, { 'request_id' => @options[:request_id], 'approval_uri' => @quote_approval_uri })

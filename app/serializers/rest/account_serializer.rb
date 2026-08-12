@@ -15,13 +15,15 @@ class REST::AccountSerializer < ActiveModel::Serializer
 
   has_many :emojis, serializer: REST::CustomEmojiSlimSerializer
 
-  attribute :suspended, if: :suspended?
+  attribute :suspended, if: :unavailable?
   attribute :silenced, key: :limited, if: :silenced?
 
   attribute :memorial, if: :memorial?
 
   attribute :feature_approval
   attribute :email_subscriptions, if: -> { Rails.application.config.x.email_subscriptions && Setting.email_subscriptions }
+
+  attribute :invalid_handle, if: :invalid_handle?
 
   class AccountDecorator < SimpleDelegator
     def self.model_name
@@ -163,6 +165,15 @@ class REST::AccountSerializer < ActiveModel::Serializer
     object.memorial?
   end
 
+  def username
+    object.pretty_username
+  end
+
+  def invalid_handle
+    object.invalidated_username?
+  end
+  alias invalid_handle? invalid_handle
+
   def roles
     if object.unavailable? || object.user.nil?
       []
@@ -175,7 +186,7 @@ class REST::AccountSerializer < ActiveModel::Serializer
     object.noindex?
   end
 
-  delegate :suspended?, :silenced?, :local?, :memorial?, to: :object
+  delegate :unavailable?, :silenced?, :local?, :memorial?, to: :object
 
   def moved_and_not_nested?
     object.moved?

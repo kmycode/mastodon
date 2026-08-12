@@ -63,6 +63,8 @@ zh-TW:
       custom: 自訂
       delete: 刪除資料
       deleted: 已刪除
+      deletion_irreversible: 此帳號之資料已被不可逆地刪除。
+      deletion_reversible_hint_html: 此帳號正在等待刪除中，資料將於 %{date} 完全移除。
       demote: 降級
       destroyed_msg: 即將刪除 %{username} 的資料
       disable: 停用
@@ -1456,8 +1458,8 @@ zh-TW:
       invalid_key: 這不是一把有效的 Ed25519 或 Curve25519 金鑰
   date:
     formats:
-      default: "%Y年%b月%d日"
-      with_month_name: "%Y年%B月%d日"
+      default: "%Y年%b%d日"
+      with_month_name: "%Y年%B%d日"
   datetime:
     distance_in_words:
       about_x_hours: "%{count}小時前"
@@ -2173,7 +2175,7 @@ zh-TW:
     default: Mastodon
   time:
     formats:
-      default: "%Y 年 %b 月 %d 日 %H:%M"
+      default: "%Y 年 %b %d 日 %H:%M"
       month: "%b %Y"
       time: "%H:%M"
       with_time_zone: "%b %d, %Y, %H:%M %Z"

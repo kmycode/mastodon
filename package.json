@@ -1,7 +1,7 @@
 {
   "name": "@mastodon/mastodon",
   "license": "AGPL-3.0-or-later",
-  "packageManager": "yarn@4.17.1",
+  "packageManager": "yarn@4.18.0",
   "engines": {
     "node": ">=22"
   },
@@ -11,8 +11,8 @@
   ],
   "scripts": {
     "dev": "vite dev",
-    "build:development": "cross-env RAILS_ENV=development NODE_ENV=development vite build",
-    "build:production": "cross-env RAILS_ENV=production NODE_ENV=production vite build",
+    "build:development": "cross-env RAILS_ENV=development NODE_ENV=development vite build --mode development",
+    "build:production": "cross-env RAILS_ENV=production NODE_ENV=production vite build --mode production",
     "clean:all": "yarn clean:kbdraft & yarn clean:kbtopic & yarn clean:upstream",
     "clean:kbdraft": "git branch | grep kb-draft- | xargs git branch -d",
     "clean:kbtopic": "git branch | grep kbtopic- | xargs git branch -d",
@@ -55,6 +55,7 @@
     "@gamestdio/websocket": "^0.3.2",
     "@github/webauthn-json": "^2.1.1",
     "@optimize-lodash/rollup-plugin": "^6.0.0",
+    "@phosphor-icons/react": "^2.1.10",
     "@react-spring/web": "^10.1.1",
     "@reduxjs/toolkit": "^2.0.1",
     "@rolldown/plugin-babel": "^0.2.2",
@@ -180,7 +181,7 @@
     "msw": "^2.12.1",
     "msw-storybook-addon": "^2.0.6",
     "oxfmt": "^0.47.0",
-    "playwright": "^1.61.1",
+    "playwright": "^1.62.1",
     "storybook": "^10.3.0",
     "stylelint": "^17.0.0",
     "stylelint-config-standard-scss": "^17.0.0",

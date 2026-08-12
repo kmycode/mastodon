@@ -110,7 +110,7 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
 
       media_attachment_parser = ActivityPub::Parser::MediaAttachmentParser.new(attachment)
 
-      next if media_attachment_parser.remote_url.blank? || @next_media_attachments.size > Status::MEDIA_ATTACHMENTS_LIMIT_FROM_REMOTE
+      next if media_attachment_parser.remote_url.blank? || @next_media_attachments.size >= Status::MEDIA_ATTACHMENTS_LIMIT_FROM_REMOTE
 
       begin
         media_attachment   = previous_media_attachments.find { |previous_media_attachment| previous_media_attachment.remote_url == media_attachment_parser.remote_url }
@@ -482,7 +482,7 @@ class ActivityPub::ProcessStatusUpdateService < BaseService
   end
 
   def fetch_and_verify_quote!(quote, approval_uri, quote_uri)
-    embedded_quote = safe_prefetched_embed(@account, @status_parser.quoted_object, @activity_json['context'])
+    embedded_quote = safe_prefetched_embed(@account, @status_parser.quoted_object, @activity_json['@context'])
     ActivityPub::VerifyQuoteService.new.call(quote, approval_uri, fetchable_quoted_uri: quote_uri, prefetched_quoted_object: embedded_quote, request_id: @request_id)
   rescue Mastodon::UnexpectedResponseError, *Mastodon::HTTP_CONNECTION_ERRORS
     ActivityPub::RefetchAndVerifyQuoteWorker.perform_in(rand(PROCESSING_DELAY), quote.id, quote_uri, { 'request_id' => @request_id, 'approval_uri' => approval_uri })

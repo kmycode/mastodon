@@ -184,6 +184,7 @@ const filterDeadAntennaColumns = (state, antennaId) => state.update('columns', c
 
 const filterDeadCircleColumns = (state, circleId) => state.update('columns', columns => columns.filterNot(column => column.get('id') === 'CIRCLE' && column.get('params').get('id') === circleId));
 
+/** @type {import('@reduxjs/toolkit').Reducer<ImmutableMap<string, unknown>>} */
 export default function settings(state = initialState, action) {
   switch(action.type) {
   case STORE_HYDRATE:
