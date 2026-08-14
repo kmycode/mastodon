@@ -233,9 +233,9 @@
 }
 
 .simple_form .kmyblue {
-  color: lighten($kmyblue, 12%);
-  background-color: rgba(lighten($kmyblue, 12%), 0.1);
-  border-color: rgba(lighten($kmyblue, 12%), 0.5);
+  color: color.adjust($kmyblue, $lightness: 12%);
+  background-color: color.adjust($kmyblue, $lightness: 12%, $alpha: 10%);
+  border-color: color.adjust($kmyblue, $lightness: 12%, $alpha: 50%);
 }
 
 .directory__tag .trends__item__current {
