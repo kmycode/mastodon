@@ -76,9 +76,9 @@ export const loadingBarMiddleware = (
       }
 
       if (isPending) {
-        dispatch(showLoading() as UnknownAction);
+        dispatch(showLoading());
       } else if (isFulfilled || isRejected) {
-        dispatch(hideLoading() as UnknownAction);
+        dispatch(hideLoading());
       }
 
       return next(action);

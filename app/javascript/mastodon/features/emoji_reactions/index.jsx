@@ -18,7 +18,7 @@ import { Account } from 'mastodon/components/account';
 import { ColumnHeader } from '@/mastodon/components/column/header';
 import { Icon } from 'mastodon/components/icon';
 import ScrollableList from 'mastodon/components/scrollable_list';
-import Column from 'mastodon/features/ui/components/column';
+import { Column } from 'mastodon/features/ui/components/column';
 
 
 

@@ -16,7 +16,7 @@ import { Account } from 'mastodon/components/account';
 import { ColumnHeader } from '@/mastodon/components/column/header';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import ScrollableList from 'mastodon/components/scrollable_list';
-import Column from 'mastodon/features/ui/components/column';
+import { Column } from 'mastodon/features/ui/components/column';
 
 const mapStateToProps = (state, props) => ({
   accountIds: state.getIn(['user_lists', 'mentioned_users', props.params.statusId, 'items']),
