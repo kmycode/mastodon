@@ -16,7 +16,7 @@ import { Icon }  from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import ScrollableList from 'mastodon/components/scrollable_list';
 import StatusContainer from 'mastodon/containers/status_container';
-import { Column } from 'mastodon/features/ui/components/column';
+import { Column } from 'mastodon/components/column';
 
 
 const messages = defineMessages({
