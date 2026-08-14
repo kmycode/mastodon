@@ -15,7 +15,7 @@ import { debounce } from 'lodash';
 import RefreshIcon from '@/material-icons/400-24px/refresh.svg?react';
 import { fetchEmojiReactions, expandEmojiReactions } from 'mastodon/actions/interactions';
 import { Account } from 'mastodon/components/account';
-import ColumnHeader from 'mastodon/components/column_header';
+import { ColumnHeader } from '@/mastodon/components/column/header';
 import { Icon } from 'mastodon/components/icon';
 import ScrollableList from 'mastodon/components/scrollable_list';
 import Column from 'mastodon/features/ui/components/column';

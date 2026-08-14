@@ -45,7 +45,7 @@ import EmojiReactionIcon from '@/material-icons/400-24px/mood.svg?react';
 import { updateReactionDeck } from 'mastodon/actions/reaction_deck';
 import { Button } from 'mastodon/components/button';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column_header';
+import { ColumnHeader } from 'mastodon/components/column/header';
 import { Icon } from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import EmojiPickerDropdown from 'mastodon/features/compose/containers/emoji_picker_dropdown_container';

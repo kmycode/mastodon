@@ -25,7 +25,7 @@ import { Avatar } from 'mastodon/components/avatar';
 import { VerifiedBadge } from 'mastodon/components/badge';
 import { Button } from 'mastodon/components/button';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column_header';
+import { ColumnHeader } from 'mastodon/components/column/header';
 import { FollowersCounter } from 'mastodon/components/counters';
 import { DisplayName } from 'mastodon/components/display_name';
 import { Icon } from 'mastodon/components/icon';

@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 
 import RefreshIcon from '@/material-icons/400-24px/refresh.svg?react';
 import { fetchStatusReferences } from 'mastodon/actions/interactions';
-import ColumnHeader from 'mastodon/components/column_header';
+import { ColumnHeader } from '@/mastodon/components/column/header';
 import { Icon }  from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import ScrollableList from 'mastodon/components/scrollable_list';

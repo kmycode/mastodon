@@ -28,8 +28,8 @@
 }
 
 .icon {
-  width: var(--fs-lg);
-  height: var(--fs-lg);
+  width: var(--space-lg);
+  height: var(--space-lg);
 }
 
 // Text Input
@@ -52,7 +52,10 @@ input.input {
   border-radius: var(--space-xs);
   border: 0.5px solid var(--color-text-tertiary);
   padding: var(--space-xs);
-  transition: background 200ms;
+  transition:
+    background 200ms,
+    border 200ms,
+    opacity 200ms;
 
   &:hover:not(:disabled) {
     box-shadow: 0 1px var(--space-2xs) 0
@@ -61,11 +64,12 @@ input.input {
   }
 
   &:focus {
-    outline: 2px solid var(--color-border-strong);
+    outline: 2px solid var(--color-border-brand);
   }
 
   &:disabled {
     border-color: var(--color-bg-disabled);
+    opacity: 0.5;
   }
 }
 

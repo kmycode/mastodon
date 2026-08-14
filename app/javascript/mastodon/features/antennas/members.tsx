@@ -7,6 +7,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from '@unhead/react/helmet';
 import { useDebouncedCallback } from 'use-debounce';
 
+import { ColumnHeader } from '@/mastodon/components/column/header';
 import AddIcon from '@/material-icons/400-24px/add.svg?react';
 import ArrowBackIcon from '@/material-icons/400-24px/arrow_back.svg?react';
 import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
@@ -28,7 +29,6 @@ import { Avatar } from 'mastodon/components/avatar';
 import { VerifiedBadge } from 'mastodon/components/badge';
 import { Button } from 'mastodon/components/button';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column_header';
 import { FollowersCounter } from 'mastodon/components/counters';
 import { DisplayName } from 'mastodon/components/display_name';
 import { Icon } from 'mastodon/components/icon';

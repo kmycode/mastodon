@@ -13,7 +13,7 @@ import { fetchAntenna } from 'mastodon/actions/antennas';
 import { createAntenna, updateAntenna } from 'mastodon/actions/antennas_typed';
 import { fetchLists } from 'mastodon/actions/lists';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column_header';
+import { ColumnHeader } from 'mastodon/components/column/header';
 import {
   SelectField,
   TextInputField,

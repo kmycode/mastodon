@@ -13,7 +13,7 @@ import { debounce } from 'lodash';
 
 import { fetchMentionedUsers, expandMentionedUsers } from 'mastodon/actions/interactions';
 import { Account } from 'mastodon/components/account';
-import ColumnHeader from 'mastodon/components/column_header';
+import { ColumnHeader } from '@/mastodon/components/column/header';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import ScrollableList from 'mastodon/components/scrollable_list';
 import Column from 'mastodon/features/ui/components/column';

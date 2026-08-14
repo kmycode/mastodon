@@ -20,7 +20,7 @@ import { openModal } from 'mastodon/actions/modal';
 import { connectAntennaStream } from 'mastodon/actions/streaming';
 import { expandAntennaTimeline } from 'mastodon/actions/timelines';
 import Column from 'mastodon/components/column';
-import ColumnHeader from 'mastodon/components/column_header';
+import { ColumnHeader } from '@/mastodon/components/column/header';
 import { Icon }  from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';

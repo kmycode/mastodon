@@ -32,7 +32,7 @@ import {
 } from 'mastodon/api/antennas';
 import { Button } from 'mastodon/components/button';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column_header';
+import { ColumnHeader } from 'mastodon/components/column/header';
 import type { IconProp } from 'mastodon/components/icon';
 import { Icon } from 'mastodon/components/icon';
 import { IconButton } from 'mastodon/components/icon_button';
