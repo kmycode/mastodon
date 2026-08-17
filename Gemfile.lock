@@ -135,7 +135,7 @@ GEM
     blurhash (0.1.8)
     bootsnap (1.25.0)
       msgpack (~> 1.5)
-    brakeman (8.0.5)
+    brakeman (8.0.6)
       racc
     browser (6.2.0)
     builder (3.3.0)
@@ -838,7 +838,7 @@ GEM
     simple_form (5.4.1)
       actionpack (>= 7.0)
       activemodel (>= 7.0)
-    simplecov (1.1.0)
+    simplecov (1.1.1)
     simplecov-lcov (0.9.0)
     ssrf_filter (1.5.0)
     stackprof (0.2.28)
