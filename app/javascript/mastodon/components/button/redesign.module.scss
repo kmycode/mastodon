@@ -8,7 +8,8 @@
   color: var(--fg);
   transition:
     background-color 200ms,
-    color 200ms;
+    color 200ms,
+    opacity 200ms;
   border: 0;
   appearance: none;
   cursor: pointer;
@@ -19,7 +20,12 @@
   line-height: 1;
   box-sizing: border-box;
 
-  &:hover:not(:active) {
+  &:hover:not(
+      :active,
+      :disabled,
+      [aria-pressed='true'],
+      [aria-expanded='true']
+    ) {
     background-color: var(--bg-hover);
   }
 
@@ -29,9 +35,9 @@
     outline-offset: 2px;
   }
 
-  &:disabled,
-  &:hover:disabled {
-    cursor: auto;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
 
@@ -86,7 +92,7 @@ a.base {
     --fg: var(--color-text-inverted);
   }
 
-  &.tonal:not(:active) {
+  &.tonal:not(:active, [aria-pressed='true'], [aria-expanded='true']) {
     --bg: var(--color-bg-highlight);
     --fg: var(--color-text-primary);
   }
@@ -95,18 +101,14 @@ a.base {
     --bg: var(--color-bg-error-base);
     --bg-hover: var(--color-bg-error-base-hover);
   }
-
-  &.solid:disabled {
-    --bg: var(--color-bg-disabled);
-    --bg-hover: var(--bg);
-    --fg: var(--color-text-on-disabled);
-  }
 }
 
 // Ghost
 
 .ghost {
-  &:active {
+  &:active,
+  &[aria-pressed='true'],
+  &[aria-expanded='true'] {
     --bg: var(--color-bg-inverted);
     --fg: var(--color-text-inverted);
   }
@@ -114,7 +116,9 @@ a.base {
   &.accent {
     --fg: var(--color-text-brand);
 
-    &:active {
+    &:active,
+    &[aria-pressed='true'],
+    &[aria-expanded='true'] {
       --bg: var(--color-bg-brand-base);
       --fg: var(--color-text-on-brand-base);
     }
@@ -123,17 +127,12 @@ a.base {
   &.destructive {
     --fg: var(--color-text-error);
 
-    &:active {
+    &:active,
+    &[aria-pressed='true'],
+    &[aria-expanded='true'] {
       --fg: var(--color-text-on-error-base);
       --bg: var(--color-bg-error-base);
     }
-  }
-
-  &:disabled,
-  &:hover:disabled {
-    --fg: var(--color-text-disabled);
-    --bg: transparent;
-    --bg-hover: transparent;
   }
 }
 

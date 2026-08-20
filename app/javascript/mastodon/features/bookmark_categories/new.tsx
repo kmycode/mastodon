@@ -16,7 +16,7 @@ import {
   updateBookmarkCategory,
 } from 'mastodon/actions/bookmark_categories_typed';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column_header';
+import { ColumnHeader } from 'mastodon/components/column/header';
 import { TextInputField } from 'mastodon/components/form_fields';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';

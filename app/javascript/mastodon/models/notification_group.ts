@@ -228,7 +228,7 @@ export function createNotificationGroupFromJSON(
         return {
           sampleAccountIds: g.sample_account_ids,
           emoji: g.emoji_reaction,
-        } as EmojiReactionGroup;
+        };
       });
       return {
         statusId: statusId ?? undefined,

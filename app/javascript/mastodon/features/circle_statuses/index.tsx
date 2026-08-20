@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -14,8 +14,7 @@ import {
 } from 'mastodon/actions/circles';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { Column } from 'mastodon/components/column';
-import type { ColumnRef } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column_header';
+import { ColumnHeader } from 'mastodon/components/column/header';
 import StatusList from 'mastodon/components/status_list';
 import { getSubStatusList } from 'mastodon/selectors';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
@@ -26,7 +25,6 @@ const CircleStatuses: React.FC<{
 }> = ({ columnId, multiColumn }) => {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
-  const columnRef = useRef<ColumnRef>(null);
   const statusIds = useAppSelector((state) =>
     getSubStatusList(state, 'circle', id),
   );
@@ -62,10 +60,6 @@ const CircleStatuses: React.FC<{
     [dispatch, columnId],
   );
 
-  const handleHeaderClick = useCallback(() => {
-    columnRef.current?.scrollTop();
-  }, []);
-
   const handleLoadMore = useCallback(() => {
     dispatch(expandCircleStatuses(id));
   }, [dispatch, id]);
@@ -80,20 +74,16 @@ const CircleStatuses: React.FC<{
   );
 
   return (
-    <Column
-      bindToDocument={!multiColumn}
-      ref={columnRef}
-      label={circle?.get('title')}
-    >
+    <Column bindToDocument={!multiColumn} label={circle?.get('title')}>
       <ColumnHeader
         icon='bookmark'
         iconComponent={CircleIcon}
         title={circle?.get('title')}
         onPin={handlePin}
         onMove={handleMove}
-        onClick={handleHeaderClick}
         pinned={pinned}
         multiColumn={multiColumn}
+        scrollTopOnClick
       />
 
       <StatusList

@@ -14,7 +14,7 @@ import { fetchCircle } from 'mastodon/actions/circles';
 import { createCircle, updateCircle } from 'mastodon/actions/circles_typed';
 import { apiGetAccounts } from 'mastodon/api/circles';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column_header';
+import { ColumnHeader } from 'mastodon/components/column/header';
 import { TextInputField } from 'mastodon/components/form_fields';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
