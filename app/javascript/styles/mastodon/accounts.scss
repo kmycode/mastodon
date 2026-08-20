@@ -234,8 +234,14 @@
 
 .simple_form .kmyblue {
   color: color.adjust($kmyblue, $lightness: 12%);
-  background-color: color.adjust($kmyblue, $lightness: 12%, $alpha: 10%);
-  border-color: color.adjust($kmyblue, $lightness: 12%, $alpha: 50%);
+  background-color: color.change(
+    color.adjust($kmyblue, $lightness: 12%),
+    $alpha: 0.1
+  );
+  border-color: color.change(
+    color.adjust($kmyblue, $lightness: 12%),
+    $alpha: 0.5
+  );
 }
 
 .directory__tag .trends__item__current {
