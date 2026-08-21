@@ -17,7 +17,7 @@ module Mastodon
     end
 
     def kmyblue_flag
-      'LTS'
+      'lts'
       # 'dev'
       # nil
     end
@@ -27,7 +27,7 @@ module Mastodon
     end
 
     def minor
-      8
+      7
     end
 
     def patch
