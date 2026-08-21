@@ -61,6 +61,18 @@ const messages = defineMessages({
     id: 'account.add_or_remove_from_list',
     defaultMessage: 'Add or Remove from lists',
   },
+  addToAntennas: {
+    id: 'account.add_or_remove_from_antenna',
+    defaultMessage: 'Add or Remove from antennas',
+  },
+  addToExcludeAntennas: {
+    id: 'account.add_or_remove_from_exclude_antenna',
+    defaultMessage: 'Add or Remove from antennas as exclusion',
+  },
+  addToCircles: {
+    id: 'account.add_or_remove_from_circle',
+    defaultMessage: 'Add or Remove from circles',
+  },
   openOriginalPage: {
     id: 'account.open_original_page',
     defaultMessage: 'Open original page',
@@ -195,10 +207,61 @@ export const Account: React.FC<AccountProps> = ({
           }
         };
 
+        const handleAddToAntennas = () => {
+          dispatch(
+            openModal({
+              modalType: 'ANTENNA_ADDER',
+              modalProps: {
+                accountId: id,
+                isExclude: false,
+              },
+            }),
+          );
+        };
+
+        const handleAddToExcludeAntennas = () => {
+          dispatch(
+            openModal({
+              modalType: 'ANTENNA_ADDER',
+              modalProps: {
+                accountId: id,
+                isExclude: true,
+              },
+            }),
+          );
+        };
+
+        const handleAddToCircles = () => {
+          dispatch(
+            openModal({
+              modalType: 'CIRCLE_ADDER',
+              modalProps: {
+                accountId: id,
+              },
+            }),
+          );
+        };
+
         arr.push({
           text: intl.formatMessage(messages.addToLists),
           action: handleAddToLists,
         });
+
+        arr.push({
+          text: intl.formatMessage(messages.addToAntennas),
+          action: handleAddToAntennas,
+        });
+        arr.push({
+          text: intl.formatMessage(messages.addToExcludeAntennas),
+          action: handleAddToExcludeAntennas,
+        });
+
+        if (id !== me && relationship?.followed_by) {
+          arr.push({
+            text: intl.formatMessage(messages.addToCircles),
+            action: handleAddToCircles,
+          });
+        }
 
         if (id !== me && (relationship?.following || relationship?.requested)) {
           const handleEndorseToggle = () => {

@@ -11,7 +11,11 @@ type HideItemsDefinition =
   | 'status_reference_unavailable_server'
   | 'avatar_on_filter';
 
-type InitialStateLanguage = [code: string, name: string, localName: string];
+export type InitialStateLanguage = [
+  code: string,
+  name: string,
+  localName: string,
+];
 
 interface InitialStateMeta {
   access_token: string;

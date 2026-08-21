@@ -1,12 +1,12 @@
 import type React from 'react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
 import {
   ChatCircleIcon,
-  CheckIcon,
   MagnifyingGlassIcon,
+  NewspaperIcon,
   QuotesIcon,
 } from '@phosphor-icons/react';
 
@@ -14,76 +14,92 @@ import {
   changeComposeVisibility,
   setComposeQuotePolicy,
 } from '@/mastodon/actions/compose_typed';
+import { openModal } from '@/mastodon/actions/modal';
 import type { ApiQuotePolicy } from '@/mastodon/api_types/quotes';
 import type { StatusVisibility } from '@/mastodon/api_types/statuses';
-import { Button } from '@/mastodon/components/button/redesign';
+import { DisplayNameSimple } from '@/mastodon/components/display_name/simple';
 import {
-  Dropdown,
-  DropdownItem,
-  DropdownItemButton,
-} from '@/mastodon/components/dropdown/redesign';
-import { Fieldset } from '@/mastodon/components/form_fields';
-import {
-  ToggleField,
-  RadioButtonField,
-} from '@/mastodon/components/form_fields/redesign';
-import type { IconProp } from '@/mastodon/components/icon';
-import { Popover } from '@/mastodon/components/popover';
-import { useToggle } from '@/mastodon/hooks/useToggle';
+  Menu,
+  MenuList,
+  MenuButton,
+  MenuItemDivider,
+  MenuItemGroup,
+  MenuItem,
+  MenuItemRadio,
+  MenuItemCheckbox,
+  useMenuContext,
+} from '@/mastodon/components/menu';
+import { selectPlainAccount } from '@/mastodon/selectors/accounts';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 
 import { selectComposeMentions, selectComposePrivacy } from './selectors';
-import classes from './styles.module.scss';
 
-export const ComposeVisibility: React.FC = () => {
+export const ComposeVisibility: React.FC<{ className?: string }> = ({
+  className,
+}) => {
   const privacy = useAppSelector(selectComposePrivacy);
-  const mentions = useAppSelector(selectComposeMentions);
-  const [trigger, setTrigger] = useState<HTMLElement | null>(null);
-  const [showMenu, { onToggle, onFalse }] = useToggle();
 
   return (
-    <>
+    <div className={className}>
       <FormattedMessage
         id='compose.post.to'
         defaultMessage='To:'
         description='Before button that indicates who a post is for (Public, Followers, mentioned people)'
       />
+      <Menu>
+        <MenuButton size='sm'>
+          <ComposeVisibilityButtonText privacy={privacy} />
+        </MenuButton>
 
-      <Button
-        size='sm'
-        onClick={onToggle}
-        ref={setTrigger}
-        aria-expanded={showMenu}
-      >
-        {privacy !== 'private' && (
-          <FormattedMessage id='privacy.public.short' defaultMessage='Public' />
+        {privacy !== 'direct' ? (
+          <ComposeVisibilityMenu />
+        ) : (
+          <ComposeDirectMenu />
         )}
-        {privacy === 'private' && (
-          <FormattedMessage
-            id='compose.post.privacy.followers'
-            defaultMessage='Followers {count, plural, =0 {} one {+ # other} other {+ # others}}'
-            description='Count is # of other people mentioned in the post. If zero, just output "Followers".'
-            values={{ count: mentions.size }}
-          />
-        )}
-      </Button>
-
-      <Popover
-        isOpen={showMenu}
-        onClose={onFalse}
-        reference={trigger}
-        placement='bottom-start'
-        offset={4}
-      >
-        {({ props }) => <ComposeVisibilityMenu {...props} />}
-      </Popover>
-    </>
+      </Menu>
+    </div>
   );
 };
 
-const ComposeVisibilityMenu: React.FC<Record<string, unknown>> = (
-  wrapperProps,
-) => {
+const ComposeVisibilityButtonText: React.FC<{
+  privacy: StatusVisibility;
+}> = ({ privacy }) => {
+  const mentions = useAppSelector(selectComposeMentions);
+  const firstMentionedAccount = useAppSelector((state) =>
+    selectPlainAccount(state, mentions.at(0)),
+  );
+
+  if (privacy === 'public' || privacy === 'unlisted') {
+    return (
+      <FormattedMessage id='privacy.public.short' defaultMessage='Public' />
+    );
+  } else if (privacy === 'private') {
+    return (
+      <FormattedMessage
+        id='compose.post.privacy.followers'
+        defaultMessage='Followers {count, plural, =0 {} one {+ # other} other {+ # others}}'
+        description='Count is # of other people mentioned in the post. If zero, just output "Followers".'
+        values={{ count: mentions.length }}
+      />
+    );
+  } else if (mentions.length > 0) {
+    return (
+      <FormattedMessage
+        id='compose.message.direct.followers'
+        defaultMessage='{name} {count, plural, =0 {} one {+ # other} other {+ # others}}'
+        description='Name is the primary display name, count is # of other people mentioned in the post'
+        values={{
+          name: <DisplayNameSimple account={firstMentionedAccount} />,
+          count: mentions.length - 1,
+        }}
+      />
+    );
+  }
+
+  return '-';
+};
+
+const ComposeVisibilityMenu: React.FC = () => {
   const privacy = useAppSelector(selectComposePrivacy);
   const defaultPrivacy = useAppSelector(
     (state) => state.compose.get('default_privacy') as StatusVisibility,
@@ -97,80 +113,75 @@ const ComposeVisibilityMenu: React.FC<Record<string, unknown>> = (
   const quotePolicy = currentQuotePolicy ?? defaultQuotePolicy;
 
   const dispatch = useAppDispatch();
-  const handlePrivacyChange: React.ChangeEventHandler<HTMLInputElement> =
-    useCallback(
-      (event) => {
-        const { value } = event.target;
-        if (value === 'private' && privacy !== 'private') {
-          dispatch(changeComposeVisibility(value));
-        } else if (value === 'public' && privacy === 'private') {
-          dispatch(
-            changeComposeVisibility(
-              defaultPrivacy === 'unlisted' ? 'unlisted' : 'public',
-            ),
-          );
-        } else if (value === 'unlisted' && privacy !== 'private') {
-          dispatch(
-            changeComposeVisibility(
-              privacy === 'public' ? 'unlisted' : 'public',
-            ),
-          );
-        }
-      },
-      [defaultPrivacy, dispatch, privacy],
-    );
-  const handleQuotePolicyChange: React.ChangeEventHandler<HTMLInputElement> =
-    useCallback(
-      (event) => {
-        const { value, checked } = event.target;
-        let newQuotePolicy: ApiQuotePolicy = 'nobody';
-        switch (value) {
-          case 'public':
-            newQuotePolicy = 'public';
-            break;
-          case 'followers':
-            newQuotePolicy = 'followers';
-            break;
-          case 'others':
-            // If it's not checked, then it's nobody.
-            if (checked) {
-              // Only use the default if it's not nobody, as then it'll never be enabled.
-              newQuotePolicy =
-                defaultQuotePolicy !== 'nobody' ? defaultQuotePolicy : 'public';
-            }
-            break;
-        }
-        dispatch(setComposeQuotePolicy(newQuotePolicy));
-      },
-      [defaultQuotePolicy, dispatch],
-    );
+  const handlePrivacyChange = useCallback(
+    ({ value }: { value: string }) => {
+      if (value === 'private' && privacy !== 'private') {
+        dispatch(changeComposeVisibility(value));
+      } else if (value === 'public' && privacy === 'private') {
+        dispatch(
+          changeComposeVisibility(
+            defaultPrivacy === 'unlisted' ? 'unlisted' : 'public',
+          ),
+        );
+      } else if (value === 'unlisted' && privacy !== 'private') {
+        dispatch(
+          changeComposeVisibility(privacy === 'public' ? 'unlisted' : 'public'),
+        );
+      }
+    },
+    [defaultPrivacy, dispatch, privacy],
+  );
+  const handleQuotePolicyChange = useCallback(
+    ({ value, checked }: { value: string; checked?: boolean }) => {
+      let newQuotePolicy: ApiQuotePolicy = 'nobody';
+      switch (value) {
+        case 'public':
+          newQuotePolicy = 'public';
+          break;
+        case 'followers':
+          newQuotePolicy = 'followers';
+          break;
+        case 'others':
+          // If it's not checked, then it's nobody.
+          if (checked) {
+            // Only use the default if it's not nobody, as then it'll never be enabled.
+            newQuotePolicy =
+              defaultQuotePolicy !== 'nobody' ? defaultQuotePolicy : 'public';
+          }
+          break;
+      }
+      dispatch(setComposeQuotePolicy(newQuotePolicy));
+    },
+    [defaultQuotePolicy, dispatch],
+  );
+
+  const { popover } = useMenuContext();
   const handleSwitchToMessage: React.MouseEventHandler<HTMLButtonElement> =
     useCallback(() => {
+      popover.closeMenu();
       dispatch(changeComposeVisibility('direct'));
-    }, [dispatch]);
+    }, [dispatch, popover]);
 
   return (
-    <Dropdown {...wrapperProps} maxWidth={280}>
-      <Fieldset
-        name='visibility'
-        legend={
+    <MenuList placement='bottom-start' offset={4} maxWidth={280}>
+      <MenuItemGroup
+        label={
           <FormattedMessage
             id='compose.visibility.title'
             defaultMessage='Visibility'
           />
         }
-        className={classes.visibilityFieldset}
       >
-        <DropdownRadioCheckField
+        <MenuItemRadio
           name='visibility'
           value='public'
           checked={privacy === 'public' || privacy === 'unlisted'}
           onChange={handlePrivacyChange}
         >
           <FormattedMessage id='privacy.public.short' defaultMessage='Public' />
-        </DropdownRadioCheckField>
+        </MenuItemRadio>
 
-        <DropdownRadioCheckField
+        <MenuItemRadio
           name='visibility'
           value='private'
           checked={privacy === 'private'}
@@ -180,49 +191,47 @@ const ComposeVisibilityMenu: React.FC<Record<string, unknown>> = (
             id='privacy.private.short'
             defaultMessage='Followers'
           />
-        </DropdownRadioCheckField>
-      </Fieldset>
+        </MenuItemRadio>
 
-      <hr />
+        <MenuItemDivider />
 
-      <DropdownToggleField
-        value='unlisted'
-        disabled={privacy === 'private'}
-        checked={privacy === 'public'}
-        onChange={handlePrivacyChange}
-        icon={MagnifyingGlassIcon}
-      >
-        <FormattedMessage
-          id='compose.discoverable'
-          defaultMessage='Discoverable in public feeds & search results'
-        />
-      </DropdownToggleField>
+        <MenuItemCheckbox
+          value='unlisted'
+          disabled={privacy === 'private'}
+          checked={privacy === 'public'}
+          onChange={handlePrivacyChange}
+          icon={MagnifyingGlassIcon}
+        >
+          <FormattedMessage
+            id='compose.discoverable'
+            defaultMessage='Discoverable in public feeds & search results'
+          />
+        </MenuItemCheckbox>
 
-      <DropdownToggleField
-        value='others'
-        disabled={privacy === 'private'}
-        checked={quotePolicy !== 'nobody' && privacy !== 'private'}
-        onChange={handleQuotePolicyChange}
-        icon={QuotesIcon}
-      >
-        <FormattedMessage
-          id='compose.quotable'
-          defaultMessage='Allow others to quote'
-        />
-      </DropdownToggleField>
+        <MenuItemCheckbox
+          value='others'
+          disabled={privacy === 'private'}
+          checked={quotePolicy !== 'nobody' && privacy !== 'private'}
+          onChange={handleQuotePolicyChange}
+          icon={QuotesIcon}
+        >
+          <FormattedMessage
+            id='compose.quotable'
+            defaultMessage='Allow others to quote'
+          />
+        </MenuItemCheckbox>
+      </MenuItemGroup>
 
       {quotePolicy !== 'nobody' && privacy !== 'private' && (
-        <Fieldset
-          name='quote_policy'
-          legend={
+        <MenuItemGroup
+          label={
             <FormattedMessage
               id='compose.visibility.quote_policy'
               defaultMessage='Who can quote'
             />
           }
-          className={classes.visibilityFieldset}
         >
-          <DropdownRadioCheckField
+          <MenuItemRadio
             name='quote_policy'
             value='public'
             checked={quotePolicy === 'public'}
@@ -232,9 +241,9 @@ const ComposeVisibilityMenu: React.FC<Record<string, unknown>> = (
               id='compose.visibility.quote_policy.anyone'
               defaultMessage='Anyone'
             />
-          </DropdownRadioCheckField>
+          </MenuItemRadio>
 
-          <DropdownRadioCheckField
+          <MenuItemRadio
             name='quote_policy'
             value='followers'
             checked={quotePolicy === 'followers'}
@@ -244,86 +253,60 @@ const ComposeVisibilityMenu: React.FC<Record<string, unknown>> = (
               id='compose.visibility.quote_policy.followers'
               defaultMessage='Followers'
             />
-          </DropdownRadioCheckField>
-        </Fieldset>
+          </MenuItemRadio>
+        </MenuItemGroup>
       )}
 
-      <hr />
+      <MenuItemDivider />
 
-      <DropdownItemButton
-        leadingIcon={ChatCircleIcon}
-        onClick={handleSwitchToMessage}
-      >
+      <MenuItem icon={ChatCircleIcon} onClick={handleSwitchToMessage}>
         <FormattedMessage
           id='compose.post.to_message'
           defaultMessage='Compose a message instead'
+          description='Message refers to a direct message. For languages where this is confusing, "chat" or "direct message" can be used.'
         />
-      </DropdownItemButton>
-    </Dropdown>
+      </MenuItem>
+    </MenuList>
   );
 };
 
-const DropdownRadioCheckField: React.FC<
-  Omit<
-    React.ComponentProps<typeof RadioButtonField>,
-    'label' | 'icon' | 'iconClassName'
-  > & {
-    children: React.ReactNode;
-  }
-> = ({ children, onClick, disabled, ...props }) => {
-  const { ref, onWrapperClick } = useDropdownControl();
+const ComposeDirectMenu: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { popover } = useMenuContext();
+  const handleSwitchToPost: React.MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      dispatch(
+        openModal({ modalType: 'COMPOSER_SWITCH_TO_POST', modalProps: {} }),
+      );
+      popover.closeMenu();
+    }, [dispatch, popover]);
 
   return (
-    <DropdownItem onClick={onWrapperClick} disabled={disabled}>
-      <RadioButtonField
-        {...props}
-        ref={ref}
-        label={children}
-        icon={CheckIcon}
-        disabled={disabled}
-        wrapperClassName={classes.dropdownItemControl}
-      />
-    </DropdownItem>
+    <MenuList placement='bottom-start' offset={4} maxWidth={280}>
+      <MenuItemGroup
+        label={
+          <FormattedMessage
+            id='compose.visibility.title'
+            defaultMessage='Visibility'
+          />
+        }
+      >
+        <MenuItemRadio value='direct' disabled checked>
+          <FormattedMessage
+            id='compose.visibility.direct_note'
+            defaultMessage='Everyone mentioned'
+          />
+        </MenuItemRadio>
+      </MenuItemGroup>
+
+      <MenuItemDivider />
+
+      <MenuItem icon={NewspaperIcon} onClick={handleSwitchToPost}>
+        <FormattedMessage
+          id='compose.visibility.to_post'
+          defaultMessage='Compose a post instead'
+        />
+      </MenuItem>
+    </MenuList>
   );
 };
-
-const DropdownToggleField: React.FC<
-  Omit<React.ComponentProps<typeof ToggleField>, 'label'> & {
-    children: React.ReactNode;
-    icon?: IconProp;
-  }
-> = ({ children, icon, disabled, ...props }) => {
-  const { ref, onWrapperClick } = useDropdownControl();
-
-  return (
-    <DropdownItem
-      onClick={onWrapperClick}
-      leadingIcon={icon}
-      disabled={disabled}
-    >
-      <ToggleField
-        size='sm'
-        {...props}
-        disabled={disabled}
-        ref={ref}
-        label={children}
-        wrapperClassName={classes.dropdownItemControl}
-      />
-    </DropdownItem>
-  );
-};
-
-function useDropdownControl() {
-  const ref = useRef<HTMLInputElement | null>(null);
-  const onWrapperClick: React.MouseEventHandler = useCallback((event) => {
-    const { target } = event;
-    if (
-      target instanceof HTMLLabelElement ||
-      target instanceof HTMLInputElement
-    ) {
-      return;
-    }
-    ref.current?.click();
-  }, []);
-  return { ref, onWrapperClick };
-}
