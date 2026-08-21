@@ -1,6 +1,6 @@
 @use '@/styles/mastodon/mixins';
 
-.menu {
+.card {
   @include mixins.elevation-1;
 
   display: flex;
@@ -9,20 +9,32 @@
   border-radius: var(--radius-md);
   background: var(--color-bg-primary);
   overflow: hidden;
+  z-index: calc(infinity);
 
   &[data-elevation='2'] {
     @include mixins.elevation-2;
   }
-
-  > hr {
-    height: 1px;
-    background-color: var(--color-border-primary);
-    margin: var(--space-2xs) var(--space-sm);
-    border: none;
-  }
 }
 
-.menuItem {
+.popoverCard {
+  width: 100%;
+}
+
+.itemGroupLabel {
+  @include mixins.type-label-sm;
+
+  color: var(--color-text-tertiary);
+  padding: var(--space-xs) var(--space-sm) 0;
+}
+
+.itemDivider {
+  height: 1px;
+  background-color: var(--color-border-primary);
+  margin: var(--space-2xs) var(--space-sm);
+  border: none;
+}
+
+.item {
   @include mixins.type-body-compact;
 
   --cursor: pointer;
@@ -37,18 +49,25 @@
     background 200ms,
     color 200ms;
 
-  label {
-    cursor: inherit;
-    font-weight: inherit;
-    font-size: var(--fs-sm);
+  &:where(button) {
+    appearance: none;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: start;
   }
 
-  &:hover:not(.menuItemDisabled) {
+  &:hover:not([aria-disabled='true']) {
     background-color: var(--color-bg-highlight);
   }
 
-  &:active:not(.menuItemDisabled),
-  .menuItemActive {
+  &:focus-visible {
+    outline: var(--outline-focus-default);
+    outline-offset: -2px;
+  }
+
+  &:active:not([aria-disabled='true']),
+  .itemActive {
     background-color: var(--color-bg-inverted);
     color: var(--color-text-inverted);
 
@@ -58,33 +77,18 @@
   }
 
   &:has(:disabled),
-  .menuItemDisabled {
+  &[aria-disabled='true'] {
     --cursor: not-allowed;
 
     opacity: 0.5;
   }
 }
 
-.menuItemButton {
-  appearance: none;
-  background: none;
-  border: none;
-  width: 100%;
-}
-
-.menuItemIcon {
+.itemIcon {
   width: var(--space-lg);
   height: var(--space-lg);
 }
 
-.menu > hr {
-  height: 1px;
-  background-color: var(--color-border-primary);
-  margin: var(--space-2xs) var(--space-sm);
-  border: none;
-  width: calc(100% - (2 * var(--space-sm)));
-}
-
-.popoverMenu {
-  width: 100%;
+.itemTrailingContent {
+  margin-inline-start: auto;
 }

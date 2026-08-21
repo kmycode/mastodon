@@ -6,6 +6,7 @@ import {
   changeCircle,
   changeComposeMarkdown,
   changeUploadCompose,
+  rearrangeComposeAttachments,
   quoteCompose,
   quoteComposeCancel,
   setComposeQuotePolicy,
@@ -463,6 +464,19 @@ export const composeReducer = (state = initialState, action) => {
     return state.set('is_changing_upload', true);
   } else if (changeUploadCompose.rejected.match(action)) {
     return state.set('is_changing_upload', false);
+  } else if (rearrangeComposeAttachments.match(action)) {
+    return state.update('media_attachments', (attachments) => {
+      const newOrder = [];
+      for (const id of action.payload) {
+        const attachment = attachments.find((item) => item.get('id') === id);
+        if (attachment) {
+          newOrder.push(attachment);
+        }
+      }
+
+      return ImmutableList(newOrder);
+    });
+
   } else if (quoteCompose.match(action)) {
     const status = action.payload;
     const isDirect = state.get('privacy') === 'direct';
