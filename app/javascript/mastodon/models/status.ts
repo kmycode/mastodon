@@ -89,7 +89,7 @@ export interface StatusShape {
   status_references_count: number;
   visibility: StatusVisibility;
   visibility_ex: StatusVisibility;
-  limited_scope: StatusLimitedScope;
+  limited_scope?: StatusLimitedScope;
 }
 export type ExpandedStatusShape = Omit<StatusShape, 'account' | 'reblog'> & {
   account: AccountShapeFull;
