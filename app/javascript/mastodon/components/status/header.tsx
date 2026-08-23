@@ -71,7 +71,9 @@ export const StatusHeader: FC<StatusHeaderProps> = ({
   const editedAt = status.edited_at;
 
   const hasLimitedLabel =
-    status.visibility_ex === 'limited' && status.limited_scope !== 'none';
+    status.visibility_ex === 'limited' &&
+    status.limited_scope &&
+    status.limited_scope !== 'none';
 
   const withLimited = hasLimitedLabel ? (
     <span
@@ -99,9 +101,10 @@ export const StatusHeader: FC<StatusHeaderProps> = ({
     </span>
   ) : null;
 
-  const displayVisibility = !hasLimitedLabel
-    ? status.visibility_ex
-    : status.limited_scope;
+  const displayVisibility =
+    !hasLimitedLabel || !status.limited_scope
+      ? status.visibility_ex
+      : status.limited_scope;
 
   return (
     /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
