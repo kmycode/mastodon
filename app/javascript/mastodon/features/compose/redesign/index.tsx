@@ -5,21 +5,16 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import classNames from 'classnames';
 
-import { LockSimpleOpenIcon } from '@phosphor-icons/react';
-import { useDebouncedCallback } from 'use-debounce';
+import { LockSimpleOpenIcon, PepperIcon } from '@phosphor-icons/react';
 
-import messageBackground from '@/images/composer_message.svg?url';
 import {
   changeComposeSpoilerness,
   changeComposeSpoilerText,
   insertEmojiCompose,
 } from '@/mastodon/actions/compose';
-import {
-  ToggleField,
-  TextInputField,
-} from '@/mastodon/components/form_fields/redesign';
+import { ToggleButton } from '@/mastodon/components/button/redesign';
+import { TextInputField } from '@/mastodon/components/form_fields/redesign';
 import { Icon } from '@/mastodon/components/icon';
-import { useResizeObserver } from '@/mastodon/hooks/useObserver';
 import {
   focusComposerTextarea,
   getComposerTextarea,
@@ -44,10 +39,6 @@ import { ComposeTextarea } from './textarea';
 import { ComposeVisibility } from './visibility';
 
 const messages = defineMessages({
-  sensitive: {
-    id: 'compose.sensitive',
-    defaultMessage: 'Sensitive',
-  },
   sensitiveText: {
     id: 'compose.sensitive.text',
     defaultMessage: 'Sensitive content description',
@@ -70,19 +61,8 @@ export const RedesignComposeForm: React.FC<RedesignComposeFormProps> = ({
   const type = useAppSelector(selectComposeType);
   const { sensitive, sensitiveText } = useAppSelector(selectComposeSensitive);
 
-  let background: string | null = null;
-  if (type === 'message') {
-    background = messageBackground;
-  }
-
-  const {
-    onSensitiveChange,
-    onSensitiveTextChange,
-    onEmojiPick,
-    onSubmit,
-    onWrapperMount,
-    onWrapperScroll,
-  } = useComposeHandlers(redirectOnSuccess);
+  const { onSensitiveChange, onSensitiveTextChange, onEmojiPick, onSubmit } =
+    useComposeHandlers(redirectOnSuccess);
 
   const intl = useIntl();
   const titleId = useId();
@@ -94,12 +74,7 @@ export const RedesignComposeForm: React.FC<RedesignComposeFormProps> = ({
       aria-labelledby={titleId}
       className={classNames(className, classes.root)}
     >
-      {background && (
-        <div
-          className={classes.background}
-          style={{ maskImage: `url(${background})` }}
-        />
-      )}
+      {type === 'message' && <div className={classes.background} />}
 
       <ComposeFormHeader id={titleId} noMinimize={noMinimize} />
 
@@ -108,14 +83,16 @@ export const RedesignComposeForm: React.FC<RedesignComposeFormProps> = ({
       <div className={classes.toolbar}>
         <ComposeVisibility className={classes.flexGrowWrap} />
 
-        <ToggleField
-          label={intl.formatMessage(messages.sensitive)}
-          checked={sensitive}
-          onChange={onSensitiveChange}
-          size='sm'
-        />
-
         <LanguageButton />
+
+        <ToggleButton
+          size='sm'
+          active={sensitive}
+          onClick={onSensitiveChange}
+          leadingIcon={PepperIcon}
+        >
+          <FormattedMessage id='compose.sensitive' defaultMessage='Sensitive' />
+        </ToggleButton>
       </div>
 
       {type === 'message' && (
@@ -138,19 +115,13 @@ export const RedesignComposeForm: React.FC<RedesignComposeFormProps> = ({
         />
       )}
 
-      <div
-        ref={onWrapperMount}
-        onScroll={onWrapperScroll}
-        className={classes.editorWrapper}
+      <ComposeTextarea
+        // eslint-disable-next-line jsx-a11y/no-autofocus
+        autoFocus={autoFocus}
+        onSubmit={onSubmit}
       >
-        <ComposeTextarea
-          // eslint-disable-next-line jsx-a11y/no-autofocus
-          autoFocus={autoFocus}
-          onSubmit={onSubmit}
-        />
-
-        <ComposeAttachments />
-      </div>
+        <ComposeAttachments className={classes.attachments} />
+      </ComposeTextarea>
 
       <ComposeHints />
 
@@ -220,49 +191,10 @@ function useComposeHandlers(redirectOnSuccess?: boolean) {
     [canSubmit, dispatch, redirectOnSuccess],
   );
 
-  // Handle wrapper fade to indicate scroll.
-  const onWrapperScroll = useDebouncedCallback(wrapperScroll, 20, {
-    leading: true,
-  });
-  const observer = useResizeObserver(wrapperResize);
-  const onWrapperMount: React.RefCallback<HTMLElement> = useCallback(
-    (ele) => {
-      if (ele) {
-        observer.observe(ele);
-      }
-    },
-    [observer],
-  );
-
   return {
     onSubmit,
     onEmojiPick,
     onSensitiveChange,
     onSensitiveTextChange,
-    onWrapperScroll,
-    onWrapperMount,
   };
-}
-
-function wrapperUpdate(ele: HTMLElement) {
-  const scrollMax = ele.scrollHeight - ele.offsetHeight - 5; // 5px padding to account for sub-pixel issues
-  if (scrollMax > 0 && ele.scrollTop < scrollMax) {
-    ele.dataset.scrollDown = 'true';
-  } else {
-    delete ele.dataset.scrollDown;
-  }
-}
-
-function wrapperResize(entries: ResizeObserverEntry[]) {
-  for (const entry of entries) {
-    if (entry.target instanceof HTMLElement) {
-      wrapperUpdate(entry.target);
-    }
-  }
-}
-
-function wrapperScroll(event: React.UIEvent<HTMLElement>) {
-  if (event.target instanceof HTMLElement) {
-    wrapperUpdate(event.target);
-  }
 }

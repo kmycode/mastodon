@@ -45,7 +45,7 @@ class Api::V1::AccountsController < Api::BaseController
   end
 
   def follow
-    follow  = FollowService.new.call(current_user.account, @account, reblogs: params.key?(:reblogs) ? truthy_param?(:reblogs) : nil, notify: params.key?(:notify) ? truthy_param?(:notify) : nil, languages: params.key?(:languages) ? params[:languages] : nil, with_rate_limit: true)
+    follow  = FollowService.new.call(current_user.account, @account, reblogs: params.key?(:reblogs) ? truthy_param?(:reblogs) : nil, notify: params.key?(:notify) ? truthy_param?(:notify) : nil, languages: params.key?(:languages) ? params[:languages] : nil, with_rate_limit: true, ref: params[:ref])
     options = if @account.locked? || current_user.account.silenced? || (current_user.account.bot? && @account.user&.setting_lock_follow_from_bot)
                 {}
               else

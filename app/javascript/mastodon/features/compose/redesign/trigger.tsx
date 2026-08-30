@@ -4,6 +4,8 @@ import { lazy, Suspense, useCallback } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
+import classNames from 'classnames';
+
 import {
   ChatCircleIcon,
   NewspaperIcon,
@@ -14,7 +16,7 @@ import { IconButton } from '@/mastodon/components/button/redesign';
 import { CircularProgress } from '@/mastodon/components/circular_progress';
 import {
   Menu,
-  MenuButton,
+  MenuTrigger,
   MenuList,
   MenuItem,
 } from '@/mastodon/components/menu';
@@ -32,7 +34,12 @@ const ComposeLazyForm = lazy(() =>
   })),
 );
 
-export const ComposeRedesignButton: React.FC = () => {
+export const ComposeRedesignButton: React.FC<{
+  /**
+   * Render the button in regular document flow instead of fixed positioning for mobile layout
+   */
+  inline?: boolean;
+}> = ({ inline }) => {
   const displayState = useAppSelector((state) => state.composer.displayState);
 
   const dispatch = useAppDispatch();
@@ -71,18 +78,18 @@ export const ComposeRedesignButton: React.FC = () => {
 
   return (
     <Menu>
-      <MenuButton
+      <MenuTrigger
         as={IconButton}
         icon={PenNibIcon}
-        color='neutral'
-        className={classes.button}
+        variant='solid'
+        className={classNames(classes.button, inline && classes.buttonInline)}
         size='lg'
       >
         <FormattedMessage
           id='compose.new'
           defaultMessage='Write a new post or messsage'
         />
-      </MenuButton>
+      </MenuTrigger>
 
       <MenuList maxWidth={180} placement='top-end'>
         <MenuItem name='post' onClick={handleComposerOpen} icon={NewspaperIcon}>

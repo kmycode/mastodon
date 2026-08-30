@@ -1,25 +1,24 @@
 import classNames from 'classnames';
 
-import type { Merge } from 'type-fest';
+import type { PolymorphicProps } from '@/types/polymorphic';
 
 import { Popover } from '../popover';
 import type { PopoverProps } from '../popover';
 
 import classes from './styles.module.scss';
 
-export type MenuCardProps<As extends React.ElementType> = Merge<
+export type MenuCardProps<As extends React.ElementType> = PolymorphicProps<
   {
-    as?: As;
     children: React.ReactNode;
     className?: string;
     elevation?: 1 | 2;
     maxWidth?: number | string;
     style?: React.CSSProperties;
   },
-  React.ComponentProps<As>
+  As
 >;
 
-export const MenuCard = <As extends React.ElementType>({
+export const MenuCard = <As extends React.ElementType = 'div'>({
   as: asComp,
   children,
   className,
@@ -34,10 +33,13 @@ export const MenuCard = <As extends React.ElementType>({
       {...props}
       className={classNames(className, classes.card)}
       data-elevation={elevation}
-      style={{
-        maxWidth: typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth,
-        ...style,
-      }}
+      style={
+        {
+          '--_max-card-width':
+            typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth,
+          ...style,
+        } as React.CSSProperties
+      }
     >
       {children}
     </Component>
@@ -80,7 +82,7 @@ export const PopoverMenuCard = <As extends React.ElementType>({
       {({ props: popoverChildProps }) => (
         <MenuCard
           {...popoverChildProps}
-          {...props}
+          {...(props as React.ComponentPropsWithoutRef<As>)}
           className={classNames(
             className,
             props.maxWidth && classes.popoverCard,

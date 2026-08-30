@@ -1,10 +1,20 @@
 @use '@/styles/mastodon/mixins';
 
 .root {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow-y: auto;
+  scrollbar-width: thin;
+
+  // Approximate height of fixed navigation elements
+  // to ensure focused elements are scrolled into view
+  // as needed.
+  --header-height: 80px;
+  --footer-height: 200px;
+
+  scroll-padding-block: var(--header-height) var(--footer-height);
 }
 
 .list {
@@ -17,6 +27,29 @@
   bottom: 0;
   margin-top: auto;
   padding: var(--space-xl);
-  padding-top: 0;
+  padding-top: var(--space-2xs);
   background-color: var(--color-bg-primary);
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    inset-inline: 0;
+    height: var(--space-2xl);
+    background: linear-gradient(to top, var(--color-bg-primary), transparent);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity linear 200ms;
+  }
+
+  &[data-stuck='true']::before {
+    opacity: 1;
+  }
+}
+
+.footerNav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-xs);
 }
