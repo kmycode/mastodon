@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/no-autofocus */
-import type React from 'react';
-import { lazy, Suspense, useCallback } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -13,7 +12,6 @@ import {
 } from '@phosphor-icons/react';
 
 import { IconButton } from '@/mastodon/components/button/redesign';
-import { CircularProgress } from '@/mastodon/components/circular_progress';
 import {
   Menu,
   MenuTrigger,
@@ -21,6 +19,7 @@ import {
   MenuItem,
 } from '@/mastodon/components/menu';
 import { MenuCard } from '@/mastodon/components/menu/card';
+import { useIdentity } from '@/mastodon/identity_context';
 import { openNewComposer } from '@/mastodon/reducers/slices/composer';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 import { isRedesignEnabled } from '@/mastodon/utils/environment';
@@ -42,6 +41,20 @@ export const ComposeRedesignButton: React.FC<{
 }> = ({ inline }) => {
   const displayState = useAppSelector((state) => state.composer.displayState);
 
+  // Update viewport based on visual size in order to account for the virtual keyboard.
+  const [viewportHeight, setViewportHeight] = useState<null | number>(null);
+  useEffect(() => {
+    const updateHeight = () => {
+      setViewportHeight(visualViewport?.height ?? null);
+    };
+
+    visualViewport?.addEventListener('resize', updateHeight);
+
+    return () => {
+      visualViewport?.removeEventListener('resize', updateHeight);
+    };
+  }, []);
+
   const dispatch = useAppDispatch();
   const handleComposerOpen: React.MouseEventHandler<HTMLButtonElement> =
     useCallback(
@@ -56,7 +69,9 @@ export const ComposeRedesignButton: React.FC<{
       [dispatch],
     );
 
-  if (!isRedesignEnabled()) {
+  const { signedIn } = useIdentity();
+
+  if (!isRedesignEnabled() || !signedIn) {
     return null;
   }
 
@@ -69,9 +84,31 @@ export const ComposeRedesignButton: React.FC<{
   }
 
   if (displayState === 'showing') {
+    // Pass the viewport height as a CSS variable so it's only used for mobile.
+    const style = {
+      '--viewport-height': viewportHeight ? `${viewportHeight}px` : undefined,
+    } as React.CSSProperties;
     return (
-      <Suspense fallback={<CircularProgress strokeWidth={2} size={50} />}>
-        <ComposeLazyForm autoFocus className={classes.composer} />
+      <Suspense
+        fallback={
+          <IconButton
+            loading
+            icon={PenNibIcon}
+            className={classNames(
+              classes.button,
+              inline && classes.buttonInline,
+            )}
+            variant='solid'
+            size='lg'
+          >
+            <FormattedMessage
+              id='compose.new'
+              defaultMessage='Write a new post or messsage'
+            />
+          </IconButton>
+        }
+      >
+        <ComposeLazyForm autoFocus className={classes.composer} style={style} />
       </Suspense>
     );
   }

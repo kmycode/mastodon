@@ -6,7 +6,6 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  min-height: 90px;
   overflow: hidden;
   padding: var(--space-sm);
   position: relative;
@@ -22,6 +21,9 @@
 
 // Handle cases where the root is a link
 a.root {
+  color: inherit;
+  text-decoration: none;
+
   &:hover {
     text-decoration: none;
   }
@@ -39,7 +41,6 @@ a.root {
 
   color: var(--color-text-secondary);
   display: flex;
-  margin-bottom: var(--space-2xs);
 
   a {
     color: inherit;
@@ -62,10 +63,14 @@ a.root {
 }
 
 .body {
-  @include mixins.type-body-compact;
+  @include mixins.type-label-lg;
 
   overflow-wrap: break-word;
   flex-grow: 1;
+
+  * + & {
+    margin-block-start: var(--space-xs);
+  }
 
   a {
     color: var(--color-text-brand);
@@ -80,13 +85,18 @@ a.root {
 
 // Linked body
 a.body {
-  padding: 0 var(--space-sm) var(--space-sm);
-  margin: calc(-1 * var(--space-sm));
-  margin-top: 0;
+  padding-inline: var(--space-sm);
+  margin-inline: calc(-1 * var(--space-sm));
+  color: inherit;
+  text-decoration: none;
 
   .root:has(&:hover) {
     background-color: var(--color-bg-highlight);
   }
+}
+
+.description {
+  @include mixins.type-body-compact;
 }
 
 .image {

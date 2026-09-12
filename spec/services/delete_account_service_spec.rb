@@ -46,6 +46,7 @@ RSpec.describe DeleteAccountService do
     let!(:bookmark_category_status) { Fabricate(:bookmark_category_status, bookmark_category: bookmark_category, status: bookmark.status) }
 
     let!(:account_note) { Fabricate(:account_note, account: account) }
+    let!(:generated_annual_report) { Fabricate(:generated_annual_report, account: account) }
 
     let!(:ng_rule_history) { Fabricate(:ng_rule_history, account: account) }
     let!(:pending_follow_request) { Fabricate(:pending_follow_request, account: account) }
@@ -100,6 +101,7 @@ RSpec.describe DeleteAccountService do
       expect { poll_vote.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect { account_note.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect { collection.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { generated_annual_report.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     def expect_deletion_of_associated_target_records

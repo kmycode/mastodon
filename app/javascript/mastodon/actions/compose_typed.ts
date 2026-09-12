@@ -16,6 +16,7 @@ import type { ApiQuotePolicy } from '../api_types/quotes';
 import type { StatusSearchability } from '../api_types/statuses';
 import type { Status, StatusVisibility } from '../models/status';
 import type { RootState } from '../store';
+import { isRedesignEnabled } from '../utils/environment';
 
 import { showAlert } from './alerts';
 import { changeCompose, focusCompose, uploadCompose } from './compose';
@@ -183,6 +184,8 @@ export const quoteComposeByStatus = createAppThunk(
       false,
     );
 
+    const statusId = status.get('id') as string;
+
     if (composeState.get('id')) {
       dispatch(showAlert({ message: messages.quoteErrorEdit }));
     } else if (composeState.get('privacy') === 'direct') {
@@ -202,6 +205,17 @@ export const quoteComposeByStatus = createAppThunk(
         openModal({
           modalType: 'CONFIRM_QUIET_QUOTE',
           modalProps: { status },
+        }),
+      );
+    } else if (
+      composeState.get('in_reply_to') &&
+      statusId &&
+      isRedesignEnabled()
+    ) {
+      dispatch(
+        openModal({
+          modalType: 'COMPOSER_ADD_QUOTE',
+          modalProps: { statusId },
         }),
       );
     } else {

@@ -66,6 +66,7 @@ export const AccountList: FC<AccountListProps> = ({
           accountId={followerId}
           withBio={false}
           badge={withoutFollowsYouBadge ? false : null}
+          reference='profile'
         />
       )) ?? [];
 
@@ -76,6 +77,7 @@ export const AccountList: FC<AccountListProps> = ({
           accountId={prependAccountId}
           withBio={false}
           badge={withoutFollowsYouBadge ? false : null}
+          reference='profile'
         />,
       );
     }
