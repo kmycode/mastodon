@@ -90,12 +90,15 @@ const EmojiReactions: React.FC<{ multiColumn?: boolean }> = ({
     );
   }
 
-  const groups: Record<string, {
+  const groups: Record<
+    string,
+    {
       account_id: string;
       name: string;
       url?: string;
       static_url?: string;
-    }[]> = {};
+    }[]
+  > = {};
   accountIds.forEach((emoji_reaction) => {
     const key = emoji_reaction.account_id;
     const value = emoji_reaction;
