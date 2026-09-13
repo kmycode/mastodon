@@ -1,8 +1,10 @@
 import { useCallback, useState } from 'react';
 
 import {
+  BugBeetleIcon,
   MoonIcon,
   NumberCircleOneIcon,
+  NumberCircleThreeIcon,
   NumberCircleTwoIcon,
   SunIcon,
 } from '@phosphor-icons/react';
@@ -13,16 +15,16 @@ import { useToggle } from '@/mastodon/hooks/useToggle';
 
 import {
   Menu,
-  MenuButton,
+  MenuTrigger,
   MenuList,
   MenuItem,
   MenuItemDivider,
   MenuItemCheckbox,
   MenuItemGroup,
   MenuItemRadio,
+  MenuItemLink,
 } from '.';
 import type { MenuCardProps } from './card';
-import { MenuCard } from './card';
 
 const meta = {
   title: 'Redesign/Menu',
@@ -43,34 +45,31 @@ type Story = StoryObj<typeof meta>;
 
 const handleMenuItemClick = action('menu item click');
 
-export const Simple: Story = {
-  render(args) {
-    return (
-      <MenuCard {...args}>
-        <MenuItem icon={NumberCircleOneIcon} onClick={handleMenuItemClick}>
-          First item
-        </MenuItem>
-        <MenuItem icon={NumberCircleTwoIcon} onClick={handleMenuItemClick}>
-          Second item
-        </MenuItem>
-      </MenuCard>
-    );
-  },
-};
-
-export const Popover: Story = {
+export const Default: Story = {
   render(args) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
         <Menu>
-          <MenuButton>Click to show dropdown</MenuButton>
+          <MenuTrigger>Show actions</MenuTrigger>
 
           <MenuList {...args}>
             <MenuItem icon={NumberCircleOneIcon} onClick={handleMenuItemClick}>
               First item
             </MenuItem>
-            <MenuItem icon={NumberCircleTwoIcon} onClick={handleMenuItemClick}>
+            <MenuItem
+              icon={NumberCircleTwoIcon}
+              description='Some informative hint text'
+              onClick={handleMenuItemClick}
+            >
               Second item
+            </MenuItem>
+            <MenuItemDivider />
+            <MenuItem
+              destructive
+              icon={NumberCircleThreeIcon}
+              onClick={handleMenuItemClick}
+            >
+              Third item
             </MenuItem>
           </MenuList>
         </Menu>
@@ -89,44 +88,88 @@ export const Complex: Story = {
     }, []);
 
     return (
-      <MenuCard {...args}>
-        <MenuItem onClick={handleMenuItemClick}>First item</MenuItem>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <Menu>
+          <MenuTrigger>World settings</MenuTrigger>
 
-        <MenuItemDivider />
+          <MenuList {...args}>
+            <MenuItem
+              icon={BugBeetleIcon}
+              onClick={handleMenuItemClick}
+              keepMenuOpenOnClick
+            >
+              Spawn new insect species
+            </MenuItem>
 
-        <MenuItemCheckbox
-          icon={sun ? SunIcon : MoonIcon}
-          checked={sun}
-          onChange={onToggle}
-          value='daytime'
-        >
-          Daytime toggle
-        </MenuItemCheckbox>
-        <MenuItemDivider />
-        <MenuItemGroup label='Precipitation'>
-          <MenuItemRadio
-            value='none'
-            checked={precip === 'none'}
-            onChange={handlePrecipChange}
-          >
-            None
-          </MenuItemRadio>
-          <MenuItemRadio
-            value='rain'
-            checked={precip === 'rain'}
-            onChange={handlePrecipChange}
-          >
-            Rain
-          </MenuItemRadio>
-          <MenuItemRadio
-            value='snow'
-            checked={precip === 'snow'}
-            onChange={handlePrecipChange}
-          >
-            Snow
-          </MenuItemRadio>
-        </MenuItemGroup>
-      </MenuCard>
+            <MenuItemDivider />
+
+            <MenuItemCheckbox
+              icon={sun ? SunIcon : MoonIcon}
+              checked={sun}
+              onChange={onToggle}
+              value='daytime'
+              keepMenuOpenOnClick
+            >
+              Daytime toggle
+            </MenuItemCheckbox>
+            <MenuItemDivider />
+            <MenuItemGroup label='Precipitation'>
+              <MenuItemRadio
+                value='none'
+                checked={precip === 'none'}
+                onChange={handlePrecipChange}
+                keepMenuOpenOnClick
+              >
+                None
+              </MenuItemRadio>
+              <MenuItemRadio
+                value='rain'
+                checked={precip === 'rain'}
+                onChange={handlePrecipChange}
+                keepMenuOpenOnClick
+              >
+                Rain
+              </MenuItemRadio>
+              <MenuItemRadio
+                value='snow'
+                checked={precip === 'snow'}
+                onChange={handlePrecipChange}
+                keepMenuOpenOnClick
+              >
+                Snow
+              </MenuItemRadio>
+            </MenuItemGroup>
+            <MenuItemDivider />
+            <MenuItem
+              destructive
+              onClick={handleMenuItemClick}
+              description='This action can not be undone'
+            >
+              Turn the world off
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </div>
+    );
+  },
+};
+
+export const Navigation: Story = {
+  render(args) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <Menu type='navigation'>
+          <MenuTrigger>More links</MenuTrigger>
+
+          <MenuList {...args}>
+            <MenuItemLink to='/about'>About</MenuItemLink>
+            <MenuItemLink to='/privacy'>Terms & Conditions</MenuItemLink>
+            <MenuItemLink href='/terms' as='a'>
+              Privacy
+            </MenuItemLink>
+          </MenuList>
+        </Menu>
+      </div>
     );
   },
 };

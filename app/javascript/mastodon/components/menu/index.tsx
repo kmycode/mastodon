@@ -1,4 +1,3 @@
-import type React from 'react';
 import {
   createContext,
   use,
@@ -8,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-import type { Merge } from 'type-fest';
+import type { PolymorphicProps } from '@/types/polymorphic';
 
 import { Button } from '../button/redesign';
 
@@ -21,8 +20,8 @@ export const menuItemClass = classes.item;
 export {
   MenuItemDivider,
   MenuItemGroup,
-  MenuItemBase,
   MenuItem,
+  MenuItemLink,
   MenuItemRadio,
   MenuItemCheckbox,
 } from './items';
@@ -36,10 +35,10 @@ interface PopoverState {
   reference: HTMLButtonElement | null;
 }
 
-interface MenuButtonContextProps {
+interface MenuTriggerContextProps {
   ref: (button: HTMLButtonElement | null) => void;
   id: string;
-  'aria-haspopup': 'menu';
+  'aria-haspopup'?: 'menu';
   'aria-expanded': boolean;
   'aria-controls'?: string;
   onKeyDown: React.KeyboardEventHandler<HTMLButtonElement>;
@@ -47,17 +46,20 @@ interface MenuButtonContextProps {
 }
 
 interface MenuListContextProps {
-  ref: (button: HTMLDivElement | null) => void;
-  role: 'menu';
+  ref: (list: HTMLDivElement | null) => void;
+  role?: 'menu'; // only for menus of type === 'actions'
   tabIndex: -1;
   id: string;
   'aria-labelledby': string;
   onKeyDown: React.KeyboardEventHandler<HTMLDivElement>;
 }
 
+type MenuType = 'actions' | 'navigation';
+
 interface MenuState {
+  type: MenuType;
   popover: PopoverState;
-  menuButtonProps: MenuButtonContextProps;
+  menuTriggerProps: MenuTriggerContextProps;
   menuListProps: MenuListContextProps;
 }
 
@@ -67,13 +69,13 @@ export function useMenuContext(): MenuState {
   const context = use(MenuContext);
 
   if (!context) {
-    throw new Error('useMenu must be used within a <Menu> component');
+    throw new Error('useMenuContext must be used within a <Menu> component');
   }
 
   return context;
 }
 
-function getAllMenuItems(menuListElement: HTMLDivElement) {
+export function getAllMenuItems(menuListElement: HTMLDivElement) {
   return Array.from(
     menuListElement.querySelectorAll<HTMLElement>(
       ':scope [data-menu-item]:not([disabled])',
@@ -81,40 +83,89 @@ function getAllMenuItems(menuListElement: HTMLDivElement) {
   );
 }
 
-export const Menu: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface MenuProps {
+  /**
+   * Set the type according the the menu's use case for accessible markup.
+   * Use 'navigation' for menus that are primarily used for site navigation.
+   * Note that navigation menus don't support `MenuItemRadio` and `MenuItemCheckbox`.
+   */
+  type?: MenuType;
+  /**
+   * Callback that is run before the menu is opened. Can be used for side effects
+   * or to prevent opening the menu by returning `false`.
+   */
+  onOpen?: (() => void) | (() => boolean);
+  /**
+   * Callback that is run before the menu is closed. Can be used for side effects
+   * or to prevent closing the menu by returning `false`.
+   * Prefer the `keepMenuOpenOnClick` prop on `MenuItem`.
+   */
+  onClose?: (() => void) | (() => boolean);
+  children: React.ReactNode;
+  /**
+   * Don't set initial focus on the first menu item when opening the menu.
+   * Not recommended for normal usage.
+   */
+  noFocus?: boolean;
+}
+
+export const Menu: React.FC<MenuProps> = ({
+  type = 'actions',
+  onOpen,
+  onClose,
+  children,
+  noFocus,
+}) => {
   const id = useId();
-  const buttonId = `${id}-button`;
+  const triggerId = `${id}-trigger`;
   const listId = `${id}-list`;
-  const [buttonElement, setButtonElement] = useState<HTMLButtonElement | null>(
-    null,
-  );
+  const [triggerElement, setTriggerElement] =
+    useState<HTMLButtonElement | null>(null);
   const [listElement, setListElement] = useState<HTMLDivElement | null>(null);
 
-  const mountListElement = useCallback((element: HTMLDivElement | null) => {
-    setListElement(element);
-    if (element) {
-      const menuItems = getAllMenuItems(element);
-      const elementToFocus = menuItems[0] ?? element;
-      elementToFocus.focus();
-    }
-  }, []);
+  const mountListElement = useCallback(
+    (element: HTMLDivElement | null) => {
+      setListElement(element);
+
+      if (element && type === 'actions' && !noFocus) {
+        const menuItems = getAllMenuItems(element);
+        const elementToFocus = menuItems[0] ?? element;
+        elementToFocus.focus({ preventScroll: true });
+      }
+    },
+    [noFocus, type],
+  );
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const openMenu = useCallback(() => {
+    const shouldOpen = onOpen?.();
+    if (shouldOpen === false) return;
+
     setIsMenuOpen(true);
-  }, []);
+  }, [onOpen]);
 
   const closeMenu = useCallback(() => {
+    const shouldClose = onClose?.();
+    if (shouldClose === false) return;
+
     setIsMenuOpen(false);
-    buttonElement?.focus();
-  }, [buttonElement]);
+    if (listElement?.contains(document.activeElement)) {
+      triggerElement?.focus();
+    }
+  }, [listElement, triggerElement, onClose]);
 
   const toggleMenu = isMenuOpen ? closeMenu : openMenu;
 
   const handleMenuNavigation = useCallback(
     (event: React.KeyboardEvent<HTMLElement>) => {
-      if (!listElement) return;
+      if (!listElement) {
+        if (event.code === 'ArrowDown') {
+          openMenu();
+          event.preventDefault();
+        }
+        return;
+      }
 
       const menuItems = getAllMenuItems(listElement);
       if (menuItems.length === 0) return;
@@ -173,14 +224,16 @@ export const Menu: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       openMenu,
       closeMenu,
       toggleMenu,
-      reference: buttonElement,
+      reference: triggerElement,
       popover: listElement,
     };
 
-    const menuButtonProps: MenuButtonContextProps = {
-      id: buttonId,
-      ref: setButtonElement,
-      'aria-haspopup': 'menu',
+    const role = type === 'actions' ? 'menu' : undefined;
+
+    const menuTriggerProps: MenuTriggerContextProps = {
+      id: triggerId,
+      ref: setTriggerElement,
+      'aria-haspopup': role,
       'aria-expanded': isMenuOpen,
       'aria-controls': listElement ? listId : undefined,
       onClick: toggleMenu,
@@ -190,26 +243,28 @@ export const Menu: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const menuListProps: MenuListContextProps = {
       id: listId,
       ref: mountListElement,
-      'aria-labelledby': buttonId,
-      role: 'menu',
+      'aria-labelledby': triggerId,
+      role,
       tabIndex: -1,
       onKeyDown: handleMenuNavigation,
     };
 
     return {
+      type,
       popover,
-      menuButtonProps,
+      menuTriggerProps,
       menuListProps,
     };
   }, [
+    type,
     isMenuOpen,
     openMenu,
     closeMenu,
     toggleMenu,
-    buttonElement,
+    triggerElement,
     listElement,
     mountListElement,
-    buttonId,
+    triggerId,
     listId,
     handleMenuNavigation,
   ]);
@@ -217,22 +272,15 @@ export const Menu: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return <MenuContext value={contextValue}>{children}</MenuContext>;
 };
 
-export type MenuButtonProps<As extends React.ElementType> = Merge<
-  React.ComponentProps<As>,
-  {
-    as?: As;
-  }
->;
-
-export const MenuButton = <As extends React.ElementType>({
+export const MenuTrigger = <As extends React.ElementType = typeof Button>({
   as: asComp,
   children,
   ...props
-}: MenuButtonProps<As>) => {
+}: PolymorphicProps<object, As>) => {
   const Component = asComp ?? Button;
-  const { menuButtonProps } = useMenuContext();
+  const { menuTriggerProps } = useMenuContext();
   return (
-    <Component {...props} {...menuButtonProps}>
+    <Component {...props} {...menuTriggerProps}>
       {children}
     </Component>
   );
@@ -243,11 +291,11 @@ export type MenuListProps<As extends React.ElementType> = Omit<
   'isOpen' | 'onClose' | 'reference' | 'popoverElement'
 >;
 
-export const MenuList = <As extends React.ElementType>({
+export const MenuList = <As extends React.ElementType = 'div'>({
   children,
   ...props
 }: MenuListProps<As>) => {
-  const { popover, menuListProps } = useMenuContext();
+  const { popover, menuListProps, type } = useMenuContext();
 
   return (
     <PopoverMenuCard
@@ -256,10 +304,10 @@ export const MenuList = <As extends React.ElementType>({
       reference={popover.reference}
       popoverElement={popover.popover}
       container={null}
-      {...props}
+      {...(props as React.ComponentPropsWithoutRef<As>)}
       {...menuListProps}
     >
-      {children}
+      {type === 'navigation' ? <ul>{children}</ul> : children}
     </PopoverMenuCard>
   );
 };

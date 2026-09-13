@@ -14,12 +14,12 @@ import { Blurhash } from '@/mastodon/components/blurhash';
 import { IconButton } from '@/mastodon/components/button/redesign';
 import {
   Menu,
-  MenuButton,
+  MenuTrigger,
   MenuItem,
   MenuItemDivider,
   MenuList,
-  useMenuContext,
 } from '@/mastodon/components/menu';
+import { StatusImage } from '@/mastodon/components/status/image';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 
 import classes from './attachments.module.scss';
@@ -44,47 +44,29 @@ export const ComposeUpload: React.FC<{
     return <ComposeAudioUpload attachment={attachment} />;
   }
 
-  let x = 50;
-  let y = 50;
-  const focusX = attachment.meta.focus?.x;
-  const focusY = attachment.meta.focus?.y;
-  if (focusX && focusY) {
-    x = (focusX / 2 + 0.5) * 100;
-    y = (focusY / -2 + 0.5) * 100;
-  }
-
   return (
-    <div
-      className={classNames(classes.mediaUpload, className)}
-      style={{
-        backgroundImage:
-          !sensitive && attachment.preview_url
-            ? `url(${attachment.preview_url})`
-            : undefined,
-        backgroundPosition: `${x}% ${y}%`,
-        aspectRatio: single
-          ? `${attachment.meta.original.width} / ${attachment.meta.original.height}`
-          : undefined,
-      }}
-      data-color-scheme='dark'
+    <StatusImage
+      attachment={attachment}
+      className={classNames(className, classes.mediaUpload)}
+      sensitive={sensitive}
     >
       {sensitive && attachment.blurhash && (
         <Blurhash hash={attachment.blurhash} className={classes.blurHash} />
       )}
 
       <Menu>
-        <MenuButton
+        <MenuTrigger
           as={IconButton}
           icon={DotsThreeIcon}
           size='sm'
-          color='neutral'
+          variant='solid'
           className={classes.mediaMenuButton}
         >
           <FormattedMessage
             id='compose.upload.menu'
             defaultMessage='Add alt text or remove the image'
           />
-        </MenuButton>
+        </MenuTrigger>
 
         <ComposeUploadMenu attachment={attachment} single={single} />
       </Menu>
@@ -94,7 +76,7 @@ export const ComposeUpload: React.FC<{
           <FormattedMessage id='compose.upload.alt' defaultMessage='Alt' />
         </span>
       )}
-    </div>
+    </StatusImage>
   );
 };
 
@@ -105,22 +87,17 @@ const ComposeUploadMenu: React.FC<{
   const dispatch = useAppDispatch();
   const id = attachment.id;
 
-  const { popover } = useMenuContext();
-
   const handleEdit = useCallback(() => {
-    popover.closeMenu();
     dispatch(
       openModal({ modalType: 'FOCAL_POINT', modalProps: { mediaId: id } }),
     );
-  }, [dispatch, id, popover]);
+  }, [dispatch, id]);
   const handleRearrange = useCallback(() => {
-    popover.closeMenu();
     dispatch(openModal({ modalType: 'COMPOSER_REARRANGE', modalProps: {} }));
-  }, [dispatch, popover]);
+  }, [dispatch]);
   const handleDelete = useCallback(() => {
-    popover.closeMenu();
     dispatch(undoUploadCompose(id));
-  }, [dispatch, id, popover]);
+  }, [dispatch, id]);
 
   return (
     <MenuList placement='bottom-end' offset={4} maxWidth={170}>

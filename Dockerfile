@@ -210,7 +210,7 @@ FROM media-build AS libvips
 
 # libvips version to compile, change with [--build-arg VIPS_VERSION="8.15.2"]
 # renovate: datasource=github-releases depName=libvips packageName=libvips/libvips
-ARG VIPS_VERSION=8.18.5
+ARG VIPS_VERSION=8.18.6
 # libvips download URL, change with [--build-arg VIPS_URL="https://github.com/libvips/libvips/releases/download"]
 ARG VIPS_URL=https://github.com/libvips/libvips/releases/download
 
@@ -399,7 +399,7 @@ RUN \
 
 RUN \
   # Precompile bootsnap code for faster Rails startup
-  bundle exec bootsnap precompile --gemfile app/ lib/;
+  bundle exec bootsnap precompile --gemfile app/ lib/ config/;
 
 RUN \
   # Pre-create and chown system volume to Mastodon user

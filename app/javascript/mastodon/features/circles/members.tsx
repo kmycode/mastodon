@@ -7,9 +7,9 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from '@unhead/react/helmet';
 import { useDebouncedCallback } from 'use-debounce';
 
+import { ColumnSearchHeader } from '@/mastodon/components/column/search_header';
 import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';
 import AddIcon from '@/material-icons/400-24px/add.svg?react';
-import ArrowBackIcon from '@/material-icons/400-24px/arrow_back.svg?react';
 import SquigglyArrow from '@/svg-icons/squiggly_arrow.svg?react';
 import { fetchFollowers } from 'mastodon/actions/accounts';
 import { fetchCircle } from 'mastodon/actions/circles';
@@ -31,7 +31,6 @@ import { DisplayName } from 'mastodon/components/display_name';
 import { Icon } from 'mastodon/components/icon';
 import ScrollableList from 'mastodon/components/scrollable_list';
 import { ShortNumber } from 'mastodon/components/short_number';
-import { ButtonInTabsBar } from 'mastodon/features/ui/util/columns_context';
 import { me } from 'mastodon/initial_state';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
@@ -51,54 +50,6 @@ const messages = defineMessages({
 });
 
 type Mode = 'remove' | 'add';
-
-const ColumnSearchHeader: React.FC<{
-  onBack: () => void;
-  onSubmit: (value: string) => void;
-}> = ({ onBack, onSubmit }) => {
-  const intl = useIntl();
-  const [value, setValue] = useState('');
-
-  const handleChange = useCallback(
-    ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(value);
-      onSubmit(value);
-    },
-    [setValue, onSubmit],
-  );
-
-  const handleSubmit = useCallback(() => {
-    onSubmit(value);
-  }, [onSubmit, value]);
-
-  return (
-    <ButtonInTabsBar>
-      <form className='column-search-header' onSubmit={handleSubmit}>
-        <button
-          type='button'
-          className='column-header__back-button compact'
-          onClick={onBack}
-          aria-label={intl.formatMessage(messages.back)}
-        >
-          <Icon
-            id='chevron-left'
-            icon={ArrowBackIcon}
-            className='column-back-button__icon'
-          />
-        </button>
-
-        <input
-          type='search'
-          value={value}
-          onChange={handleChange}
-          placeholder={intl.formatMessage(messages.placeholder)}
-          /* eslint-disable-next-line jsx-a11y/no-autofocus */
-          autoFocus
-        />
-      </form>
-    </ButtonInTabsBar>
-  );
-};
 
 const AccountItem: React.FC<{
   accountId: string;
@@ -300,8 +251,12 @@ const CircleMembers: React.FC<{
         />
       ) : (
         <ColumnSearchHeader
+          placeholder={intl.formatMessage(messages.placeholder)}
           onBack={handleDismissSearchClick}
           onSubmit={handleSearch}
+          onActivate={handleSearchClick}
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          active={mode === 'add'}
         />
       )}
 

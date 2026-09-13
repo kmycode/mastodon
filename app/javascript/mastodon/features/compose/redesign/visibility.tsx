@@ -1,5 +1,4 @@
-import type React from 'react';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -17,17 +16,17 @@ import {
 import { openModal } from '@/mastodon/actions/modal';
 import type { ApiQuotePolicy } from '@/mastodon/api_types/quotes';
 import type { StatusVisibility } from '@/mastodon/api_types/statuses';
+import { Button, CaretIcon } from '@/mastodon/components/button/redesign';
 import { DisplayNameSimple } from '@/mastodon/components/display_name/simple';
 import {
   Menu,
   MenuList,
-  MenuButton,
+  MenuTrigger,
   MenuItemDivider,
   MenuItemGroup,
   MenuItem,
   MenuItemRadio,
   MenuItemCheckbox,
-  useMenuContext,
 } from '@/mastodon/components/menu';
 import { selectPlainAccount } from '@/mastodon/selectors/accounts';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
@@ -38,6 +37,7 @@ export const ComposeVisibility: React.FC<{ className?: string }> = ({
   className,
 }) => {
   const privacy = useAppSelector(selectComposePrivacy);
+  const isEditing = useAppSelector((state) => !!state.compose.get('id'));
 
   return (
     <div className={className}>
@@ -47,9 +47,14 @@ export const ComposeVisibility: React.FC<{ className?: string }> = ({
         description='Before button that indicates who a post is for (Public, Followers, mentioned people)'
       />
       <Menu>
-        <MenuButton size='sm'>
+        <MenuTrigger
+          as={Button}
+          size='sm'
+          trailingIcon={CaretIcon}
+          disabled={isEditing}
+        >
           <ComposeVisibilityButtonText privacy={privacy} />
-        </MenuButton>
+        </MenuTrigger>
 
         {privacy !== 'direct' ? (
           <ComposeVisibilityMenu />
@@ -110,7 +115,14 @@ const ComposeVisibilityMenu: React.FC = () => {
   const defaultQuotePolicy = useAppSelector(
     (state) => state.compose.get('default_quote_policy') as ApiQuotePolicy,
   );
+
+  // Track the last public quote policy, so the picker remembers what was last used before quoting was disabled.
+  const [lastQuotePolicy, setLastQuotePolicy] = useState(
+    defaultQuotePolicy !== 'nobody' ? defaultQuotePolicy : 'public',
+  );
   const quotePolicy = currentQuotePolicy ?? defaultQuotePolicy;
+
+  const isReply = useAppSelector((state) => !!state.compose.get('in_reply_to'));
 
   const dispatch = useAppDispatch();
   const handlePrivacyChange = useCallback(
@@ -131,36 +143,36 @@ const ComposeVisibilityMenu: React.FC = () => {
     },
     [defaultPrivacy, dispatch, privacy],
   );
+
   const handleQuotePolicyChange = useCallback(
     ({ value, checked }: { value: string; checked?: boolean }) => {
       let newQuotePolicy: ApiQuotePolicy = 'nobody';
       switch (value) {
         case 'public':
           newQuotePolicy = 'public';
+          setLastQuotePolicy(newQuotePolicy);
           break;
         case 'followers':
           newQuotePolicy = 'followers';
+          setLastQuotePolicy(newQuotePolicy);
           break;
         case 'others':
           // If it's not checked, then it's nobody.
           if (checked) {
             // Only use the default if it's not nobody, as then it'll never be enabled.
-            newQuotePolicy =
-              defaultQuotePolicy !== 'nobody' ? defaultQuotePolicy : 'public';
+            newQuotePolicy = lastQuotePolicy;
           }
           break;
       }
       dispatch(setComposeQuotePolicy(newQuotePolicy));
     },
-    [defaultQuotePolicy, dispatch],
+    [dispatch, lastQuotePolicy],
   );
 
-  const { popover } = useMenuContext();
   const handleSwitchToMessage: React.MouseEventHandler<HTMLButtonElement> =
     useCallback(() => {
-      popover.closeMenu();
       dispatch(changeComposeVisibility('direct'));
-    }, [dispatch, popover]);
+    }, [dispatch]);
 
   return (
     <MenuList placement='bottom-start' offset={4} maxWidth={280}>
@@ -177,6 +189,7 @@ const ComposeVisibilityMenu: React.FC = () => {
           value='public'
           checked={privacy === 'public' || privacy === 'unlisted'}
           onChange={handlePrivacyChange}
+          keepMenuOpenOnClick
         >
           <FormattedMessage id='privacy.public.short' defaultMessage='Public' />
         </MenuItemRadio>
@@ -186,6 +199,7 @@ const ComposeVisibilityMenu: React.FC = () => {
           value='private'
           checked={privacy === 'private'}
           onChange={handlePrivacyChange}
+          keepMenuOpenOnClick
         >
           <FormattedMessage
             id='privacy.private.short'
@@ -201,6 +215,7 @@ const ComposeVisibilityMenu: React.FC = () => {
           checked={privacy === 'public'}
           onChange={handlePrivacyChange}
           icon={MagnifyingGlassIcon}
+          keepMenuOpenOnClick
         >
           <FormattedMessage
             id='compose.discoverable'
@@ -214,6 +229,7 @@ const ComposeVisibilityMenu: React.FC = () => {
           checked={quotePolicy !== 'nobody' && privacy !== 'private'}
           onChange={handleQuotePolicyChange}
           icon={QuotesIcon}
+          keepMenuOpenOnClick
         >
           <FormattedMessage
             id='compose.quotable'
@@ -236,6 +252,7 @@ const ComposeVisibilityMenu: React.FC = () => {
             value='public'
             checked={quotePolicy === 'public'}
             onChange={handleQuotePolicyChange}
+            keepMenuOpenOnClick
           >
             <FormattedMessage
               id='compose.visibility.quote_policy.anyone'
@@ -248,6 +265,7 @@ const ComposeVisibilityMenu: React.FC = () => {
             value='followers'
             checked={quotePolicy === 'followers'}
             onChange={handleQuotePolicyChange}
+            keepMenuOpenOnClick
           >
             <FormattedMessage
               id='compose.visibility.quote_policy.followers'
@@ -260,11 +278,18 @@ const ComposeVisibilityMenu: React.FC = () => {
       <MenuItemDivider />
 
       <MenuItem icon={ChatCircleIcon} onClick={handleSwitchToMessage}>
-        <FormattedMessage
-          id='compose.post.to_message'
-          defaultMessage='Compose a message instead'
-          description='Message refers to a direct message. For languages where this is confusing, "chat" or "direct message" can be used.'
-        />
+        {isReply ? (
+          <FormattedMessage
+            id='compose.post.to_private_reply'
+            defaultMessage='Reply privately instead'
+          />
+        ) : (
+          <FormattedMessage
+            id='compose.post.to_message'
+            defaultMessage='Compose a message instead'
+            description='Message refers to a direct message. For languages where this is confusing, "chat" or "direct message" can be used.'
+          />
+        )}
       </MenuItem>
     </MenuList>
   );
@@ -272,14 +297,14 @@ const ComposeVisibilityMenu: React.FC = () => {
 
 const ComposeDirectMenu: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { popover } = useMenuContext();
   const handleSwitchToPost: React.MouseEventHandler<HTMLButtonElement> =
     useCallback(() => {
       dispatch(
         openModal({ modalType: 'COMPOSER_SWITCH_TO_POST', modalProps: {} }),
       );
-      popover.closeMenu();
-    }, [dispatch, popover]);
+    }, [dispatch]);
+
+  const isReply = useAppSelector((state) => !!state.compose.get('in_reply_to'));
 
   return (
     <MenuList placement='bottom-start' offset={4} maxWidth={280}>
@@ -302,10 +327,17 @@ const ComposeDirectMenu: React.FC = () => {
       <MenuItemDivider />
 
       <MenuItem icon={NewspaperIcon} onClick={handleSwitchToPost}>
-        <FormattedMessage
-          id='compose.visibility.to_post'
-          defaultMessage='Compose a post instead'
-        />
+        {isReply ? (
+          <FormattedMessage
+            id='compose.visibility.to_reply'
+            defaultMessage='Reply publicly instead'
+          />
+        ) : (
+          <FormattedMessage
+            id='compose.visibility.to_post'
+            defaultMessage='Compose a post instead'
+          />
+        )}
       </MenuItem>
     </MenuList>
   );

@@ -72,6 +72,10 @@ de:
       disable_sign_in_token_auth: E-Mail-Token-Authentisierung deaktivieren
       disable_two_factor_authentication: Zwei-Faktor-Authentisierung (2FA) deaktivieren
       disabled: Eingefroren
+      discoverable:
+        disabled: Autor*in hat sich dafür entschieden, nicht entdeckt zu werden
+        enabled: Autor*in hat sich dafür entschieden, entdeckt zu werden
+        title: Entdecken
       display_name: Anzeigename
       domain: Domain
       edit: Bearbeiten
@@ -81,6 +85,12 @@ de:
       enable_sign_in_token_auth: E-Mail-Token-Authentisierung aktivieren
       enabled: Freigegeben
       enabled_msg: Konto von %{username} erfolgreich freigegeben
+      follow_recommendations:
+        allowed: Erlaubt
+        suppress: Follower-Empfehlungen unterbinden
+        suppressed: Unterbunden
+        title: Follower-Empfehlungen
+        unsuppress: Follower-Empfehlungen wiederherstellen
       followers: Follower
       follows: Folge ich
       header: Titelbild
@@ -165,6 +175,12 @@ de:
       suspension_irreversible: Die Daten dieses Kontos wurden unwiderruflich gelöscht. Du kannst die Kontosperrung aufheben, damit es wieder aktiv ist und funktioniert, aber es werden keine früheren Daten wiederhergestellt.
       suspension_reversible_hint_html: Das Konto wurde gesperrt und die Daten werden am %{date} vollständig gelöscht. Bis dahin kann das Konto ohne irgendwelche negativen Auswirkungen wiederhergestellt werden. Wenn du alle Daten des Kontos sofort entfernen möchtest, kannst du das nachfolgend tun.
       title: Konten
+      trends:
+        allow: Erlauben
+        allowed: Erlaubt
+        disallow: Erlauben
+        disallowed: Verwehrt
+        title: Trends
       unblock_email: Blockierung der E-Mail-Adresse aufheben
       unblocked_email_msg: E-Mail-Adresse von %{username} erfolgreich entsperrt
       unconfirmed_email: Unbestätigte E-Mail-Adresse
@@ -637,7 +653,7 @@ de:
       suppress: Folgeempfehlung unterbinden
       suppressed: Unterdrückt
       title: Follower-Empfehlungen
-      unsuppress: Folgeempfehlung nicht mehr unterbinden
+      unsuppress: Follower-Empfehlungen wiederherstellen
     instances:
       audit_log:
         title: Neueste Protokolle
@@ -1596,6 +1612,7 @@ de:
       content: Wir bitten um Verzeihung, aber etwas ist bei uns schiefgegangen.
       title: Diese Seite enthält einen Fehler
     '503': Die Seite konnte wegen eines temporären Serverfehlers nicht angezeigt werden.
+    go_home: Zur Startseite
     noscript_html: Bitte aktiviere JavaScript, um das Webinterface von Mastodon zu verwenden. Alternativ kannst du auch eine der <a href="%{apps_path}">nativen Apps</a> für Mastodon verwenden.
   existing_username_validator:
     not_found: kann kein lokales Konto mit diesem Profilnamen finden
@@ -1692,6 +1709,7 @@ de:
       incompatible_type: Inkompatibel mit dem ausgewählten Importtyp
       invalid_csv_file: 'Ungültige CSV-Datei. Fehler: %{error}'
       invalid_json_file: 'Ungültige JSON-Datei. Fehler: %{error}'
+      no_data: Diese Datei enthält keinerlei Daten, die zu diesem Dateitypen passen
       over_rows_processing_limit: enthält mehr als %{count} Zeilen
       status_not_found_warning: Einige deiner Filter blenden bestimmte Beiträge aus, die diesem Server nicht bekannt sind. Diese Beiträge werden nicht automatisch gefiltert, wenn sie dem Server später bekannt werden.
       too_large: Datei ist zu groß

@@ -5,7 +5,8 @@
 @mixin type-heading-lg {
   font-family: var(--font-heading);
   font-size: var(--fs-3xl);
-  font-weight: bold;
+  font-weight: 500;
+  font-variation-settings: 'GEOM' 50;
   line-height: var(--lh-tighter);
   letter-spacing: var(--ls-tighter);
 }
@@ -13,7 +14,8 @@
 @mixin type-heading-md {
   font-family: var(--font-heading);
   font-size: var(--fs-2xl);
-  font-weight: bold;
+  font-weight: 500;
+  font-variation-settings: 'GEOM' 50;
   line-height: var(--lh-tighter);
   letter-spacing: var(--ls-tight);
 }
@@ -21,7 +23,8 @@
 @mixin type-heading-sm {
   font-family: var(--font-heading);
   font-size: var(--fs-xl);
-  font-weight: bold;
+  font-weight: 500;
+  font-variation-settings: 'GEOM' 50;
   line-height: var(--lh-tight);
   letter-spacing: var(--ls-tight);
 }
@@ -95,13 +98,44 @@
  */
 
 @mixin elevation-1 {
-  border: 1px solid var(--color-border-strong);
+  border: var(--border-w-normal) solid var(--color-border-strong);
   box-shadow: 0 1px 0 var(--color-border-strong);
 }
 
 @mixin elevation-2 {
-  border: 1px solid var(--color-border-strong);
+  border: var(--border-w-normal) solid var(--color-border-strong);
   box-shadow: 1px 2px 0 var(--color-border-strong);
+}
+
+/**
+ * Focus styles
+ */
+
+@mixin focus($offset: false) {
+  outline: var(--border-w-strong) solid var(--color-border-brand);
+
+  @if $offset not false {
+    outline-offset: var(--border-w-strong);
+  }
+}
+
+/**
+ * Scroll gradient
+ */
+
+@mixin scroll-gradient($position, $background-color: var(--color-bg-primary)) {
+  content: '';
+  position: absolute;
+  @if $position == 'top' {
+    top: 100%;
+  } @else {
+    bottom: 100%;
+  }
+
+  inset-inline: 0;
+  height: calc(var(--space-4xl) * 2);
+  background: linear-gradient(to $position, transparent, $background-color);
+  pointer-events: none;
 }
 
 /**
@@ -116,7 +150,7 @@
   background: var(--color-bg-secondary);
   color: var(--color-text-primary);
   border-radius: 4px;
-  border: 1px solid var(--color-border-primary);
+  border: var(--border-w-normal) solid var(--color-border-primary);
   font-size: 17px;
   line-height: normal;
   margin: 0;

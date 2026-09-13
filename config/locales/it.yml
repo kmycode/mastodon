@@ -72,6 +72,10 @@ it:
       disable_sign_in_token_auth: Disabilitare l'autenticazione del token e-mail
       disable_two_factor_authentication: Disabilita A2F
       disabled: Congelato
+      discoverable:
+        disabled: L’autore/trice non ha optato di essere scopribile
+        enabled: L’autore/trice ha optato di essere scopribile
+        title: Scopribile
       display_name: Nome mostrato
       domain: Dominio
       edit: Modifica
@@ -81,6 +85,12 @@ it:
       enable_sign_in_token_auth: Abilitare l'autenticazione del token e-mail
       enabled: Abilitato
       enabled_msg: Il profilo di %{username} è stato scongelato correttamente
+      follow_recommendations:
+        allowed: Autorizzati
+        suppress: Nascondi qualsiasi suggerimento di account
+        suppressed: Nascosti
+        title: Suggerimenti di account
+        unsuppress: Ripristina qualsiasi suggerimento di account
       followers: Follower
       follows: Seguiti
       header: Intestazione
@@ -165,6 +175,12 @@ it:
       suspension_irreversible: I dati di questo profilo sono stati eliminati irreversibilmente. Puoi annullare la sospensione del profilo per renderlo utilizzabile, ma non recuperà alcun dato precedente.
       suspension_reversible_hint_html: Il profilo è stato sospeso e i dati saranno rimossi completamente il %{date}. Fino ad allora, il profilo è ripristinabile senza alcun effetto negativo. Se desideri rimuovere immediatamente tutti i dati del profilo, puoi farlo di seguito.
       title: Profili
+      trends:
+        allow: Autorizza
+        allowed: Autorizzati
+        disallow: Non autorizzare
+        disallowed: Non autorizzati
+        title: Post di tendenza
       unblock_email: Sblocca indirizzo email
       unblocked_email_msg: Indirizzo email di %{username} sbloccato correttamente
       unconfirmed_email: Email non confermata
@@ -1596,6 +1612,7 @@ it:
       content: Siamo spiacenti, ma qualcosa non ha funzionato dal nostro lato.
       title: Questa pagina non è corretta
     '503': La pagina non può essere trasmessa a causa di un errore temporaneo del server.
+    go_home: Vai alla Home
     noscript_html: Per usare l'interfaccia web di Mastodon dovi abilitare JavaScript. In alternativa puoi provare una delle <a href="%{apps_path}">app native</a> per Mastodon per la tua piattaforma.
   existing_username_validator:
     not_found: impossibile trovare un utente locale con quel nome utente
@@ -1692,6 +1709,7 @@ it:
       incompatible_type: Incompatibile con il tipo di importazione selezionato
       invalid_csv_file: 'File CSV non valido. Errore: %{error}'
       invalid_json_file: 'File JSON non valido. Errore: %{error}'
+      no_data: Questo file non contiene dati corrispondenti al tipo di importazione specificato
       over_rows_processing_limit: contiene più di %{count} righe
       status_not_found_warning: Alcuni dei tuoi filtri nascondono post specifici che non sono noti a questo server. Questi post non verranno filtrati automaticamente se vengono scoperti in seguito dal server.
       too_large: Il file è troppo grande

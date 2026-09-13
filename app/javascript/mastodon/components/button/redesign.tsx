@@ -6,6 +6,8 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import type { LinkProps } from 'react-router-dom';
 
+import { CaretDownIcon } from '@phosphor-icons/react';
+
 import { CircularProgress } from '../circular_progress';
 import type { IconProp } from '../icon';
 import { Icon } from '../icon';
@@ -16,12 +18,22 @@ export const buttonClasses = classes;
 
 interface ButtonPropsBase<As extends 'a' | 'button'> {
   size?: 'lg' | 'md' | 'sm' | 'xs';
-  variant?: 'solid' | 'ghost';
-  color?: 'accent' | 'neutral' | 'tonal' | 'destructive';
+  variant?: 'solid' | 'tonal' | 'ghost';
+  color?: 'accent' | 'neutral' | 'destructive';
   onClick?: React.MouseEventHandler<
     As extends 'button' ? HTMLButtonElement : HTMLAnchorElement
   >;
   loading?: boolean;
+  /**
+   * Prevents visual highlight on the button when `aria-expanded`
+   * or `aria-pressed` are used.
+   */
+  noActiveHighlight?: boolean;
+  /**
+   * Adds a negative margin to a button to align the text
+   * with the starting edge of its parent.
+   */
+  clipPadding?: boolean;
   children: ReactNode;
 }
 
@@ -32,17 +44,19 @@ type ButtonAnchorProps = { as: 'a' } & ButtonPropsBase<'a'> &
 type ButtonLinkProps = { as: 'link' } & ButtonPropsBase<'a'> &
   Omit<LinkProps, 'children'>;
 
-type ButtonProps = ButtonButtonProps | ButtonAnchorProps | ButtonLinkProps;
+type BaseButtonProps = ButtonButtonProps | ButtonAnchorProps | ButtonLinkProps;
 
-const BaseButton: React.FC<ButtonProps> = ({
+const BaseButton: React.FC<BaseButtonProps> = ({
   size = 'md',
-  variant = 'solid',
-  color = 'tonal',
+  variant = 'tonal',
+  color = 'neutral',
   as: asComp = 'button',
   children,
   className,
   onClick,
   loading,
+  clipPadding,
+  noActiveHighlight,
   'aria-disabled': ariaDisabled,
   'aria-live': ariaLive,
   ...props
@@ -77,6 +91,8 @@ const BaseButton: React.FC<ButtonProps> = ({
         classes[size],
         classes[color],
         classes[variant],
+        clipPadding && classes.clipPadding,
+        noActiveHighlight && classes.noActiveHighlight,
       )}
       onClick={handleClick}
       // Disabled buttons can't have focus, so we don't really
@@ -91,25 +107,34 @@ const BaseButton: React.FC<ButtonProps> = ({
   );
 };
 
-export const Button: React.FC<
-  ButtonProps & {
-    leadingIcon?: IconProp;
-    trailingIcon?: IconProp;
-  }
-> = ({ children, leadingIcon, trailingIcon, ...props }) => (
+type ButtonProps = BaseButtonProps & {
+  leadingIcon?: IconProp;
+  trailingIcon?: IconProp;
+};
+
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  leadingIcon,
+  trailingIcon,
+  ...props
+}) => (
   <BaseButton {...props}>
     {leadingIcon && !props.loading && (
       <Icon id='leading' icon={leadingIcon} className={classes.icon} />
     )}
     {props.loading && <LoadingIcon />}
-    <span className={classes.content}>{children}</span>
+    {children}
     {trailingIcon && (
       <Icon id='trailing' icon={trailingIcon} className={classes.icon} />
     )}
   </BaseButton>
 );
 
-export const IconButton: React.FC<ButtonProps & { icon: IconProp }> = ({
+export type IconButtonProps = BaseButtonProps & {
+  icon: IconProp;
+};
+
+export const IconButton: React.FC<IconButtonProps> = ({
   icon,
   className,
   children,
@@ -125,11 +150,48 @@ export const IconButton: React.FC<ButtonProps & { icon: IconProp }> = ({
   </BaseButton>
 );
 
+export const CaretIcon = (
+  props: React.SVGProps<SVGSVGElement> & { title?: string },
+) => (
+  <CaretDownIcon
+    {...props}
+    className={classNames(props.className, classes.iconCustom)}
+    weight='fill'
+    size={12}
+  />
+);
+
 const LoadingIcon: React.FC = () => (
   <CircularProgress
     size={10}
     strokeWidth={1}
     className={classes.loading}
     role='none'
+  />
+);
+
+export const ToggleButton: React.FC<ButtonProps & { active?: boolean }> = ({
+  active,
+  className,
+  ...props
+}) => (
+  <Button
+    aria-pressed={active}
+    {...props}
+    // Toggle buttons always have neutral until pressed.
+    color='neutral'
+    className={classNames(className, classes.toggle)}
+  />
+);
+
+export const ToggleIconButton: React.FC<
+  IconButtonProps & { active?: boolean }
+> = ({ active, className, ...props }) => (
+  <IconButton
+    aria-pressed={active}
+    {...props}
+    // Toggle buttons always have neutral until pressed.
+    color='neutral'
+    className={classNames(className, classes.toggle)}
   />
 );

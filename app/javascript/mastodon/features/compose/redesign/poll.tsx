@@ -113,7 +113,10 @@ export const ComposePoll: React.FC = () => {
     useCallback(
       (event) => {
         dispatch(
-          changePollSettings(Number.parseInt(event.target.value), multiple),
+          changePollSettings(
+            Number.parseInt(event.target.value) / 1000,
+            multiple,
+          ),
         );
       },
       [dispatch, multiple],
@@ -181,15 +184,15 @@ export const ComposePoll: React.FC = () => {
             className={classNames(
               classes.pollDurationSelect,
               buttonClasses.base,
-              buttonClasses.solid,
               buttonClasses.tonal,
+              buttonClasses.neutral,
               buttonClasses.xs,
             )}
           >
             {pollDurationOptions.map((duration) => {
               const { message, multiplier } = durationToMessage(duration);
               return (
-                <option key={duration} value={duration}>
+                <option key={duration} value={duration / 1000}>
                   {intl.formatMessage(message, {
                     number: duration / multiplier,
                   })}

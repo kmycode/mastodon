@@ -83,15 +83,14 @@ export const ComposeFooter: React.FC<{ onEmojiPick: OnEmojiPick }> = ({
         </span>
 
         <Button
-          color='neutral'
+          variant='solid'
           type='submit'
           disabled={!canSubmit}
           loading={isSubmitting}
         >
-          {type !== 'message' && (
+          {type !== 'message' && type !== 'replyPrivate' ? (
             <FormattedMessage id='compose.publish' defaultMessage='Publish' />
-          )}
-          {type === 'message' && (
+          ) : (
             <FormattedMessage
               id='compose.message.publish'
               defaultMessage='Send'

@@ -8,17 +8,18 @@ import {
 
 import { useLocation } from 'react-router-dom';
 
-import { polymorphicForwardRef } from '@/types/polymorphic';
+import type { PolymorphicProps } from '@/types/polymorphic';
 
 import type { MastodonLocation } from '../router';
 
 export const FOCUS_TARGET = {
   POST: 'detailed-status',
+  SEARCH: 'search',
 } as const;
 
-export type FocusTarget =
-  | boolean
-  | (typeof FOCUS_TARGET)[keyof typeof FOCUS_TARGET];
+export type NamedFocusTarget = (typeof FOCUS_TARGET)[keyof typeof FOCUS_TARGET];
+
+export type FocusTarget = boolean | NamedFocusTarget;
 
 const FocusTargetContext = createContext<React.RefObject<FocusTarget> | null>(
   null,
@@ -98,7 +99,7 @@ export const FocusTargetProvider: React.FC<{
   );
 };
 
-export function useFocusOnNavigation(targetName?: string) {
+export function useFocusOnNavigation(targetName?: NamedFocusTarget) {
   const focusTargetRef = useContext(FocusTargetContext);
 
   return useCallback(
@@ -110,7 +111,11 @@ export function useFocusOnNavigation(targetName?: string) {
         return;
       }
 
-      if (focusTarget === true || focusTarget === targetName) {
+      const shouldSetFocus = targetName
+        ? focusTarget === targetName
+        : focusTarget === true;
+
+      if (shouldSetFocus) {
         setTimeout(() => {
           element.focus({ preventScroll: true });
         }, 0);
@@ -121,13 +126,16 @@ export function useFocusOnNavigation(targetName?: string) {
 }
 
 interface FocusTargetElementProps extends React.ComponentPropsWithoutRef<'h1'> {
-  focusTargetName?: string;
+  focusTargetName?: NamedFocusTarget;
 }
 
-export const NavigationFocusTarget = polymorphicForwardRef<
-  'h1',
-  FocusTargetElementProps
->(({ as: Component = 'h1', focusTargetName, children, ...otherProps }) => {
+export const NavigationFocusTarget = <As extends React.ElementType = 'h1'>({
+  as: asComp,
+  focusTargetName,
+  children,
+  ...otherProps
+}: PolymorphicProps<FocusTargetElementProps, As>) => {
+  const Component = asComp ?? 'h1';
   const focusOnNavigation = useFocusOnNavigation(focusTargetName);
 
   return (
@@ -135,4 +143,4 @@ export const NavigationFocusTarget = polymorphicForwardRef<
       {children}
     </Component>
   );
-});
+};

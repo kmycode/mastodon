@@ -41,6 +41,10 @@ const randomUpTo = max =>
  */
 
 /**
+ * @typedef {(dispatch: Dispatch, getState: GetState) => () => void} StreamThunk
+ */
+
+/**
  * @param {string} timelineId
  * @param {string} channelName
  * @param {Object.<string, string>} params
@@ -48,7 +52,7 @@ const randomUpTo = max =>
  * @param {FallbackFunction} [options.fallback]
  * @param {() => UnknownAction} [options.fillGaps]
  * @param {(status: object) => boolean} [options.accept]
- * @returns {() => void}
+ * @returns {StreamThunk}
  */
 export const connectTimelineStream = (timelineId, channelName, params = {}, options = {}) => {
   const { messages } = getLocale();
@@ -164,7 +168,7 @@ async function refreshHomeTimelineAndNotification(dispatch) {
 }
 
 /**
- * @returns {() => void}
+ * @returns {StreamThunk}
  */
 export const connectUserStream = () =>
   connectTimelineStream('home', 'user', {}, {
@@ -176,7 +180,7 @@ export const connectUserStream = () =>
 /**
  * @param {Object} options
  * @param {boolean} [options.onlyMedia]
- * @returns {() => void}
+ * @returns {StreamThunk}
  */
 export const connectCommunityStream = ({ onlyMedia } = {}) =>
   connectTimelineStream(`community${onlyMedia ? ':media' : ''}`, `public:local${onlyMedia ? ':media' : ''}`, {}, {
@@ -188,7 +192,7 @@ export const connectCommunityStream = ({ onlyMedia } = {}) =>
  * @param {Object} options
  * @param {boolean} [options.onlyMedia]
  * @param {boolean} [options.onlyRemote]
- * @returns {() => void}
+ * @returns {StreamThunk}
  */
 export const connectPublicStream = ({ onlyMedia, onlyRemote } = {}) =>
   connectTimelineStream(`public${onlyRemote ? ':remote' : ''}${onlyMedia ? ':media' : ''}`, `public${onlyRemote ? ':remote' : ''}${onlyMedia ? ':media' : ''}`, {}, {
@@ -201,20 +205,20 @@ export const connectPublicStream = ({ onlyMedia, onlyRemote } = {}) =>
  * @param {string} tagName
  * @param {boolean} onlyLocal
  * @param {(status: object) => boolean} accept
- * @returns {() => void}
+ * @returns {StreamThunk}
  */
 export const connectHashtagStream = (columnId, tagName, onlyLocal, accept) =>
   connectTimelineStream(`hashtag:${columnId}${onlyLocal ? ':local' : ''}`, `hashtag${onlyLocal ? ':local' : ''}`, { tag: tagName }, { accept });
 
 /**
- * @returns {() => void}
+ * @returns {StreamThunk}
  */
 export const connectDirectStream = () =>
   connectTimelineStream('direct', 'direct');
 
 /**
  * @param {string} listId
- * @returns {() => void}
+ * @returns {StreamThunk}
  */
 export const connectListStream = listId =>
   connectTimelineStream(`list:${listId}`, 'list', { list: listId }, {
@@ -224,7 +228,7 @@ export const connectListStream = listId =>
 
 /**
  * @param {string} antennaId
- * @returns {() => void}
+ * @returns {StreamThunk}
  */
 export const connectAntennaStream = antennaId =>
   connectTimelineStream(`antenna:${antennaId}`, 'antenna', { antenna: antennaId }, {
