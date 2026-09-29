@@ -86,10 +86,10 @@ fr:
       enabled: Activé
       enabled_msg: Le compte de %{username} a été activé avec succès
       follow_recommendations:
-        allowed: Autorisé
-        suppress: Supprimer toute recommandation de suivi
-        suppressed: Supprimée
-        title: Suivre les recommandations
+        allowed: Autorisées
+        suppress: Supprimer les recommandations d'abonnement
+        suppressed: Supprimées
+        title: Recommandations d'abonnement
         unsuppress: Rétablir les recommandations d'abonnement
       followers: Abonné·e·s
       follows: Abonnements
@@ -135,11 +135,12 @@ fr:
       public: Public
       push_subscription_expires: Expiration de l’abonnement PuSH
       redownload: Rafraîchir le profil
-      redownloaded_msg: Le profil de %{username} a été actualisé avec succès depuis l’origine
+      redownloaded_msg: Le profil de %{username} a été actualisé avec succès depuis son serveur d'origine
+      registration_app: Application d'inscription
       reject: Rejeter
       rejected_msg: La demande d’inscription de %{username} a été rejetée avec succès
       remote_suspension_irreversible: Les données de ce compte ont été supprimées définitivement.
-      remote_suspension_reversible_hint_html: Ce compte a été suspendu par son serveur d'accueil, et les données rattachées seront supprimées le %{date}. Jusqu'à cette date, il peut être restauré sans aucune perte par le serveur distant. Si vous souhaitez supprimer immédiatement toutes les données de ce compte, vous pouvez le faire ci-dessous.
+      remote_suspension_reversible_hint_html: Ce compte a été suspendu par son serveur, et les données rattachées seront supprimées le %{date}. Jusqu'à cette date, il peut être restauré sans aucune perte par le serveur distant. Si vous souhaitez supprimer immédiatement toutes les données de ce compte, vous pouvez le faire ci-dessous.
       remove_avatar: Supprimer l’avatar
       remove_header: Supprimer l'image de couverture
       removed_avatar_msg: L’avatar de %{username} a été supprimé avec succès
@@ -216,6 +217,7 @@ fr:
         create_user_role: Créer un rôle
         create_username_block: Créer une règle de nom d'utilisateur·rice
         demote_user: Rétrograder un·e utilisateur·ice
+        destroy_account: Supprimer les données de compte
         destroy_announcement: Supprimer une annonce
         destroy_canonical_email_block: Supprimer un blocage de courriel
         destroy_custom_emoji: Supprimer un émoji personnalisé
@@ -284,6 +286,7 @@ fr:
         create_user_role_html: "%{name} a créé le rôle %{target}"
         create_username_block_html: "%{name} a ajouté une règle pour les noms d'utilisateur·rice contenant %{target}"
         demote_user_html: "%{name} a rétrogradé l'utilisateur·rice %{target}"
+        destroy_account_html: "%{name} a supprimé les données de compte pour %{target}"
         destroy_announcement_html: "%{name} a supprimé l'annonce %{target}"
         destroy_canonical_email_block_html: "%{name} a débloqué l'adresse courriel ayant l'empreinte %{target}"
         destroy_collection_html: "%{name} a supprimé la collection de %{target}"
@@ -1206,7 +1209,9 @@ fr:
           one: Partagé par %{count} personne au cours de la dernière semaine
           other: Partagé par %{count} personnes au cours de la dernière semaine
         title: Liens tendances
-        usage_comparison: Partagé %{today} fois aujourd'hui, comparé à %{yesterday} hier
+        usage_comparison:
+          one: Partagé %{count} fois ce jour, et %{yesterday} fois hier
+          other: Partagé %{count} fois ce jour, et %{yesterday} fois hier
       not_allowed_to_trend: Non autorisé à apparaître dans les tendances
       only_allowed: Autorisées seulement
       pending_review: En attente de révision
@@ -1251,7 +1256,9 @@ fr:
         trendable: Peut apparaître sous les tendances
         trending_rank: 'Tendance #%{rank}'
         usable: Peut être utilisé
-        usage_comparison: Utilisé %{today} fois aujourd'hui, et %{yesterday} fois hier
+        usage_comparison:
+          one: Utilisé %{count} fois ce jour, et %{yesterday} hier
+          other: Utilisé %{count} fois ce jour, et %{yesterday} hier
         used_by_over_week:
           one: Utilisé par %{count} personne au cours de la dernière semaine
           other: Utilisé par %{count} personnes au cours de la dernière semaine
@@ -1709,7 +1716,10 @@ fr:
       incompatible_type: Incompatible avec le type d’import sélectionné
       invalid_csv_file: 'Fichier CSV non valide. Erreur : %{error}'
       invalid_json_file: 'Fichier JSON non valide. Erreur : %{error}'
-      over_rows_processing_limit: contient plus de %{count} lignes
+      no_data: Ce fichier ne contient aucune donnée correspondant au type d'import sélectionné
+      over_rows_processing_limit:
+        one: contient plus de %{count} ligne
+        other: contient plus de %{count} lignes
       status_not_found_warning: Certains de vos filtres masquent des messages spécifiques qui ne sont pas connus par ce serveur. Ces messages ne seront pas filtrés automatiquement s'ils sont découverts plus tard par le serveur.
       too_large: Le fichier est trop lourd
     failures: Échecs
@@ -1860,7 +1870,9 @@ fr:
     incoming_migrations_html: Pour déménager d'un autre compte à celui-ci, vous devez d'abord <a href="%{path}">créer un alias de compte</a>.
     moved_msg: Votre compte est maintenant redirigé vers %{acct} et vos abonné·e·s sont en train d'être déplacé·e·s.
     not_redirecting: Votre compte n'est pas redirigé vers un autre compte actuellement.
-    on_cooldown: Vous avez récemment migré votre compte. Cette fonction sera à nouveau disponible dans %{count} jours.
+    on_cooldown:
+      one: Vous avez récemment migré votre compte. Cette fonction sera à nouveau disponible dans %{count} jour.
+      other: Vous avez récemment migré votre compte. Cette fonction sera à nouveau disponible dans %{count} jours.
     past_migrations: Migrations passées
     proceed_with_move: Migrer les abonné·e·s
     redirected_msg: Votre compte est maintenant redirigé vers %{acct}.
@@ -2048,8 +2060,12 @@ fr:
       account: Messages publics de @%{acct}
       tag: 'Messages publics taggés #%{hashtag}'
   scheduled_statuses:
-    over_daily_limit: Vous avez dépassé la limite de %{limit} messages planifiés par jour
-    over_total_limit: Vous avez dépassé la limite de %{limit} messages planifiés
+    over_daily_limit:
+      one: Vous avez dépassé la limite de %{count} message planifié pour aujourd'hui
+      other: Vous avez dépassé la limite de %{count} messages planifiés pour aujourd'hui
+    over_total_limit:
+      one: Vous avez dépassé la limite de %{count} message planifié
+      other: Vous avez dépassé la limite de %{count} messages planifiés
     too_soon: la date doit se situer dans le futur
   self_destruct:
     lead_html: Malheureusement, <strong>%{domain}</strong> ferme définitivement. Si vous y aviez un compte, vous ne pourrez pas continuer à l’utiliser, mais vous pouvez toujours demander une sauvegarde de vos données.

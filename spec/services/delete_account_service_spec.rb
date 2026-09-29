@@ -6,12 +6,8 @@ RSpec.describe DeleteAccountService do
   shared_examples 'common behavior' do
     subject { described_class.new.call(account) }
 
-    before do
-      account.follow!(list_target_account)
-      circle_target_account.follow!(account)
-    end
-
     let!(:status) { Fabricate(:status, account: account) }
+    let!(:reported_status) { Fabricate(:status, account: account) }
     let!(:mention) { Fabricate(:mention, account: local_follower) }
     let!(:status_with_mention) { Fabricate(:status, account: account, mentions: [mention]) }
     let!(:media_attachment) { Fabricate(:media_attachment, account: account) }
@@ -53,8 +49,15 @@ RSpec.describe DeleteAccountService do
     let!(:pending_status) { Fabricate(:pending_status, account: account, uri: 'https://example.com/note1') }
     let!(:fetchable_pending_status) { Fabricate(:pending_status, fetch_account: account, uri: 'https://example.com/note2') }
 
+    before do
+      account.follow!(list_target_account)
+      circle_target_account.follow!(account)
+      Fabricate(:report, target_account: account, status_ids: [reported_status.id])
+    end
+
     it 'deletes associated owned and target records and target notifications' do
-      subject
+      expect { subject }
+        .to change { reported_status.reload.deleted_at }.from(nil)
 
       expect_deletion_of_associated_owned_records
       expect_deletion_of_associated_target_records

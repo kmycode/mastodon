@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { useLocation } from 'react-router';
 
 import { ArrowLeftIcon, ListIcon } from '@phosphor-icons/react';
+import type { DistributedOmit } from 'type-fest';
 
 import { openNavigation } from '@/mastodon/actions/navigation';
 import { getColumnSkipLinkId } from '@/mastodon/features/ui/components/skip_links';
@@ -31,6 +32,7 @@ export interface ColumnHeaderProps {
   withBackButton?: boolean | 'auto';
   withUnreadMarker?: boolean;
   extraButtons?: React.ReactNode;
+  extraStickyContent?: React.ReactNode;
   className?: string;
 }
 
@@ -39,6 +41,7 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   withBackButton,
   withUnreadMarker,
   extraButtons,
+  extraStickyContent,
   className,
   ...props
 }: ColumnHeaderProps) => {
@@ -48,9 +51,17 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
   const hasBackButton =
     withBackButton === true ||
     (withBackButton === 'auto' && location.state?.fromMastodon);
+  const hasExtraStickyContent = hasReactChildren(extraStickyContent);
 
   return (
-    <header {...props} className={classNames(className, classes.root)}>
+    <header
+      {...props}
+      className={classNames(
+        className,
+        classes.root,
+        hasExtraStickyContent && classes.withStickyContent,
+      )}
+    >
       <div className={classes.layout} data-has-unread={withUnreadMarker}>
         {hasBackButton ? <BackButton /> : <MobileMenuButton />}
         <NavigationFocusTarget className={classes.title}>
@@ -75,11 +86,14 @@ export const ColumnHeader: React.FC<ColumnHeaderProps> = ({
           <div className={classes.rightButtons}>{extraButtons}</div>
         )}
       </div>
+      {hasExtraStickyContent && (
+        <div className={classes.extraStickyContent}>{extraStickyContent}</div>
+      )}
     </header>
   );
 };
 
-type ColumnHeaderButtonProps = IconButtonProps & {
+type ColumnHeaderButtonProps = DistributedOmit<IconButtonProps, 'size'> & {
   showTextOnDesktop?: boolean;
 };
 
@@ -94,14 +108,14 @@ export const ColumnHeaderButton: React.FC<ColumnHeaderButtonProps> = ({
 
   if (showTextOnDesktop && !isMobile) {
     return (
-      <Button {...props} variant={variant}>
+      <Button {...props} variant={variant} size='sm'>
         {children}
       </Button>
     );
   }
 
   return (
-    <IconButton icon={icon} variant={variant} {...props}>
+    <IconButton icon={icon} {...props} variant={variant} size='sm'>
       {children}
     </IconButton>
   );

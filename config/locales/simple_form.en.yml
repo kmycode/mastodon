@@ -354,6 +354,7 @@ en:
         setting_show_statuses_count: Show statuses count
         setting_simple_timeline_menu: Reduce post menu on timeline
         setting_slip_local_emoji_reaction: Allow bypassing emoji reaction from local users
+        setting_split_default_privacy_discoverable: Make my posts discoverable in public feed & search results
         setting_stay_privacy: Keep visibility after post
         setting_stop_emoji_reaction_streaming: Disable emoji reaction streamings
         setting_system_font_ui: Use system's default font

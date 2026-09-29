@@ -72,6 +72,10 @@ nn:
       disable_sign_in_token_auth: Slå av e-post-token-autentisering
       disable_two_factor_authentication: Slå av 2FA
       disabled: Inaktiv
+      discoverable:
+        disabled: Forfattaren har ikkje valt å kunna bli oppdaga
+        enabled: Forfattaren har valt å kunna bli oppdaga
+        title: Synleg
       display_name: Synleg namn
       domain: Domene
       edit: Rediger
@@ -81,6 +85,12 @@ nn:
       enable_sign_in_token_auth: Slå på e-post-token-autentisering
       enabled: Aktivert
       enabled_msg: Gjenaktiverte %{username} sin konto
+      follow_recommendations:
+        allowed: Tillate
+        suppress: Demp fylgjeforslag
+        suppressed: Dempa
+        title: Fylgjeforslag
+        unsuppress: Nullstill fylgjeforslag
       followers: Fylgjarar
       follows: Fylgje
       header: Overskrift
@@ -126,6 +136,7 @@ nn:
       push_subscription_expires: PuSH-abonnent utløper
       redownload: Last inn profil på nytt
       redownloaded_msg: Oppdaterte %{username} sin profil frå opphavstenar
+      registration_app: Registreringsapp
       reject: Avvis
       rejected_msg: Avviste %{username} sin registreringssøknad
       remote_suspension_irreversible: Data for denne kontoen har blitt sletta for alltid.
@@ -165,6 +176,12 @@ nn:
       suspension_irreversible: Data frå denne kontoen har blitt ikkje-reverserbart sletta. Du kan oppheve suspenderinga av kontoen for å bruke den, men det vil ikkje gjenopprette alle data den tidligare har hatt.
       suspension_reversible_hint_html: Kontoen har vorte stengd, og data vil bli fullstendig fjerna den %{date}. Fram til då kandu gjenoppretta kontoen utan negative konsekvensar. Om du ynskjer å fjerna kontodata no, kan du gjera det nedanfor.
       title: Kontoar
+      trends:
+        allow: Tillat
+        allowed: Tillate
+        disallow: Ikkje tillat
+        disallowed: Ikkje tillate
+        title: Populære innlegg
       unblock_email: Avblokker e-postadresse
       unblocked_email_msg: Avblokkerte %{username} si e-postadresse
       unconfirmed_email: E-post utan stadfesting
@@ -200,6 +217,7 @@ nn:
         create_user_role: Opprett rolle
         create_username_block: Lag regel for brukarnamn
         demote_user: Degrader brukar
+        destroy_account: Slett kontodata
         destroy_announcement: Slett lysinga
         destroy_canonical_email_block: Fjern e-postblokkering
         destroy_custom_emoji: Slett tilpassa emoji
@@ -1190,7 +1208,6 @@ nn:
           one: Delt av %{count} person i løpet av den siste uken
           other: Delt av %{count} personer i løpet av den siste uken
         title: Populære lenkjer
-        usage_comparison: Delt %{today} ganger i dag, sammenlignet med %{yesterday} i går
       not_allowed_to_trend: Har ikkje lov å trenda
       only_allowed: Kun tillatne
       pending_review: Avventer gjennomgang
@@ -1235,7 +1252,6 @@ nn:
         trendable: Kan vises under trender
         trending_rank: 'Trender #%{rank}'
         usable: Kan brukes
-        usage_comparison: Brukt %{today} ganger i dag, sammenlignet med %{yesterday} i går
         used_by_over_week:
           one: Brukt av én person i løpet av den seneste uken
           other: Brukt av %{count} personer i løpet av den seneste uken
@@ -1692,7 +1708,6 @@ nn:
       incompatible_type: Ikkje kompatibel med importtypen du valde
       invalid_csv_file: 'Ugyldig CSV-fil. Feil: %{error}'
       invalid_json_file: 'Ugyldig JSON-fil. Feil: %{error}'
-      over_rows_processing_limit: inneholder flere enn %{count} rader
       status_not_found_warning: Nokre av filtra dine gøymer visse innlegg som denne tenaren ikkje kjenner til. Desse innlegga blir ikkje gøymde automatisk viss dei blir oppdaga av tenaren din seinare.
       too_large: Fila er for stor
     failures: Feil
@@ -1843,7 +1858,6 @@ nn:
     incoming_migrations_html: For å flytta frå ein annnan konto til denne må du fyrst <a href="%{path}">laga eit kallenamn til kontoen</a>.
     moved_msg: Kontoen din vidaresender no til %{acct}, og fylgjarane dine blir flytte over dit.
     not_redirecting: Kontoen din omdirigeres ikke til noen andre kontoer for øyeblikket.
-    on_cooldown: Du har nylig overført kontoen din. Denne funksjonen blir tilgjengelig igjen om %{count} dager.
     past_migrations: Tidlegare vandringar
     proceed_with_move: Flytt fylgjarar
     redirected_msg: Kontoen din omdirigerer no til %{acct}.
@@ -2031,8 +2045,6 @@ nn:
       account: Offentlige innlegg fra @%{acct}
       tag: 'Offentlige innlegg merket med #%{hashtag}'
   scheduled_statuses:
-    over_daily_limit: Du har overskredet grensen på %{limit} planlagte tuter for den dagen
-    over_total_limit: Du har overskredet grensen på %{limit} planlagte tuter
     too_soon: datoen må vera i framtida
   self_destruct:
     lead_html: Diverre stengjer <strong>%{domain}</strong> dørene for godt. Viss du hadde ein brukarkonto der, vil du ikkje kunna halda fram å bruka han, men du kan få ut ein tryggingskopi av dataa dine.
