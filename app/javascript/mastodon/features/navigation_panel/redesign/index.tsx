@@ -17,6 +17,7 @@ import {
 
 import FediIcon from '@/images/icons/icon_fediverse.svg?react';
 import { fetchFollowRequests } from '@/mastodon/actions/accounts';
+import { fetchAntennas } from '@/mastodon/actions/antennas_typed';
 import { fetchLists } from '@/mastodon/actions/lists';
 import { closeNavigation } from '@/mastodon/actions/navigation';
 import { fetchFollowedHashtags } from '@/mastodon/actions/tags_typed';
@@ -27,6 +28,7 @@ import { useIdentity } from '@/mastodon/identity_context';
 import { disabledAccountId } from '@/mastodon/initial_state';
 import { transientSingleColumn } from '@/mastodon/is_mobile';
 import { openNewComposer } from '@/mastodon/reducers/slices/composer';
+import { getOrderedAntennas } from '@/mastodon/selectors/antennas';
 import { getOrderedLists } from '@/mastodon/selectors/lists';
 import { selectUnreadNotificationGroupsCount } from '@/mastodon/selectors/notifications';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
@@ -64,6 +66,22 @@ function useCustomFeeds() {
 
   return {
     customFeeds,
+  };
+}
+
+function useAntennas() {
+  const dispatch = useAppDispatch();
+  const { signedIn } = useIdentity();
+  const antennas = useAppSelector((state) => getOrderedAntennas(state));
+
+  useEffect(() => {
+    if (signedIn) {
+      void dispatch(fetchAntennas());
+    }
+  }, [dispatch, signedIn]);
+
+  return {
+    antennas,
   };
 }
 
@@ -145,6 +163,7 @@ export const RedesignNavigationPanel: React.FC<{
   }, [dispatch]);
 
   const { customFeeds } = useCustomFeeds();
+  const { antennas } = useAntennas();
   const { followedHashtags } = useFollowedHashtags();
 
   const { sensor: topSensor, isInViewport: isScrolledToTop } = useScrollSensor({
@@ -237,6 +256,35 @@ export const RedesignNavigationPanel: React.FC<{
                 </NavigationLink>
               ))}
             </ListSection>
+            <ListSection
+              id='antennas'
+              title={
+                <FormattedMessage
+                  id='tabs_bar.antennas'
+                  defaultMessage='Antennas'
+                />
+              }
+            >
+              <NavigationLink
+                key='new'
+                to='/antennas/new'
+                iconComponent={PlusIcon}
+              >
+                <FormattedMessage
+                  id='tabs_bar.create_antenna'
+                  defaultMessage='Create Antenna'
+                />
+              </NavigationLink>
+              {antennas.map((antenna) => (
+                <NavigationLink
+                  key={antenna.id}
+                  to={`/antennas/${antenna.id}`}
+                  iconComponent={RssSimpleIcon}
+                >
+                  {antenna.title}
+                </NavigationLink>
+              ))}
+            </ListSection>
 
             {followedHashtags.length > 0 && (
               <ListSection
@@ -292,7 +340,7 @@ export const RedesignNavigationPanel: React.FC<{
                   </NavigationLink>
                   <NavigationLink
                     stacked
-                    to='/bookmarks'
+                    to='/bookmark_categories'
                     iconComponent={BookmarkSimpleIcon}
                   >
                     <FormattedMessage

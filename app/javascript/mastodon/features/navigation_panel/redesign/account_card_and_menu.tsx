@@ -143,14 +143,30 @@ export const AccountMenuItems: React.FC<{
         />
       </MenuItemLink>
 
+      <MenuItemLink to='/emoji_reactions' icon={HeartIcon}>
+        <FormattedMessage
+          id='navigation_bar.emoji_reactions'
+          defaultMessage='Reacted Posts with Emoji'
+        />
+      </MenuItemLink>
+
       {context === 'mobile' && (
-        <MenuItemLink to='/bookmarks' icon={BookmarkSimpleIcon}>
+        <MenuItemLink to='/bookmark_categories' icon={BookmarkSimpleIcon}>
           <FormattedMessage
             id='navigation_bar.saved_posts'
             defaultMessage='Saved Posts'
           />
         </MenuItemLink>
       )}
+
+      <MenuItemDivider />
+
+      <MenuItemLink to='/reaction_deck' icon={HeartIcon}>
+        <FormattedMessage
+          id='navigation_bar.reaction_deck'
+          defaultMessage='Emoji Deck'
+        />
+      </MenuItemLink>
 
       <MenuItemDivider />
 

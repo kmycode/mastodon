@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import {
   ChatCircleDotsIcon,
   MagnifyingGlassIcon,
+  CloudIcon,
   NewspaperIcon,
   QuotesIcon,
 } from '@phosphor-icons/react';
@@ -74,7 +75,11 @@ const ComposeVisibilityButtonText: React.FC<{
     selectPlainAccount(state, mentions.at(0)),
   );
 
-  if (privacy === 'public' || privacy === 'unlisted') {
+  if (
+    privacy === 'public' ||
+    privacy === 'unlisted' ||
+    privacy === 'public_unlisted'
+  ) {
     return (
       <FormattedMessage id='privacy.public.short' defaultMessage='Public' />
     );
@@ -135,6 +140,12 @@ const ComposeVisibilityMenu: React.FC = () => {
             defaultPrivacy === 'unlisted' ? 'unlisted' : 'public',
           ),
         );
+      } else if (value === 'public_unlisted') {
+        dispatch(
+          changeComposeVisibility(
+            privacy === 'public_unlisted' ? 'public' : 'public_unlisted',
+          ),
+        );
       } else if (value === 'unlisted' && privacy !== 'private') {
         dispatch(
           changeComposeVisibility(privacy === 'public' ? 'unlisted' : 'public'),
@@ -187,7 +198,11 @@ const ComposeVisibilityMenu: React.FC = () => {
         <MenuItemRadio
           name='visibility'
           value='public'
-          checked={privacy === 'public' || privacy === 'unlisted'}
+          checked={
+            privacy === 'public' ||
+            privacy === 'unlisted' ||
+            privacy === 'public_unlisted'
+          }
           onChange={handlePrivacyChange}
           keepMenuOpenOnClick
         >
@@ -212,7 +227,7 @@ const ComposeVisibilityMenu: React.FC = () => {
         <MenuItemCheckbox
           value='unlisted'
           disabled={privacy === 'private'}
-          checked={privacy === 'public'}
+          checked={privacy === 'public' || privacy === 'public_unlisted'}
           onChange={handlePrivacyChange}
           icon={MagnifyingGlassIcon}
           keepMenuOpenOnClick
@@ -220,6 +235,20 @@ const ComposeVisibilityMenu: React.FC = () => {
           <FormattedMessage
             id='compose.discoverable'
             defaultMessage='Discoverable in public feeds & search results'
+          />
+        </MenuItemCheckbox>
+
+        <MenuItemCheckbox
+          value='public_unlisted'
+          disabled={!['public', 'public_unlisted'].includes(privacy)}
+          checked={privacy === 'public'}
+          onChange={handlePrivacyChange}
+          icon={CloudIcon}
+          keepMenuOpenOnClick
+        >
+          <FormattedMessage
+            id='compose.fediverse_discoverable'
+            defaultMessage='Discoverable in fediverse'
           />
         </MenuItemCheckbox>
 

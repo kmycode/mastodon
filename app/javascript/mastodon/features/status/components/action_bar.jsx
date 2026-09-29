@@ -15,9 +15,8 @@ import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
 import { IconButton } from '@/mastodon/components/icon_button';
 import { Dropdown } from 'mastodon/components/dropdown_menu';
-import { enableEmojiReaction , bookmarkCategoryNeeded, me, isHideItem, quickBoosting } from '../../../initial_state';
 import EmojiPickerDropdown from '../../compose/containers/emoji_picker_dropdown_container';
-import { me, quickBoosting } from '@/mastodon/initial_state';
+import { enableEmojiReaction , bookmarkCategoryNeeded, me, isHideItem, quickBoosting } from '@/mastodon/initial_state';
 import { BoostButton } from '@/mastodon/components/status/legacy/boost_button';
 import { quoteItemState } from '@/mastodon/components/status/boost_button_utils';
 import { selectStatusConditions } from '@/mastodon/selectors/statuses';

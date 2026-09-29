@@ -8,11 +8,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { ImmutablePureComponent } from 'react-immutable-pure-component';
 
 import AlternateEmailIcon from '@/material-icons/400-24px/alternate_email.svg?react';
-import RepeatIcon from '@/material-icons/400-24px/repeat.svg?react';
 import AttachmentList from '@/mastodon/components/attachment_list';
-import CancelFillIcon from '@/material-icons/400-24px/cancel-fill.svg?react';
-import { ContentWarning } from '@/mastodon/components/content_warning';
-import { FilterWarning } from '@/mastodon/components/filter_warning';
 import { Hotkeys } from '@/mastodon/components/hotkeys';
 import { Icon }  from '@/mastodon/components/icon';
 import { PictureInPicturePlaceholder } from './picture_in_picture_placeholder';
@@ -25,9 +21,6 @@ import Bundle from '@/mastodon/features/ui/components/bundle';
 import { MediaGallery, Video, Audio } from '@/mastodon/features/ui/util/async-components';
 import { SensitiveMediaContext } from '@/mastodon/features/ui/util/sensitive_media_context';
 import { displayMedia, enableEmojiReaction, isShowItem, isHideItem } from '@/mastodon/initial_state';
-import { CollectionPreviewCard } from '@/mastodon/features/collections/components/collection_preview_card';
-import { compareUrls } from '@/mastodon/utils/compare_urls';
-import { FOCUS_TARGET } from '@/mastodon/components/navigation_focus_target';
 import { LinkedDisplayName } from '@/mastodon/components/display_name';
 
 import { injectIntl } from '../../intl';
@@ -36,9 +29,9 @@ import { FilterWarning } from './filter_warning';
 import { StatusHeader } from './header'
 import { getHashtagBarForStatus } from './hashtag_bar';
 import StatusEmojiReactionsBar from '../../status_emoji_reactions_bar';
-import { CollectionPreviewCard } from '../features/collections/components/collection_preview_card';
-import { compareUrls } from '../utils/compare_urls';
-import { FOCUS_TARGET } from './navigation_focus_target';
+import { CollectionPreviewCard } from '@/mastodon/features/collections/components/collection_preview_card';
+import { compareUrls } from '@/mastodon/utils/compare_urls';
+import { FOCUS_TARGET } from '../../navigation_focus_target';
 import StatusActionBar from './action_bar';
 import StatusContent from './content';
 import { StatusThreadLabel } from './thread_label';

@@ -13,7 +13,7 @@ import { identityContextPropShape, withIdentity } from 'mastodon/identity_contex
 import { PERMISSION_MANAGE_USERS, PERMISSION_MANAGE_FEDERATION } from 'mastodon/permissions';
 import { WithRouterPropTypes } from 'mastodon/utils/react_router';
 
-import EmojiPickerDropdown from '../../features/compose/containers/emoji_picker_dropdown_container.js';
+import EmojiPickerDropdown from '../../../../features/compose/containers/emoji_picker_dropdown_container.js';
 import { Dropdown } from '@/mastodon/components/dropdown_menu';
 import { enableEmojiReaction , bookmarkCategoryNeeded, simpleTimelineMenu, me, isHideItem, quickBoosting } from '@/mastodon/initial_state';
 
