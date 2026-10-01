@@ -145,7 +145,7 @@ export const AccountMenuItems: React.FC<{
 
       <MenuItemLink to='/emoji_reactions' icon={HeartIcon}>
         <FormattedMessage
-          id='navigation_bar.emoji_reactions'
+          id='navigation_bar.reacted_with_emoji_posts'
           defaultMessage='Reacted Posts with Emoji'
         />
       </MenuItemLink>

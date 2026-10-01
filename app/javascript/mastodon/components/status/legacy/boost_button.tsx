@@ -30,9 +30,8 @@ import {
   quoteItemState,
   referenceItemState,
 } from '../boost_button_utils';
+import type { MenuItemState } from '../boost_button_utils';
 import { useStatusIcons } from '../hooks';
-
-import type { MenuItemState } from "../boost_button_utils";
 
 const StandaloneBoostButton: FC<ReblogButtonProps> = ({
   statusId,
