@@ -205,6 +205,8 @@ export const selectStatusInteractions = createAppSelector(
       editQuotePolicy: addAllowed({ isMine, isPublic }),
       embed: addAllowed({ isPublic, isLocal }),
       favourite: addAllowed({ isLoggedIn }),
+      emoji_reaction: addAllowed({ isLoggedIn }),
+      remove_emoji_reaction: addAllowed({ isLoggedIn }),
       filter: addAllowed({ isLoggedIn, isNotMine }),
       mute: addAllowed({ isMine }),
       pin: addAllowed({ isMine, isNotDirect }),

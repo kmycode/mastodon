@@ -23,9 +23,11 @@ import { quoteComposeById } from './compose_typed';
 import { importFetchedStatus, importFetchedStatuses } from './importer';
 import {
   bookmark,
+  emojiReact,
   favourite,
   pin,
   unbookmark,
+  unEmojiReact,
   unfavourite,
   unpin,
 } from './interactions';
@@ -48,6 +50,8 @@ export type StatusInteractionIntent =
   | 'edit'
   | 'embed'
   | 'favourite'
+  | 'emoji_reaction'
+  | 'remove_emoji_reaction'
   | 'filter'
   | 'mute'
   | 'pin'
@@ -84,10 +88,12 @@ export const statusInteraction = createAppThunk(
       statusId,
       contextType,
       intent,
+      emojiCode,
     }: {
       statusId?: string;
       contextType?: StatusContextType;
       intent: StatusInteractionIntent;
+      emojiCode?: string;
     },
     { getState, dispatch },
   ) => {
@@ -209,6 +215,12 @@ export const statusInteraction = createAppThunk(
         } else {
           dispatch(favourite(statusImmutable));
         }
+        return;
+      case 'emoji_reaction':
+        dispatch(emojiReact(statusImmutable, emojiCode));
+        return;
+      case 'remove_emoji_reaction':
+        dispatch(unEmojiReact(statusImmutable, emojiCode));
         return;
       case 'mute':
         if (status.muted) {

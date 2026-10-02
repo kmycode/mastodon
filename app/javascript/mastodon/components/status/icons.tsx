@@ -7,6 +7,7 @@ import {
 } from '@phosphor-icons/react';
 
 import { isRedesignEnabled } from '@/mastodon/utils/environment';
+import MoodIcon from '@/material-icons/400-20px/mood.svg?react';
 import BookmarkLegacyIcon from '@/material-icons/400-24px/bookmark-fill.svg?react';
 import BookmarkBorderLegacyIcon from '@/material-icons/400-24px/bookmark.svg?react';
 import QuoteLegacyIcon from '@/material-icons/400-24px/format_quote-fill.svg?react';
@@ -47,3 +48,4 @@ export const StatusBookmarkIcon = isRedesignEnabled()
 export const StatusBookmarkActiveIcon = isRedesignEnabled()
   ? iconWeight(BookmarkSimpleIcon, 'fill')
   : BookmarkLegacyIcon;
+export const StatusEmojiReactionIcon = MoodIcon;

@@ -157,6 +157,7 @@ const Lists: React.FC<{
             <ColumnHeaderButton
               showTextOnDesktop
               variant='solid'
+              color='accent'
               icon={PlusIcon}
               as='link'
               to='/lists/new'

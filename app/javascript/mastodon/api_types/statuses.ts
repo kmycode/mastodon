@@ -53,6 +53,15 @@ export interface ApiMentionJSON {
   acct: string;
 }
 
+export interface ApiStatusEmojiReactionRowJSON {
+  name: string;
+  count: number;
+  me: boolean;
+  url: string;
+  static_url: string;
+  domain: string;
+}
+
 export interface ApiPreviewCardAuthorJSON {
   name: string;
   url: string;
@@ -122,6 +131,7 @@ export interface ApiStatusJSON {
   favourites_count: number;
   quotes_count: number;
   status_references_count: number;
+  emoji_reactions: ApiStatusEmojiReactionRowJSON[];
   edited_at?: string;
   expires_at?: string;
 

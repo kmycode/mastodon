@@ -14,6 +14,7 @@ import { quickBoosting } from '@/mastodon/initial_state';
 import type { AccountStatusShape } from '@/mastodon/models/status';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 
+import EmojiPickerDropdown from '../../features/compose/containers/emoji_picker_dropdown_container';
 import {
   Button,
   IconButton,
@@ -78,7 +79,7 @@ export const StatusActionBar: React.FC<StatusActionBarProps> = ({
     }
   }, [contextType, dispatch, statusId, statusUrl]);
 
-  const { reply, like, bookmark } = useStatusIcons(statusId);
+  const { reply, like, emojiReaction, bookmark } = useStatusIcons(statusId);
 
   if (!status) {
     return null;
@@ -97,9 +98,9 @@ export const StatusActionBar: React.FC<StatusActionBarProps> = ({
         size='sm'
         clipPadding
         variant='ghost'
-        title={reply.title}
         leadingIcon={reply.icon}
         onClick={reply.action}
+        tooltip={{ type: 'label', text: reply.title }}
       >
         {withCounters && reply.counter}
       </Button>
@@ -112,13 +113,18 @@ export const StatusActionBar: React.FC<StatusActionBarProps> = ({
         size='sm'
         variant='ghost'
         active={like.active}
-        title={like.title}
+        tooltip={{ type: 'label', text: like.title }}
         leadingIcon={like.icon}
         onClick={like.action}
         className={classNames(!onlyResponses && classes.actionsButtonGap)}
       >
         {withCounters && like.counter}
       </ToggleButton>
+
+      <EmojiPickerDropdown
+        onPickEmoji={emojiReaction.actionWithStringArg}
+        inverted={false}
+      />
     </>
   );
 
@@ -145,7 +151,6 @@ export const StatusActionBar: React.FC<StatusActionBarProps> = ({
         size='sm'
         variant='ghost'
         active={bookmark.active}
-        title={bookmark.title}
         icon={bookmark.icon}
         onClick={bookmark.action}
       >
@@ -180,7 +185,10 @@ const StatusReblogButton: React.FC<{
         size='sm'
         variant='ghost'
         active={boost.active}
-        title={boost.title}
+        tooltip={{
+          type: 'label',
+          text: boost.title,
+        }}
         leadingIcon={boost.icon}
         disabled={boost.disabled}
         onClick={boost.action}
@@ -197,7 +205,15 @@ const StatusReblogButton: React.FC<{
         size='sm'
         variant='ghost'
         active={boost.active}
-        title={boost.title}
+        tooltip={{
+          type: 'label',
+          text: (
+            <FormattedMessage
+              id='status.reblog_or_quote'
+              defaultMessage='Boost or quote'
+            />
+          ),
+        }}
         leadingIcon={boost.icon}
       >
         {children}

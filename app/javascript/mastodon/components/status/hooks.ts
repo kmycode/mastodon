@@ -67,6 +67,7 @@ import {
   StatusLikeIcon,
   StatusReplyAllIcon,
   StatusReplyIcon,
+  StatusEmojiReactionIcon,
 } from './icons';
 import type { StatusContextType } from './types';
 
@@ -164,7 +165,8 @@ export function useStatusHandlers({
       if (
         !(target instanceof HTMLElement) ||
         target.closest('a, button') ||
-        contextType === 'detailed'
+        contextType === 'detailed' ||
+        window.getSelection()?.type === 'Range'
       ) {
         return;
       }
@@ -223,6 +225,34 @@ export function useStatusHandlers({
     }
   }, [dispatch, status]);
 
+  const onEmojiReact = useCallback(
+    (emojiCode: string) => {
+      dispatch(
+        statusInteraction({
+          statusId,
+          contextType,
+          intent: 'emoji_reaction',
+          emojiCode,
+        }),
+      );
+    },
+    [dispatch, status],
+  );
+
+  const onUnEmojiReact = useCallback(
+    (emojiCode: string) => {
+      dispatch(
+        statusInteraction({
+          statusId,
+          contextType,
+          intent: 'remove_emoji_reaction',
+          emojiCode,
+        }),
+      );
+    },
+    [dispatch, status],
+  );
+
   return useMemo(
     () => ({
       isFiltered: !!filterAction,
@@ -236,6 +266,8 @@ export function useStatusHandlers({
       onOpenMedia,
       onOpenProfile,
       onToggleHidden,
+      onEmojiReact,
+      onUnEmojiReact,
       onReply: handlerFactory('reply'),
       onFavourite: handlerFactory('favourite'),
       onBoost: handlerFactory('reblog'),
@@ -265,6 +297,7 @@ interface StatusIcon {
   counter?: number;
   active?: boolean;
   action: () => void;
+  actionWithStringArg?: (param: string) => void;
   disabled: boolean;
 }
 
@@ -281,10 +314,14 @@ const iconMessages = defineMessages({
     id: 'status.unlike',
     defaultMessage: 'Unlike',
   },
-  bookmark: { id: 'status.bookmark', defaultMessage: 'Bookmark' },
+  bookmark: { id: 'status.save', defaultMessage: 'Save post' },
   removeBookmark: {
-    id: 'status.remove_bookmark',
-    defaultMessage: 'Remove bookmark',
+    id: 'status.remove_from_saved',
+    defaultMessage: 'Remove from Saved',
+  },
+  emojiReaction: {
+    id: 'status.emoji_reaction',
+    defaultMessage: 'Emoji reaction',
   },
 });
 
@@ -299,6 +336,23 @@ export function useStatusIcons(statusId: string) {
   );
   const interactionFactory = useStatusInteractionFactory(statusId);
   const isRedesign = isRedesignEnabled();
+
+  const dispatch = useAppDispatch();
+  const statusContext = useStatusContext();
+  const contextType = statusContext.contextType;
+  const onEmojiReact = useCallback(
+    (emojiCode: string) => {
+      dispatch(
+        statusInteraction({
+          statusId,
+          contextType,
+          intent: 'emoji_reaction',
+          emojiCode,
+        }),
+      );
+    },
+    [dispatch, status],
+  );
 
   const isReplyAll = !!status?.in_reply_to_id;
   const reply: StatusIcon = {
@@ -352,6 +406,16 @@ export function useStatusIcons(statusId: string) {
     );
   }
 
+  const emojiReaction: StatusIcon = {
+    icon: StatusEmojiReactionIcon,
+    title: intl.formatMessage(iconMessages.emojiReaction),
+    action: () => {
+      /* noop */
+    },
+    actionWithStringArg: onEmojiReact,
+    disabled: false,
+  };
+
   const isBookmarked = !!status?.bookmarked;
   const bookmark: StatusIcon = {
     icon: isBookmarked ? StatusBookmarkActiveIcon : StatusBookmarkIcon,
@@ -368,6 +432,7 @@ export function useStatusIcons(statusId: string) {
     boost,
     quote,
     like,
+    emojiReaction,
     bookmark,
   } as const;
 }
@@ -405,15 +470,25 @@ export function useTextForScreenReader({
 
     const spoilerText = status.translation?.spoiler_text ?? status.spoiler_text;
     const contentHtml = status.translation?.contentHtml ?? status.contentHtml;
-    const contentText = domParser.parseFromString(contentHtml, 'text/html')
-      .documentElement.textContent;
+    let contentText = spoilerText;
+    if (!status.hidden) {
+      contentText = '';
+      for (const paragraph of domParser
+        .parseFromString(contentHtml, 'text/html')
+        .querySelectorAll('p')) {
+        const text = paragraph.textContent.trim();
+        if (text) {
+          contentText += ` ${text}`;
+        }
+      }
+    }
 
     const values = [
       isQuote ? intl.formatMessage(screenReaderMessages.quote_noun) : undefined,
       displayName.length === 0
         ? status.account.acct.split('@')[0]
         : displayName,
-      spoilerText && status.hidden ? spoilerText : contentText,
+      contentText,
       status.quote
         ? intl.formatMessage(screenReaderMessages.contains_quote)
         : undefined,

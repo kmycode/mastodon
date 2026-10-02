@@ -643,8 +643,6 @@ fr:
           description: Vous avez reçu une souscription d'un FSAF. Rejetez-la si vous ne l'avez pas initiée. Si c'est bien votre intention, comparez le nom et l'empreinte de la clé avant de confirmer la souscription.
           reject: Rejeter
           title: Confirmer la souscription au FSAF
-        save: Enregistrer
-        select_capabilities: Sélectionnez les Capacités
         sign_in: Se connecter
         status: État
         title: Fournisseurs de Services Auxiliaire du Fedivers
@@ -1022,7 +1020,6 @@ fr:
         warning_hint: Nous vous recommandons d’utiliser « Approbation requise pour s’inscrire » à moins que vous n’ayez confiance dans la capacité de votre équipe de modération à gérer les messages indésirables et les inscriptions malveillantes suffisamment rapidement.
       security:
         authorized_fetch: Exiger une authentification de la part des serveurs fédérés
-        authorized_fetch_hint: Exiger l’authentification des serveurs fédérés permet une application plus stricte des blocages définis par les utilisateurs et le serveur. Cependant, cela entraîne une baisse des performances, réduit la portée de vos réponses et peut poser des problèmes de compatibilité avec certains services fédérés. En outre, cela n’empêchera pas les acteurs déterminés d’aller chercher vos messages et comptes publics.
         authorized_fetch_overridden_hint: Vous ne pouvez pas modifier ce paramètre actuellement, car il est surchargé par une variable d’environnement.
         federation_authentication: Contrôle de l’authentification de la fédération
       title: Paramètres du serveur
@@ -1517,7 +1514,6 @@ fr:
   deletes:
     challenge_not_passed: Les renseignements que vous avez entrés n'étaient pas exacts
     confirm_password: Entrez votre mot de passe actuel pour vérifier votre identité
-    confirm_username: Entrez votre identifiant pour confirmer la procédure
     proceed: Supprimer le compte
     success_msg: Votre compte a été supprimé avec succès
     warning:
@@ -2123,7 +2119,6 @@ fr:
     appearance: Apparence
     authorized_apps: Applications autorisées
     back: Retour vers Mastodon
-    delete: Suppression du compte
     development: Développement
     edit_profile: Modifier le profil
     export: Exportation

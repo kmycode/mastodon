@@ -164,6 +164,7 @@ export const statusFactoryAPI: FactoryFunction<ApiStatusJSON> = ({
   quotes_count: 0,
   favourites_count: 0,
   status_references_count: 0,
+  emoji_reactions: [],
   account: accountFactoryAPI(),
   media_attachments: [],
   mentions: [],

@@ -10,6 +10,7 @@ import { createAppSelector, useAppSelector } from '@/mastodon/store';
 
 import { Hotkeys } from '../hotkeys';
 import { Poll } from '../poll';
+import { StatusEmojiReactionsBar } from '../status_emoji_reactions_bar_redesign';
 
 import { StatusActionBar } from './action_bar';
 import { StatusAttachments } from './attachments';
@@ -149,6 +150,7 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
         onClick={onOpenClick}
         className={classNames(
           classes.root,
+          variant === 'feed' && classes.variantFeed,
           variant === 'thread' && classes.variantThread,
           variant === 'page' && classes.variantPage,
           isQuotedPost && classes.isQuote,
@@ -187,7 +189,8 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
         <div
           className={classNames(
             classes.contentWrapper,
-            isHidden && classes.isFiltered,
+            isHidden && classes.hasContentWarning,
+            !showDespiteFilter && isFiltered && classes.isFiltered,
           )}
           id={contentWrapperId}
           inert={isHidden}
@@ -197,7 +200,7 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
             statusContent={statusContent}
             onReadMore={onOpenCallback}
             onTranslate={onTranslate}
-            collapsible
+            collapsible={variant !== 'page'}
           >
             {!!status.poll && (
               <Poll
@@ -221,6 +224,11 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
 
         {(variant === 'page' || (showActions && !isQuotedPost)) && (
           <footer className={classes.footer}>
+            <StatusEmojiReactionsBar
+              statusId={status.id}
+              emojiReactions={status.emoji_reactions}
+            />
+
             {showActions && !isQuotedPost && (
               <StatusActionBar
                 statusId={status.id}
@@ -294,11 +302,11 @@ function contextToVariant(contextType?: StatusContextType): StatusVariant {
   switch (contextType) {
     case 'composer':
     case 'detailed':
-    case 'notifications':
     case undefined:
       return 'page';
     case 'thread':
       return 'thread';
+    case 'notifications':
     default:
       return 'feed';
   }
