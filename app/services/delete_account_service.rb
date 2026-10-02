@@ -17,6 +17,7 @@ class DeleteAccountService < BaseService
     circles
     circle_accounts
     collections
+    collection_items
     conversation_mutes
     conversations
     custom_filters
@@ -178,10 +179,16 @@ class DeleteAccountService < BaseService
     purge_other_associations!
 
     remove_ng_rule_history_relations! unless keep_account_record?
+
+    # This needs to happen *after* delivery of `Delete` activities is scheduled
+    @account.reach_filter&.destroy
+
     @account.destroy unless keep_account_record?
   end
 
   def purge_statuses!
+    @account.statuses.reorder(nil).where(id: reported_status_ids).in_batches.update_all('deleted_at = COALESCE(statuses.deleted_at, NOW())')
+
     @account.statuses.reorder(nil).where.not(id: reported_status_ids).in_batches do |statuses|
       BatchedRemoveStatusService.new.call(statuses, skip_side_effects: skip_side_effects?)
     end
@@ -283,6 +290,8 @@ class DeleteAccountService < BaseService
     @account.also_known_as       = []
     @account.avatar.destroy
     @account.header.destroy
+    @account.avatar_description = ''
+    @account.header_description = ''
     @account.save!
   end
 
@@ -337,7 +346,9 @@ class DeleteAccountService < BaseService
   end
 
   def low_priority_delivery_inboxes
-    Account.inboxes - delivery_inboxes
+    inboxes = Account.inboxes - delivery_inboxes
+    inboxes = @account.reach_filter.filter_inboxes(inboxes) if @account.reach_filter.present?
+    inboxes
   end
 
   def reported_status_ids

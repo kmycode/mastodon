@@ -152,7 +152,6 @@ const hotkeyMatcherMap = {
   goToStart: sequence('g', 's'),
   goToFavourites: sequence('g', 'f'),
   goToEmojiReactions: sequence('g', 'e'),
-  goToPinned: sequence('g', 'p'),
   goToProfile: sequence('g', 'u'),
   goToBlocked: sequence('g', 'b'),
   goToMuted: sequence('g', 'm'),

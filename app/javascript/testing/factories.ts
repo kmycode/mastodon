@@ -164,6 +164,7 @@ export const statusFactoryAPI: FactoryFunction<ApiStatusJSON> = ({
   quotes_count: 0,
   favourites_count: 0,
   status_references_count: 0,
+  emoji_reactions: [],
   account: accountFactoryAPI(),
   media_attachments: [],
   mentions: [],
@@ -290,21 +291,13 @@ export function mediaAttachmentFactoryAPI(
 ): ApiMediaAttachmentJSON {
   switch (data.type ?? 'image') {
     case 'image':
-      return imageAttachmentFactoryAPI(
-        data as PartialDeep<ApiImageAttachmentJSON>,
-      );
+      return imageAttachmentFactoryAPI(data);
     case 'video':
-      return videoAttachmentFactoryAPI(
-        data as PartialDeep<ApiVideoAttachmentJSON>,
-      );
+      return videoAttachmentFactoryAPI(data);
     case 'audio':
-      return audioAttachmentFactoryAPI(
-        data as PartialDeep<ApiAudioAttachmentJSON>,
-      );
+      return audioAttachmentFactoryAPI(data);
     case 'gifv':
-      return gifvAttachmentFactoryAPI(
-        data as PartialDeep<ApiGifvAttachmentJSON>,
-      );
+      return gifvAttachmentFactoryAPI(data);
     default: {
       return {
         ...baseAttachment,

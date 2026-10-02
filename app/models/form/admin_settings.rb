@@ -104,7 +104,6 @@ class Form::AdminSettings
     noindex
     require_invite_text
     captcha_enabled
-    authorized_fetch
     receive_other_servers_emoji_reaction
     streaming_other_servers_emoji_reaction
     streaming_local_emoji_reaction
@@ -132,17 +131,13 @@ class Form::AdminSettings
     custom_css
   ).freeze
 
-  OVERRIDEN_SETTINGS = {
-    authorized_fetch: :authorized_fetch_mode?,
-  }.freeze
-
   STRING_ARRAY_KEYS = %i(
     emoji_reaction_disallow_domains
     stop_fetch_activity_domains
     stop_link_preview_domains
   ).freeze
 
-  UPLOAD_MIME_TYPES = %w(image/jpeg image/png image/gif image/webp image/avif image/heic image/heif).freeze
+  UPLOAD_MIME_TYPES = %w(image/jpeg image/png image/gif image/webp).freeze
 
   DESCRIPTION_LIMIT = 200
   DOMAIN_BLOCK_AUDIENCES = %w(disabled users all).freeze
@@ -150,6 +145,7 @@ class Form::AdminSettings
   FEED_ACCESS_MODES = %w(public authenticated disabled).freeze
   ALTERNATE_FEED_ACCESS_MODES = %w(public authenticated).freeze
   LANDING_PAGE = %w(trends overview local_feed about).freeze
+  AUTHORIZED_FETCH_MODES = %w(none actors all).freeze
 
   attr_accessor(*KEYS)
 
@@ -178,8 +174,6 @@ class Form::AdminSettings
                        SiteUpload.where(var: key).first_or_initialize(var: key)
                      elsif STRING_ARRAY_KEYS.include?(key)
                        Setting.public_send(key)&.join("\n") || ''
-                     elsif OVERRIDEN_SETTINGS.include?(key)
-                       public_send(OVERRIDEN_SETTINGS[key])
                      else
                        Setting.public_send(key)
                      end
@@ -195,6 +189,10 @@ class Form::AdminSettings
     rescue Mastodon::DimensionsValidationError => e
       errors.add(key.to_sym, e.message)
     end
+  end
+
+  def authorized_fetch
+    authorized_fetch_mode
   end
 
   def save

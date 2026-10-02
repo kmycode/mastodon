@@ -14,28 +14,32 @@ import {
   GavelIcon,
   ShieldStarIcon,
   SignOutIcon,
+  MastodonLogoIcon,
+  GithubLogoIcon,
 } from '@phosphor-icons/react';
 
 import { openModal } from '@/mastodon/actions/modal';
-import { Account } from '@/mastodon/components/account';
 import { Avatar } from '@/mastodon/components/avatar';
 import { IconButton } from '@/mastodon/components/button/redesign';
 import { DisplayName } from '@/mastodon/components/display_name';
 import { useAccountHandle } from '@/mastodon/components/display_name/default';
 import {
-  ListItemContent,
-  ListItemWrapper,
-} from '@/mastodon/components/list_item';
+  LockupContent,
+  LockupLink,
+  LockupWrapper,
+} from '@/mastodon/components/lockup';
 import {
   Menu,
   MenuItem,
   MenuItemDivider,
+  MenuItemGroup,
   MenuItemLink,
   MenuList,
   MenuTrigger,
 } from '@/mastodon/components/menu';
 import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useIdentity } from '@/mastodon/identity_context';
+import { source_url, version } from '@/mastodon/initial_state';
 import {
   canManageReports,
   canViewAdminDashboard,
@@ -46,37 +50,36 @@ import classes from './account_card_and_menu.module.scss';
 
 export const NavigationAccountCardAndMenu: React.FC = () => {
   const { accountId } = useIdentity();
+  const account = useAccount(accountId);
+  const handle = useAccountHandle(account);
+  const accountBasePath = `/@${account?.acct}`;
 
   if (!accountId) {
     return null;
   }
 
   return (
-    <div className={classes.root}>
-      <Account
-        id={accountId}
-        minimal
-        withBorder={false}
-        withMenu={false}
-        size={32}
-      />
-      <Menu type='navigation'>
-        <MenuTrigger
-          as={IconButton}
-          icon={DotsThreeIcon}
-          variant='ghost'
-          size='sm'
-        >
-          <FormattedMessage
-            id='tabs_bar.account_settings'
-            defaultMessage='Account settings'
-          />
-        </MenuTrigger>
-        <MenuList placement='top' offset={8} strategy='fixed'>
-          <AccountMenuItems />
-        </MenuList>
-      </Menu>
-    </div>
+    <LockupWrapper
+      icon={<Avatar account={account} size={32} />}
+      sideContent={
+        <Menu type='navigation'>
+          <MenuTrigger as={IconButton} icon={DotsThreeIcon} size='sm'>
+            <FormattedMessage
+              id='tabs_bar.account_settings'
+              defaultMessage='Account settings'
+            />
+          </MenuTrigger>
+          <MenuList placement='top' offset={12} strategy='fixed'>
+            <AccountMenuItems />
+          </MenuList>
+        </Menu>
+      }
+      className={classes.root}
+    >
+      <LockupLink to={accountBasePath} subtitle={handle}>
+        <DisplayName variant='simple' account={account} />
+      </LockupLink>
+    </LockupWrapper>
   );
 };
 
@@ -104,10 +107,10 @@ export const AccountMenuItems: React.FC<{
     <>
       {context === 'mobile' && <ProfileMenuItem />}
 
-      <MenuItemLink to='/profile/edit' icon={UserIcon}>
+      <MenuItemLink to={accountBasePath} exact icon={UserIcon}>
         <FormattedMessage
-          id='account.edit_profile'
-          defaultMessage='Edit profile'
+          id='account.view_profile'
+          defaultMessage='View Profile'
         />
       </MenuItemLink>
 
@@ -134,14 +137,30 @@ export const AccountMenuItems: React.FC<{
         />
       </MenuItemLink>
 
+      <MenuItemLink to='/emoji_reactions' icon={HeartIcon}>
+        <FormattedMessage
+          id='navigation_bar.reacted_with_emoji_posts'
+          defaultMessage='Reacted Posts with Emoji'
+        />
+      </MenuItemLink>
+
       {context === 'mobile' && (
-        <MenuItemLink to='/bookmarks' icon={BookmarkSimpleIcon}>
+        <MenuItemLink to='/bookmark_categories' icon={BookmarkSimpleIcon}>
           <FormattedMessage
             id='navigation_bar.saved_posts'
             defaultMessage='Saved Posts'
           />
         </MenuItemLink>
       )}
+
+      <MenuItemDivider />
+
+      <MenuItemLink to='/reaction_deck' icon={HeartIcon}>
+        <FormattedMessage
+          id='navigation_bar.reaction_deck'
+          defaultMessage='Emoji Deck'
+        />
+      </MenuItemLink>
 
       <MenuItemDivider />
 
@@ -185,10 +204,32 @@ export const AccountMenuItems: React.FC<{
 
       <MenuItemDivider />
 
+      <MenuItemGroup label={`Mastodon v${version}`}>
+        <MenuItemLink as='a' href={source_url} icon={GithubLogoIcon}>
+          <FormattedMessage
+            id='navigation_bar.source_code'
+            defaultMessage='Source Code'
+          />
+        </MenuItemLink>
+
+        <MenuItemLink
+          as='a'
+          href='https://joinmastodon.org'
+          icon={MastodonLogoIcon}
+        >
+          <FormattedMessage
+            id='navigation_bar.about_mastodon'
+            defaultMessage='About Mastodon'
+          />
+        </MenuItemLink>
+      </MenuItemGroup>
+
+      <MenuItemDivider />
+
       <MenuItem onClick={confirmLogout} icon={SignOutIcon}>
         <FormattedMessage
           id='navigation_bar.sign_out'
-          defaultMessage='Sign out'
+          defaultMessage='Sign Out'
         />
       </MenuItem>
     </>
@@ -207,15 +248,15 @@ const ProfileMenuItem: React.FC = () => {
   const accountBasePath = `/@${account?.acct}`;
 
   return (
-    <MenuItemLink to={accountBasePath}>
-      <ListItemWrapper
+    <MenuItemLink to={accountBasePath} exact>
+      <LockupWrapper
         icon={<Avatar account={account} size={40} />}
         className={classes.profileMenuItem}
       >
-        <ListItemContent subtitle={handle}>
+        <LockupContent subtitle={handle}>
           <DisplayName variant='simple' account={account} />
-        </ListItemContent>
-      </ListItemWrapper>
+        </LockupContent>
+      </LockupWrapper>
     </MenuItemLink>
   );
 };
