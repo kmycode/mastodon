@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -8,6 +8,7 @@ import {
   CloudIcon,
   NewspaperIcon,
   QuotesIcon,
+  KeyIcon,
 } from '@phosphor-icons/react';
 
 import {
@@ -75,11 +76,7 @@ const ComposeVisibilityButtonText: React.FC<{
     selectPlainAccount(state, mentions.at(0)),
   );
 
-  if (
-    privacy === 'public' ||
-    privacy === 'unlisted' ||
-    privacy === 'public_unlisted'
-  ) {
+  if (['public', 'unlisted', 'public_unlisted', 'login'].includes(privacy)) {
     return (
       <FormattedMessage id='privacy.public.short' defaultMessage='Public' />
     );
@@ -91,6 +88,10 @@ const ComposeVisibilityButtonText: React.FC<{
         description='Count is # of other people mentioned in the post. If zero, just output "Followers".'
         values={{ count: mentions.length }}
       />
+    );
+  } else if (privacy === 'mutual') {
+    return (
+      <FormattedMessage id='privacy.mutual.short' defaultMessage='Mutual' />
     );
   } else if (mentions.length > 0) {
     return (
@@ -129,21 +130,61 @@ const ComposeVisibilityMenu: React.FC = () => {
 
   const isReply = useAppSelector((state) => !!state.compose.get('in_reply_to'));
 
+  const [discoverableCheck, setDiscoverableCheck] = useState(true);
+  const [discoverableInRemoteCheck, setDiscoverableInRemoteCheck] =
+    useState(true);
+  const [loginOnlyCheck, setLoginOnlyCheck] = useState(false);
+
   const dispatch = useAppDispatch();
+  useEffect(() => {
+    const updatePrivacy = (p: StatusVisibility) => {
+      if (privacy !== p) {
+        dispatch(changeComposeVisibility(p));
+      }
+    };
+
+    if (['public', 'unlisted', 'public_unlisted', 'login'].includes(privacy)) {
+      if (discoverableCheck && loginOnlyCheck) {
+        updatePrivacy('login');
+      } else if (discoverableCheck && discoverableInRemoteCheck) {
+        updatePrivacy('public');
+      } else if (discoverableCheck && !discoverableInRemoteCheck) {
+        updatePrivacy('public_unlisted');
+      } else if (!discoverableCheck) {
+        updatePrivacy('unlisted');
+      }
+    }
+  }, [
+    dispatch,
+    privacy,
+    discoverableCheck,
+    discoverableInRemoteCheck,
+    loginOnlyCheck,
+  ]);
+
   const handlePrivacyChange = useCallback(
     ({ value }: { value: string }) => {
+      switch (value) {
+        case 'discoverable':
+          setDiscoverableCheck(!discoverableCheck);
+          return;
+        case 'discoverableInRemote':
+          setDiscoverableInRemoteCheck(!discoverableInRemoteCheck);
+          return;
+        case 'loginOnly':
+          setLoginOnlyCheck(!loginOnlyCheck);
+          return;
+      }
+
+      // Logic in upstream mastodon
       if (value === 'private' && privacy !== 'private') {
+        dispatch(changeComposeVisibility(value));
+      } else if (value === 'mutual' && privacy !== 'mutual') {
         dispatch(changeComposeVisibility(value));
       } else if (value === 'public' && privacy === 'private') {
         dispatch(
           changeComposeVisibility(
             defaultPrivacy === 'unlisted' ? 'unlisted' : 'public',
-          ),
-        );
-      } else if (value === 'public_unlisted') {
-        dispatch(
-          changeComposeVisibility(
-            privacy === 'public_unlisted' ? 'public' : 'public_unlisted',
           ),
         );
       } else if (value === 'unlisted' && privacy !== 'private') {
@@ -152,7 +193,17 @@ const ComposeVisibilityMenu: React.FC = () => {
         );
       }
     },
-    [defaultPrivacy, dispatch, privacy],
+    [
+      defaultPrivacy,
+      dispatch,
+      privacy,
+      discoverableCheck,
+      discoverableInRemoteCheck,
+      loginOnlyCheck,
+      setDiscoverableCheck,
+      setDiscoverableInRemoteCheck,
+      setLoginOnlyCheck,
+    ],
   );
 
   const handleQuotePolicyChange = useCallback(
@@ -198,11 +249,9 @@ const ComposeVisibilityMenu: React.FC = () => {
         <MenuItemRadio
           name='visibility'
           value='public'
-          checked={
-            privacy === 'public' ||
-            privacy === 'unlisted' ||
-            privacy === 'public_unlisted'
-          }
+          checked={['public', 'unlisted', 'public_unlisted', 'login'].includes(
+            privacy,
+          )}
           onChange={handlePrivacyChange}
           keepMenuOpenOnClick
         >
@@ -222,12 +271,26 @@ const ComposeVisibilityMenu: React.FC = () => {
           />
         </MenuItemRadio>
 
+        <MenuItemRadio
+          name='visibility'
+          value='mutual'
+          checked={['mutual'].includes(privacy)}
+          onChange={handlePrivacyChange}
+          keepMenuOpenOnClick
+        >
+          <FormattedMessage id='privacy.mutual.short' defaultMessage='Mutual' />
+        </MenuItemRadio>
+
         <MenuItemDivider />
 
         <MenuItemCheckbox
-          value='unlisted'
-          disabled={privacy === 'private'}
-          checked={privacy === 'public' || privacy === 'public_unlisted'}
+          value='discoverable'
+          disabled={
+            !['public', 'unlisted', 'public_unlisted', 'login'].includes(
+              privacy,
+            )
+          }
+          checked={discoverableCheck}
           onChange={handlePrivacyChange}
           icon={MagnifyingGlassIcon}
           keepMenuOpenOnClick
@@ -239,9 +302,9 @@ const ComposeVisibilityMenu: React.FC = () => {
         </MenuItemCheckbox>
 
         <MenuItemCheckbox
-          value='public_unlisted'
+          value='discoverableInRemote'
           disabled={!['public', 'public_unlisted'].includes(privacy)}
-          checked={privacy === 'public'}
+          checked={discoverableInRemoteCheck && privacy === 'public'}
           onChange={handlePrivacyChange}
           icon={CloudIcon}
           keepMenuOpenOnClick
@@ -253,9 +316,30 @@ const ComposeVisibilityMenu: React.FC = () => {
         </MenuItemCheckbox>
 
         <MenuItemCheckbox
+          value='loginOnly'
+          disabled={!['public', 'login'].includes(privacy)}
+          checked={loginOnlyCheck && privacy === 'login'}
+          onChange={handlePrivacyChange}
+          icon={KeyIcon}
+          keepMenuOpenOnClick
+        >
+          <FormattedMessage
+            id='compose.login_only'
+            defaultMessage='Login user only'
+          />
+        </MenuItemCheckbox>
+
+        <MenuItemCheckbox
           value='others'
-          disabled={privacy === 'private'}
-          checked={quotePolicy !== 'nobody' && privacy !== 'private'}
+          disabled={
+            !['public', 'unlisted', 'public_unlisted', 'login'].includes(
+              privacy,
+            )
+          }
+          checked={
+            quotePolicy !== 'nobody' &&
+            ['public', 'unlisted', 'public_unlisted', 'login'].includes(privacy)
+          }
           onChange={handleQuotePolicyChange}
           icon={QuotesIcon}
           keepMenuOpenOnClick
@@ -267,42 +351,45 @@ const ComposeVisibilityMenu: React.FC = () => {
         </MenuItemCheckbox>
       </MenuItemGroup>
 
-      {quotePolicy !== 'nobody' && privacy !== 'private' && (
-        <MenuItemGroup
-          label={
-            <FormattedMessage
-              id='compose.visibility.quote_policy'
-              defaultMessage='Who can quote'
-            />
-          }
-        >
-          <MenuItemRadio
-            name='quote_policy'
-            value='public'
-            checked={quotePolicy === 'public'}
-            onChange={handleQuotePolicyChange}
-            keepMenuOpenOnClick
+      {quotePolicy !== 'nobody' &&
+        ['public', 'unlisted', 'public_unlisted', 'login'].includes(
+          privacy,
+        ) && (
+          <MenuItemGroup
+            label={
+              <FormattedMessage
+                id='compose.visibility.quote_policy'
+                defaultMessage='Who can quote'
+              />
+            }
           >
-            <FormattedMessage
-              id='compose.visibility.quote_policy.anyone'
-              defaultMessage='Anyone'
-            />
-          </MenuItemRadio>
+            <MenuItemRadio
+              name='quote_policy'
+              value='public'
+              checked={quotePolicy === 'public'}
+              onChange={handleQuotePolicyChange}
+              keepMenuOpenOnClick
+            >
+              <FormattedMessage
+                id='compose.visibility.quote_policy.anyone'
+                defaultMessage='Anyone'
+              />
+            </MenuItemRadio>
 
-          <MenuItemRadio
-            name='quote_policy'
-            value='followers'
-            checked={quotePolicy === 'followers'}
-            onChange={handleQuotePolicyChange}
-            keepMenuOpenOnClick
-          >
-            <FormattedMessage
-              id='compose.visibility.quote_policy.followers'
-              defaultMessage='Followers'
-            />
-          </MenuItemRadio>
-        </MenuItemGroup>
-      )}
+            <MenuItemRadio
+              name='quote_policy'
+              value='followers'
+              checked={quotePolicy === 'followers'}
+              onChange={handleQuotePolicyChange}
+              keepMenuOpenOnClick
+            >
+              <FormattedMessage
+                id='compose.visibility.quote_policy.followers'
+                defaultMessage='Followers'
+              />
+            </MenuItemRadio>
+          </MenuItemGroup>
+        )}
 
       <MenuItemDivider />
 
