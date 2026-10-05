@@ -35,8 +35,8 @@ import {
 import { transientSingleColumn } from '@/mastodon/is_mobile';
 import { canViewFeed } from '@/mastodon/permissions';
 import { openNewComposer } from '@/mastodon/reducers/slices/composer';
-import { getOrderedAntennas } from '@/mastodon/selectors/antennas';
-import { getOrderedLists } from '@/mastodon/selectors/lists';
+import { getFavouritedAntennas } from '@/mastodon/selectors/antennas';
+import { getFavouritedLists } from '@/mastodon/selectors/lists';
 import { selectUnreadNotificationGroupsCount } from '@/mastodon/selectors/notifications';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 import { invokeVirtualIosKeyboard } from '@/mastodon/utils/invoke_virtual_ios_keyboard';
@@ -63,7 +63,7 @@ const messages = defineMessages({
 function useCustomFeeds() {
   const dispatch = useAppDispatch();
   const { signedIn } = useIdentity();
-  const customFeeds = useAppSelector((state) => getOrderedLists(state));
+  const customFeeds = useAppSelector((state) => getFavouritedLists(state));
 
   useEffect(() => {
     if (signedIn) {
@@ -79,7 +79,7 @@ function useCustomFeeds() {
 function useAntennas() {
   const dispatch = useAppDispatch();
   const { signedIn } = useIdentity();
-  const antennas = useAppSelector((state) => getOrderedAntennas(state));
+  const antennas = useAppSelector((state) => getFavouritedAntennas(state));
 
   useEffect(() => {
     if (signedIn) {
