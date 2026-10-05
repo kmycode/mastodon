@@ -162,7 +162,7 @@ export const AccountMenuItems: React.FC<{
       <MenuItemLink to='/reaction_deck' icon={HeartIcon}>
         <FormattedMessage
           id='navigation_bar.reaction_deck'
-          defaultMessage='Emoji Deck'
+          defaultMessage='Emoji deck'
         />
       </MenuItemLink>
 

@@ -93,7 +93,7 @@ export function useStatusInteractionFactory(
         dispatch(statusInteraction({ statusId, intent, contextType }));
       };
     },
-    [contextType, dispatch, statusId],
+    [contextType, dispatch, statusId, contextType],
   );
 }
 
@@ -236,7 +236,7 @@ export function useStatusHandlers({
         }),
       );
     },
-    [dispatch, status],
+    [dispatch, statusId, contextType],
   );
 
   const onUnEmojiReact = useCallback(
@@ -250,7 +250,7 @@ export function useStatusHandlers({
         }),
       );
     },
-    [dispatch, status],
+    [dispatch, statusId, contextType],
   );
 
   return useMemo(
@@ -285,6 +285,8 @@ export function useStatusHandlers({
       onOpenProfile,
       onToggleHidden,
       showDespiteFilter,
+      onEmojiReact,
+      onUnEmojiReact,
     ],
   );
 }
@@ -351,7 +353,7 @@ export function useStatusIcons(statusId: string) {
         }),
       );
     },
-    [dispatch, status],
+    [dispatch, statusId, contextType],
   );
 
   const isReplyAll = !!status?.in_reply_to_id;

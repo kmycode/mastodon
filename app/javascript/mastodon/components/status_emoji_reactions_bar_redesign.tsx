@@ -42,7 +42,7 @@ export const EmojiReactionButton: React.FC<ButtonProps> = ({
     } else {
       onEmojiReact(nameParameter);
     }
-  }, [domain, name, me]);
+  }, [domain, name, me, onUnEmojiReact, onEmojiReact]);
 
   const classList = {
     'emoji-reactions-bar__button': true,
