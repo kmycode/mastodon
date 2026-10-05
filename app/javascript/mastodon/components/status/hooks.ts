@@ -93,7 +93,7 @@ export function useStatusInteractionFactory(
         dispatch(statusInteraction({ statusId, intent, contextType }));
       };
     },
-    [contextType, dispatch, statusId, contextType],
+    [contextType, dispatch, statusId],
   );
 }
 
