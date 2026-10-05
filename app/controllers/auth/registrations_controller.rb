@@ -3,6 +3,7 @@
 class Auth::RegistrationsController < Devise::RegistrationsController
   include RegistrationHelper
   include Auth::RegistrationSpamConcern
+  include RegistrationRejectionHelper
 
   layout :determine_layout
 
@@ -92,6 +93,7 @@ class Auth::RegistrationsController < Devise::RegistrationsController
 
   def check_enabled_registrations
     redirect_to new_user_session_path, alert: I18n.t('devise.failure.closed_registrations', email: Setting.site_contact_email) unless allowed_registration?(request.remote_ip, @invite)
+    redirect_to new_user_session_path, alert: I18n.t('devise.failure.closed_registrations', email: Setting.site_contact_email) if match_rejection_registration_pattern?(request_email, request_username)
   end
 
   def invite_code
@@ -103,6 +105,22 @@ class Auth::RegistrationsController < Devise::RegistrationsController
   end
 
   private
+
+  def request_username
+    if params[:user]
+      params[:user][:account_attributes][:username]
+    elsif params[:account_attributes]
+      params[:account_attributes][:username]
+    end
+  end
+
+  def request_email
+    if params[:user]
+      params[:user][:email]
+    else
+      params[:email]
+    end
+  end
 
   def set_invite
     @invite = begin

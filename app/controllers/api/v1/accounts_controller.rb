@@ -2,6 +2,7 @@
 
 class Api::V1::AccountsController < Api::BaseController
   include RegistrationHelper
+  include RegistrationRejectionHelper
 
   before_action -> { authorize_if_got_token! :read, :'read:accounts' }, except: [:create, :follow, :unfollow, :remove_from_followers, :block, :unblock, :mute, :unmute]
   before_action -> { doorkeeper_authorize! :follow, :write, :'write:follows' }, only: [:follow, :unfollow, :remove_from_followers]
@@ -133,6 +134,6 @@ class Api::V1::AccountsController < Api::BaseController
   end
 
   def check_enabled_registrations
-    forbidden if ENV['SSO_ACCOUNT_SIGN_UP'].present? || !allowed_registration?(request.remote_ip, invite)
+    forbidden if ENV['SSO_ACCOUNT_SIGN_UP'].present? || !allowed_registration?(request.remote_ip, invite) || match_rejection_registration_pattern?(params[:email], params[:username])
   end
 end

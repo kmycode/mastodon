@@ -21,6 +21,8 @@ class Form::AdminSettings
     registrations_end_hour
     registrations_secondary_start_hour
     registrations_secondary_end_hour
+    registration_reject_email_pattern
+    registration_reject_username_pattern
     bootstrap_timeline_accounts
     theme
     activity_api_enabled
@@ -135,6 +137,8 @@ class Form::AdminSettings
     emoji_reaction_disallow_domains
     stop_fetch_activity_domains
     stop_link_preview_domains
+    registration_reject_email_pattern
+    registration_reject_username_pattern
   ).freeze
 
   UPLOAD_MIME_TYPES = %w(image/jpeg image/png image/gif image/webp).freeze

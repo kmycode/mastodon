@@ -130,6 +130,8 @@ en:
         peers_api_enabled: A list of domain names this server has encountered in the fediverse. No data is included here about whether you federate with a given server, just that your server knows about it. This is used by services that collect statistics on federation in a general sense.
         profile_directory: The profile directory lists all users who have opted-in to be discoverable.
         receive_other_servers_emoji_reaction: It can cause load. It is recommended to enable it only when there are few people.
+        registration_reject_email_pattern: 複数行で複数指定可能。NGワードと同様に、部分一致になることに注意してください。「?」で始まる行は正規表現になります。
+        registration_reject_username_pattern: 複数行で複数指定可能。NGワードと同様に、部分一致になることに注意してください。「?」で始まる行は正規表現になります。
         registrations_end_hour: 新規登録が承認なしで可能な時間帯の開始時間を指定します。これより前の時間に登録することはできません。終了時間より後にすることはできません。この時間帯から外れた新規登録には、別途承認が必要となります。
         registrations_limit: 現在のユーザー数がこれを超過すると、管理者がこの数値を増やさない限り新規登録できません。0を指定すると、この制限を無効化します。
         registrations_limit_per_day: 本日登録されたユーザー数がこれを超過すると、UTC時刻で翌日0時にならない限り新規登録できません。0を指定すると、この制限を無効化します。
@@ -429,6 +431,8 @@ en:
         profile_directory: Enable profile directory
         receive_other_servers_emoji_reaction: Receive emoji reaction between other server users
         registration_button_message: Register button message
+        registration_reject_email_pattern: Reject email pattern
+        registration_reject_username_pattern: Reject username pattern
         registrations_end_hour: Registration-without-approval end hour (UTC 0-24)
         registrations_limit: User registration limit (Current %{count})
         registrations_limit_per_day: User registration limit per day (Current %{count})

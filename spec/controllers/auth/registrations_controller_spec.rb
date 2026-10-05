@@ -390,6 +390,84 @@ RSpec.describe Auth::RegistrationsController do
       end
     end
 
+    context 'when registration rejection username pattern is set' do
+      subject do
+        post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', agreement: 'true' } }
+      end
+
+      it 'creates user without patterns set' do
+        subject
+        expect(new_user).to_not be_nil
+        expect(new_user.approved?).to be true
+      end
+
+      it 'creates user without pattern matches' do
+        Setting.registration_reject_username_pattern = 'latest'
+        subject
+        expect(new_user).to_not be_nil
+        expect(new_user.approved?).to be true
+      end
+
+      it 'creates user without exp pattern matches' do
+        Setting.registration_reject_username_pattern = '?^est'
+        subject
+        expect(new_user).to_not be_nil
+        expect(new_user.approved?).to be true
+      end
+
+      it 'does not create user with pattern matches' do
+        Setting.registration_reject_username_pattern = 'test'
+        subject
+        expect(new_user).to be_nil
+      end
+
+      it 'does not create user with exp pattern matches' do
+        Setting.registration_reject_username_pattern = '?te.+t'
+        subject
+        expect(new_user).to be_nil
+      end
+
+      def new_user
+        User.find_by(email: 'test@example.com')
+      end
+    end
+
+    context 'when registration rejection email pattern is set' do
+      subject do
+        post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', agreement: 'true' } }
+      end
+
+      it 'creates user without pattern matches' do
+        Setting.registration_reject_email_pattern = 'latest'
+        subject
+        expect(new_user).to_not be_nil
+        expect(new_user.approved?).to be true
+      end
+
+      it 'creates user without exp pattern matches' do
+        Setting.registration_reject_email_pattern = '?@ple'
+        subject
+        expect(new_user).to_not be_nil
+        expect(new_user.approved?).to be true
+      end
+
+      it 'does not create user with pattern matches' do
+        Setting.registration_reject_email_pattern = 'example.com'
+        subject
+        expect(new_user).to be_nil
+      end
+
+      it 'does not create user with exp pattern matches' do
+        Setting.registration_reject_email_pattern = '?example\\.'
+        subject
+        expect(new_user).to be_nil
+      end
+
+      def new_user
+        User.find_by(email: 'test@example.com')
+      end
+    end
+
     context 'when registration time range is set' do
       subject do
         post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', agreement: 'true' } }
