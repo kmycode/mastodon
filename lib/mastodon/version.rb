@@ -96,7 +96,7 @@ module Mastodon
 
     def api_versions
       {
-        mastodon: 11,
+        mastodon: 12,
         kmyblue: KMYBLUE_API_VERSION,
       }
     end

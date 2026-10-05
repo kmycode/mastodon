@@ -17,6 +17,7 @@ class Auth::SessionsController < Devise::SessionsController
   prepend_before_action :check_suspicious!, only: [:create]
 
   include Auth::TwoFactorAuthenticationConcern
+  include Auth::SignInTokenAuthenticationConcern
 
   content_security_policy only: :new do |p|
     p.form_action(false)
@@ -62,7 +63,7 @@ class Auth::SessionsController < Devise::SessionsController
   end
 
   def user_params
-    params.expect(user: [:email, :password, :otp_attempt, :disable_css, credential: {}])
+    params.expect(user: [:email, :password, :otp_attempt, :sign_in_token_attempt, :disable_css, credential: {}])
   end
 
   def login_page_params

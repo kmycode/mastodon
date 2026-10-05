@@ -1003,10 +1003,8 @@ he:
       discovery:
         follow_recommendations: המלצות מעקב
         preamble: הצפה של תוכן מעניין בקבלת פני משתמשות חדשות שאולי אינן מכירות עדיין א.נשים במסטודון. ניתן לשלוט איך אפשרויות גילוי שונות עובדות על השרת שלך.
-        privacy: פרטיות
         profile_directory: ספריית פרופילים
         public_timelines: פידים פומביים
-        publish_statistics: פרסום הסטטיסטיקות בפומבי
         title: תגליות
         trends: נושאים חמים
         wrapstodon: סיכומודון
@@ -1014,6 +1012,11 @@ he:
         all: לכולם
         disabled: לאף אחד
         users: למשתמשים מקומיים מחוברים
+      external:
+        preamble: שלטו בכמות המידע אודות השרת שלך שמשותף עם שירותים אחרים ועד כמה השרת שלך צריך להיות גלוי.
+        privacy: פרטיות
+        publish_statistics: פרסום הסטטיסטיקות בפומבי
+        title: גילוי חיצוני
       feed_access:
         modes:
           authenticated: משתמשים מאומתים בלבד

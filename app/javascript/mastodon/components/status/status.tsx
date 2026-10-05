@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import type { Merge } from 'type-fest';
 
+import { enableEmojiReaction, isHideItem } from '@/mastodon/initial_state';
 import type { ExpandedStatusShape } from '@/mastodon/models/status';
 import { selectExpandedStatus } from '@/mastodon/selectors/statuses';
 import { createAppSelector, useAppSelector } from '@/mastodon/store';
@@ -79,6 +80,7 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
   headerContents,
   variant = contextToVariant(contextType),
   nextId,
+  withoutEmojiReactions,
 }) => {
   // Select data from store
   const { status, parent } = useAppSelector((state) =>
@@ -129,6 +131,15 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
     'data-id': id,
   };
 
+  const isShowEmojiReactions =
+    !withoutEmojiReactions &&
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    status.emoji_reactions &&
+    status.emoji_reactions.length > 0 &&
+    enableEmojiReaction &&
+    (!isHideItem('emoji_reaction_unavailable_server') ||
+      status.account.server_features.emoji_reaction);
+
   const isHidden =
     (!showDespiteFilter && isFiltered) ||
     (!!status.spoiler_text && status.hidden);
@@ -159,7 +170,9 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
             isNextReplyingToMe &&
             !showThread &&
             classes.connectNextReply,
+          !unfocusable && 'focusable',
         )}
+        tabIndex={unfocusable ? undefined : -1}
         data-featured={featured ? 'true' : null}
         aria-label={screenReaderText}
         data-nosnippet={status.account.noindex || undefined}
@@ -224,10 +237,12 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
 
         {(variant === 'page' || (showActions && !isQuotedPost)) && (
           <footer className={classes.footer}>
-            <StatusEmojiReactionsBar
-              statusId={status.id}
-              emojiReactions={status.emoji_reactions}
-            />
+            {isShowEmojiReactions && (
+              <StatusEmojiReactionsBar
+                statusId={status.id}
+                emojiReactions={status.emoji_reactions}
+              />
+            )}
 
             {showActions && !isQuotedPost && (
               <StatusActionBar
