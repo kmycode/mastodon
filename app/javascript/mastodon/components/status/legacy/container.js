@@ -6,12 +6,11 @@ import {
 } from '@/mastodon/actions/accounts';
 import { initBlockModal } from '@/mastodon/actions/blocks';
 import {
-  replyCompose,
   mentionCompose,
   directCompose,
   insertReferenceCompose,
 } from '@/mastodon/actions/compose';
-import { quoteComposeById } from '@/mastodon/actions/compose_typed';
+import { quoteComposeById, replyComposeById } from '@/mastodon/actions/compose_typed';
 import {
   initDomainBlockModal,
   unblockDomain,
@@ -68,15 +67,7 @@ const mapDispatchToProps = (dispatch, { contextType }) => ({
   contextType,
 
   onReply (status) {
-    dispatch((_, getState) => {
-      let state = getState();
-
-      if (state.getIn(['compose', 'text']).trim().length !== 0) {
-        dispatch(openModal({ modalType: 'CONFIRM_REPLY', modalProps: { status } }));
-      } else {
-        dispatch(replyCompose(status));
-      }
-    });
+    dispatch(replyComposeById({ statusId: status.get('id') }));
   },
 
   onReblog (status, e) {
@@ -88,7 +79,7 @@ const mapDispatchToProps = (dispatch, { contextType }) => ({
   },
 
   onQuote (status) {
-    dispatch(quoteComposeById(status.get('id')));
+    dispatch(quoteComposeById({ statusId: status.get('id') }));
   },
 
   onFavourite (status) {

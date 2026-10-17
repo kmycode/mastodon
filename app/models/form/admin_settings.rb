@@ -76,6 +76,9 @@ class Form::AdminSettings
     landing_page
     wrapstodon
     email_footer_text
+    opt_in_server_directory
+    opt_in_server_recommendation
+    postpone_confirmation_emails
   ).freeze
 
   INTEGER_KEYS = %i(
@@ -119,7 +122,10 @@ class Form::AdminSettings
     delete_content_cache_without_reaction
     hold_remote_new_accounts
     auto_accept_legacy_quotes
+    opt_in_server_directory
+    opt_in_server_recommendation
     wrapstodon
+    postpone_confirmation_emails
   ).freeze
 
   UPLOAD_KEYS = %i(

@@ -44,7 +44,6 @@ import ModalContainer from './containers/modal_container';
 import {
   Compose,
   Status,
-  GettingStarted,
   KeyboardShortcuts,
   Firehose,
   AccountTimeline,
@@ -114,6 +113,7 @@ import { CustomHomepage } from 'mastodon/features/custom_homepage';
 // Without this it ends up in ~8 very commonly used bundles.
 import '../../components/status/legacy/status';
 import { getNavigationSkipLinkId, SkipLinks } from './components/skip_links';
+import { fetchCircles } from '@/mastodon/actions/circles_typed';
 
 const messages = defineMessages({
   beforeUnload: { id: 'ui.beforeunload', defaultMessage: 'Your draft will be lost if you leave Mastodon.' },
@@ -231,7 +231,6 @@ class SwitchingColumnsArea extends PureComponent {
               : null
             }
 
-            <WrappedRoute path='/getting-started' component={GettingStarted} content={children} />
             <WrappedRoute path='/keyboard-shortcuts' component={KeyboardShortcuts} content={children} />
             <WrappedRoute path='/about' component={About} content={children} />
             <WrappedRoute path='/privacy-policy' component={PrivacyPolicy} content={children} />
@@ -499,6 +498,7 @@ class UI extends PureComponent {
       this.props.dispatch(fetchNotifications());
       this.props.dispatch(fetchServerTranslationLanguages());
       this.props.dispatch(checkAnnualReport());
+      this.props.dispatch(fetchCircles());
 
       setTimeout(() => this.props.dispatch(fetchServer()), 3000);
     }
@@ -720,13 +720,7 @@ class UI extends PureComponent {
     return (
       <Hotkeys global handlers={handlers}>
         <div className={classNames('ui', { 'is-composing': isComposing })} ref={this.setRef}>
-          {!minimalShell && (
-            <SkipLinks
-              // TODO: Remove these props & related methods when isRedesignEnabled() flag is removed
-              multiColumn={layout === 'multi-column'}
-              onFocusGettingStartedColumn={this.handleHotkeyGoToStart}
-            />
-          )}
+          {!minimalShell && <SkipLinks />}
 
           <SwitchingColumnsArea
             identity={this.props.identity}

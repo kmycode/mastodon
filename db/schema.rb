@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_25_094651) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_30_093734) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -257,7 +257,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_25_094651) do
     t.string "permalink"
     t.jsonb "recorded_changes"
     t.string "recorded_changes_format"
+    t.bigint "moderation_subscription_id"
     t.index ["account_id"], name: "index_admin_action_logs_on_account_id"
+    t.index ["moderation_subscription_id"], name: "index_admin_action_logs_on_moderation_subscription_id", where: "(moderation_subscription_id IS NOT NULL)"
     t.index ["target_type", "target_id"], name: "index_admin_action_logs_on_target_type_and_target_id"
   end
 
@@ -642,7 +644,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_25_094651) do
     t.string "domain", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.bigint "moderation_subscription_id"
     t.index ["domain"], name: "index_domain_allows_on_domain", unique: true
+    t.index ["moderation_subscription_id"], name: "index_domain_allows_on_moderation_subscription_id"
   end
 
   create_table "domain_blocks", force: :cascade do |t|
@@ -666,7 +670,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_25_094651) do
     t.boolean "reject_friend", default: false, null: false
     t.boolean "block_trends", default: false, null: false
     t.boolean "reject_relay", default: false, null: false
+    t.bigint "moderation_subscription_id"
     t.index ["domain"], name: "index_domain_blocks_on_domain", unique: true
+    t.index ["moderation_subscription_id"], name: "index_domain_blocks_on_moderation_subscription_id"
   end
 
   create_table "email_domain_blocks", force: :cascade do |t|
@@ -1038,6 +1044,44 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_25_094651) do
     t.boolean "silent", default: false, null: false
     t.index ["account_id", "status_id"], name: "index_mentions_on_account_id_and_status_id", unique: true
     t.index ["status_id"], name: "index_mentions_on_status_id"
+  end
+
+  create_table "moderation_subscription_advisories", force: :cascade do |t|
+    t.bigint "moderation_subscription_id", null: false
+    t.integer "action", null: false
+    t.integer "target_type", null: false
+    t.string "target_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["moderation_subscription_id"], name: "idx_on_moderation_subscription_id_63d8b3a24e"
+    t.index ["target_type", "target_key", "moderation_subscription_id"], name: "idx_on_target_type_target_key_moderation_subscripti_c87d9b7c8a", unique: true
+  end
+
+  create_table "moderation_subscriptions", force: :cascade do |t|
+    t.string "name"
+    t.integer "type", null: false
+    t.string "url", null: false
+    t.integer "list_action"
+    t.integer "priority"
+    t.boolean "override_unattributed", default: false, null: false
+    t.boolean "apply_automatically", default: false, null: false
+    t.boolean "retract_automatically", default: true, null: false
+    t.boolean "preserve_relationships", default: true, null: false
+    t.datetime "last_synced_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "moderation_suggestions", force: :cascade do |t|
+    t.bigint "moderation_subscription_id"
+    t.integer "state", default: 0, null: false
+    t.integer "action", null: false
+    t.integer "target_type", null: false
+    t.string "target_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["moderation_subscription_id"], name: "index_moderation_suggestions_on_moderation_subscription_id"
+    t.index ["target_type", "target_key", "action"], name: "idx_on_target_type_target_key_action_4f6ab01ebc", unique: true
   end
 
   create_table "mutes", force: :cascade do |t|
@@ -1936,6 +1980,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_25_094651) do
   add_foreign_key "custom_filter_statuses", "custom_filters", on_delete: :cascade
   add_foreign_key "custom_filter_statuses", "statuses", on_delete: :cascade
   add_foreign_key "custom_filters", "accounts", on_delete: :cascade
+  add_foreign_key "domain_allows", "moderation_subscriptions", on_delete: :nullify
+  add_foreign_key "domain_blocks", "moderation_subscriptions", on_delete: :nullify
   add_foreign_key "email_domain_blocks", "email_domain_blocks", column: "parent_id", on_delete: :cascade
   add_foreign_key "email_subscriptions", "accounts", on_delete: :cascade
   add_foreign_key "emoji_reactions", "accounts", on_delete: :cascade
@@ -1978,6 +2024,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_25_094651) do
   add_foreign_key "media_attachments", "statuses", on_delete: :nullify
   add_foreign_key "mentions", "accounts", name: "fk_970d43f9d1", on_delete: :cascade
   add_foreign_key "mentions", "statuses", on_delete: :cascade
+  add_foreign_key "moderation_subscription_advisories", "moderation_subscriptions"
+  add_foreign_key "moderation_suggestions", "moderation_subscriptions", on_delete: :nullify
   add_foreign_key "mutes", "accounts", column: "target_account_id", name: "fk_eecff219ea", on_delete: :cascade
   add_foreign_key "mutes", "accounts", name: "fk_b8d8daf315", on_delete: :cascade
   add_foreign_key "ng_rule_histories", "accounts"

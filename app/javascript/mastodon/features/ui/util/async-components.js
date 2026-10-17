@@ -80,10 +80,6 @@ export function Status () {
   return import('../../status');
 }
 
-export function GettingStarted () {
-  return import('../../getting_started');
-}
-
 export function KeyboardShortcuts () {
   return import('../../keyboard_shortcuts');
 }

@@ -16,7 +16,6 @@ import { SpoilerButton } from 'mastodon/components/spoiler_button';
 import { formatTime } from 'mastodon/features/video';
 
 import { autoPlayGif, displayMedia, useBlurhash } from '../initial_state';
-import { isRedesignEnabled } from '../utils/environment';
 import { Button } from './button/redesign';
 
 class Item extends PureComponent {
@@ -351,8 +350,6 @@ class MediaGallery extends PureComponent {
     if (size > 4) {
       classList.push(rowClass, columnClass, compactClass);
     }
-    
-    const ButtonComp = isRedesignEnabled() ? Button : 'button';
 
     return (
       <div className={classNames(classList)} style={style} ref={this.handleRef}>
@@ -362,7 +359,8 @@ class MediaGallery extends PureComponent {
 
         {(visible && !uncached) && (
           <div className='media-gallery__actions'>
-            <ButtonComp
+            <Button
+              contrastOnMedia
               size='xs'
               type='button'
               variant='solid'
@@ -370,7 +368,7 @@ class MediaGallery extends PureComponent {
               onClick={this.handleOpen}
             >
               <FormattedMessage id='media_gallery.hide' defaultMessage='Hide' />
-            </ButtonComp>
+            </Button>
           </div>
         )}
       </div>

@@ -4,9 +4,10 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { useHistory } from 'react-router';
 
+import { fromJS } from 'immutable';
+
 import {
   followAccount,
-  muteAccount,
   unblockAccount,
   unmuteAccount,
 } from '@/mastodon/actions/accounts';
@@ -23,6 +24,7 @@ import {
 import type { StatusInteractionIntent } from '@/mastodon/actions/interactions_typed';
 import { statusInteraction } from '@/mastodon/actions/interactions_typed';
 import { openModal } from '@/mastodon/actions/modal';
+import { initMuteModal } from '@/mastodon/actions/mutes';
 import { toggleStatusSpoilers } from '@/mastodon/actions/statuses';
 import { useRelationship } from '@/mastodon/hooks/useRelationship';
 import { useExpandedStatus, useStatus } from '@/mastodon/hooks/useStatus';
@@ -51,9 +53,9 @@ import {
 } from '@/mastodon/selectors/statuses';
 import { useAppSelector, useAppDispatch } from '@/mastodon/store';
 import type { AppDispatch } from '@/mastodon/store';
-import { isRedesignEnabled } from '@/mastodon/utils/environment';
 import type { OnElementHandler } from '@/mastodon/utils/html';
 
+import type { HotkeyHandlerFunction, HotkeyName } from '../hotkeys';
 import { FOCUS_TARGET } from '../navigation_focus_target';
 
 import { boostItemState, quoteItemState } from './boost_button_utils';
@@ -74,6 +76,10 @@ import type { StatusContextType } from './types';
 export const StatusContext = createContext<{
   id?: string | null;
   contextType?: StatusContextType;
+  registerHotkeyCallback?: (
+    hotkey: HotkeyName,
+    handler: HotkeyHandlerFunction,
+  ) => void;
 }>({});
 
 export function useStatusContext() {
@@ -102,7 +108,7 @@ export function useStatusHandlers({
   contextType,
   onOpen,
 }: {
-  status?: ExpandedStatusShape;
+  status?: ExpandedStatusShape | AccountStatusShape | null;
   contextType?: StatusContextType;
   onOpen?: () => void;
 }) {
@@ -162,9 +168,25 @@ export function useStatusHandlers({
   const onOpenClick: React.MouseEventHandler = useCallback(
     (event) => {
       const target = event.target;
+
+      const isQuotedStatus = event.currentTarget.matches(
+        '[data-interactive-post-content="true"]',
+      );
+      // When clicking a quoted post, we stop event propagation
+      // so it doesn't trigger this handler on the parent post.
+      if (isQuotedStatus) {
+        event.stopPropagation();
+      }
+
+      // Quoted posts are always inside of an element with `data-interactive-post-content`,
+      // so we exclude it from the selector.
+      const interactiveElementSelector = isQuotedStatus
+        ? 'a, button, dialog, input, textarea, label'
+        : 'a, button, dialog, input, textarea, label, [data-interactive-post-content="true"]';
+
       if (
         !(target instanceof HTMLElement) ||
-        target.closest('a, button') ||
+        target.closest(interactiveElementSelector) ||
         contextType === 'detailed' ||
         window.getSelection()?.type === 'Range'
       ) {
@@ -337,7 +359,6 @@ export function useStatusIcons(statusId: string) {
     selectStatusInteractionsAllowed(state, statusId),
   );
   const interactionFactory = useStatusInteractionFactory(statusId);
-  const isRedesign = isRedesignEnabled();
 
   const dispatch = useAppDispatch();
   const statusContext = useStatusContext();
@@ -369,7 +390,7 @@ export function useStatusIcons(statusId: string) {
 
   const boostState = boostItemState(conditions);
   const boost: StatusIcon = {
-    icon: boostState.iconComponent,
+    icon: status?.reblogged ? StatusBoostActiveIcon : StatusBoostIcon,
     title: intl.formatMessage(boostState.title),
     meta: boostState.meta ? intl.formatMessage(boostState.meta) : undefined,
     counter: status?.reblogs_count,
@@ -377,9 +398,6 @@ export function useStatusIcons(statusId: string) {
     action: interactionFactory('reblog'),
     disabled: boostState.disabled ?? false,
   };
-  if (isRedesign) {
-    boost.icon = status?.reblogged ? StatusBoostActiveIcon : StatusBoostIcon;
-  }
 
   const quoteState = quoteItemState(conditions);
   const quote: StatusIcon = {
@@ -395,18 +413,13 @@ export function useStatusIcons(statusId: string) {
   const like: StatusIcon = {
     icon: isLiked ? StatusLikeActiveIcon : StatusLikeIcon,
     title: intl.formatMessage(
-      isLiked ? iconMessages.removeFavourite : iconMessages.favourite,
+      isLiked ? iconMessages.removeLike : iconMessages.like,
     ),
     counter: status?.favourites_count ?? 0,
     active: isLiked,
     action: interactionFactory('favourite'),
     disabled: interactions.favourite,
   };
-  if (isRedesign) {
-    like.title = intl.formatMessage(
-      isLiked ? iconMessages.removeLike : iconMessages.like,
-    );
-  }
 
   const emojiReaction: StatusIcon = {
     icon: StatusEmojiReactionIcon,
@@ -525,12 +538,38 @@ export function useHandlersForStatus(
       status?.tagged_collections.find((item) => item.url === href)?.id,
     [status?.tagged_collections],
   );
-  return useElementHandledLink({
+  const { onElement: onElementHandledLink } = useElementHandledLink({
     hashtagAccountId:
       typeof status?.account === 'string' ? status.account : status?.account.id,
     hrefToCollectionId,
     hrefToMention,
   });
+
+  const onElement: OnElementHandler = useCallback(
+    (element, { key, ...props }, children, extra) => {
+      if (element instanceof HTMLAnchorElement) {
+        return onElementHandledLink(
+          element,
+          { key, ...props },
+          children,
+          extra,
+        );
+      } else if (
+        element instanceof HTMLSpanElement &&
+        props.className === 'invisible'
+      ) {
+        return createElement(
+          'span',
+          { key: key as React.Key, 'aria-disabled': true, ...props },
+          children,
+        );
+      }
+      return undefined;
+    },
+    [onElementHandledLink],
+  );
+
+  return { onElement };
 }
 
 export const onStatusLinksDisabled: OnElementHandler<AccountStatusShape> = (
@@ -562,7 +601,7 @@ const menuMessages = defineMessages({
   redraft: { id: 'status.redraft', defaultMessage: 'Delete & re-draft' },
   edit: { id: 'status.edit', defaultMessage: 'Edit' },
   follow: { id: 'status.follow', defaultMessage: 'Follow @{name}' },
-  direct: { id: 'status.direct', defaultMessage: 'Privately mention @{name}' },
+  message: { id: 'status.message', defaultMessage: 'Message @{name}' },
   mention: { id: 'status.mention', defaultMessage: 'Mention @{name}' },
   mute: { id: 'account.mute', defaultMessage: 'Mute @{name}' },
   muteBoosts: {
@@ -628,16 +667,19 @@ const menuMessages = defineMessages({
 
 export function useStatusMenuActions({
   status,
+  reblogStatus,
   contextType,
   withDismiss = false,
 }: {
   status: Omit<AccountStatusShape, 'reblog'>;
+  reblogStatus: AccountStatusShape | null;
   withDismiss?: boolean;
   contextType?: StatusContextType;
 }) {
   const account = status.account;
   const { permissions } = useIdentity();
   const relationship = useRelationship(account.id);
+  const reblogAccountRelationship = useRelationship(reblogStatus?.account.id);
   const intl = useIntl();
   const dispatch = useAppDispatch();
 
@@ -647,12 +689,16 @@ export function useStatusMenuActions({
   const interactions = useAppSelector((state) =>
     selectStatusInteractionsAllowed(state, status.id),
   );
-  const statusInteractionFactory = useStatusInteractionFactory(status.id);
+  const statusInteractionFactory = useStatusInteractionFactory(
+    status.id,
+    contextType,
+  );
 
   return useMemo(
     () =>
       getMenuItems({
         status,
+        reblogStatus,
         conditions,
         interactions,
         onStatusInteraction: statusInteractionFactory,
@@ -660,11 +706,13 @@ export function useStatusMenuActions({
         permissions,
         intl,
         relationship,
+        reblogAccountRelationship,
         contextType,
         dispatch,
       }),
     [
       status,
+      reblogStatus,
       conditions,
       interactions,
       statusInteractionFactory,
@@ -672,6 +720,7 @@ export function useStatusMenuActions({
       permissions,
       intl,
       relationship,
+      reblogAccountRelationship,
       contextType,
       dispatch,
     ],
@@ -680,6 +729,7 @@ export function useStatusMenuActions({
 
 interface MenuItemsParams {
   status: AccountStatusShape;
+  reblogStatus: AccountStatusShape | null;
   conditions: StatusConditions;
   interactions: StatusInteractionsAllowed;
   onStatusInteraction: (intent: StatusInteractionIntent) => () => void;
@@ -687,12 +737,14 @@ interface MenuItemsParams {
   permissions: number;
   intl: ReturnType<typeof useIntl>;
   relationship?: Relationship | null;
+  reblogAccountRelationship?: Relationship | null;
   contextType?: StatusContextType;
   dispatch: AppDispatch;
 }
 
 function getMenuItems({
   status,
+  reblogStatus,
   conditions,
   interactions,
   onStatusInteraction,
@@ -700,6 +752,7 @@ function getMenuItems({
   permissions,
   intl,
   relationship,
+  reblogAccountRelationship,
   contextType,
   dispatch,
 }: MenuItemsParams) {
@@ -709,6 +762,7 @@ function getMenuItems({
   const account = status.account;
   const statusUrl = status.url ?? status.uri;
   const { isPublic, isLocal, isLoggedIn, isMine } = conditions;
+  const isBoost = !!reblogStatus;
 
   if (contextType !== 'detailed') {
     menu.push({
@@ -785,12 +839,6 @@ function getMenuItems({
       ),
       action: onStatusInteraction('mute'),
     });
-    if (interactions.editQuotePolicy && !isRedesignEnabled()) {
-      menu.push({
-        text: intl.formatMessage(menuMessages.quotePolicyChange),
-        action: onStatusInteraction('editQuotePolicy'),
-      });
-    }
     menu.push(null);
   }
 
@@ -841,15 +889,15 @@ function getMenuItems({
         name: account.username,
       }),
       action: () => {
-        dispatch(mentionCompose(account));
+        dispatch(mentionCompose(fromJS(account)));
       },
     });
     menu.push({
-      text: intl.formatMessage(menuMessages.direct, {
+      text: intl.formatMessage(menuMessages.message, {
         name: account.username,
       }),
       action: () => {
-        dispatch(directCompose(account));
+        dispatch(directCompose(fromJS(account)));
       },
     });
     menu.push(null);
@@ -865,21 +913,21 @@ function getMenuItems({
     });
   }
 
-  if (relationship?.following && !relationship.muting) {
-    const isMutingBoosts = relationship.showing_reblogs;
+  if (isBoost && reblogAccountRelationship) {
+    const isMutingBoosts = !reblogAccountRelationship.showing_reblogs;
     menu.push({
       text: intl.formatMessage(
-        isMutingBoosts ? menuMessages.muteBoosts : menuMessages.unmuteBoosts,
-        { name: account.username },
+        isMutingBoosts ? menuMessages.unmuteBoosts : menuMessages.muteBoosts,
+        { name: reblogStatus.account.username },
       ),
       action: () => {
         dispatch(
-          followAccount(account.id, {
-            reblogs: !isMutingBoosts,
+          followAccount(reblogStatus.account.id, {
+            reblogs: isMutingBoosts,
           }),
         );
       },
-      dangerous: true,
+      dangerous: !isMutingBoosts,
     });
   }
 
@@ -895,7 +943,7 @@ function getMenuItems({
       if (isMuted) {
         dispatch(unmuteAccount(account.id));
       } else {
-        dispatch(muteAccount(account.id));
+        dispatch(initMuteModal(account));
       }
     },
     dangerous: !isMuted,

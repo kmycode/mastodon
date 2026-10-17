@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::AccountsController < Api::BaseController
+  include DeprecationConcern
   include RegistrationHelper
   include RegistrationRejectionHelper
 
@@ -23,6 +24,8 @@ class Api::V1::AccountsController < Api::BaseController
   skip_before_action :require_authenticated_user!, only: :create
 
   override_rate_limit_headers :follow, family: :follows
+
+  deprecate_api '2026-10-01', only: :create
 
   def index
     render json: @accounts, each_serializer: REST::AccountSerializer
