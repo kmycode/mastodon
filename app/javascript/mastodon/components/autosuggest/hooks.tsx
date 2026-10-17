@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import { useThrottledCallback } from 'use-debounce';
 
+import { normalizeKey } from '../hotkeys/utils';
 import { getAllMenuItems } from '../menu';
 
 import type { AutosuggestMenuProps } from './list';
@@ -19,6 +20,7 @@ export type OnSuggestionSelect = (
 
 interface UseAutosuggestMenuOptions {
   suggestions: Suggestion[];
+  sourceRef: Source;
   onSelect: OnSuggestionSelect;
   onFetch?: (token: string) => void;
   onClear?: () => void;
@@ -31,6 +33,7 @@ type SourceProps = React.DetailedHTMLProps<
 
 export function useAutosuggestMenu({
   suggestions,
+  sourceRef,
   onSelect,
   onFetch,
   onClear,
@@ -98,6 +101,60 @@ export function useAutosuggestMenu({
       [onSelect, suggestions],
     );
 
+  const onSourceKeyDown: React.KeyboardEventHandler<AutosuggestSourceElements> =
+    useCallback(
+      (event) => {
+        // Check if this composing: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/isComposing
+        if (event.nativeEvent.isComposing) {
+          return;
+        }
+
+        // Exit if the source is disabled.
+        if (sourceToElement(sourceRef)?.disabled) {
+          return;
+        }
+
+        const key = normalizeKey(event.key);
+        if (key === 'escape') {
+          event.preventDefault();
+          // Dismiss the suggestions if we're displaying any.
+          if (suggestions.length > 0) {
+            onClear?.();
+          } else {
+            // Otherwise lose focus on the textarea.
+            event.currentTarget.blur();
+          }
+        } else if (
+          (key === 'tab' || key === 'enter') &&
+          suggestions.length > 0
+        ) {
+          const startPosition = tokenStartRef.current;
+          const token = lastTokenRef.current;
+          const firstSuggestion = suggestions.at(0);
+
+          // If we have a suggestion and token info,
+          // don't move focus and instead select the first suggestion.
+          if (token && firstSuggestion) {
+            event.preventDefault();
+            onSelect(startPosition, token, firstSuggestion);
+          }
+        } else if (
+          key === 'down' &&
+          suggestions.length > 0 &&
+          listRef.current
+        ) {
+          event.preventDefault();
+          // Focus the first item
+          (getAllMenuItems(listRef.current).at(0) ?? listRef.current).focus();
+        } else if (key === 'up' && suggestions.length > 0 && listRef.current) {
+          event.preventDefault();
+          // Focus the last item
+          (getAllMenuItems(listRef.current).at(-1) ?? listRef.current).focus();
+        }
+      },
+      [onClear, onSelect, sourceRef, suggestions],
+    );
+
   return {
     // Used by the parent.
     onTextChange,
@@ -108,6 +165,7 @@ export function useAutosuggestMenu({
     suggestProps: {
       suggestions,
       onSuggestionClick,
+      source: sourceToElement(sourceRef),
       listRef,
       tokenCb,
     } satisfies AutosuggestMenuProps,
@@ -116,19 +174,18 @@ export function useAutosuggestMenu({
       'aria-autocomplete': 'list',
       'aria-expanded': suggestions.length > 0,
       'aria-haspopup': 'listbox',
+      onKeyDown: onSourceKeyDown,
     } satisfies SourceProps,
   };
 }
 
 interface UseAutosuggestFloatingMenuOptions extends UseAutosuggestMenuOptions {
   text?: string;
-  sourceRef: Source;
   className?: string;
 }
 
 export function useAutosuggestFloatingMenu({
   text,
-  sourceRef,
   className,
   ...suggestOptions
 }: UseAutosuggestFloatingMenuOptions) {
@@ -138,9 +195,9 @@ export function useAutosuggestFloatingMenu({
 
   const { getToken, ...autosuggestProps } = useAutosuggestMenu(suggestOptions);
 
-  const { onClear } = suggestOptions;
+  const source = autosuggestProps.suggestProps.source;
 
-  const source = sourceToElement(sourceRef);
+  const { onClear } = suggestOptions;
 
   // Update the popover on scroll or select.
   const onUpdate = useCallback(() => {

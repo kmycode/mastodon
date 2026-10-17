@@ -8,6 +8,7 @@ import {
 
 import { useLocation } from 'react-router-dom';
 
+import { useMergedRefs } from '@/mastodon/hooks/useMergedRefs';
 import type { PolymorphicProps } from '@/types/polymorphic';
 
 import type { MastodonLocation } from '../router';
@@ -99,15 +100,20 @@ export const FocusTargetProvider: React.FC<{
   );
 };
 
-export function useFocusOnNavigation(targetName?: NamedFocusTarget) {
+export function useFocusAfterNavigation(
+  targetName?: NamedFocusTarget,
+  onAfterFocus?: (hasSetFocus: boolean) => void,
+) {
   const focusTargetRef = useContext(FocusTargetContext);
+  const hasFocusedOnceRef = useRef(false);
 
   return useCallback(
     (element: HTMLElement | null) => {
       const focusTarget = focusTargetRef?.current;
 
       // Bail out if focusTarget was set to `false`
-      if (!element || !focusTarget) {
+      if (!element || !focusTarget || hasFocusedOnceRef.current) {
+        onAfterFocus?.(false);
         return;
       }
 
@@ -118,10 +124,15 @@ export function useFocusOnNavigation(targetName?: NamedFocusTarget) {
       if (shouldSetFocus) {
         setTimeout(() => {
           element.focus({ preventScroll: true });
+          onAfterFocus?.(true);
+          // Prevent this focus handler from setting focus again
+          hasFocusedOnceRef.current = true;
         }, 0);
+      } else {
+        onAfterFocus?.(false);
       }
     },
-    [focusTargetRef, targetName],
+    [focusTargetRef, onAfterFocus, targetName],
   );
 }
 
@@ -136,10 +147,14 @@ export const NavigationFocusTarget = <As extends React.ElementType = 'h1'>({
   ...otherProps
 }: PolymorphicProps<FocusTargetElementProps, As>) => {
   const Component = asComp ?? 'h1';
-  const focusOnNavigation = useFocusOnNavigation(focusTargetName);
+  const focusAfterNavigation = useFocusAfterNavigation(focusTargetName);
 
   return (
-    <Component ref={focusOnNavigation} tabIndex={-1} {...otherProps}>
+    <Component
+      {...otherProps}
+      ref={useMergedRefs(focusAfterNavigation, otherProps.ref)}
+      tabIndex={-1}
+    >
       {children}
     </Component>
   );

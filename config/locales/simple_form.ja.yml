@@ -123,6 +123,8 @@ ja:
         peers_api_enabled: このサーバーが Fediverse で遭遇したドメイン名のリストです。このサーバーが知っているだけで、特定のサーバーと連合しているかのデータは含まれません。これは一般的に Fediverse に関する統計情報を収集するサービスによって使用されます。
         profile_directory: ディレクトリには、掲載する設定をしたすべてのユーザーが一覧表示されます。
         receive_other_servers_emoji_reaction: 負荷の原因になります。人が少ない場合にのみ有効にすることをおすすめします。
+        registration_reject_email_pattern: 複数行で複数指定可能。NGワードと同様に、部分一致になることに注意してください。「?」で始まる行は正規表現になります。
+        registration_reject_username_pattern: 複数行で複数指定可能。NGワードと同様に、部分一致になることに注意してください。「?」で始まる行は正規表現になります。
         registrations_end_hour: 新規登録が承認なしで可能な時間帯の開始時間を指定します。これより前の時間に登録することはできません。終了時間より後にすることはできません。この時間帯から外れた新規登録には、別途承認が必要となります。
         registrations_limit: 現在のユーザー数がこれを超過すると、管理者がこの数値を増やさない限り新規登録できません。0を指定すると、この制限を無効化します。
         registrations_limit_per_day: 本日登録されたユーザー数がこれを超過すると、UTC時刻で翌日0時にならない限り新規登録できません。0を指定すると、この制限を無効化します。
@@ -269,7 +271,6 @@ ja:
         setting_bio_markdown: プロフィールのMarkdownを有効にする
         setting_bookmark_category_needed: Webでブックマーク時にカテゴリの選択を必須にする
         setting_boost_modal: ブーストの公開範囲の設定
-        setting_color_scheme: カラースキーム
         setting_community_timeline_instead_of_search_menu: スマホ使用時の画面下ナビゲーションで、検索の代わりにローカルタイムラインを表示する
         setting_content_font_size: 投稿本文のフォントサイズ
         setting_content_font_size_items:
@@ -403,6 +404,8 @@ ja:
         profile_directory: プロフィール一覧を有効にする
         receive_other_servers_emoji_reaction: 他のサーバーのユーザーが他のサーバーの投稿につけた絵文字リアクションを受け入れる
         registration_button_message: 新規登録ボタンの直上に表示するメッセージ
+        registration_reject_email_pattern: 登録拒否するメールアドレスのパターン
+        registration_reject_username_pattern: 登録拒否するユーザー名のパターン
         registrations_end_hour: 登録に承認を必要としない時間帯の終了時刻 A (UTC 0〜24)
         registrations_limit: 登録ユーザー数上限 (現在 %{count} 名)
         registrations_limit_per_day: 1日あたり登録ユーザー数上限 (現在 %{count} 名)

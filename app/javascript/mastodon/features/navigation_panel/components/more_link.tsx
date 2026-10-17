@@ -45,7 +45,7 @@ const messages = defineMessages({
   },
   reaction_deck: {
     id: 'navigation_bar.reaction_deck',
-    defaultMessage: 'Reaction deck',
+    defaultMessage: 'Emoji deck',
   },
   emoji_reactions: {
     id: 'navigation_bar.emoji_reactions',

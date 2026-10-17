@@ -246,7 +246,6 @@ be:
         setting_always_send_emails: Заўжды дасылаць апавяшчэнні на электронную пошту
         setting_auto_play_gif: Аўтапрайграванне анімаваных GIF
         setting_boost_modal: Кантроль бачнасці пашырэння
-        setting_color_scheme: Колеравая схема
         setting_contrast: Кантраст
         setting_default_language: Мова допісаў
         setting_default_privacy: Бачнасць допісаў
@@ -265,6 +264,7 @@ be:
         setting_missing_alt_text_modal: Папярэджваць перад публікацыяй допісу без альтэрнатыўнага тэксту
         setting_quick_boosting: Уключыць хуткае пашырэнне
         setting_reduce_motion: Памяншэнне руху ў анімацыях
+        setting_split_default_privacy_discoverable: Зрабіць мае допісы бачнымі ў публічнай стужцы і выніках пошуку
         setting_system_font_ui: Выкарыстоўваць прадвызначаны сістэмны шрыфт
         setting_system_scrollbars_ui: Паказваць паласу пракручвання па змаўчанні
         setting_theme: Тэма сайта

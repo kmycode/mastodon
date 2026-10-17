@@ -1,45 +1,41 @@
-/* eslint-disable jsx-a11y/no-autofocus */
-import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
 import classNames from 'classnames';
+import { useRouteMatch } from 'react-router';
 
-import {
-  ChatCircleIcon,
-  NewspaperIcon,
-  PenNibIcon,
-} from '@phosphor-icons/react';
+import { PenNibIcon, ReadCvLogoIcon } from '@phosphor-icons/react';
 
+import type { IconButtonProps } from '@/mastodon/components/button/redesign';
 import { IconButton } from '@/mastodon/components/button/redesign';
-import {
-  Menu,
-  MenuTrigger,
-  MenuList,
-  MenuItem,
-} from '@/mastodon/components/menu';
-import { MenuCard } from '@/mastodon/components/menu/card';
 import { useIdentity } from '@/mastodon/identity_context';
-import { openNewComposer } from '@/mastodon/reducers/slices/composer';
+import {
+  minimizeComposerToggle,
+  openNewComposer,
+} from '@/mastodon/reducers/slices/composer';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 import { isRedesignEnabled } from '@/mastodon/utils/environment';
 
-import { ComposeFormHeader } from './header';
-import classes from './trigger.module.scss';
+import { useBreakpoint } from '../../ui/hooks/useBreakpoint';
 
-const ComposeLazyForm = lazy(() =>
-  import('./index').then(({ RedesignComposeForm }) => ({
-    default: RedesignComposeForm,
-  })),
-);
+import { ComposeFormHeader } from './header';
+import { RedesignComposeForm } from './index';
+import composerClasses from './styles.module.scss';
+import classes from './trigger.module.scss';
 
 export const ComposeRedesignButton: React.FC<{
   /**
    * Render the button in regular document flow instead of fixed positioning for mobile layout
    */
   inline?: boolean;
-}> = ({ inline }) => {
+}> = ({ inline = false }) => {
   const displayState = useAppSelector((state) => state.composer.displayState);
+  const isMobile = useBreakpoint('openable');
+
+  const hasMobileFloatingActionButton = useHasMobileFloatingActionButton({
+    isMobile,
+  });
 
   // Update viewport based on visual size in order to account for the virtual keyboard.
   const [viewportHeight, setViewportHeight] = useState<null | number>(null);
@@ -57,17 +53,13 @@ export const ComposeRedesignButton: React.FC<{
 
   const dispatch = useAppDispatch();
   const handleComposerOpen: React.MouseEventHandler<HTMLButtonElement> =
-    useCallback(
-      (event) => {
-        const {
-          currentTarget: { name },
-        } = event;
-        if (name === 'post' || name === 'message') {
-          dispatch(openNewComposer({ type: name }));
-        }
-      },
-      [dispatch],
-    );
+    useCallback(() => {
+      dispatch(openNewComposer({ type: 'post' }));
+    }, [dispatch]);
+
+  const toggleMinimize = useCallback(() => {
+    dispatch(minimizeComposerToggle());
+  }, [dispatch]);
 
   const { signedIn } = useIdentity();
 
@@ -75,76 +67,111 @@ export const ComposeRedesignButton: React.FC<{
     return null;
   }
 
+  const floatingButtonProps = {
+    inline,
+    hidden: !hasMobileFloatingActionButton,
+  } as const;
+
+  // Pass the viewport height as a CSS variable so it's only used for mobile.
+  const style = {
+    '--viewport-height': viewportHeight ? `${viewportHeight}px` : undefined,
+  } as React.CSSProperties;
+
   if (displayState === 'minimized') {
-    return (
-      <MenuCard className={classes.composerMinimized} elevation={2}>
-        <ComposeFormHeader />
-      </MenuCard>
+    return isMobile ? (
+      <FloatingActionButton
+        icon={ReadCvLogoIcon}
+        onClick={toggleMinimize}
+        {...floatingButtonProps}
+        hidden={false} // never hide minimized composer button
+        color='neutral'
+      >
+        <FormattedMessage id='compose.expand' defaultMessage='Show composer' />
+      </FloatingActionButton>
+    ) : (
+      <div className={classes.root} style={style}>
+        <div
+          className={classNames(
+            classes.composerMinimized,
+            composerClasses.root,
+          )}
+        >
+          <ComposeFormHeader />
+        </div>
+      </div>
     );
   }
 
   if (displayState === 'showing') {
-    // Pass the viewport height as a CSS variable so it's only used for mobile.
-    const style = {
-      '--viewport-height': viewportHeight ? `${viewportHeight}px` : undefined,
-    } as React.CSSProperties;
     return (
-      <Suspense
-        fallback={
-          <IconButton
-            loading
-            icon={PenNibIcon}
-            className={classNames(
-              classes.button,
-              inline && classes.buttonInline,
-            )}
-            variant='solid'
-            size='lg'
-          >
-            <FormattedMessage
-              id='compose.new'
-              defaultMessage='Write a new post or messsage'
-            />
-          </IconButton>
-        }
-      >
-        <ComposeLazyForm autoFocus className={classes.composer} style={style} />
-      </Suspense>
+      <div className={classes.root} style={style}>
+        <RedesignComposeForm autoFocus className={classes.composer} />
+      </div>
     );
   }
 
   return (
-    <Menu>
-      <MenuTrigger
-        as={IconButton}
-        icon={PenNibIcon}
-        variant='solid'
-        className={classNames(classes.button, inline && classes.buttonInline)}
-        size='lg'
-      >
-        <FormattedMessage
-          id='compose.new'
-          defaultMessage='Write a new post or messsage'
-        />
-      </MenuTrigger>
-
-      <MenuList maxWidth={180} placement='top-end'>
-        <MenuItem name='post' onClick={handleComposerOpen} icon={NewspaperIcon}>
-          <FormattedMessage id='compose.new.post' defaultMessage='Post' />
-        </MenuItem>
-
-        <MenuItem
-          name='message'
-          onClick={handleComposerOpen}
-          icon={ChatCircleIcon}
-        >
-          <FormattedMessage
-            id='compose.new.message'
-            defaultMessage='Message'
-            description='Message refers to a direct message. For languages where this is confusing, "chat" or "direct message" can be used.'
-          />
-        </MenuItem>
-      </MenuList>
-    </Menu>
+    <FloatingActionButton
+      icon={PenNibIcon}
+      onClick={handleComposerOpen}
+      {...floatingButtonProps}
+    >
+      <FormattedMessage id='tabs_bar.publish' defaultMessage='New Post' />
+    </FloatingActionButton>
   );
 };
+
+const FloatingActionButton: React.FC<
+  {
+    inline: boolean;
+    hidden: boolean;
+  } & IconButtonProps
+> = ({ inline, hidden, ...otherProps }) => {
+  return (
+    // This component uses a wrapper element to prevent its
+    // CSS transitions from messing with the button's own transitions
+    <div
+      className={classNames(
+        classes.buttonWrapper,
+        inline && classes.buttonWrapperInline,
+        hidden && classes.buttonWrapperHidden,
+      )}
+      inert={hidden}
+    >
+      <IconButton variant='solid' color='accent' size='lg' {...otherProps} />
+    </div>
+  );
+};
+
+function includeMultiColumnPaths(paths: string[]) {
+  return [...paths, ...paths.map((path) => `/deck${path}`)];
+}
+
+const MOBILE_COMPOSE_BUTTON_ALLOW_ROUTES = includeMultiColumnPaths([
+  '/home',
+  '/public',
+  '/lists',
+  '/tags',
+]);
+const MOBILE_COMPOSE_BUTTON_BLOCK_ROUTES = includeMultiColumnPaths([
+  '/lists/new',
+]);
+
+function useHasMobileFloatingActionButton({ isMobile }: { isMobile: boolean }) {
+  const isRouteWithMobileComposeButton = !!useRouteMatch({
+    path: MOBILE_COMPOSE_BUTTON_ALLOW_ROUTES,
+    exact: false,
+  });
+
+  const isRouteWithoutMobileComposeButton = !!useRouteMatch({
+    path: MOBILE_COMPOSE_BUTTON_BLOCK_ROUTES,
+    exact: true,
+  });
+
+  const shouldHideMobileComposeButton =
+    !isMobile ||
+    !isRouteWithMobileComposeButton ||
+    isRouteWithoutMobileComposeButton;
+
+  return !shouldHideMobileComposeButton;
+}

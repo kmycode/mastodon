@@ -418,8 +418,8 @@ export const AltTextModal = forwardRef<ModalRef, Props & Partial<RestoreProps>>(
             className='dialog-modal__header__title'
           >
             <FormattedMessage
-              id='alt_text_modal.add_alt_text'
-              defaultMessage='Add alt text'
+              id='account_edit.image_alt_modal.edit_title'
+              defaultMessage='Edit alt text'
             />
           </NavigationFocusTarget>
 
@@ -443,7 +443,7 @@ export const AltTextModal = forwardRef<ModalRef, Props & Partial<RestoreProps>>(
             {(type === 'audio' || type === 'video') && unattached && (
               <UploadButton
                 onSelectFile={handleThumbnailChange}
-                mimeTypes='image/jpeg,image/png,image/gif,image/heic,image/heif,image/webp,image/avif'
+                mimeTypes='image/jpeg,image/png,image/gif,image/webp'
               >
                 <FormattedMessage
                   id='alt_text_modal.change_thumbnail'

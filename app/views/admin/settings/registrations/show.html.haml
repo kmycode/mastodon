@@ -29,6 +29,10 @@
                 as: :boolean,
                 disabled: !approved_registrations?,
                 wrapper: :with_label
+  .fields-group
+    = f.input :postpone_confirmation_emails,
+              as: :boolean,
+              wrapper: :with_label
 
   - if captcha_available?
     .fields-group
@@ -64,6 +68,12 @@
       = f.input :registrations_secondary_start_hour, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }
     .fields-row__column.fields-row__column-6.fields-group
       = f.input :registrations_secondary_end_hour, kmyblue: true, wrapper: :with_label, input_html: { pattern: '[0-9]+' }, hint: I18n.t('simple_form.labels.form_admin_settings.registrations_secondary_end_hour_hint')
+
+  .fields-row
+    .fields-row__column.fields-row__column-6.fields-group
+      = f.input :registration_reject_email_pattern, as: :text, kmyblue: true, wrapper: :with_label, input_html: { rows: 4 }
+    .fields-row__column.fields-row__column-6.fields-group
+      = f.input :registration_reject_username_pattern, as: :text, kmyblue: true, wrapper: :with_label, input_html: { rows: 4 }
 
   .actions
     = f.button :button, t('generic.save_changes'), type: :submit

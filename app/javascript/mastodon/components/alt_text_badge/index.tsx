@@ -4,10 +4,14 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import classNames from 'classnames';
 
-import CloseIcon from '@/material-icons/400-24px/close.svg?react';
-import { useSelectableClick } from 'mastodon/hooks/useSelectableClick';
+import { XIcon } from '@phosphor-icons/react';
 
-import { IconButton } from '../icon_button';
+import { useSelectableClick } from '@/mastodon/hooks/useSelectableClick';
+import { isRedesignEnabled } from '@/mastodon/utils/environment';
+import CloseIcon from '@/material-icons/400-24px/close.svg?react';
+
+import { Button, IconButton } from '../button/redesign';
+import { IconButton as LegacyIconButton } from '../icon_button';
 import { Popover } from '../popover';
 
 import classes from './styles.module.scss';
@@ -42,8 +46,11 @@ export const AltTextBadge: React.FC<{
 
   return (
     <>
-      <button
+      <Button
+        contrastOnMedia
+        size='xs'
         type='button'
+        variant='solid'
         ref={setButtonElement}
         className={classNames('media-gallery__alt__label', className)}
         onClick={handleClick}
@@ -51,8 +58,8 @@ export const AltTextBadge: React.FC<{
         aria-controls={popoverId}
         aria-haspopup='dialog'
       >
-        ALT
-      </button>
+        <FormattedMessage id='alt_text_badge.label' defaultMessage='ALT' />
+      </Button>
 
       <Popover
         isOpen={open}
@@ -64,7 +71,11 @@ export const AltTextBadge: React.FC<{
         {({ props }) => (
           <div {...props} className='hover-card-controller'>
             <div // eslint-disable-line jsx-a11y/no-noninteractive-element-interactions
-              className='info-tooltip dropdown-animation'
+              className={classNames(
+                'info-tooltip',
+                'dropdown-animation',
+                isRedesignEnabled() && classes.redesignPopover,
+              )}
               role='dialog'
               aria-labelledby={titleId}
               ref={popoverRef}
@@ -81,16 +92,31 @@ export const AltTextBadge: React.FC<{
                 />
               </h4>
 
-              <IconButton
-                title={intl.formatMessage({
-                  id: 'lightbox.close',
-                  defaultMessage: 'Close',
-                })}
-                icon='close'
-                iconComponent={CloseIcon}
-                onClick={handleClose}
-                className={classes.closeButton}
-              />
+              {isRedesignEnabled() ? (
+                <IconButton
+                  icon={XIcon}
+                  onClick={handleClose}
+                  variant='ghost'
+                  className={classes.closeButton}
+                  tooltipPlacement='top'
+                >
+                  {intl.formatMessage({
+                    id: 'lightbox.close',
+                    defaultMessage: 'Close',
+                  })}
+                </IconButton>
+              ) : (
+                <LegacyIconButton
+                  title={intl.formatMessage({
+                    id: 'lightbox.close',
+                    defaultMessage: 'Close',
+                  })}
+                  icon='close'
+                  iconComponent={CloseIcon}
+                  onClick={handleClose}
+                  className={classes.legacyCloseButton}
+                />
+              )}
 
               <p>{description}</p>
             </div>

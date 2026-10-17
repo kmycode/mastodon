@@ -2,20 +2,38 @@
 @use '@/styles/mastodon/variables';
 
 .root {
+  box-sizing: border-box;
   container-type: inline-size;
   background: var(--color-bg-primary);
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  padding: var(--space-md);
-  z-index: 1; // To cover the sidebar
+  gap: var(--space-2);
+  padding: var(--space-4);
+  padding-bottom: calc(max(env(safe-area-inset-bottom), var(--space-4)));
 
   @media (width >= #{variables.$mobile-menu-breakpoint}) {
-    @include mixins.elevation-2;
-
-    border-radius: var(--radius-xl);
+    border: var(--border-default);
+    border-bottom: none;
+    border-radius: var(--radius-6) var(--radius-6) 0 0;
     overflow: hidden;
   }
+}
+
+.headless {
+  border: 0;
+  box-shadow: none;
+  flex-grow: 1;
+  border-radius: 0;
+  padding-block-start: 0;
+}
+
+:global(.compose-standalone) .headless {
+  min-height: 200px;
+
+  // 138px = header, 235px = footer, 8px padding
+  height: calc(100vh - (138px + 235px + var(--space-2)));
+  max-width: 400px;
+  margin-inline: auto;
 }
 
 .background {
@@ -44,9 +62,9 @@
 }
 
 .toolbar {
-  margin-top: var(--space-xs);
+  margin-top: var(--space-2);
   display: flex;
-  gap: var(--space-xs);
+  gap: var(--space-2);
   align-items: center;
   flex-wrap: wrap;
 
@@ -58,7 +76,7 @@
 .flexGrowWrap {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
+  gap: var(--space-2);
   flex-grow: 1;
 
   @container (width < 310px) {
@@ -72,18 +90,18 @@
 
 .toolbarMessage {
   display: flex;
-  gap: var(--space-2xs);
+  gap: var(--space-1);
   align-items: center;
   color: var(--color-text-secondary);
 
   svg {
-    width: var(--space-lg);
-    height: var(--space-lg);
+    width: var(--space-5);
+    height: var(--space-5);
   }
 }
 
 .textareaWrapper {
-  --fade-size: var(--space-xl);
+  --fade-size: var(--space-6);
 
   overflow-y: auto;
   flex-grow: 1;
@@ -115,26 +133,38 @@
   }
 }
 
+.sensitive {
+  outline-offset: -2px;
+  margin-block-end: var(--space-4);
+}
+
 .textarea,
 .textareaMirror {
-  @include mixins.type-body-lg;
+  @include mixins.type-body;
 
-  padding: var(--space-xs);
+  padding: var(--space-1);
+
+  // Prevent automatic page zoom in Safari when focusing
+  // text fields with font-sizes below 16px
+  @media (width <= #{variables.$mobile-menu-breakpoint}) {
+    font-size: var(--fs-16);
+  }
 }
 
 .textarea {
   flex-grow: 1;
   flex-shrink: 0;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-2);
   transition: border 200ms;
   cursor: text;
   border: none;
   width: 100%;
   outline: none;
   background: none;
+  min-height: 3lh;
 
   &:focus {
-    outline: 2px solid var(--color-border-brand);
+    outline: var(--outline-focus-default);
     outline-offset: -2px;
 
     &::placeholder {
@@ -160,21 +190,21 @@ textarea.textarea {
 .attachments {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  margin-top: var(--space-md);
+  gap: var(--space-2);
+  margin-top: var(--space-4);
 }
 
 .footer {
   display: flex;
   align-items: center;
-  gap: var(--space-2xs);
+  gap: var(--space-1);
   flex-wrap: wrap;
 }
 
 .counter {
   display: flex;
   align-items: center;
-  gap: var(--space-3xs);
+  gap: var(--space-half);
   font-family: var(--font-monospace);
   color: var(--color-text-tertiary);
   margin-inline-start: auto;
@@ -184,13 +214,35 @@ textarea.textarea {
   color: var(--color-text-error);
 }
 
+.calloutWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.calloutError {
+  @include mixins.type-body-compact;
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 32px;
+  color: var(--color-text-error);
+
+  > svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 // Language selector
 
 .languageMenu {
-  padding: var(--space-xs);
+  padding: var(--space-2);
+  height: 400px;
 
   input {
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-2);
 
     &:focus::placeholder {
       color: transparent;
@@ -198,36 +250,37 @@ textarea.textarea {
   }
 }
 
-.languageList {
-  max-height: 350px;
-  overflow-y: auto;
+.languageComboboxWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-.languageItem {
-  display: block;
-
-  span {
-    color: var(--color-text-secondary);
-  }
+.languageListBox {
+  flex: 1;
+  min-height: 0;
+  max-height: initial !important;
+  margin-top: 1px;
 }
 
 // Reply
 
 .reply {
-  column-gap: var(--space-2xs);
+  column-gap: var(--space-1);
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto auto;
+  margin-block-end: var(--space-4);
 
   &::before {
     border-block-start: 2px solid var(--color-border-primary);
     border-inline-start: 2px solid var(--color-border-primary);
-    border-top-left-radius: var(--radius-md);
+    border-top-left-radius: var(--radius-4);
     box-sizing: border-box;
     content: '';
     display: block;
     grid-row: span 2;
-    margin: var(--space-xs) var(--space-2xs) 0;
+    margin: var(--space-2) var(--space-1) 0;
     width: 20px;
   }
 
@@ -240,7 +293,7 @@ textarea.textarea {
 .replyAccount {
   display: flex;
   align-items: center;
-  margin-bottom: var(--space-2xs);
+  margin-bottom: var(--space-1);
 
   > a,
   > span {
@@ -249,7 +302,7 @@ textarea.textarea {
 }
 
 .replyAvatar {
-  margin-inline-end: var(--space-xs);
+  margin-inline-end: var(--space-2);
   border-radius: var(--radius-round);
   overflow: hidden;
 }

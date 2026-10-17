@@ -7,16 +7,17 @@
   height: 100%;
   overflow-y: auto;
   scrollbar-width: thin;
+  isolation: isolate;
 
   // Approximate height of fixed navigation elements
   // to ensure focused elements are scrolled into view
   // as needed.
   --header-height: 80px;
-  --footer-height: 200px;
+  --footer-height: 180px;
 
   scroll-padding-block: var(--header-height) var(--footer-height);
 
-  --navigation-background-color: var(--color-bg-blend);
+  --navigation-background-color: var(--color-bg-desktop);
 
   &[data-mode='slide-out'] {
     --navigation-background-color: var(--color-bg-primary);
@@ -24,16 +25,18 @@
 }
 
 .list {
-  margin-top: var(--space-xl);
-  margin-inline: var(--space-md);
+  margin-inline: var(--space-4);
 }
 
 .footer {
   position: sticky;
   bottom: 0;
-  margin-top: auto;
-  padding: var(--space-xl);
-  padding-top: var(--space-2xs);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding: var(--space-6);
+  padding-top: 0;
   background-color: var(--navigation-background-color);
 
   &::before {
@@ -46,11 +49,30 @@
   &[data-stuck='true']::before {
     opacity: 1;
   }
+
+  @media (height < 560px) {
+    position: relative;
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
+.newPostButton {
+  margin-inline-start: calc(-1 * var(--space-1));
+  margin-bottom: auto;
+  padding-block: var(--space-4);
 }
 
 .footerNav {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-2xs);
-  margin-bottom: var(--space-xs);
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.callout {
+  margin-inline: var(--space-4);
+  margin-bottom: var(--space-2);
 }
