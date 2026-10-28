@@ -187,10 +187,6 @@ module User::HasSettings
     settings['web.contrast']
   end
 
-  def setting_density
-    settings['web.density']
-  end
-
   def setting_display_media
     settings['web.display_media']
   end

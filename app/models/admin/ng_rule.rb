@@ -63,7 +63,7 @@ class Admin::NgRule
 
     if @options[:reaction_type] == 'emoji_reaction'
       result = enum_match?(:reaction_type, @options[:reaction_type], @ng_rule.reaction_type) &&
-               text_match?(:emoji_reaction_name, @options[:emoji_reaction_name], @ng_rule.emoji_reaction_name)
+        text_match?(:emoji_reaction_name, @options[:emoji_reaction_name], @ng_rule.emoji_reaction_name)
 
       emoji_reaction_origin_domain = @options[:emoji_reaction_origin_domain] || Rails.configuration.x.local_domain
       result && text_match?(:emoji_reaction_origin_domain, emoji_reaction_origin_domain, @ng_rule.emoji_reaction_origin_domain)

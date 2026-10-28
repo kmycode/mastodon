@@ -94,7 +94,6 @@ class UserSettings
     setting_inverse_alias :'web.show_favourite_menu', :'web.hide_favourite_menu'
     setting_inverse_alias :'web.show_recent_emojis', :'web.hide_recent_emojis'
 
-    setting :density, default: 'default', in: %w(default compact)
     setting :theme_color, default: 'indigo' # TODO: dynamic inclusion checking?
   end
 

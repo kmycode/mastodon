@@ -40,7 +40,7 @@ import { enableEmojiReaction, isHideItem } from 'mastodon/initial_state';
 import type { CollectionAttachment } from 'mastodon/models/status';
 import { compareUrls } from 'mastodon/utils/compare_urls';
 
-import Card from './card';
+import { Card } from './card';
 
 interface VideoModalOptions {
   startTime: number;

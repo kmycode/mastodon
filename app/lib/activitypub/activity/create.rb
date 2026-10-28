@@ -311,7 +311,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     @quote_approval_uri = 'http://kmy.blue/ns#LegacyQuote' if @quote_approval_uri == 'kmyblue:LegacyQuote'
     @quote_approval_uri = nil if
       unsupported_uri_scheme?(@quote_approval_uri) ||
-      (@quote_approval_uri != 'http://kmy.blue/ns#LegacyQuote' && TagManager.instance.local_url?(@quote_approval_uri))
+        (@quote_approval_uri != 'http://kmy.blue/ns#LegacyQuote' && TagManager.instance.local_url?(@quote_approval_uri))
     @quote = Quote.new(account: @account, approval_uri: nil, legacy: @status_parser.legacy_quote?, state: @status_parser.deleted_quote? ? :deleted : :pending)
   end
 
@@ -350,9 +350,9 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     emoji = CustomEmoji.find_by(shortcode: custom_emoji_parser.shortcode, domain: @account.domain)
 
     return unless emoji.nil? ||
-                  custom_emoji_parser.image_remote_url != emoji.image_remote_url ||
-                  (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at) ||
-                  custom_emoji_parser.license != emoji.license
+      custom_emoji_parser.image_remote_url != emoji.image_remote_url ||
+      (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at) ||
+      custom_emoji_parser.license != emoji.license
 
     begin
       emoji ||= CustomEmoji.new(

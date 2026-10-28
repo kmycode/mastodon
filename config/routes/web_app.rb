@@ -6,7 +6,7 @@
 
 %w(
   /antennas/(*any)
-  /blocks
+  /blocks/(*any)
   /bookmarks
   /bookmark_categories/(*any)
   /circles/(*any)

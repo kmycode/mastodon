@@ -18,6 +18,7 @@ en:
       account_migration:
         acct: Specify the username@domain of the account you want to move to
       account_warning_preset:
+        action_category: Select the moderation action this response should be used for. Select "All actions" if the response applies to more than one action.
         text: You can use post syntax, such as URLs, hashtags and mentions
         title: Optional. Not visible to the recipient
       admin_account_action:
@@ -234,6 +235,7 @@ en:
       account_migration:
         acct: Handle of the new account
       account_warning_preset:
+        action_category: Assign moderation action
         text: Response text
         title: Title
       admin_account_action:
@@ -242,6 +244,7 @@ en:
         text: Custom response
         type: Action
         types:
+          all_actions: All actions
           disable: Freeze
           none: Send a warning
           sensitive: Sensitive
@@ -312,7 +315,6 @@ en:
         setting_default_sensitive: Always mark media as sensitive
         setting_default_spoiler_field: Use content warnings by default
         setting_delete_modal: Warn me before deleting a post
-        setting_density: Density
         setting_disable_hover_cards: Disable profile preview on hover
         setting_disable_swiping: Disable swiping motions
         setting_disallow_unlisted_public_searchability: Disallow everyone or local searchability when unlisted visibility
@@ -370,7 +372,6 @@ en:
         setting_theme: Site theme
         setting_theme_color: Theme color
         setting_translatable_private: Allow other users translation of your private posts
-        setting_trends: Show today's trends
         setting_unfollow_modal: Show confirmation dialog before unfollowing someone
         setting_use_blurhash: Show colorful gradients for hidden media
         setting_use_custom_css: Enable custom CSS set by yourself

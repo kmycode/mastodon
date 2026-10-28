@@ -57,27 +57,27 @@ RSpec.describe DeliveryAntennaService, type: :service do
     AntennaFeed.new(antenna).get(10).map(&:id)
   end
 
-  def antenna_with_account(owner, target_account, **options)
-    antenna = Fabricate(:antenna, account: owner, any_accounts: false, **options)
+  def antenna_with_account(owner, target_account, **)
+    antenna = Fabricate(:antenna, account: owner, any_accounts: false, **)
     Fabricate(:antenna_account, antenna: antenna, account: target_account)
     antenna
   end
 
-  def antenna_with_domain(owner, target_domain, **options)
-    antenna = Fabricate(:antenna, account: owner, any_domains: false, **options)
+  def antenna_with_domain(owner, target_domain, **)
+    antenna = Fabricate(:antenna, account: owner, any_domains: false, **)
     Fabricate(:antenna_domain, antenna: antenna, name: target_domain)
     antenna
   end
 
-  def antenna_with_tag(owner, target_tag, **options)
-    antenna = Fabricate(:antenna, account: owner, any_tags: false, **options)
+  def antenna_with_tag(owner, target_tag, **)
+    antenna = Fabricate(:antenna, account: owner, any_tags: false, **)
     tag = Tag.find_or_create_by_names([target_tag])[0]
     Fabricate(:antenna_tag, antenna: antenna, tag: tag)
     antenna
   end
 
-  def antenna_with_keyword(owner, target_keyword, **options)
-    Fabricate(:antenna, account: owner, any_keywords: false, keywords: [target_keyword], **options)
+  def antenna_with_keyword(owner, target_keyword, **)
+    Fabricate(:antenna, account: owner, any_keywords: false, keywords: [target_keyword], **)
   end
 
   def list(owner)

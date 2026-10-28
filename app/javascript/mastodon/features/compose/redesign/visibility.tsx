@@ -89,7 +89,7 @@ export const ComposeVisibility: React.FC<{ className?: string }> = ({
   );
 };
 
-const ComposeVisibilityButtonText: React.FC<{
+export const ComposeVisibilityButtonText: React.FC<{
   privacy: StatusVisibility;
 }> = ({ privacy }) => {
   if (['public', 'unlisted', 'public_unlisted', 'login'].includes(privacy)) {

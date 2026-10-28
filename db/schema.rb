@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_30_093734) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_161747) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -153,6 +153,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_30_093734) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "title", default: "", null: false
+    t.string "action_category", default: "all_actions", null: false
   end
 
   create_table "account_warnings", force: :cascade do |t|
@@ -172,7 +173,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_30_093734) do
   create_table "accounts", id: :bigint, default: -> { "timestamp_id('accounts'::text)" }, force: :cascade do |t|
     t.string "username", default: "", null: false
     t.string "domain"
-    t.text "private_key"
     t.text "public_key", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -261,6 +261,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_30_093734) do
     t.index ["account_id"], name: "index_admin_action_logs_on_account_id"
     t.index ["moderation_subscription_id"], name: "index_admin_action_logs_on_moderation_subscription_id", where: "(moderation_subscription_id IS NOT NULL)"
     t.index ["target_type", "target_id"], name: "index_admin_action_logs_on_target_type_and_target_id"
+  end
+
+  create_table "admin_server_checks", force: :cascade do |t|
+    t.string "key", null: false
+    t.integer "status", limit: 2, default: 0, null: false
+    t.integer "severity", limit: 2, default: 0, null: false
+    t.boolean "ignored", default: false, null: false
+    t.jsonb "data"
+    t.datetime "checked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_admin_server_checks_on_key", unique: true
   end
 
   create_table "announcement_mutes", force: :cascade do |t|

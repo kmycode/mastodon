@@ -42,7 +42,6 @@ type StatusRedesignProps = Merge<
   {
     accountId?: string;
     contextType?: StatusContextType;
-    headerContents?: React.ReactNode;
     variant?: StatusVariant;
   }
 >;
@@ -92,7 +91,6 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
   onOpen,
   showThread,
   shouldHighlightOnMount,
-  headerContents,
   variant = contextToVariant(contextType),
   nextId,
   withoutEmojiReactions,
@@ -171,7 +169,10 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
 
   if (hidden) {
     return (
-      <StatusHotkeys {...hotkeysProps}>
+      <StatusHotkeys
+        {...hotkeysProps}
+        className={classNames(!muted && 'focusable')}
+      >
         <span>{status.account.display_name || status.account.username}</span>
         {status.spoiler_text && <span>{status.spoiler_text}</span>}
         {!isHidden && <span>{status.content}</span>}
@@ -199,7 +200,7 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
             isNextReplyingToMe &&
             !showThread &&
             classes.connectNextReply,
-          !unfocusable && 'focusable',
+          !muted && 'focusable',
         )}
         tabIndex={unfocusable ? undefined : -1}
         data-featured={featured ? 'true' : null}
@@ -215,9 +216,11 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
           />
         )}
 
-        <StatusRedesignHeader status={status} className={classes.header}>
-          {headerContents}
-        </StatusRedesignHeader>
+        <StatusRedesignHeader
+          status={status}
+          className={classes.header}
+          featured={featured}
+        />
 
         <TranslateButton status={status} onTranslate={onTranslate} />
 
@@ -231,7 +234,8 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
         <div
           className={classNames(
             classes.contentWrapper,
-            isHidden && classes.hasContentWarning,
+            classes.contentWarningBlur,
+            isHidden && classes.contentWarningBlurActive,
             !showDespiteFilter && isFiltered && classes.isFiltered,
           )}
           id={contentWrapperId}

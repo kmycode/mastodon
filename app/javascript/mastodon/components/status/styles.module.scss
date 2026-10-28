@@ -13,12 +13,8 @@
     );
   grid-auto-rows: auto;
   row-gap: var(--space-2);
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-4) var(--space-2);
   cursor: pointer;
-
-  html[data-density='compact'] & {
-    padding-block: var(--space-2);
-  }
 }
 
 .variantFeed {
@@ -76,6 +72,7 @@
 }
 
 .variantPage,
+:global(.layout-multiple-columns) .variantFeed,
 .isQuote {
   --content-col: span 2;
 }
@@ -133,7 +130,9 @@
   &.isFiltered {
     display: none;
   }
+}
 
+.contentWarningBlur {
   &::after {
     content: '';
     position: absolute;
@@ -164,14 +163,12 @@
     }
   }
 
-  &.hasContentWarning {
-    &::after {
-      visibility: visible;
-      opacity: 1;
-      transition:
-        visibility 0s linear 0s,
-        opacity var(--fade-time) ease-in-out;
-    }
+  &.contentWarningBlurActive::after {
+    visibility: visible;
+    opacity: 1;
+    transition:
+      visibility 0s linear 0s,
+      opacity var(--fade-time) ease-in-out;
   }
 }
 
@@ -213,52 +210,24 @@
   max-width: none !important;
 }
 
-.meta {
-  @include mixins.type-meta;
-
-  display: flex;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-  justify-content: space-between;
-  color: var(--color-text-secondary);
-  padding-block-start: var(--space-2);
-  margin-block-start: var(--space-2);
-  border-block-start: var(--border-default);
-  margin-inline: calc(-1 * var(--space-4));
-  padding-inline: var(--space-4);
-
-  > ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-1);
-  }
-
-  li:not(:first-child) {
-    &::before {
-      content: '• ';
-    }
-  }
-
-  a {
-    color: inherit;
-    text-decoration: var(--link-underline-default);
-
-    &:hover,
-    &:hover * {
-      text-decoration: var(--link-underline-default-hover);
-    }
-  }
-}
-
 .actions {
   display: flex;
 
   > button {
     font-variant-numeric: tabular-nums;
-  }
 
-  > button:not(:hover, :active, [aria-pressed='true'], [aria-expanded='true']) {
-    opacity: 0.7;
+    &:not(:hover, :active, [aria-pressed='true'], [aria-expanded='true']) {
+      opacity: 0.7;
+    }
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      color: color-mix(
+        in srgb,
+        var(--color-text-brand),
+        var(--color-bg-primary)
+      );
+    }
   }
 }
 

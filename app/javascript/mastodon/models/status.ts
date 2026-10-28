@@ -22,6 +22,7 @@ import type {
   ApiMentionJSON,
   ApiPreviewCardAuthorJSON,
   ApiPreviewCardJSON,
+  ApiStatusHistoryJSON,
   ApiStatusTranslationJSON,
   ApiTagJSON,
   ApiStatusEmojiReactionRowJSON,
@@ -165,4 +166,9 @@ export type FilterResult = Omit<ApiFilterResultJSON, 'filter'> & {
 
 export type StatusTranslation = Omit<ApiStatusTranslationJSON, 'poll'> & {
   isLoading: boolean;
+};
+
+export type StatusHistory = Omit<ApiStatusHistoryJSON, 'account'> & {
+  account: string;
+  original: boolean;
 };
