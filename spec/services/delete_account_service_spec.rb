@@ -10,6 +10,7 @@ RSpec.describe DeleteAccountService do
       Fabricate(:report, target_account: account, status_ids: [reported_status.id])
       account.follow!(list_target_account)
       circle_target_account.follow!(account)
+      Fabricate(:report, target_account: account, status_ids: [reported_status.id])
     end
 
     let!(:status) { Fabricate(:status, account: account) }
