@@ -66,6 +66,7 @@ zh-CN:
       demote: 取消管理员
       destroyed_msg: "%{username} 的数据已被安排至删除队列"
       disable: 冻结
+      disable_sign_in_token: 临时禁用安全码挑战
       disable_sign_in_token_auth: 禁用邮件令牌身份验证
       disable_two_factor_authentication: 停用双因素认证
       disabled: 已冻结
@@ -75,6 +76,7 @@ zh-CN:
       email: 电子邮箱地址
       email_status: 邮箱地址状态
       enable: 解冻
+      enable_sign_in_token: 启用安全码挑战
       enable_sign_in_token_auth: 启用邮件令牌身份验证
       enabled: 已启用
       enabled_msg: 成功解冻 %{username} 的账号
@@ -196,6 +198,7 @@ zh-CN:
         create_user_role: 创建角色
         create_username_block: 新建用户名规则
         demote_user: 取消管理员
+        destroy_account: 删除账号数据
         destroy_announcement: 删除公告
         destroy_canonical_email_block: 解除邮箱封禁
         destroy_custom_emoji: 删除自定义表情符号
@@ -264,6 +267,7 @@ zh-CN:
         create_user_role_html: "%{name} 创建了角色 %{target}"
         create_username_block_html: "%{name} 新增了有关包含 %{target} 的用户名的规则"
         demote_user_html: "%{name} 撤销了用户 %{target} 的管理权限"
+        destroy_account_html: "%{name} 删除了 %{target} 的账号数据"
         destroy_announcement_html: "%{name} 删除了公告 %{target}"
         destroy_canonical_email_block_html: "%{name} 解封了 hash 为 %{target} 的邮箱地址"
         destroy_collection_html: "%{name} 移除了 %{target} 的收藏列表"
@@ -1473,9 +1477,11 @@ zh-CN:
   deletes:
     challenge_not_passed: 你输入的信息不正确
     confirm_password: 输入你当前的密码来验证身份
-    confirm_username: 输入你的用户名以继续
+    confirm_username: 确认用户名
+    confirm_username_hint_html: 请输入 <code>%{username}</code> 以确认你要删除的账号
     proceed: 删除账号
     success_msg: 你的账号已成功删除
+    title: 删除账号 %{acct}
     warning:
       before: 在删除前，请仔细阅读下列说明：
       caches: 已被其他服务器缓存的内容可能还会保留
@@ -1574,6 +1580,7 @@ zh-CN:
       content: 抱歉，服务器出现了一些故障。
       title: 页面无法正确加载
     '503': 服务器出现临时故障，无法加载页面。
+    go_home: 回到主页
     noscript_html: 使用 Mastodon 网页版应用需要启用 JavaScript。你也可以选择适用于你的平台的 <a href="%{apps_path}">Mastodon 应用</a>。
   existing_username_validator:
     not_found: 在本站找不到此用户
@@ -1663,6 +1670,7 @@ zh-CN:
       incompatible_type: 与所选导入类型不兼容
       invalid_csv_file: 无效的 CSV 文件。错误：%{error}
       invalid_json_file: 无效的 JSON 文件。错误：%{error}
+      no_data: 此文件不包含任何匹配指定导入类型的数据
       over_rows_processing_limit: 包含行数超过了 %{count}
       status_not_found_warning: 你的部分过滤器将会隐藏此服务器暂时未知的特定嘟文。如果这些嘟文以后被服务器发现，则将不会被自动过滤。
       too_large: 文件过大
@@ -2045,7 +2053,6 @@ zh-CN:
     appearance: 外观
     authorized_apps: 已授权的应用
     back: 返回 Mastodon
-    delete: 删除账号
     development: 开发
     edit_profile: 更改个人资料
     export: 导出
@@ -2245,6 +2252,14 @@ zh-CN:
       further_actions_html: 如果这不是你所为，你的密码可能已经泄露，建议你立即 %{action} 。
       subject: 辅助认证失败
       title: 辅助认证失败
+    sign_in_token:
+      change_password: 更改密码
+      details: 该尝试详情如下：
+      explanation: 我们检查到在账号长时间未活跃后首次出现了登录请求。如果这确实是你，请在登录确认页面输入下方的安全码：
+      further_actions: 如果这不是你，请更换你的密码并且在你的账号上开启双重认证。你可以在这里设置：
+      further_actions_html: 如果不是你本人操作，我们建议你立即 %{action} 并启用双因素认证，以确保账号安全。
+      subject: 请确认登录请求
+      title: 登录请求
     suspicious_sign_in:
       change_password: 更改密码
       details: 以下是该次登录的详细信息：
@@ -2333,8 +2348,12 @@ zh-CN:
       title: "%{name}，欢迎你的加入！"
   users:
     follow_limit_reached: 你不能关注超过 %{limit} 个人
+    generic_access_help_html: 登录账号出现问题？你可以向 %{email} 寻求帮助
     go_to_sso_account_settings: 转到你的身份提供商进行账号设置
+    inactive_sign_in_confirmation: 距你上次登录已有一段时间，因此我们给你的电子邮箱发了封邮件，想确认一下确实是你。
+    inactive_sign_in_title: 请确认安全码
     invalid_otp_token: 输入的双因素认证代码无效
+    invalid_sign_in_token: 无效安全码
     otp_lost_help_html: 如果你不慎丢失了全部的代码，请联系 %{email} 寻求帮助
     rate_limited: 验证尝试次数过多，请稍后再试。
     seamless_external_login: 你通过外部服务登录，因此密码和邮件设置不可用。

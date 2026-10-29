@@ -60,6 +60,7 @@ class User < ApplicationRecord
   include User::LdapAuthenticable
   include User::Omniauthable
   include User::PamAuthenticable
+  include User::SignInToken
 
   REACTION_DECK_MAX = 256
 

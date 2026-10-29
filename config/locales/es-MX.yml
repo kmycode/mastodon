@@ -69,6 +69,7 @@ es-MX:
       demote: Degradar
       destroyed_msg: Los datos de %{username} están ahora en cola para ser eliminados inminentemente
       disable: Deshabilitar
+      disable_sign_in_token: Desactivar temporalmente la comprobación con código de seguridad
       disable_sign_in_token_auth: Deshabilitar la autenticación por token de correo electrónico
       disable_two_factor_authentication: Desactivar autenticación de dos pasos
       disabled: Deshabilitada
@@ -78,6 +79,7 @@ es-MX:
       email: Correo electrónico
       email_status: Estado del correo electrónico
       enable: Habilitar
+      enable_sign_in_token: Activar la comprobación con código de seguridad
       enable_sign_in_token_auth: Habilitar la autenticación por token de correo electrónico
       enabled: Habilitada
       enabled_msg: Se ha descongelado correctamente la cuenta de %{username}
@@ -200,6 +202,7 @@ es-MX:
         create_user_role: Crear rol
         create_username_block: Crear regla de nombre de usuario
         demote_user: Degradar Usuario
+        destroy_account: Borrar Datos de la Cuenta
         destroy_announcement: Eliminar Anuncio
         destroy_canonical_email_block: Eliminar bloqueo de correo electrónico
         destroy_custom_emoji: Eliminar Emoji Personalizado
@@ -268,6 +271,7 @@ es-MX:
         create_user_role_html: "%{name} creó el rol %{target}"
         create_username_block_html: "%{name} añadió regla para nombres de usuario que contienen %{target}"
         demote_user_html: "%{name} degradó al usuario %{target}"
+        destroy_account_html: "%{name} borró los datos de la cuenta de %{target}"
         destroy_announcement_html: "%{name} eliminó el anuncio %{target}"
         destroy_canonical_email_block_html: "%{name} ha desbloqueado el correo electrónico con el hash %{target}"
         destroy_collection_html: "%{name} eliminó la colección de %{target}"
@@ -1494,9 +1498,11 @@ es-MX:
   deletes:
     challenge_not_passed: Los datos introducidos son incorrectos
     confirm_password: Ingresa tu contraseña actual para demostrar tu identidad
-    confirm_username: Escribe tu nombre de usuario para confirmar
+    confirm_username: Confirma el nombre de usuario
+    confirm_username_hint_html: Escribe <code>%{username}</code> para confirmar la cuenta que deseas eliminar
     proceed: Eliminar cuenta
     success_msg: Tu cuenta se eliminó con éxito
+    title: Eliminar cuenta %{acct}
     warning:
       before: 'Antes de continuar, por favor lee con atención las siguientes notas:'
       caches: El contenido que ha sido almacenado en caché por otros servidores puede persistir
@@ -1596,6 +1602,7 @@ es-MX:
       content: Lo sentimos, algo ha funcionado mal por nuestra parte.
       title: Esta página no es correcta
     '503': La página no se ha podido cargar debido a un fallo temporal del servidor.
+    go_home: Volver al inicio
     noscript_html: Para usar la aplicación web de Mastodon, por favor activa Javascript. Alternativamente, prueba alguna de las <a href="%{apps_path}">aplicaciones nativas</a> para Mastodon para tu plataforma.
   existing_username_validator:
     not_found: no pudo encontrar un usuario local con ese nombre de usuario
@@ -1692,6 +1699,7 @@ es-MX:
       incompatible_type: Incompatible con el tipo de importación seleccionado
       invalid_csv_file: 'Archivo CSV no válido. Error: %{error}'
       invalid_json_file: 'Fichero JSON no válido. Error: %{error}'
+      no_data: Este archivo no contiene información que coincida con el tipo de importación indicado
       over_rows_processing_limit: contiene más de %{count} filas
       status_not_found_warning: Algunos de tus filtros ocultan publicaciones específicas que este servidor no conoce. Estas publicaciones no se filtrarán automáticamente si el servidor las detecta más adelante.
       too_large: El archivo es demasiado grande
@@ -2090,7 +2098,6 @@ es-MX:
     appearance: Apariencia
     authorized_apps: Aplicaciones autorizadas
     back: Volver al inicio
-    delete: Eliminar cuenta
     development: Desarrollo
     edit_profile: Editar perfil
     export: Exportar
@@ -2294,6 +2301,14 @@ es-MX:
       further_actions_html: Si no fuiste tú, se recomienda %{action} inmediatamente ya que puede estar comprometido.
       subject: Fallo en la autenticación de dos pasos
       title: Falló la autenticación de dos pasos
+    sign_in_token:
+      change_password: cambies tu contraseña
+      details: 'Estos son los detalles del intento:'
+      explanation: 'Hemos detectado un intento de inicio de sesión en tu cuenta después de un largo tiempo de inactividad. Si has sido tú, por favor ingresa el siguiente código de seguridad en la página de comprobación de seguridad:'
+      further_actions: 'Si no has sido tú, cambia tu contraseña y habilita la autenticación en dos pasos en tu cuenta. Puedes hacerlo aquí:'
+      further_actions_html: Si no has sido tú, recomendamos que %{action} inmediatamente y habilites la autenticación en dos pasos para mantener tu cuenta segura.
+      subject: Por favor, confirma el intento de inicio de sesión
+      title: Intento de inicio de sesión
     suspicious_sign_in:
       change_password: cambies tu contraseña
       details: 'Aquí están los detalles del inicio de sesión:'
@@ -2383,8 +2398,12 @@ es-MX:
       title: Te damos la bienvenida a bordo, %{name}!
   users:
     follow_limit_reached: No puedes seguir a más de %{limit} personas
+    generic_access_help_html: "¿Tienes problemas para acceder a tu cuenta? Puedes ponerte en contacto con %{email} para conseguir ayuda"
     go_to_sso_account_settings: Diríjete a la configuración de la cuenta de su proveedor de identidad
+    inactive_sign_in_confirmation: Ha pasado un tiempo desde que iniciaste sesión, así que estamos enviando un código de seguridad a tu dirección de correo electrónico para confirmar que eres tú.
+    inactive_sign_in_title: Confirma el código de seguridad
     invalid_otp_token: Código de dos pasos incorrecto
+    invalid_sign_in_token: Código de seguridad no válido
     otp_lost_help_html: Si perdiste al acceso a ambos, puedes ponerte en contancto con %{email}
     rate_limited: Demasiados intentos de autenticación, inténtalo de nuevo más tarde.
     seamless_external_login: Has iniciado sesión desde un servicio externo, por lo que los ajustes de contraseña y correo electrónico no están disponibles.
