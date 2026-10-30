@@ -4,7 +4,7 @@ import { useIntl, defineMessages } from 'react-intl';
 
 import classNames from 'classnames';
 
-import { changeCircle } from '@/mastodon/actions/compose_typed';
+import { changeComposeCircle } from '@/mastodon/actions/compose_typed';
 import { Popover } from '@/mastodon/components/popover';
 import type { Circle } from '@/mastodon/models/circle';
 import { getOrderedCircles } from '@/mastodon/selectors/circles';
@@ -175,7 +175,7 @@ export const CircleDropdown: React.FC = () => {
 
   const handleChange = useCallback(
     (value: string) => {
-      dispatch(changeCircle(value));
+      dispatch(changeComposeCircle(value));
     },
     [dispatch],
   );

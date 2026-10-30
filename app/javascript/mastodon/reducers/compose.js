@@ -3,7 +3,7 @@ import { Map as ImmutableMap, List as ImmutableList, OrderedSet as ImmutableOrde
 import {
   changeComposeVisibility,
   changeComposeSearchability,
-  changeCircle,
+  changeComposeCircle,
   changeComposeMarkdown,
   changeUploadCompose,
   rearrangeComposeAttachments,
@@ -445,7 +445,7 @@ export const composeReducer = (state = initialState, action) => {
     return state
       .set('searchability', action.payload)
       .set('idempotencyKey', uuid());
-  } else if (changeCircle.match(action)) {
+  } else if (changeComposeCircle.match(action)) {
     return state.set('circle_id', action.payload);
   } else if (changeComposeMarkdown.match(action)) {
     return state.withMutations(map => {

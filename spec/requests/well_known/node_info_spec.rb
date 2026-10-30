@@ -67,6 +67,18 @@ RSpec.describe 'The well-known node-info endpoints' do
         nodeDescription:	'',
         optInServerDirectory: 'true',
         optInServerRecommendation: false,
+        features: %w(
+          enable_wide_emoji
+          status_reference
+          emoji_keywords
+          circle
+          emoji_reaction
+          enable_wide_emoji_reaction
+        ),
+        upstream: {
+          'name' => 'mastodon',
+          'version' => Mastodon::Version.to_s_of_mastodon,
+        },
       }
     end
 

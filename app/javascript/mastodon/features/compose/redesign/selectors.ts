@@ -18,6 +18,11 @@ export const selectComposePrivacy = createAppSelector(
   (privacy, defaultPrivacy) => privacy ?? defaultPrivacy,
 );
 
+export const selectComposeCircleId = createAppSelector(
+  [(state) => state.compose.get('circle_id') as string | null],
+  (circleId) => circleId,
+);
+
 export const selectComposeQuotePolicy = createAppSelector(
   [
     (state) => state.compose.get('quote_policy') as ApiQuotePolicy | undefined,

@@ -129,7 +129,7 @@ export const changeComposeSearchability = createAppThunk(
 
 export const changeComposeMarkdown = createAction('compose/markdown_change');
 
-export const changeCircle = createAppThunk(
+export const changeComposeCircle = createAppThunk(
   'compose/circle_change',
   (circleId: string) => circleId,
 );

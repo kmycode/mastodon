@@ -643,6 +643,8 @@
   "compose.cancel_modal.edit.delete": "Discard changes",
   "compose.cancel_modal.edit.title": "Unsaved changes",
   "compose.cancel_modal.title": "Discard draft",
+  "compose.circle.not_selected": "Not selected",
+  "compose.circle.title": "Circle",
   "compose.counter": "{current, number}/{max, number}",
   "compose.discoverable": "Hide from search results",
   "compose.discoverable.hint": "Also applies to discovery feeds",

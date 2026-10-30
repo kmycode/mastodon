@@ -385,6 +385,7 @@
   "community.column_settings.local_only": "ローカルのみ表示",
   "community.column_settings.media_only": "メディアのみ表示",
   "community.column_settings.remote_only": "リモートのみ表示",
+  "compose.circle.not_selected": "未選択",
   "compose.language.change": "言語を変更",
   "compose.language.search": "言語を検索...",
   "compose.published.body": "投稿されました！",

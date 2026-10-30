@@ -7,6 +7,7 @@ import {
   UserIcon,
   GearIcon,
   CirclesFourIcon,
+  UserCircleIcon,
   HeartIcon,
   BookmarkSimpleIcon,
   UsersThreeIcon,
@@ -151,6 +152,13 @@ export const AccountMenuItems: React.FC<{
           />
         </MenuItemLink>
       )}
+
+      <MenuItemLink to='/circles' icon={UserCircleIcon}>
+        <FormattedMessage
+          id='navigation_bar.circles'
+          defaultMessage='Circles'
+        />
+      </MenuItemLink>
 
       <MenuItemDivider />
 

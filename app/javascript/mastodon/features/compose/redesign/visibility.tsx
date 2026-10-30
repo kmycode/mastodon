@@ -114,6 +114,10 @@ export const ComposeVisibilityButtonText: React.FC<{
     return (
       <FormattedMessage id='privacy.mutual.short' defaultMessage='Mutual' />
     );
+  } else if (privacy === 'circle') {
+    return (
+      <FormattedMessage id='privacy.circle.short' defaultMessage='Circle' />
+    );
   }
 
   return '-';
@@ -174,11 +178,7 @@ const ComposeVisibilityMenu: React.FC = () => {
       }
 
       // Logic in upstream mastodon
-      if (value === 'private' && privacy !== 'private') {
-        dispatch(changeComposeVisibility(value));
-      } else if (value === 'mutual' && privacy !== 'mutual') {
-        dispatch(changeComposeVisibility(value));
-      } else if (value === 'public' && privacy === 'private') {
+      if (value === 'public' && privacy === 'private') {
         dispatch(
           changeComposeVisibility(
             defaultPrivacy === 'unlisted' ? 'unlisted' : 'public',
@@ -188,6 +188,11 @@ const ComposeVisibilityMenu: React.FC = () => {
         dispatch(
           changeComposeVisibility(privacy === 'public' ? 'unlisted' : 'public'),
         );
+      } else if (
+        ['private', 'mutual', 'circle'].includes(value) &&
+        value !== privacy
+      ) {
+        dispatch(changeComposeVisibility(value as StatusVisibility));
       }
     },
     [
@@ -247,27 +252,31 @@ const ComposeVisibilityMenu: React.FC = () => {
         <MenuItemRadio
           name='visibility'
           value='mutual'
-          checked={['mutual'].includes(privacy)}
+          checked={privacy === 'mutual'}
           onChange={handlePrivacyChange}
           keepMenuOpenOnClick
         >
           <FormattedMessage id='privacy.mutual.short' defaultMessage='Mutual' />
         </MenuItemRadio>
 
+        <MenuItemRadio
+          name='visibility'
+          value='circle'
+          checked={privacy === 'circle'}
+          onChange={handlePrivacyChange}
+          keepMenuOpenOnClick
+        >
+          <FormattedMessage id='privacy.circle.short' defaultMessage='Circle' />
+        </MenuItemRadio>
+
         <MenuItemDivider />
 
         <MenuItemCheckbox
           value='notDiscoverable'
-          disabled={
-            !['public', 'unlisted', 'public_unlisted', 'login'].includes(
-              privacy,
-            )
-          }
+          disabled={!['public', 'unlisted'].includes(privacy)}
           checked={
             discoverableCheck &&
-            !['public', 'unlisted', 'public_unlisted', 'login'].includes(
-              privacy,
-            )
+            ['public', 'unlisted', 'public_unlisted', 'login'].includes(privacy)
           }
           onChange={handlePrivacyChange}
           keepMenuOpenOnClick

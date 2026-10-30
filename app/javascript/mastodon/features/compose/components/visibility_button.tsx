@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import {
   changeComposeVisibility,
   setComposeQuotePolicy,
-  changeCircle,
+  changeComposeCircle,
   changeComposeSearchability,
 } from '@/mastodon/actions/compose_typed';
 import { openModal } from '@/mastodon/actions/modal';
@@ -260,7 +260,7 @@ const PrivacyModalButton: FC<PrivacyDropdownProps> = ({ disabled = false }) => {
         dispatch(setComposeQuotePolicy(newQuotePolicy));
       }
       if (newCircleId !== circleId) {
-        dispatch(changeCircle(newCircleId));
+        dispatch(changeComposeCircle(newCircleId));
       }
     },
     [dispatch, quotePolicy, visibility, searchability, circleId],

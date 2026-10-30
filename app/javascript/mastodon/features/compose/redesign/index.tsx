@@ -14,6 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 
 import { ComposeAttachments } from './attachments';
+import { ComposeCircle } from './cieclrs';
 import type { OnEmojiPick } from './emoji';
 import { ComposeFooter } from './footer';
 import { ComposeFormHeader } from './header';
@@ -75,6 +76,7 @@ export const RedesignComposeForm: React.FC<
 
       <div className={classes.toolbar}>
         <ComposeVisibility className={classes.flexGrowWrap} />
+        <ComposeCircle className={classes.flexGrowWrap} />
 
         <LanguageButton />
 
