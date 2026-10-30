@@ -14,10 +14,8 @@ import {
   updatePollOption,
 } from '@/mastodon/actions/compose_typed';
 import { Button, buttonClasses } from '@/mastodon/components/button/redesign';
-import {
-  ToggleField,
-  TextInput,
-} from '@/mastodon/components/form_fields/redesign';
+import { ToggleField } from '@/mastodon/components/form_fields';
+import { TextInput } from '@/mastodon/components/form_fields/redesign';
 import { useAppSelector, useAppDispatch } from '@/mastodon/store';
 import { DAY, HOUR, MINUTE } from '@/mastodon/utils/time';
 
@@ -113,10 +111,7 @@ export const ComposePoll: React.FC = () => {
     useCallback(
       (event) => {
         dispatch(
-          changePollSettings(
-            Number.parseInt(event.target.value) / 1000,
-            multiple,
-          ),
+          changePollSettings(Number.parseInt(event.target.value), multiple),
         );
       },
       [dispatch, multiple],
@@ -254,7 +249,6 @@ const ComposePollOption: React.FC<{
           number: index + 1,
         })}
         maxLength={50}
-        // eslint-disable-next-line jsx-a11y/no-autofocus
         autoFocus={index === 0}
         data-index={index}
         spellCheck

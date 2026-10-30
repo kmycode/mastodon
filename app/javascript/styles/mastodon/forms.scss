@@ -116,6 +116,10 @@ code {
     }
 
     &.radio_buttons {
+      &:not(:has(.radio)) {
+        display: none;
+      }
+
       .radio {
         margin-bottom: 15px;
 
@@ -396,12 +400,8 @@ code {
 
     input {
       box-sizing: content-box;
-      width: 32px;
+      width: unset;
       flex: 0;
-
-      &:last-child {
-        width: 64px;
-      }
     }
   }
 
@@ -696,6 +696,34 @@ code {
       &:active,
       &:focus {
         background: var(--color-bg-error-base-hover);
+      }
+    }
+
+    &.secondary {
+      color: var(--color-text-brand);
+      background: transparent;
+      border: 1px solid transparent;
+      border-color: var(--color-border-brand);
+
+      &:active,
+      &:focus,
+      &:hover {
+        border-color: var(--color-border-brand);
+        color: var(--color-text-brand);
+        background-color: transparent;
+        text-decoration: none;
+      }
+
+      &:disabled {
+        border-color: var(--color-text-disabled);
+        color: var(--color-text-disabled);
+
+        &:active,
+        &:focus,
+        &:hover {
+          border-color: var(--color-text-disabled);
+          color: var(--color-text-disabled);
+        }
       }
     }
   }
@@ -1588,5 +1616,11 @@ code {
         height: 20px;
       }
     }
+  }
+}
+
+.full_width_form {
+  .button {
+    width: 100%;
   }
 }

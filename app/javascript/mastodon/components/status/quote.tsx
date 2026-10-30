@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { PlayIcon } from '@phosphor-icons/react';
 
 import { revealAccount } from '@/mastodon/actions/accounts_typed';
+import { cancelPasteLinkCompose } from '@/mastodon/actions/compose_typed';
 import { fetchStatus } from '@/mastodon/actions/statuses';
 import type {
   ApiAudioAttachmentJSON,
@@ -27,6 +28,7 @@ import {
   getAccountHidden as selectAccountHidden,
   selectPlainAccount,
 } from '@/mastodon/selectors/accounts';
+import { selectStatusFilters } from '@/mastodon/selectors/filters';
 import {
   selectAccountStatus,
   selectStatusLoadingState,
@@ -35,17 +37,23 @@ import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 
 import { Avatar } from '../avatar';
 import { Button } from '../button/redesign';
-import { Card, CardBody, CardTitle } from '../card';
-import { LinkedDisplayName } from '../display_name';
+import { Card, CardBody, CardTitle, PrimaryCardLink } from '../card';
+import { DisplayName } from '../display_name';
 import { DisplayNameSimple } from '../display_name/simple';
 import { EmojiHTML } from '../emoji/html';
 import { Icon } from '../icon';
 import { PopoverMenuCard } from '../menu/card';
 import { RelativeTimestamp } from '../relative_timestamp';
+import { Skeleton } from '../skeleton';
 
-import { onStatusLinksDisabled } from './hooks';
+import {
+  onStatusLinksDisabled,
+  useStatusContext,
+  useStatusHandlers,
+} from './hooks';
 import { StatusImage } from './image';
 import classes from './quote.module.scss';
+import { accountStatusLinkProps, statusLink } from './utils';
 
 type StatusQuoteProps = TQuotedStatus & { parentId: string };
 
@@ -54,7 +62,7 @@ export const StatusQuote: React.FC<StatusQuoteProps> = (props) => {
 
   if (quoteError) {
     return (
-      <Card>
+      <Card unclickable>
         <CardBody className={classNames(classes.body, classes.error)} noClamp>
           {quoteError}
         </CardBody>
@@ -70,12 +78,42 @@ export const StatusQuote: React.FC<StatusQuoteProps> = (props) => {
   return <QuotedStatus id={quotedId} />;
 };
 
+export const StatusQuotePending: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const onCancel = useCallback(() => {
+    dispatch(cancelPasteLinkCompose());
+  }, [dispatch]);
+
+  return (
+    <Card onDelete={onCancel}>
+      <CardTitle
+        className={classes.title}
+        image={<Skeleton width={20} height={20} style={{ display: 'block' }} />}
+        afterContent={<Skeleton width='5ch' />}
+      >
+        <Skeleton className='display-name__html' width='10ch' />
+      </CardTitle>
+      <CardBody className={classes.body} noClamp>
+        <Skeleton width='100%' />
+        <Skeleton width='100%' />
+      </CardBody>
+    </Card>
+  );
+};
+
 export const QuotedStatus: React.FC<{
   id: string;
   clamp?: boolean;
   onDelete?: () => void;
-}> = ({ id, clamp, onDelete }) => {
+  disableOpen?: boolean;
+}> = ({ id, clamp, onDelete, disableOpen = false }) => {
   const status = useAppSelector((state) => selectAccountStatus(state, id));
+  const { contextType } = useStatusContext();
+
+  const { onOpenClick } = useStatusHandlers({
+    status,
+    contextType,
+  });
 
   if (!status) {
     return null;
@@ -84,35 +122,57 @@ export const QuotedStatus: React.FC<{
   const statusTo = `/@${status.account.acct}/${status.id}`;
 
   return (
-    <Card onDelete={onDelete}>
+    <Card
+      onDelete={onDelete}
+      onClick={!disableOpen ? onOpenClick : undefined}
+      onAuxClick={!disableOpen ? onOpenClick : undefined}
+      unclickable={disableOpen}
+    >
       <CardTitle
         className={classes.title}
         image={
-          <Avatar
-            account={status.account}
-            className={classes.accountLink}
-            withLink
-          />
+          !disableOpen ? (
+            <Link
+              {...accountStatusLinkProps(status.account)}
+              role='presentation'
+              tabIndex={-1}
+              className={classes.accountLink}
+            >
+              <Avatar account={status.account} />
+            </Link>
+          ) : (
+            <Avatar account={status.account} />
+          )
         }
         afterContent={
-          <Link to={statusTo}>
+          !disableOpen ? (
+            <Link to={statusTo}>
+              <RelativeTimestamp timestamp={status.created_at} />
+            </Link>
+          ) : (
             <RelativeTimestamp timestamp={status.created_at} />
-          </Link>
+          )
         }
       >
-        <LinkedDisplayName
-          displayProps={{ account: status.account, variant: 'noDomain' }}
-          className={classes.accountLink}
-        />
+        {!disableOpen ? (
+          <Link
+            {...accountStatusLinkProps(status.account)}
+            className={classes.accountLink}
+          >
+            <DisplayName account={status.account} variant='noDomain' />
+          </Link>
+        ) : (
+          <DisplayName account={status.account} variant='noDomain' />
+        )}
       </CardTitle>
 
-      <CardBody
-        className={classes.body}
-        as={Link}
-        to={statusTo}
-        noClamp={!clamp}
-      >
-        <QuotedStatusBody status={status} />
+      <CardBody className={classes.body} noClamp={!clamp}>
+        <PrimaryCardLink
+          as={Link}
+          to={{ pathname: statusLink(status), state: { reference: 'status' } }}
+        >
+          <QuotedStatusBody status={status} />
+        </PrimaryCardLink>
       </CardBody>
 
       {!status.spoilerHtml && <QuotedStatusLink status={status} />}
@@ -140,7 +200,7 @@ const QuotedStatusBody: React.FC<{
     > => attachment.type === 'gifv' || attachment.type === 'image',
   );
   const duration = useMemo(() => {
-    const duration = mainAttachment?.meta.original.duration;
+    const duration = mainAttachment?.meta?.original?.duration;
     if (!duration) {
       return '';
     }
@@ -156,7 +216,7 @@ const QuotedStatusBody: React.FC<{
     const seconds = totalSeconds % 60;
 
     return formatter.format({ hours, minutes, seconds });
-  }, [mainAttachment?.meta.original.duration]);
+  }, [mainAttachment?.meta?.original?.duration]);
   const sensitive = status.sensitive;
 
   const poll = useAppSelector((state) => state.polls[status.poll ?? '']);
@@ -296,8 +356,21 @@ const QuotedStatusLink: React.FC<{ status: AccountStatusShape }> = ({
 
   if (quotedPost) {
     link = (
-      <Link to={`/@${quotedPost.account.acct}/${quotedPost.id}`}>
-        {quotedPost.uri}
+      <Link
+        to={`/@${quotedPost.account.acct}/${quotedPost.id}`}
+        className={classes.nestedQuote}
+      >
+        <Avatar account={quotedPost.account} />
+        <FormattedMessage
+          id='status.quote.nested.title'
+          defaultMessage='Post from {author}'
+          values={{
+            author: <DisplayNameSimple account={quotedPost.account} />,
+          }}
+          tagName='strong'
+        />
+        &bull;
+        <RelativeTimestamp timestamp={quotedPost.created_at} />
       </Link>
     );
   }
@@ -323,7 +396,7 @@ const QuotedStatusLink: React.FC<{ status: AccountStatusShape }> = ({
     return null;
   }
 
-  return <CardBody>{link}</CardBody>;
+  return <CardBody noClamp>{link}</CardBody>;
 };
 
 function useQuoteError({
@@ -331,15 +404,20 @@ function useQuoteError({
   state: quoteState,
   parentId,
 }: StatusQuoteProps) {
+  const { contextType } = useStatusContext();
   const { state: loadingState, status: quote } = useAppSelector((state) =>
-    selectStatusLoadingState(state, { statusId: quoteId }),
+    selectStatusLoadingState(state, { statusId: quoteId, contextType }),
   );
+  const { filters, filterAction } = useAppSelector((state) =>
+    selectStatusFilters(state, { statusId: quoteId, contextType }),
+  );
+
   const accountId = quote?.account.id;
   const account = useAppSelector((state) =>
     selectPlainAccount(state, accountId),
   );
   const quoteAuthorName = account?.acct;
-  const domain = quoteAuthorName?.split('@')[1];
+  const accountDomain = quoteAuthorName?.split('@')[1];
   const dispatch = useAppDispatch();
   const onRevealAccount = useCallback(() => {
     if (accountId) {
@@ -372,6 +450,9 @@ function useQuoteError({
       );
     }
   }, [shouldFetchQuote, dispatch, quoteId, parentId]);
+
+  const intl = useIntl();
+  const filterNames = intl.formatList(filters.map(({ title }) => title));
 
   if (quoteState === 'pending') {
     return (
@@ -416,8 +497,9 @@ function useQuoteError({
   if (loadingState === 'filtered') {
     message = (
       <FormattedMessage
-        id='status.quote_error.filtered'
-        defaultMessage='Hidden due to one of your filters'
+        id='status.quote_error.filtered_details'
+        defaultMessage='Hidden due to your filter “{filters}”'
+        values={{ filters: filterNames }}
       />
     );
   } else if (quoteState === 'revoked') {
@@ -425,6 +507,15 @@ function useQuoteError({
       <FormattedMessage
         id='status.quote_error.revoked'
         defaultMessage='Post removed by author'
+      />
+    );
+  } else if (filterAction === 'warn' && !revealed) {
+    action = onRevealQuote;
+    message = (
+      <FormattedMessage
+        id='status.quote_error.filtered_details'
+        defaultMessage='Hidden due to your filter “{filters}”'
+        values={{ filters: filterNames }}
       />
     );
   } else if (
@@ -451,7 +542,7 @@ function useQuoteError({
           <FormattedMessage
             id='status.quote_error.blocked_domain_hint.title'
             defaultMessage="This post is hidden because you've blocked {domain}."
-            values={{ domain }}
+            values={{ domain: accountDomain }}
           />
         );
         break;

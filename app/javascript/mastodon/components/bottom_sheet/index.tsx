@@ -3,6 +3,7 @@ import { useLayoutEffect, useRef } from 'react';
 
 import classNames from 'classnames';
 
+import { useBodyScrollLock } from '@/mastodon/hooks/useBodyScrollLock';
 import { useMergedRefs } from '@/mastodon/hooks/useMergedRefs';
 import { useOnClickOutside } from '@/mastodon/hooks/useOnClickOutside';
 import { useScrollSensor } from '@/mastodon/hooks/useScrollSensor';
@@ -25,6 +26,8 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
+  useBodyScrollLock();
+
   useLayoutEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
@@ -32,6 +35,11 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
     dialog.showModal();
 
     return () => {
+      if (!('requestClose' in dialog)) {
+        // Some older browsers only support `close` on HTMLDialogElement
+        (dialog as HTMLDialogElement).close();
+        return;
+      }
       dialog.requestClose();
     };
   }, []);

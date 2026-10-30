@@ -72,15 +72,15 @@ RSpec.describe FanOutOnWriteService do
     antenna
   end
 
-  def antenna_with_tag(owner, target_tag, **options)
-    antenna = Fabricate(:antenna, account: owner, any_tags: false, **options)
+  def antenna_with_tag(owner, target_tag, **)
+    antenna = Fabricate(:antenna, account: owner, any_tags: false, **)
     tag = Tag.find_or_create_by_names([target_tag])[0]
     Fabricate(:antenna_tag, antenna: antenna, tag: tag)
     antenna
   end
 
-  def antenna_with_options(owner, **options)
-    Fabricate(:antenna, account: owner, **options)
+  def antenna_with_options(owner, **)
+    Fabricate(:antenna, account: owner, **)
   end
 
   context 'when status account is suspended' do

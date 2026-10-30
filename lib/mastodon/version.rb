@@ -23,11 +23,11 @@ module Mastodon
     end
 
     def major
-      4
+      5
     end
 
     def minor
-      8
+      0
     end
 
     def patch
@@ -35,7 +35,7 @@ module Mastodon
     end
 
     def default_prerelease
-      'alpha.2'
+      'alpha.1'
     end
 
     def prerelease
@@ -96,7 +96,7 @@ module Mastodon
 
     def api_versions
       {
-        mastodon: 11,
+        mastodon: 12,
         kmyblue: KMYBLUE_API_VERSION,
       }
     end

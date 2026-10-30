@@ -19,30 +19,34 @@ import { useHistory } from 'react-router-dom';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { MagnifyingGlassIcon, XCircleIcon, XIcon } from '@phosphor-icons/react';
+
 import {
   FOCUS_TARGET,
-  useFocusOnNavigation,
+  useFocusAfterNavigation,
 } from '@/mastodon/components/navigation_focus_target';
 import { getCollectionPath } from '@/mastodon/features/collections/utils';
 import { useMergedRefs } from '@/mastodon/hooks/useMergedRefs';
-import { isRedesignEnabled } from '@/mastodon/utils/environment';
-import CancelIcon from '@/material-icons/400-24px/cancel-fill.svg?react';
-import CloseIcon from '@/material-icons/400-24px/close.svg?react';
-import SearchIcon from '@/material-icons/400-24px/search.svg?react';
 import {
   clickSearchResult,
   forgetSearchResult,
   openURL,
 } from 'mastodon/actions/search';
-import { Icon } from 'mastodon/components/icon';
+import { Icon, iconWeight } from 'mastodon/components/icon';
 import { useIdentity } from 'mastodon/identity_context';
 import { domain, searchEnabled } from 'mastodon/initial_state';
 import type { RecentSearch, SearchType } from 'mastodon/models/search';
 import { useAppSelector, useAppDispatch } from 'mastodon/store';
 import { HASHTAG_REGEX } from 'mastodon/utils/hashtags';
 
+import classes from './search.module.scss';
+
 const messages = defineMessages({
   placeholder: { id: 'search.placeholder', defaultMessage: 'Search' },
+  placeholderSidebar: {
+    id: 'search.placeholder_ellipsis',
+    defaultMessage: 'Search…',
+  },
   clearSearch: { id: 'search.clear', defaultMessage: 'Clear search' },
   placeholderSignedIn: {
     id: 'search.search_or_paste',
@@ -69,9 +73,11 @@ const ClearButton: React.FC<{
 
   return (
     <div
-      className={classNames('search__icon-wrapper', { 'has-value': hasValue })}
+      className={classNames('search__icon-wrapper', classes.searchIcon, {
+        'has-value': hasValue,
+      })}
     >
-      <Icon id='search' icon={SearchIcon} className='search__icon' />
+      <Icon id='search' icon={MagnifyingGlassIcon} className='search__icon' />
       <button
         type='button'
         onClick={onClick}
@@ -81,7 +87,7 @@ const ClearButton: React.FC<{
       >
         <Icon
           id='times-circle'
-          icon={CancelIcon}
+          icon={iconWeight(XCircleIcon, 'fill')}
           aria-label={intl.formatMessage(messages.clearSearch)}
         />
       </button>
@@ -98,8 +104,9 @@ interface SearchOption {
 
 export const Search: React.FC<{
   singleColumn: boolean;
+  context?: 'column' | 'sidebar';
   initialValue?: string;
-}> = ({ singleColumn, initialValue }) => {
+}> = ({ singleColumn, context = 'column', initialValue }) => {
   const intl = useIntl();
   const recent = useAppSelector((state) => state.search.recent);
   const { signedIn } = useIdentity();
@@ -111,7 +118,15 @@ export const Search: React.FC<{
   const [expanded, setExpanded] = useState(false);
   const [selectedOption, setSelectedOption] = useState(-1);
   const [quickActions, setQuickActions] = useState<SearchOption[]>([]);
-  const focusOnNavigation = useFocusOnNavigation(FOCUS_TARGET.SEARCH);
+  const [shouldOpenOnFocus, setShouldOpenOnFocus] = useState(
+    context === 'sidebar',
+  );
+  const focusAfterNavigation = useFocusAfterNavigation(
+    FOCUS_TARGET.SEARCH,
+    () => {
+      setShouldOpenOnFocus(true);
+    },
+  );
 
   const unfocus = useCallback(() => {
     document.querySelector('.ui')?.parentElement?.focus();
@@ -360,6 +375,8 @@ export const Search: React.FC<{
   const handleChange = useCallback(
     ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
       setValue(value);
+      setExpanded(true);
+      setSelectedOption(-1);
 
       const trimmedValue = value.trim();
       const newQuickActions = [];
@@ -546,8 +563,10 @@ export const Search: React.FC<{
   );
 
   const handleInputFocus = useCallback(() => {
-    setExpanded(true);
-    setSelectedOption(-1);
+    if (shouldOpenOnFocus) {
+      setExpanded(true);
+      setSelectedOption(-1);
+    }
 
     if (searchInputRef.current && !singleColumn) {
       const { left, right } = searchInputRef.current.getBoundingClientRect();
@@ -559,7 +578,7 @@ export const Search: React.FC<{
         searchInputRef.current.scrollIntoView();
       }
     }
-  }, [setExpanded, setSelectedOption, singleColumn]);
+  }, [shouldOpenOnFocus, singleColumn]);
 
   const handleInputBlur = useCallback(() => {
     setSelectedOption(-1);
@@ -599,6 +618,12 @@ export const Search: React.FC<{
   }, [expanded]);
 
   const searchOptionsHeading = useId();
+  let placeholder = intl.formatMessage(
+    signedIn ? messages.placeholderSignedIn : messages.placeholder,
+  );
+  if (context === 'sidebar') {
+    placeholder = intl.formatMessage(messages.placeholderSidebar);
+  }
 
   return (
     <form
@@ -607,19 +632,16 @@ export const Search: React.FC<{
       className={classNames('search', { active: expanded })}
     >
       <input
-        ref={useMergedRefs(
-          searchInputRef,
-          isRedesignEnabled() ? focusOnNavigation : null,
-        )}
-        className='search__input'
         type='text'
         inputMode='search'
-        placeholder={intl.formatMessage(
-          signedIn ? messages.placeholderSignedIn : messages.placeholder,
+        data-main-search
+        ref={useMergedRefs(
+          searchInputRef,
+          context === 'column' ? focusAfterNavigation : null,
         )}
-        aria-label={intl.formatMessage(
-          signedIn ? messages.placeholderSignedIn : messages.placeholder,
-        )}
+        className={classes.search}
+        placeholder={placeholder}
+        aria-label={placeholder}
         value={value}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
@@ -666,7 +688,7 @@ export const Search: React.FC<{
                       onMouseDown={forget}
                       type='button'
                     >
-                      <Icon id='times' icon={CloseIcon} />
+                      <Icon id='times' icon={XIcon} />
                     </button>
                   </div>
                 ))

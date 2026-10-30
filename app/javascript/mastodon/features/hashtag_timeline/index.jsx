@@ -46,6 +46,8 @@ class HashtagTimeline extends PureComponent {
     columnId: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
     hasUnread: PropTypes.bool,
+    local: PropTypes.bool,
+    hasFeedAccess: PropTypes.bool,
     multiColumn: PropTypes.bool,
   };
 
@@ -194,6 +196,9 @@ class HashtagTimeline extends PureComponent {
             iconComponent={TagIcon}
             active={hasUnread}
             title={this.title()}
+            onPin={this.handlePin}
+            onMove={this.handleMove}
+            pinned={pinned}
             multiColumn={multiColumn}
             showBackButton
             scrollTopOnClick

@@ -45,11 +45,15 @@ const messages = defineMessages({
   },
   reaction_deck: {
     id: 'navigation_bar.reaction_deck',
-    defaultMessage: 'Reaction deck',
+    defaultMessage: 'Emoji deck',
   },
   emoji_reactions: {
     id: 'navigation_bar.emoji_reactions',
     defaultMessage: 'Emoji reactions',
+  },
+  circles: {
+    id: 'navigation_bar.circles',
+    defaultMessage: 'Circles',
   },
 });
 
@@ -81,6 +85,10 @@ export const MoreLink: React.FC = () => {
   const menu = useMemo(() => {
     const arr: MenuItem[] = [
       ...emojiReactionMenu,
+      {
+        text: intl.formatMessage(messages.circles),
+        to: '/circles',
+      },
       {
         text: intl.formatMessage(messages.reaction_deck),
         to: '/reaction_deck',

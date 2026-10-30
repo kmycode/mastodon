@@ -63,7 +63,7 @@ class Admin::NgRule
 
     if @options[:reaction_type] == 'emoji_reaction'
       result = enum_match?(:reaction_type, @options[:reaction_type], @ng_rule.reaction_type) &&
-               text_match?(:emoji_reaction_name, @options[:emoji_reaction_name], @ng_rule.emoji_reaction_name)
+        text_match?(:emoji_reaction_name, @options[:emoji_reaction_name], @ng_rule.emoji_reaction_name)
 
       emoji_reaction_origin_domain = @options[:emoji_reaction_origin_domain] || Rails.configuration.x.local_domain
       result && text_match?(:emoji_reaction_origin_domain, emoji_reaction_origin_domain, @ng_rule.emoji_reaction_origin_domain)
@@ -178,31 +178,6 @@ class Admin::NgRule
   end
 
   def detect_keyword?(text, arr)
-    Admin::NgRule.detect_keyword?(text, arr, local: @account.local?)
-  end
-
-  class << self
-    def string_to_array(text)
-      text.delete("\r").split("\n")
-    end
-
-    def detect_keyword(text, arr, local: true)
-      arr = string_to_array(arr) if arr.is_a?(String)
-      text = PlainTextFormatter.new(text, false).to_s unless local
-
-      arr.detect { |word| include?(text, word) ? word : nil }
-    end
-
-    def detect_keyword?(text, arr, local: true)
-      detect_keyword(text, arr, local: local).present?
-    end
-
-    def include?(text, word)
-      if word.start_with?('?') && word.size >= 2
-        text =~ /#{word[1..]}/
-      else
-        text.include?(word)
-      end
-    end
+    TextPattern.detect_keyword?(text, arr, local: @account.local?)
   end
 end

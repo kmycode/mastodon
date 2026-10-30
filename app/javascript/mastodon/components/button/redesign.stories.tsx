@@ -83,8 +83,8 @@ export const IconTrailing: Story = {
 };
 
 export const IconOnly: Story = {
-  render(args) {
-    return <IconButton {...args} icon={args.leadingIcon ?? ChatIcon} />;
+  render({ leadingIcon, ...args }) {
+    return <IconButton {...args} icon={leadingIcon ?? ChatIcon} />;
   },
   args: {
     leadingIcon: ChatIcon,
@@ -92,14 +92,9 @@ export const IconOnly: Story = {
 };
 
 export const Link: Story = {
-  render(args) {
-    if (args.as === 'link') {
-      return <Button {...args} to='/example' />;
-    }
-    return <Button {...args} />;
-  },
   args: {
     as: 'link',
+    to: '/example',
   },
 };
 

@@ -1,9 +1,13 @@
 import { Children, cloneElement, isValidElement } from 'react';
 
+import { useRouteMatch } from 'react-router-dom';
+
 import type { List, Record } from 'immutable';
 
 import { ColumnIndexContext } from '@/mastodon/components/column/context';
+import MultiColumnPlaceholderColumn from '@/mastodon/features/multi_column_placeholder';
 import { useAppSelector } from '@/mastodon/store';
+import { isRedesignEnabled } from '@/mastodon/utils/environment';
 
 import {
   Compose,
@@ -76,6 +80,14 @@ export const MultiColumnContent: React.FC<{
   const columns = useAppSelector(
     (state) => state.settings.get('columns') as List<Record<Column>>,
   );
+  const isHomeRoute = !!useRouteMatch({
+    path: ['/deck/home', '/deck'],
+    exact: true,
+  });
+  const isHomepagePinned = columns.some(
+    (column) => column.get('id') === 'HOME',
+  );
+
   return (
     <>
       {columns.map((column, index) => {
@@ -85,6 +97,10 @@ export const MultiColumnContent: React.FC<{
         const other = params?.other ?? {};
         const uuid = column.get('uuid');
         const id = column.get('id');
+
+        if (isRedesignEnabled() && id === 'COMPOSE') {
+          return null;
+        }
 
         return (
           <ColumnIndexContext.Provider value={index} key={uuid}>
@@ -108,11 +124,16 @@ export const MultiColumnContent: React.FC<{
       })}
 
       <ColumnIndexContext.Provider value={columns.size}>
-        {Children.map(children, (child) =>
-          isValidElement<{ multiColumn?: boolean }>(child)
-            ? cloneElement(child, { multiColumn: true })
-            : child,
-        )}
+        {Children.map(children, (child) => {
+          if (isHomeRoute && isHomepagePinned) {
+            return <MultiColumnPlaceholderColumn />;
+          }
+          if (isValidElement<{ multiColumn?: boolean }>(child)) {
+            return cloneElement(child, { multiColumn: true });
+          } else {
+            return child;
+          }
+        })}
       </ColumnIndexContext.Provider>
     </>
   );

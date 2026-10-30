@@ -15,7 +15,7 @@ import { ColumnHeader } from '@/mastodon/components/column/header';
 import { Icon }  from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import ScrollableList from 'mastodon/components/scrollable_list';
-import StatusContainer from 'mastodon/containers/status_container';
+import StatusContainer from '@/mastodon/components/status/legacy/container';
 import { Column } from 'mastodon/components/column';
 
 
