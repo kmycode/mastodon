@@ -28,6 +28,7 @@ import type {
   ApiStatusEmojiReactionRowJSON,
   StatusLimitedScope,
   StatusVisibility,
+  StatusSearchability,
 } from '@/mastodon/api_types/statuses';
 
 import type { AccountShapeFull } from './account';
@@ -92,6 +93,7 @@ export interface StatusShape {
   emoji_reactions: ApiStatusEmojiReactionRowJSON[];
   visibility: StatusVisibility;
   visibility_ex: StatusVisibility;
+  searchability: StatusSearchability;
   limited_scope?: StatusLimitedScope;
 }
 export type AccountStatusShape = Omit<StatusShape, 'account'> & {

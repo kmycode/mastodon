@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.7.5] - 2026-11-03
+
+### Security
+
+- Fix password authentication bypass for inactive accounts ([GHSA-3xjw-gv43-3w62](https://github.com/mastodon/mastodon/security/advisories/GHSA-3xjw-gv43-3w62))
+- Fix DoS through JSON-LD compaction (#41482 by @ClearlyClaire, [GHSA-cf49-73r7-rxj6](https://github.com/mastodon/mastodon/security/advisories/GHSA-cf49-73r7-rxj6))
+- Fix `Forwarded` header taking precedence over `X-Forwarded-For` (#41481 by @ClearlyClaire, [GHSA-qp4r-p842-mw5c](https://github.com/mastodon/mastodon/security/advisories/GHSA-qp4r-p842-mw5c))
+  - If your reverse-proxy setup uses `Forwarded` instead of `X-Forwarded-For`, please make sure it ignores user-provided `X-Forwarded-For` headers.
+  - If you are using our provided `nginx.conf`, please consider updating it.
+- Updated dependencies, in particular to address security advisories in `addressable`, `loofah`, `rack`, and `rails-html-sanitizer`
+
+### Changed
+
+- Change invites use counts to not decrease if an invited user deletes their account (#41458 by @ClearlyClaire)
+
+## [4.7.4] - 2026-10-29
+
+### Security
+
+- Fix insufficient ActivityPub identifier verification ([GHSA-288h-6j8h-6x5j](https://github.com/mastodon/mastodon/security/advisories/GHSA-288h-6j8h-6x5j))
+- Added security challenge e-mail to users that try to log in after long period of inactivity (#40745 by @jhbabon)
+- Updated dependencies, in particular to address security advisories in Ruby, NodeJS, `excon`, `css_parser`, `pghero`, and `sanitize`
+
+### Fixed
+
+- Fix inefficiency in some hashtag timeline queries (#41132 by @hugogameiro)
+- Fix minor inefficiency in timeline deliveries (#41079 by @isidzukuri)
+- Fix account timeline with `exclude_direct` also excluding followers-only posts for non-followed users (#41019 by @ClearlyClaire)
+- Fix error in `dev:populate_sample_data` task (#40995 and #41051 by @isidzukuri and @mjankowski)
+- Fix local collection item revocation not being properly federated (#40930 by @oneiros)
+
 ## [4.7.3] - 2026-10-01
 
 ### Security

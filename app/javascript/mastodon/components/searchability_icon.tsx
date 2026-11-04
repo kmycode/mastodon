@@ -16,14 +16,17 @@ type Searchability =
   | 'limited';
 
 const messages = defineMessages({
-  public_short: { id: 'searchability.public.short', defaultMessage: 'Public' },
+  public_short: {
+    id: 'searchability.public.short',
+    defaultMessage: 'Everyone',
+  },
   public_unlisted_short: {
     id: 'searchability.public_unlisted.short',
-    defaultMessage: 'Local public',
+    defaultMessage: 'Local and followers',
   },
   private_short: {
     id: 'searchability.unlisted.short',
-    defaultMessage: 'Followers',
+    defaultMessage: 'Followers and reactionners',
   },
   direct_short: {
     id: 'searchability.private.short',

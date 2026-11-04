@@ -6,10 +6,14 @@ import {
   apiRevokeQuote,
   apiGetQuotes,
 } from '@/mastodon/api/interactions';
+import type { MediaAttachmentType } from '@/mastodon/api_types/media_attachments';
 import { browserHistory } from '@/mastodon/components/router';
 import type { StatusContextType } from '@/mastodon/components/status/types';
-import type { VisibilityModalCallback } from '@/mastodon/features/ui/components/visibility_modal';
-import type { StatusShape, StatusVisibility } from '@/mastodon/models/status';
+import type {
+  MediaAttachment,
+  StatusShape,
+  StatusVisibility,
+} from '@/mastodon/models/status';
 import {
   createAppThunk,
   createDataLoadingThunk,
@@ -37,7 +41,6 @@ import {
   deleteStatus,
   editStatus,
   muteStatus,
-  setStatusQuotePolicy,
   translateStatus,
   undoStatusTranslation,
   unmuteStatus,
@@ -47,7 +50,6 @@ export type StatusInteractionIntent =
   | 'bookmark'
   | 'copy'
   | 'delete'
-  | 'editQuotePolicy'
   | 'edit'
   | 'embed'
   | 'favourite'
@@ -193,19 +195,6 @@ export const statusInteraction = createAppThunk(
         }
         return;
       }
-      case 'editQuotePolicy':
-        dispatch(
-          openModal({
-            modalType: 'COMPOSE_PRIVACY',
-            modalProps: {
-              statusId,
-              onChange: ((_, __, policy) => {
-                void dispatch(setStatusQuotePolicy({ statusId, policy }));
-              }) satisfies VisibilityModalCallback,
-            },
-          }),
-        );
-        return;
       case 'embed':
         dispatch(
           openModal({
@@ -319,6 +308,67 @@ export const statusInteraction = createAppThunk(
         } else {
           dispatch(translateStatus(statusId));
         }
+    }
+  },
+);
+
+export const openAttachmentGallery = createAppThunk(
+  (
+    arg: { statusId: string; attachmentId?: string },
+    { getState, dispatch },
+  ) => {
+    const { statusId, attachmentId } = arg;
+    const status = getState().statuses.get(statusId);
+    const attachments = status?.get('media_attachments') as
+      | Immutable.List<MediaAttachment>
+      | undefined;
+    const attachment = attachmentId
+      ? attachments?.find((attachment) => attachmentId === attachment.get('id'))
+      : attachments?.first();
+
+    if (!status || !attachments?.size || !attachment) {
+      return;
+    }
+
+    const props = {
+      statusId,
+      lang: status.get('language'),
+    };
+
+    const type = attachment.get('type') as MediaAttachmentType;
+    if (type === 'video') {
+      dispatch(
+        openModal({
+          modalType: 'VIDEO',
+          modalProps: {
+            ...props,
+            media: attachment,
+            options: { autoPlay: true },
+          },
+        }),
+      );
+    } else if (type === 'audio') {
+      dispatch(
+        openModal({
+          modalType: 'AUDIO',
+          modalProps: {
+            ...props,
+            media: attachment,
+            options: { autoPlay: true },
+          },
+        }),
+      );
+    } else if (type === 'image' || type === 'gifv') {
+      const index = attachments.findIndex(
+        (x) => x.get('id') === attachment.get('id'),
+      );
+
+      dispatch(
+        openModal({
+          modalType: 'MEDIA',
+          modalProps: { ...props, media: attachments, index },
+        }),
+      );
     }
   },
 );

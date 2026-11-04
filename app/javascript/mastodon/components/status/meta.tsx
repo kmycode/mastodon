@@ -10,6 +10,10 @@ import type Immutable from 'immutable';
 import { fetchHistory } from '@/mastodon/actions/history';
 import { openModal } from '@/mastodon/actions/modal';
 import type {
+  StatusLimitedScope,
+  StatusSearchability,
+} from '@/mastodon/api_types/statuses';
+import type {
   AccountStatusShape,
   AnyStatusShape,
   StatusHistory,
@@ -38,8 +42,13 @@ export const StatusMeta: React.FC<{
   const { id, created_at, edited_at, application } = status;
 
   const visibility = useMemo(
-    () => statusVisibilityText(status.visibility),
-    [status.visibility],
+    () => statusVisibilityText(status.visibility_ex, status.limited_scope),
+    [status.visibility_ex, status.limited_scope],
+  );
+
+  const searchability = useMemo(
+    () => statusSearchabilityText(status.searchability),
+    [status.searchability],
   );
 
   let applicationDisplay: React.ReactNode = null;
@@ -67,6 +76,7 @@ export const StatusMeta: React.FC<{
         </li>
         {applicationDisplay && <li>{applicationDisplay}</li>}
         <li>{visibility}</li>
+        <li>{searchability}</li>
       </ul>
 
       <ul className={classes.list}>
@@ -111,6 +121,34 @@ export const StatusMeta: React.FC<{
               values={{
                 count: status.favourites_count,
                 counter: <AnimatedNumber value={status.favourites_count} />,
+              }}
+            />
+          </Link>
+        </li>
+        <li>
+          <Link to={`${baseStatusLink}/emoji_reactions`}>
+            <FormattedMessage
+              id='status.emoji_reactions_count'
+              defaultMessage='{count, plural, one {{counter} like} other {{counter} reactions}}'
+              values={{
+                count: status.emoji_reactions.reduce((a, b) => a + b.count, 0),
+                counter: (
+                  <AnimatedNumber value={status.status_references_count} />
+                ),
+              }}
+            />
+          </Link>
+        </li>
+        <li>
+          <Link to={`${baseStatusLink}/references`}>
+            <FormattedMessage
+              id='status.status_references_count'
+              defaultMessage='{count, plural, one {{counter} like} other {{counter} refs}}'
+              values={{
+                count: status.status_references_count,
+                counter: (
+                  <AnimatedNumber value={status.status_references_count} />
+                ),
               }}
             />
           </Link>
@@ -258,8 +296,12 @@ const StatusTimestampMeta: React.FC<
   );
 };
 
-function statusVisibilityText(visibility: StatusVisibility) {
-  switch (visibility) {
+function statusVisibilityText(
+  visibility: StatusVisibility,
+  limited_scope?: StatusLimitedScope,
+) {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  switch (limited_scope || visibility) {
     case 'private':
       return (
         <FormattedMessage
@@ -275,10 +317,91 @@ function statusVisibilityText(visibility: StatusVisibility) {
           description='Message refers to a direct message. For languages where this is confusing, "chat" or "direct message" can be used.'
         />
       );
+    case 'unlisted':
+      return (
+        <FormattedMessage
+          id='privacy.unlisted.short'
+          defaultMessage='Quiet public'
+        />
+      );
+    case 'public_unlisted':
+      return (
+        <FormattedMessage
+          id='privacy.public_unlisted.short'
+          defaultMessage='Local public'
+        />
+      );
+    case 'login':
+      return (
+        <FormattedMessage
+          id='privacy.login.short'
+          defaultMessage='Login only'
+        />
+      );
+    case 'circle':
+      return (
+        <FormattedMessage id='privacy.circle.short' defaultMessage='Circle' />
+      );
+    case 'mutual':
+      return (
+        <FormattedMessage id='privacy.mutual.short' defaultMessage='Mutual' />
+      );
+    case 'personal':
+      return (
+        <FormattedMessage
+          id='privacy.personal.short'
+          defaultMessage='Yourself only'
+        />
+      );
+    case 'limited':
+      return (
+        <FormattedMessage id='privacy.limited.short' defaultMessage='Limited' />
+      );
 
     default:
       return (
         <FormattedMessage id='privacy.public.short' defaultMessage='Public' />
+      );
+  }
+}
+
+function statusSearchabilityText(searchability: StatusSearchability) {
+  switch (searchability) {
+    case 'private':
+      return (
+        <FormattedMessage
+          id='searchability.unlisted.short'
+          defaultMessage='Followers and reactionners'
+        />
+      );
+    case 'direct':
+      return (
+        <FormattedMessage
+          id='searchability.private.short'
+          defaultMessage='Reactionners'
+        />
+      );
+    case 'limited':
+      return (
+        <FormattedMessage
+          id='searchability.direct.short'
+          defaultMessage='Self only'
+        />
+      );
+    case 'public_unlisted':
+      return (
+        <FormattedMessage
+          id='searchability.public_unlisted.short'
+          defaultMessage='Local and followers'
+        />
+      );
+
+    default:
+      return (
+        <FormattedMessage
+          id='searchability.public.short'
+          defaultMessage='Everyone'
+        />
       );
   }
 }
