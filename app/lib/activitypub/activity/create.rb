@@ -543,7 +543,7 @@ class ActivityPub::Activity::Create < ActivityPub::Activity
     begin
       conversation = Conversation.find_or_create_by!(uri: uri)
 
-      json = fetch_resource_without_id_validation(uri, account_representative)
+      json = fetch_resource_without_id_validation(uri, on_behalf_of: account_representative)
       return conversation if json.nil? || json['type'] != 'Group'
       return conversation if json['inbox'].blank? || json['inbox'] == conversation.inbox_url
 
