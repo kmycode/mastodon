@@ -1463,8 +1463,10 @@ en:
         follow_recommendations: Follow recommendations
         friend_servers: Friend servers
         preamble: Surfacing interesting content is instrumental in onboarding new users who may not know anyone on Mastodon. Control how various discovery features work on your server.
+        privacy: Privacy
         profile_directory: Profile directory
         public_timelines: Public timelines
+        publish_statistics: Publish Statistics
         title: Discovery
         trends: Trends
         visibilities: Visibilities
@@ -1917,6 +1919,7 @@ en:
     boosting_preferences: Boosting preferences
     boosting_preferences_info_html: "<strong>Tip:</strong> Regardless of settings, <kbd>Shift</kbd> + <kbd>Click</kbd> on the %{icon} Boost icon will immediately boost."
     custom_emoji_and_emoji_reactions: Custom emoji and emoji reactions
+    discovery: Discovery
     localization:
       body: Mastodon is translated by volunteers.
       guide_link: https://crowdin.com/project/mastodon
