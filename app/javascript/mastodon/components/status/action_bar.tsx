@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { DotsThreeIcon, ShareFatIcon } from '@phosphor-icons/react';
+import type { EmojiData } from 'emoji-mart';
 
 import { statusInteraction } from '@/mastodon/actions/interactions';
 import { fetchStatus } from '@/mastodon/actions/statuses';
@@ -12,13 +13,16 @@ import { quickBoosting } from '@/mastodon/initial_state';
 import type { AccountStatusShape } from '@/mastodon/models/status';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 
-import EmojiPickerDropdown from '../../features/compose/containers/emoji_picker_dropdown_container';
 import {
   Button,
   IconButton,
   ToggleButton,
   ToggleIconButton,
 } from '../button/redesign';
+import {
+  EmojiPickerButton,
+  emojiToStringForEmojiReactionApi,
+} from '../emoji/picker';
 import {
   Menu,
   MenuItem,
@@ -27,6 +31,7 @@ import {
   LegacyDropdownMenuItems,
 } from '../menu';
 
+import { EmojiReactionEnabledWrapper } from './emoji_reaction_enabled_wrapper';
 import {
   useStatusContext,
   useStatusIcons,
@@ -79,6 +84,15 @@ export const StatusActionBar: React.FC<StatusActionBarProps> = ({
 
   const { reply, like, emojiReaction, bookmark } = useStatusIcons(statusId);
 
+  const onPickEmoji = useCallback(
+    (emoji: EmojiData) => {
+      emojiReaction.actionWithStringArg?.(
+        emojiToStringForEmojiReactionApi(emoji),
+      );
+    },
+    [emojiReaction],
+  );
+
   if (!status) {
     return null;
   }
@@ -119,10 +133,9 @@ export const StatusActionBar: React.FC<StatusActionBarProps> = ({
         {withCounters && like.counter}
       </ToggleButton>
 
-      <EmojiPickerDropdown
-        onPickEmoji={emojiReaction.actionWithStringArg}
-        inverted={false}
-      />
+      <EmojiReactionEnabledWrapper accountId={status.account.id}>
+        <EmojiPickerButton onPick={onPickEmoji} />
+      </EmojiReactionEnabledWrapper>
 
       {isPublic && (
         <IconButton

@@ -43,6 +43,14 @@ export function emojiToString(emoji: EmojiData) {
   return `:${emoji.name}:`;
 }
 
+export function emojiToStringForEmojiReactionApi(emoji: EmojiData) {
+  const code = emojiToString(emoji);
+  if (code.startsWith(':') && code.endsWith(':') && code.length >= 3) {
+    return code.slice(1, code.length - 1);
+  }
+  return code;
+}
+
 const messages = defineMessages({
   emoji: { id: 'emoji_button.label', defaultMessage: 'Insert emoji' },
   emoji_search: { id: 'emoji_button.search', defaultMessage: 'Search...' },

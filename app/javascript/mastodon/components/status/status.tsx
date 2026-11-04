@@ -4,7 +4,6 @@ import classNames from 'classnames';
 
 import type { Merge } from 'type-fest';
 
-import { enableEmojiReaction, isHideItem } from '@/mastodon/initial_state';
 import type { ExpandedStatusShape } from '@/mastodon/models/status';
 import { selectStatusLoadingState } from '@/mastodon/selectors/statuses';
 import { createAppSelector, useAppSelector } from '@/mastodon/store';
@@ -21,6 +20,7 @@ import { StatusEmojiReactionsBar } from '../status_emoji_reactions_bar_redesign'
 import { StatusActionBar } from './action_bar';
 import { StatusAttachments } from './attachments';
 import { StatusContent } from './content';
+import { EmojiReactionEnabledWrapper } from './emoji_reaction_enabled_wrapper';
 import { StatusHashtagBar } from './hashtag_bar';
 import { StatusRedesignHeader } from './header';
 import {
@@ -159,10 +159,7 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
     !withoutEmojiReactions &&
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     status.emoji_reactions &&
-    status.emoji_reactions.length > 0 &&
-    enableEmojiReaction &&
-    (!isHideItem('emoji_reaction_unavailable_server') ||
-      status.account.server_features.emoji_reaction);
+    status.emoji_reactions.length > 0;
 
   const isHidden =
     (!showDespiteFilter && isFiltered) ||
@@ -260,10 +257,12 @@ export const StatusRedesign: React.FC<StatusRedesignProps> = ({
               )}
 
               {isShowEmojiReactions && (
-                <StatusEmojiReactionsBar
-                  statusId={status.id}
-                  emojiReactions={status.emoji_reactions}
-                />
+                <EmojiReactionEnabledWrapper accountId={status.account.id}>
+                  <StatusEmojiReactionsBar
+                    statusId={status.id}
+                    emojiReactions={status.emoji_reactions}
+                  />
+                </EmojiReactionEnabledWrapper>
               )}
 
               <StatusAttachments statusId={status.id} />
