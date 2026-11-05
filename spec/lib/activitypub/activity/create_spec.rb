@@ -1285,14 +1285,14 @@ RSpec.describe ActivityPub::Activity::Create do
             let(:actor_json) do
               {
                 '@context': 'https://www.w3.org/ns/activitystreams',
-                id: 'https://foo.test',
+                id: 'https://foo.test/',
                 type: 'Person',
                 preferredUsername: 'actor',
                 name: 'Tomas Cat',
                 inbox: 'https://foo.test/inbox',
               }.with_indifferent_access
             end
-            let!(:webfinger) { { subject: 'acct:actor@foo.test', links: [{ rel: 'self', href: 'https://foo.test', type: 'application/activity+json' }] } }
+            let!(:webfinger) { { subject: 'acct:actor@foo.test', links: [{ rel: 'self', href: 'https://foo.test/', type: 'application/activity+json' }] } }
 
             let(:object_json) do
               {
@@ -1304,14 +1304,14 @@ RSpec.describe ActivityPub::Activity::Create do
                 tag: [
                   {
                     type: 'Mention',
-                    href: 'https://foo.test',
+                    href: 'https://foo.test/',
                   },
                 ],
               }
             end
 
             before do
-              stub_request(:get, 'https://foo.test').to_return(status: 200, body: actor_json.to_json, headers: { 'Content-Type': 'application/activity+json' })
+              stub_request(:get, 'https://foo.test/').to_return(status: 200, body: actor_json.to_json, headers: { 'Content-Type': 'application/activity+json' })
               stub_request(:get, 'https://foo.test/.well-known/webfinger?resource=acct:actor@foo.test').to_return(status: 200, body: webfinger.to_json, headers: { 'Content-Type': 'application/jrd+json' })
               stub_request(:post, 'https://foo.test/inbox').to_return(status: 200)
               stub_request(:get, 'https://foo.test/.well-known/nodeinfo').to_return(status: 200, headers: { 'Content-Type': 'application/activity+json' })
@@ -1323,7 +1323,7 @@ RSpec.describe ActivityPub::Activity::Create do
               status = sender.statuses.first
 
               expect(status).to_not be_nil
-              expect(status.mentioned_accounts.map(&:uri)).to include 'https://foo.test'
+              expect(status.mentioned_accounts.map(&:uri)).to include 'https://foo.test/'
             end
 
             it 'forwards to observers', :inline_jobs do

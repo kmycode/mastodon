@@ -33,7 +33,7 @@ RSpec.describe Admin::ServerCheck::ElasticSearchRunner do
           InstancesIndex.index_name => InstancesIndex.mappings_hash.deep_stringify_keys,
           TagsIndex.index_name => TagsIndex.mappings_hash.deep_stringify_keys,
         }, get_settings: {
-          'chewy_specifications' => {
+          'test_chewy_specifications' => {
             'settings' => {
               'index' => {
                 'number_of_replicas' => 0,
@@ -150,7 +150,7 @@ RSpec.describe Admin::ServerCheck::ElasticSearchRunner do
       context 'when Chewy needs to be reset' do
         before do
           allow(Chewy.client.indices).to receive_messages(get_settings: {
-            'chewy_specifications' => {
+            'test_chewy_specifications' => {
               'settings' => {
                 'index' => {
                   'number_of_replicas' => 1,
