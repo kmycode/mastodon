@@ -107,12 +107,9 @@ const AccountItem: React.FC<{
         </Link>
 
         <div className='account__relationship'>
-          <Button
-            text={intl.formatMessage(
-              partOfCircle ? messages.remove : messages.add,
-            )}
-            onClick={handleClick}
-          />
+          <Button onClick={handleClick}>
+            {intl.formatMessage(partOfCircle ? messages.remove : messages.add)}
+          </Button>
         </div>
       </div>
     </div>

@@ -4,9 +4,9 @@ import { FormattedMessage, useIntl, defineMessages } from 'react-intl';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { RssSimpleIcon, XIcon } from '@phosphor-icons/react';
+
 import { Toggle } from '@/mastodon/components/form_fields';
-import CloseIcon from '@/material-icons/400-24px/close.svg?react';
-import ListAltIcon from '@/material-icons/400-24px/list_alt.svg?react';
 import VisibilityOffIcon from '@/material-icons/400-24px/visibility_off.svg?react';
 import { fetchLists } from 'mastodon/actions/lists';
 import { createList } from 'mastodon/actions/lists_typed';
@@ -16,17 +16,16 @@ import {
   apiRemoveAccountFromList,
 } from 'mastodon/api/lists';
 import type { ApiListJSON } from 'mastodon/api_types/lists';
-import { Button } from 'mastodon/components/button';
+import { Button, IconButton } from 'mastodon/components/button/redesign';
 import { Icon } from 'mastodon/components/icon';
-import { IconButton } from 'mastodon/components/icon_button';
 import { NavigationFocusTarget } from 'mastodon/components/navigation_focus_target';
 import { getOrderedLists } from 'mastodon/selectors/lists';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 const messages = defineMessages({
-  newList: {
-    id: 'lists.new_list_name',
-    defaultMessage: 'New list name',
+  newFeed: {
+    id: 'custom_feeds.new_feed_name',
+    defaultMessage: 'New feed name',
   },
   createList: {
     id: 'lists.create',
@@ -57,7 +56,7 @@ const ListItem: React.FC<{
   return (
     <label className='lists__item' htmlFor={uniqueId}>
       <div className='lists__item__title'>
-        <Icon id='list-ul' icon={ListAltIcon} />
+        <Icon id='list-ul' icon={RssSimpleIcon} />
         {exclusive && <Icon id='eye-slash' icon={VisibilityOffIcon} />}
         <span>{title}</span>
       </div>
@@ -99,7 +98,7 @@ const NewListItem: React.FC<{
   return (
     <form className='lists__item' onSubmit={handleSubmit}>
       <label className='lists__item__title'>
-        <Icon id='list-ul' icon={ListAltIcon} />
+        <Icon id='list-ul' icon={RssSimpleIcon} />
 
         <input
           type='text'
@@ -107,11 +106,13 @@ const NewListItem: React.FC<{
           onChange={handleChange}
           maxLength={30}
           required
-          placeholder={intl.formatMessage(messages.newList)}
+          placeholder={intl.formatMessage(messages.newFeed)}
         />
       </label>
 
-      <Button text={intl.formatMessage(messages.createList)} type='submit' />
+      <Button type='submit' variant='solid' color='accent' size='sm'>
+        {intl.formatMessage(messages.createList)}
+      </Button>
     </form>
   );
 };
@@ -180,16 +181,18 @@ const ListAdder: React.FC<{
       <div className='dialog-modal__header'>
         <IconButton
           className='dialog-modal__header__close'
-          title={intl.formatMessage(messages.close)}
-          icon='times'
-          iconComponent={CloseIcon}
+          icon={XIcon}
           onClick={onClose}
-        />
+          size='sm'
+          variant='ghost'
+        >
+          {intl.formatMessage(messages.close)}
+        </IconButton>
 
         <NavigationFocusTarget as='h1' className='dialog-modal__header__title'>
           <FormattedMessage
-            id='lists.add_to_lists'
-            defaultMessage='Add {name} to lists'
+            id='custom_feeds.add_to_feeds'
+            defaultMessage='Add {name} to custom feeds'
             values={{ name: <strong>@{account?.acct}</strong> }}
           />
         </NavigationFocusTarget>

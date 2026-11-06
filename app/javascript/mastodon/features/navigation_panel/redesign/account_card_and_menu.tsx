@@ -7,76 +7,82 @@ import {
   UserIcon,
   GearIcon,
   CirclesFourIcon,
+  UserCircleIcon,
   HeartIcon,
   BookmarkSimpleIcon,
   UsersThreeIcon,
   ProhibitIcon,
-  GavelIcon,
-  ShieldStarIcon,
   SignOutIcon,
+  BellSlashIcon,
+  HandWavingIcon,
 } from '@phosphor-icons/react';
 
 import { openModal } from '@/mastodon/actions/modal';
-import { Account } from '@/mastodon/components/account';
 import { Avatar } from '@/mastodon/components/avatar';
 import { IconButton } from '@/mastodon/components/button/redesign';
 import { DisplayName } from '@/mastodon/components/display_name';
 import { useAccountHandle } from '@/mastodon/components/display_name/default';
 import {
-  ListItemContent,
-  ListItemWrapper,
-} from '@/mastodon/components/list_item';
+  LockupContent,
+  LockupLink,
+  LockupWrapper,
+} from '@/mastodon/components/lockup';
 import {
   Menu,
   MenuItem,
   MenuItemDivider,
+  MenuItemGroup,
   MenuItemLink,
   MenuList,
   MenuTrigger,
 } from '@/mastodon/components/menu';
 import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useIdentity } from '@/mastodon/identity_context';
-import {
-  canManageReports,
-  canViewAdminDashboard,
-} from '@/mastodon/permissions';
 import { useAppDispatch } from '@/mastodon/store';
 
 import classes from './account_card_and_menu.module.scss';
 
 export const NavigationAccountCardAndMenu: React.FC = () => {
   const { accountId } = useIdentity();
+  const account = useAccount(accountId);
+  const handle = useAccountHandle(account);
+  const accountBasePath = `/@${account?.acct}`;
 
   if (!accountId) {
     return null;
   }
 
   return (
-    <div className={classes.root}>
-      <Account
-        id={accountId}
-        minimal
-        withBorder={false}
-        withMenu={false}
-        size={32}
-      />
-      <Menu type='navigation'>
-        <MenuTrigger
-          as={IconButton}
-          icon={DotsThreeIcon}
-          variant='ghost'
-          size='sm'
-        >
-          <FormattedMessage
-            id='tabs_bar.account_settings'
-            defaultMessage='Account settings'
-          />
-        </MenuTrigger>
-        <MenuList placement='top' offset={8} strategy='fixed'>
-          <AccountMenuItems />
-        </MenuList>
-      </Menu>
-    </div>
+    <LockupWrapper
+      icon={<Avatar account={account} size={32} />}
+      sideContent={
+        <Menu type='navigation'>
+          <MenuTrigger
+            as={IconButton}
+            icon={DotsThreeIcon}
+            size='sm'
+            variant='ghost'
+          >
+            <FormattedMessage
+              id='tabs_bar.account_settings'
+              defaultMessage='Account settings'
+            />
+          </MenuTrigger>
+          <MenuList placement='top' offset={12} strategy='fixed' minWidth={220}>
+            <AccountMenuItems />
+          </MenuList>
+        </Menu>
+      }
+      className={classes.root}
+    >
+      <LockupLink
+        to={accountBasePath}
+        subtitle={handle}
+        className={classes.accountLink}
+      >
+        <DisplayName variant='simple' account={account} />
+      </LockupLink>
+    </LockupWrapper>
   );
 };
 
@@ -84,7 +90,7 @@ export const AccountMenuItems: React.FC<{
   context?: 'default' | 'mobile';
 }> = ({ context = 'default' }) => {
   const dispatch = useAppDispatch();
-  const { accountId, permissions } = useIdentity();
+  const { accountId } = useIdentity();
   const account = useAccount(accountId);
 
   const confirmLogout = useCallback(() => {
@@ -95,19 +101,16 @@ export const AccountMenuItems: React.FC<{
     return null;
   }
 
-  const isManager = canManageReports(permissions);
-  const isAdmin = canViewAdminDashboard(permissions);
-
   const accountBasePath = `/@${account?.acct}`;
 
   return (
     <>
       {context === 'mobile' && <ProfileMenuItem />}
 
-      <MenuItemLink to='/profile/edit' icon={UserIcon}>
+      <MenuItemLink to={accountBasePath} exact icon={UserIcon}>
         <FormattedMessage
-          id='account.edit_profile'
-          defaultMessage='Edit profile'
+          id='account.view_profile'
+          defaultMessage='View Profile'
         />
       </MenuItemLink>
 
@@ -134,8 +137,15 @@ export const AccountMenuItems: React.FC<{
         />
       </MenuItemLink>
 
+      <MenuItemLink to='/emoji_reactions' icon={HeartIcon}>
+        <FormattedMessage
+          id='navigation_bar.reacted_with_emoji_posts'
+          defaultMessage='Reacted Posts with Emoji'
+        />
+      </MenuItemLink>
+
       {context === 'mobile' && (
-        <MenuItemLink to='/bookmarks' icon={BookmarkSimpleIcon}>
+        <MenuItemLink to='/bookmark_categories' icon={BookmarkSimpleIcon}>
           <FormattedMessage
             id='navigation_bar.saved_posts'
             defaultMessage='Saved Posts'
@@ -143,52 +153,64 @@ export const AccountMenuItems: React.FC<{
         </MenuItemLink>
       )}
 
+      <MenuItemLink to='/circles' icon={UserCircleIcon}>
+        <FormattedMessage
+          id='navigation_bar.circles'
+          defaultMessage='Circles'
+        />
+      </MenuItemLink>
+
       <MenuItemDivider />
 
-      <MenuItemLink as='a' href='/relationships' icon={UsersThreeIcon}>
+      <MenuItemLink to='/reaction_deck' icon={HeartIcon}>
         <FormattedMessage
-          id='navigation_bar.followers_and_following'
-          defaultMessage='Followers & Following'
+          id='navigation_bar.reaction_deck'
+          defaultMessage='Emoji deck'
         />
       </MenuItemLink>
 
-      <MenuItemLink to='/blocks' icon={ProhibitIcon}>
-        <FormattedMessage
-          id='navigation_bar.blocked_accounts'
-          defaultMessage='Blocked accounts'
-        />
-      </MenuItemLink>
+      <MenuItemDivider />
 
-      {(isManager || isAdmin) && (
-        <>
-          <MenuItemDivider />
+      <MenuItemGroup
+        label={
+          <FormattedMessage
+            id='navigation_bar.relationships'
+            defaultMessage='Relationships'
+          />
+        }
+      >
+        <MenuItemLink to={`${accountBasePath}/followers`} icon={HandWavingIcon}>
+          <FormattedMessage
+            id='navigation_bar.followers'
+            defaultMessage='Followers'
+          />
+        </MenuItemLink>
 
-          {isAdmin && (
-            <MenuItemLink as='a' href='/admin/dashboard' icon={GavelIcon}>
-              <FormattedMessage
-                id='navigation_bar.administration'
-                defaultMessage='Administration'
-              />
-            </MenuItemLink>
-          )}
+        <MenuItemLink to={`${accountBasePath}/following`} icon={UsersThreeIcon}>
+          <FormattedMessage
+            id='navigation_bar.following'
+            defaultMessage='Following'
+          />
+        </MenuItemLink>
 
-          {isManager && (
-            <MenuItemLink as='a' href='/admin/reports' icon={ShieldStarIcon}>
-              <FormattedMessage
-                id='navigation_bar.moderation'
-                defaultMessage='Moderation'
-              />
-            </MenuItemLink>
-          )}
-        </>
-      )}
+        <MenuItemLink to='/mutes' icon={BellSlashIcon}>
+          <FormattedMessage id='navigation_bar.muted' defaultMessage='Muted' />
+        </MenuItemLink>
+
+        <MenuItemLink to='/blocks' icon={ProhibitIcon}>
+          <FormattedMessage
+            id='navigation_bar.blocked'
+            defaultMessage='Blocked'
+          />
+        </MenuItemLink>
+      </MenuItemGroup>
 
       <MenuItemDivider />
 
       <MenuItem onClick={confirmLogout} icon={SignOutIcon}>
         <FormattedMessage
           id='navigation_bar.sign_out'
-          defaultMessage='Sign out'
+          defaultMessage='Sign Out'
         />
       </MenuItem>
     </>
@@ -207,15 +229,15 @@ const ProfileMenuItem: React.FC = () => {
   const accountBasePath = `/@${account?.acct}`;
 
   return (
-    <MenuItemLink to={accountBasePath}>
-      <ListItemWrapper
+    <MenuItemLink to={accountBasePath} exact>
+      <LockupWrapper
         icon={<Avatar account={account} size={40} />}
         className={classes.profileMenuItem}
       >
-        <ListItemContent subtitle={handle}>
+        <LockupContent subtitle={handle}>
           <DisplayName variant='simple' account={account} />
-        </ListItemContent>
-      </ListItemWrapper>
+        </LockupContent>
+      </LockupWrapper>
     </MenuItemLink>
   );
 };

@@ -42,7 +42,10 @@ class UserSettings
   setting :dtl_force_searchability, default: :unchange, in: %w(unchange public public_unlisted)
   setting :lock_follow_from_bot, default: false
   setting :reject_send_limited_to_suspects, default: false
+  setting :default_spoiler_field, default: false
   setting :email_subscriptions, default: false
+  setting :display_own_boosts, default: false
+  setting :display_own_posts, default: true
 
   setting_inverse_alias :indexable, :noindex
   setting_inverse_alias :show_statuses_count, :hide_statuses_count
@@ -90,6 +93,8 @@ class UserSettings
     setting_inverse_alias :'web.show_emoji_reaction_count', :'web.hide_emoji_reaction_count'
     setting_inverse_alias :'web.show_favourite_menu', :'web.hide_favourite_menu'
     setting_inverse_alias :'web.show_recent_emojis', :'web.hide_recent_emojis'
+
+    setting :theme_color, default: 'indigo' # TODO: dynamic inclusion checking?
   end
 
   namespace :notification_emails do
@@ -106,6 +111,7 @@ class UserSettings
     setting :appeal, default: true
     setting :software_updates, default: 'critical', in: %w(none critical patch all)
     setting :end_of_support, default: true
+    setting :moderation_suggestions, default: true
   end
 
   namespace :interactions do

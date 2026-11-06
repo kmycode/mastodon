@@ -165,11 +165,9 @@ const TextList: React.FC<{
           />
         </label>
 
-        <Button
-          disabled={disabled || !value}
-          text={title}
-          onClick={handleAdd}
-        />
+        <Button disabled={disabled || !value} onClick={handleAdd}>
+          {title}
+        </Button>
       </form>
 
       {values.map((val) => (

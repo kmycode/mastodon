@@ -18,7 +18,7 @@ export function isServerFeatureEnabled(feature: ServerFeatures) {
   return initialState?.features.includes(feature) ?? false;
 }
 
-type ClientFeatures = 'redesign' | 'redesign-status';
+type ClientFeatures = 'layout-with-search';
 
 export function isClientFeatureEnabled(feature: ClientFeatures) {
   try {
@@ -33,9 +33,5 @@ export function isClientFeatureEnabled(feature: ClientFeatures) {
 
 /* Checks if the 5.0 redesign features are enabled or not. */
 export function isRedesignEnabled() {
-  return isClientFeatureEnabled('redesign');
-}
-
-export function isRedesignStatusEnabled() {
-  return isRedesignEnabled() && isClientFeatureEnabled('redesign-status');
+  return true;
 }

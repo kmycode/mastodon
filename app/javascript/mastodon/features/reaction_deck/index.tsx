@@ -1,22 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return,
-                  @typescript-eslint/no-explicit-any,
-                  @typescript-eslint/no-unsafe-call,
-                  @typescript-eslint/no-unsafe-member-access,
-                  @typescript-eslint/no-unsafe-assignment,
-                  @typescript-eslint/no-confusing-void-expression */
-
 import type { ReactNode } from 'react';
 import { useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
-import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 import type {
   DragStartEvent,
   DragEndEvent,
   UniqueIdentifier,
-  // Announcements,
-  // ScreenReaderInstructions,
 } from '@dnd-kit/core';
 import {
   DndContext,
@@ -36,22 +27,32 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Helmet } from '@unhead/react/helmet';
+import type { EmojiData } from 'emoji-mart';
 
+import type { ApiReactionDeckItemJSON } from '@/mastodon/api_types/reaction_deck';
 import { Emoji } from '@/mastodon/components/emoji';
+import {
+  EmojiPickerButton,
+  emojiToStringForEmojiReactionApi,
+} from '@/mastodon/components/emoji/picker';
 import { useCustomEmojis } from '@/mastodon/hooks/useCustomEmojis';
 import { autoPlayGif } from '@/mastodon/initial_state';
 import MenuIcon from '@/material-icons/400-24px/menu.svg?react';
 import EmojiReactionIcon from '@/material-icons/400-24px/mood.svg?react';
-import { updateReactionDeck } from 'mastodon/actions/reaction_deck';
+import { updateReactionDeck } from 'mastodon/actions/reaction_deck_typed';
 import { Button } from 'mastodon/components/button';
 import { Column } from 'mastodon/components/column';
 import { ColumnHeader } from 'mastodon/components/column/header';
 import { Icon } from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
-import EmojiPickerDropdown from 'mastodon/features/compose/containers/emoji_picker_dropdown_container';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 import type { CustomEmojiData } from '../emoji/types';
+
+interface ReactionDeckItem {
+  id: number;
+  name: string;
+}
 
 const messages = defineMessages({
   reaction_deck_add: { id: 'reaction_deck.add', defaultMessage: 'Add' },
@@ -65,12 +66,12 @@ const ReactionEmoji: React.FC<{
     | Pick<CustomEmojiData, 'url' | 'static_url' | 'shortcode'>
     | undefined;
   overlay?: boolean;
-  onChange?: (index: number, emoji: any) => void;
+  onChange?: (index: number, emoji: string) => void;
   onRemove?: (index: number) => void;
 }> = ({ index, emoji, mapEmoji, overlay, onChange, onRemove }) => {
-  const handleChange = useCallback(
-    (emoji: any) => {
-      if (onChange) onChange(index, emoji);
+  const onEmojiPick = useCallback(
+    (emoji: EmojiData) => {
+      onChange?.(index, emojiToStringForEmojiReactionApi(emoji));
     },
     [index, onChange],
   );
@@ -125,11 +126,11 @@ const ReactionEmoji: React.FC<{
       <div className='reaction_deck__emoji'>
         <div className='reaction_deck__emoji__wrapper'>
           <div className='reaction_deck__emoji__wrapper__content'>
-            <EmojiPickerDropdown onPickEmoji={handleChange} />
+            <EmojiPickerButton onPick={onEmojiPick} />
             <div>{content}</div>
           </div>
           <div className='reaction_deck__emoji__wrapper__options'>
-            <Button secondary text={'Remove'} onClick={handleRemove} />
+            <Button onClick={handleRemove}>{'Remove'}</Button>
           </div>
         </div>
       </div>
@@ -144,22 +145,25 @@ export const ReactionDeck: React.FC<{
   const intl = useIntl();
 
   const customEmojis = useCustomEmojis();
-  const deck = useAppSelector((state) => state.reaction_deck);
+  const deckLoading = useAppSelector((state) => state.reaction_deck.loading);
+  const deck = useAppSelector((state) => state.reaction_deck.items).map(
+    (item, index) => ({ ...item, id: index + 1 }),
+  ) satisfies ReactionDeckItem[];
 
   const onChange = useCallback(
-    (emojis: any) => {
-      dispatch(updateReactionDeck(emojis));
+    (emojis: string[]) => {
+      void dispatch(updateReactionDeck({ emojis }));
     },
     [dispatch],
   );
 
-  const deckToArray = (deckData: any) =>
-    deckData.map((item: any) => item.get('name')).toArray();
+  const deckToEmojiNameArray = (deckData: ApiReactionDeckItemJSON[]) =>
+    deckData.map((item: ApiReactionDeckItemJSON) => item.name);
 
   const handleChange = useCallback(
-    (index: number, emoji: any) => {
-      const newDeck = deckToArray(deck);
-      newDeck[index] = emoji.native || emoji.id.replace(':', '');
+    (index: number, emoji: string) => {
+      const newDeck = deckToEmojiNameArray(deck);
+      newDeck[index] = emoji;
       onChange(newDeck);
     },
     [onChange, deck],
@@ -167,7 +171,7 @@ export const ReactionDeck: React.FC<{
 
   const handleRemove = useCallback(
     (index: number) => {
-      const newDeck = deckToArray(deck);
+      const newDeck = deckToEmojiNameArray(deck);
       newDeck.splice(index, 1);
       onChange(newDeck);
     },
@@ -175,9 +179,9 @@ export const ReactionDeck: React.FC<{
   );
 
   const handleAdd = useCallback(
-    (emoji: any) => {
-      const newDeck = deckToArray(deck);
-      const newEmoji = emoji.native || emoji.id.replace(':', '');
+    (emoji: EmojiData) => {
+      const newDeck = deckToEmojiNameArray(deck);
+      const newEmoji = emojiToStringForEmojiReactionApi(emoji);
       newDeck.push(newEmoji);
       onChange(newDeck);
     },
@@ -185,7 +189,9 @@ export const ReactionDeck: React.FC<{
   );
 
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-  const [activeEmoji, setActiveEmoji] = useState<any>(null);
+  const [activeEmoji, setActiveEmoji] = useState<
+    ReactionDeckItem | undefined | null
+  >(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -213,7 +219,7 @@ export const ReactionDeck: React.FC<{
       const { active } = e;
 
       setActiveId(active.id);
-      setActiveEmoji(deck.get(idToNumber(active.id)));
+      setActiveEmoji(deck[idToNumber(active.id)]);
     },
     [setActiveId, setActiveEmoji, deck],
   );
@@ -223,12 +229,16 @@ export const ReactionDeck: React.FC<{
       const { active, over } = e;
 
       if (over && active.id !== over.id) {
-        const newDeck = deckToArray(deck);
+        const newDeck = deckToEmojiNameArray(deck);
         const old = newDeck[idToNumber(active.id)];
-        newDeck[idToNumber(active.id)] = newDeck[idToNumber(over.id)];
-        newDeck[idToNumber(over.id)] = old;
+        const overItem = newDeck[idToNumber(over.id)];
 
-        onChange(newDeck);
+        if (overItem && old) {
+          newDeck[idToNumber(active.id)] = overItem;
+          newDeck[idToNumber(over.id)] = old;
+
+          onChange(newDeck);
+        }
       }
 
       setActiveId(null);
@@ -237,8 +247,7 @@ export const ReactionDeck: React.FC<{
     [setActiveId, setActiveEmoji, onChange, deck],
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (!deck) {
+  if (deckLoading) {
     return (
       <Column>
         <LoadingIndicator />
@@ -263,12 +272,12 @@ export const ReactionDeck: React.FC<{
         onDragEnd={handleDragEnd}
         modifiers={[restrictToVerticalAxis]}
       >
-        <SortableContext items={deck.toArray()} strategy={rectSortingStrategy}>
-          {deck.map((emoji: any, index) => (
-            <div key={index} id={index.toString()}>
+        <SortableContext items={deck} strategy={rectSortingStrategy}>
+          {deck.map((emoji: ReactionDeckItem, index) => (
+            <div key={emoji.id} id={`reaction-deck-item-${index.toString()}`}>
               <ReactionEmoji
-                mapEmoji={customEmojis[emoji.get('name')]}
-                emoji={emoji.get('name')}
+                mapEmoji={customEmojis[emoji.name]}
+                emoji={emoji.name}
                 index={index}
                 onChange={handleChange}
                 onRemove={handleRemove}
@@ -282,8 +291,8 @@ export const ReactionDeck: React.FC<{
             {activeId ? (
               <div style={{ position: 'fixed' }}>
                 <ReactionEmoji
-                  mapEmoji={customEmojis[activeEmoji.get('name')]}
-                  emoji={activeEmoji.get('name')}
+                  mapEmoji={customEmojis[activeEmoji?.name ?? 0]}
+                  emoji={activeEmoji?.name ?? ''}
                   index={-1}
                   overlay
                 />
@@ -295,14 +304,7 @@ export const ReactionDeck: React.FC<{
       </DndContext>
 
       <div>
-        <EmojiPickerDropdown
-          onPickEmoji={handleAdd}
-          button={
-            <Button secondary>
-              <FormattedMessage id='reaction_deck.add' defaultMessage='Add' />
-            </Button>
-          }
-        />
+        <EmojiPickerButton onPick={handleAdd} />
       </div>
 
       <Helmet>

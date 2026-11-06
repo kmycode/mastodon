@@ -61,15 +61,6 @@ RSpec.describe Auth::RegistrationsController do
       sign_in(user, scope: :user)
     end
 
-    it 'returns http success and cache headers' do
-      put :update
-
-      expect(response)
-        .to have_http_status(200)
-      expect(response.headers['Cache-Control'])
-        .to include('private, no-store')
-    end
-
     it 'can update the user email' do
       expect do
         put :update, params: {
@@ -78,8 +69,11 @@ RSpec.describe Auth::RegistrationsController do
             current_password: current_password,
           },
         }
-        expect(response).to redirect_to(edit_user_registration_path)
       end.to change { user.reload.unconfirmed_email }.to('newemail@example.com')
+
+      expect(response).to redirect_to(edit_user_registration_path)
+      expect(response.headers['Cache-Control'])
+        .to include('private, no-store')
     end
 
     it 'requires the current password to update the email' do
@@ -90,8 +84,11 @@ RSpec.describe Auth::RegistrationsController do
             current_password: 'something',
           },
         }
-        expect(response).to have_http_status(200)
       end.to_not(change { user.reload.unconfirmed_email })
+
+      expect(response).to have_http_status(422)
+      expect(response.headers['Cache-Control'])
+        .to include('private, no-store')
     end
 
     it 'can update the user password' do
@@ -103,8 +100,9 @@ RSpec.describe Auth::RegistrationsController do
             current_password: current_password,
           },
         }
-        expect(response).to redirect_to(edit_user_registration_path)
       end.to(change { user.reload.encrypted_password })
+
+      expect(response).to redirect_to(edit_user_registration_path)
     end
 
     it 'requires the password confirmation' do
@@ -116,8 +114,9 @@ RSpec.describe Auth::RegistrationsController do
             current_password: current_password,
           },
         }
-        expect(response).to have_http_status(200)
       end.to_not(change { user.reload.encrypted_password })
+
+      expect(response).to have_http_status(422)
     end
 
     it 'requires the current password to update the password' do
@@ -129,8 +128,9 @@ RSpec.describe Auth::RegistrationsController do
             current_password: 'something',
           },
         }
-        expect(response).to have_http_status(200)
       end.to_not(change { user.reload.encrypted_password })
+
+      expect(response).to have_http_status(422)
     end
 
     context 'when suspended' do
@@ -274,7 +274,7 @@ RSpec.describe Auth::RegistrationsController do
       it 'responds with an error message about the username' do
         subject
 
-        expect(response).to have_http_status(:success)
+        expect(response).to have_http_status(422)
         expect(username_error_text).to eq(I18n.t('errors.messages.taken'))
       end
 
@@ -390,6 +390,84 @@ RSpec.describe Auth::RegistrationsController do
       end
     end
 
+    context 'when registration rejection username pattern is set' do
+      subject do
+        post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', agreement: 'true' } }
+      end
+
+      it 'creates user without patterns set' do
+        subject
+        expect(new_user).to_not be_nil
+        expect(new_user.approved?).to be true
+      end
+
+      it 'creates user without pattern matches' do
+        Setting.registration_reject_username_pattern = 'latest'
+        subject
+        expect(new_user).to_not be_nil
+        expect(new_user.approved?).to be true
+      end
+
+      it 'creates user without exp pattern matches' do
+        Setting.registration_reject_username_pattern = '?^est'
+        subject
+        expect(new_user).to_not be_nil
+        expect(new_user.approved?).to be true
+      end
+
+      it 'does not create user with pattern matches' do
+        Setting.registration_reject_username_pattern = 'test'
+        subject
+        expect(new_user).to be_nil
+      end
+
+      it 'does not create user with exp pattern matches' do
+        Setting.registration_reject_username_pattern = '?te.+t'
+        subject
+        expect(new_user).to be_nil
+      end
+
+      def new_user
+        User.find_by(email: 'test@example.com')
+      end
+    end
+
+    context 'when registration rejection email pattern is set' do
+      subject do
+        post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', agreement: 'true' } }
+      end
+
+      it 'creates user without pattern matches' do
+        Setting.registration_reject_email_pattern = 'latest'
+        subject
+        expect(new_user).to_not be_nil
+        expect(new_user.approved?).to be true
+      end
+
+      it 'creates user without exp pattern matches' do
+        Setting.registration_reject_email_pattern = '?@ple'
+        subject
+        expect(new_user).to_not be_nil
+        expect(new_user.approved?).to be true
+      end
+
+      it 'does not create user with pattern matches' do
+        Setting.registration_reject_email_pattern = 'example.com'
+        subject
+        expect(new_user).to be_nil
+      end
+
+      it 'does not create user with exp pattern matches' do
+        Setting.registration_reject_email_pattern = '?example\\.'
+        subject
+        expect(new_user).to be_nil
+      end
+
+      def new_user
+        User.find_by(email: 'test@example.com')
+      end
+    end
+
     context 'when registration time range is set' do
       subject do
         post :create, params: { user: { account_attributes: { username: 'test' }, email: 'test@example.com', password: '12345678', password_confirmation: '12345678', agreement: 'true' } }
@@ -445,6 +523,37 @@ RSpec.describe Auth::RegistrationsController do
       it_behaves_like 'registration with time', 'secondary time range is invalid', 0, 4, 20, 15, false
       it_behaves_like 'registration with time', 'both time range are invalid', 4, 0, 20, 15, true
       it_behaves_like 'registration with time', 'only secondary time range is set', 0, 0, 9, 12, true
+    end
+
+    context 'with an invalid date of birth' do
+      subject do
+        Setting.registrations_mode = 'open'
+        Setting.min_age = 16
+        post :create, params: {
+          user: {
+            :account_attributes => { username: 'test' },
+            :email => 'test@example.com',
+            :password => '12345678',
+            :password_confirmation => '12345678',
+            :agreement => 'true',
+            'date_of_birth(1i)' => '2019',
+            'date_of_birth(2i)' => '32',
+            'date_of_birth(3i)' => '01',
+          },
+        }
+      end
+
+      it 'responds with an error message about the date of birth' do
+        expect { subject }.to_not raise_error
+
+        expect(response).to have_http_status(422)
+        expect(date_of_birth_error_text).to eq(I18n.t('errors.messages.invalid'))
+        expect(User.find_by(email: 'test@example.com')).to be_nil
+      end
+
+      def date_of_birth_error_text
+        response.parsed_body.css('.user_date_of_birth .error').text
+      end
     end
 
     it_behaves_like 'registration mode based responses', :create

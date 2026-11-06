@@ -73,8 +73,8 @@ RSpec.describe Admin::NgRule do
 
     context 'with display name rule' do
       let(:uri) { nil }
-      let(:account) { Fabricate(:account, display_name: '') }
-      let(:ng_rule) { Fabricate(:ng_rule, account_display_name: "?^$\r\n?[a-z0-9]{10}", account_include_local: true) }
+      let(:account) { Fabricate(:account, display_name: 'askyqaskyq') }
+      let(:ng_rule) { Fabricate(:ng_rule, account_display_name: '?^[a-z0-9]{10}$', account_include_local: true) }
 
       it_behaves_like 'matches rule', 'account'
     end

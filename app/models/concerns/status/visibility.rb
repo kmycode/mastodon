@@ -16,9 +16,9 @@ module Status::Visibility
          suffix: :limited
 
     scope :unset_searchability, -> { where(searchability: nil, reblog_of_id: nil) }
-    scope :distributable_visibility, -> { where(visibility: %i(public unlisted)) }
+    scope :distributable_visibility, -> { where(visibility: %i(public unlisted public_unlisted login)) }
     scope :distributable_visibility_for_anonymous, -> { where(visibility: %i(public public_unlisted unlisted)) }
-    scope :list_eligible_visibility, -> { where(visibility: %i(public unlisted private)) }
+    scope :list_eligible_visibility, -> { where(visibility: %i(public unlisted public_unlisted login private)) }
     scope :not_direct_visibility, -> { where.not(visibility: :direct) }
 
     validates :visibility, exclusion: { in: %w(direct limited) }, if: :reblog?
