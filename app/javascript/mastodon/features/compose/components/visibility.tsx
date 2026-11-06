@@ -119,9 +119,11 @@ export const ComposeVisibilityButtonText: React.FC<{
     return (
       <FormattedMessage id='privacy.circle.short' defaultMessage='Circle' />
     );
+  } else if (privacy === 'reply') {
+    return <FormattedMessage id='privacy.reply.short' defaultMessage='Reply' />;
   }
 
-  return '-';
+  return `Unknown: ${privacy}`;
 };
 
 const ComposeVisibilityMenu: React.FC = () => {
@@ -131,6 +133,9 @@ const ComposeVisibilityMenu: React.FC = () => {
   );
 
   const isReply = useAppSelector((state) => !!state.compose.get('in_reply_to'));
+  const isReplyToLimited = useAppSelector(
+    (state) => !!state.compose.get('reply_to_limited'),
+  );
 
   const [discoverableCheck, setDiscoverableCheck] = useState(false);
   const [discoverableInRemoteCheck, setDiscoverableInRemoteCheck] =
@@ -191,10 +196,7 @@ const ComposeVisibilityMenu: React.FC = () => {
         dispatch(
           changeComposeVisibility(privacy === 'public' ? 'unlisted' : 'public'),
         );
-      } else if (
-        ['private', 'mutual', 'circle'].includes(value) &&
-        value !== privacy
-      ) {
+      } else if (['private', 'mutual', 'circle', 'reply'].includes(value)) {
         dispatch(changeComposeVisibility(value as StatusVisibility));
       }
     },
@@ -270,6 +272,18 @@ const ComposeVisibilityMenu: React.FC = () => {
         >
           <FormattedMessage id='privacy.circle.short' defaultMessage='Circle' />
         </MenuItemRadio>
+
+        {isReplyToLimited && (
+          <MenuItemRadio
+            name='visibility'
+            value='reply'
+            checked={privacy === 'reply'}
+            onChange={handlePrivacyChange}
+            keepMenuOpenOnClick
+          >
+            <FormattedMessage id='privacy.reply.short' defaultMessage='Reply' />
+          </MenuItemRadio>
+        )}
 
         <MenuItemDivider />
 

@@ -1598,6 +1598,7 @@
   "status.header.message_from_me": "{author} to {name} {count, plural, =0 {} one {+ # other} other {+ # others}}",
   "status.header.message_to_me": "{author} to You {count, plural, =0 {} one {+ # other} other {+ # others}}",
   "status.header.to_followers": "{author} to Followers {count, plural, =0 {} one {+ # other} other {+ # others}}",
+  "status.header.to_limited": "{author} to Limited {count, plural, =0 {} one {+ # other} other {+ # others}}",
   "status.history.created": "{name} created {date}",
   "status.history.edited": "{name} edited {date}",
   "status.like": "Like",

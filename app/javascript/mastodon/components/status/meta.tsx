@@ -353,6 +353,10 @@ function statusVisibilityText(
           defaultMessage='Yourself only'
         />
       );
+    case 'reply':
+      return (
+        <FormattedMessage id='privacy.reply.short' defaultMessage='Reply' />
+      );
     case 'limited':
       return (
         <FormattedMessage id='privacy.limited.short' defaultMessage='Limited' />

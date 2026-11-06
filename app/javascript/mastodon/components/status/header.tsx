@@ -24,7 +24,12 @@ import { accountStatusLinkProps, statusLink } from './utils';
 interface StatusRedesignHeaderProps {
   status: Pick<
     AccountStatusShape,
-    'id' | 'account' | 'created_at' | 'visibility' | 'mentions'
+    | 'id'
+    | 'account'
+    | 'created_at'
+    | 'visibility'
+    | 'visibility_ex'
+    | 'mentions'
   >;
   className?: string;
   featured?: boolean;
@@ -54,11 +59,21 @@ export const StatusRedesignHeader: React.FC<StatusRedesignHeaderProps> = ({
       <DisplayName account={account} variant='noDomain' />
     </Link>
   );
-  if (status.visibility === 'private') {
+  if (status.visibility_ex === 'private') {
     displayName = (
       <FormattedMessage
         id='status.header.to_followers'
         defaultMessage='{author} to Followers {count, plural, =0 {} one {+ # other} other {+ # others}}'
+        description='Count is # of other people mentioned in the post'
+        tagName='span'
+        values={{ author: displayName, count: status.mentions.length }}
+      />
+    );
+  } else if (status.visibility_ex === 'limited') {
+    displayName = (
+      <FormattedMessage
+        id='status.header.to_limited'
+        defaultMessage='{author} to Limited {count, plural, =0 {} one {+ # other} other {+ # others}}'
         description='Count is # of other people mentioned in the post'
         tagName='span'
         values={{ author: displayName, count: status.mentions.length }}
