@@ -2,10 +2,18 @@ import { useCallback } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
-import { EyeSlashIcon, GearIcon, WarningIcon } from '@phosphor-icons/react';
+import {
+  EyeSlashIcon,
+  GearIcon,
+  WarningIcon,
+  MarkdownLogoIcon,
+} from '@phosphor-icons/react';
 
 import { changeComposeSensitivity } from '@/mastodon/actions/compose';
-import { setComposeQuotePolicy } from '@/mastodon/actions/compose_typed';
+import {
+  changeComposeMarkdown,
+  setComposeQuotePolicy,
+} from '@/mastodon/actions/compose_typed';
 import type { ApiQuotePolicy } from '@/mastodon/api_types/quotes';
 import { IconButton } from '@/mastodon/components/button/redesign';
 import {
@@ -25,6 +33,7 @@ import {
 } from '@/mastodon/store/typed_functions';
 
 import {
+  selectComposeMarkdown,
   selectComposePrivacy,
   selectComposeQuotePolicy,
   selectComposeSensitive,
@@ -49,6 +58,7 @@ const ComposeSettingsInnerMenu: React.FC = () => {
   const quotePolicy = useAppSelector(selectComposeQuotePolicy);
   const privacy = useAppSelector(selectComposePrivacy);
   const disablePublicQuotes = privacy === 'private';
+  const markdown = useAppSelector(selectComposeMarkdown);
 
   const dispatch = useAppDispatch();
   const onQuotePolicyChange = useCallback(
@@ -75,6 +85,9 @@ const ComposeSettingsInnerMenu: React.FC = () => {
   }, [dispatch]);
   const onMediaSensitiveChange = useCallback(() => {
     dispatch(changeComposeSensitivity());
+  }, [dispatch]);
+  const onMarkdownChange = useCallback(() => {
+    dispatch(changeComposeMarkdown());
   }, [dispatch]);
 
   const isMac = navigator.userAgent.includes('Mac');
@@ -195,6 +208,26 @@ const ComposeSettingsInnerMenu: React.FC = () => {
           <FormattedMessage
             id='compose.blur_media'
             defaultMessage='Blur media'
+          />
+        </MenuItemCheckbox>
+      </MenuItemGroup>
+
+      <MenuItemGroup
+        label={
+          <FormattedMessage id='compose.others.label' defaultMessage='Others' />
+        }
+      >
+        <MenuItemCheckbox
+          name='markdown'
+          value='on'
+          checked={markdown}
+          onChange={onMarkdownChange}
+          keepMenuOpenOnClick
+          icon={MarkdownLogoIcon}
+        >
+          <FormattedMessage
+            id='compose_form.markdown.title'
+            defaultMessage='Markdown'
           />
         </MenuItemCheckbox>
       </MenuItemGroup>

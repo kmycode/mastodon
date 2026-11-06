@@ -15,7 +15,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 
 import { ComposeAttachments } from './components/attachments';
-import { ComposeCircle } from './components/cieclrs';
+import { ComposeCircle } from './components/circles';
 import { ComposeFooter } from './components/footer';
 import { ComposeFormHeader } from './components/header';
 import { ComposeHints } from './components/hints';

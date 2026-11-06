@@ -178,14 +178,16 @@ const ComposeVisibilityMenu: React.FC = () => {
           return;
       }
 
+      if (value === privacy) return;
+
       // Logic in upstream mastodon
-      if (value === 'public' && privacy === 'private') {
+      if (value === 'public') {
         dispatch(
           changeComposeVisibility(
             defaultPrivacy === 'unlisted' ? 'unlisted' : 'public',
           ),
         );
-      } else if (value === 'unlisted' && privacy !== 'private') {
+      } else if (value === 'unlisted') {
         dispatch(
           changeComposeVisibility(privacy === 'public' ? 'unlisted' : 'public'),
         );

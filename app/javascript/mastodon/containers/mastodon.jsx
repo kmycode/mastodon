@@ -5,8 +5,8 @@ import { Route } from 'react-router-dom';
 
 import { Provider as ReduxProvider } from 'react-redux';
 
+import { fetchReactionDeck } from '../actions/reaction_deck_typed';
 import { fetchCircles } from 'mastodon/actions/circles';
-import { fetchReactionDeck } from 'mastodon/actions/reaction_deck';
 import { hydrateStore } from 'mastodon/actions/store';
 import { connectUserStream } from 'mastodon/actions/streaming';
 import { BodyScrollLock } from '@/mastodon/hooks/useBodyScrollLock';

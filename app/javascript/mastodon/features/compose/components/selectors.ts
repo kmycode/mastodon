@@ -231,6 +231,11 @@ export const selectComposePoll = createAppSelector(
   },
 );
 
+export const selectComposeMarkdown = createAppSelector(
+  [(state) => state.compose.get('markdown') as boolean],
+  (markdown) => markdown,
+);
+
 export const selectSuggestions = createAppSelector(
   [
     (state) =>
