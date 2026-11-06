@@ -283,6 +283,13 @@ export function bookmarkSuccess(status, response) {
   };
 }
 
+export function performBookmarkSuccess(status) {
+  return {
+    type: BOOKMARK_SUCCESS,
+    status: status,
+  };
+}
+
 export function bookmarkFail(status, error) {
   return {
     type: BOOKMARK_FAIL,

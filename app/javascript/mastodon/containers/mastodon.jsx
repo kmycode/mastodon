@@ -21,6 +21,7 @@ import { store } from 'mastodon/store';
 import { isProduction } from 'mastodon/utils/environment';
 
 import { ScrollContext } from './scroll_container/scroll_context';
+import { ReactIntlErrorCode } from 'react-intl';
 
 const title = isProduction() ? siteTitle : `${siteTitle} (Dev)`;
 
@@ -51,7 +52,11 @@ export default class Mastodon extends PureComponent {
   render () {
     return (
       <IdentityContext.Provider value={this.identity}>
-        <IntlProvider>
+        <IntlProvider
+          onError={(err) => {
+            if (err.code === ReactIntlErrorCode.MISSING_TRANSLATION) return;
+            return err;
+          }}>
           <ReduxProvider store={store}>
             <ErrorBoundary>
               <Router>

@@ -17,10 +17,7 @@ import {
   directCompose,
   mentionCompose,
 } from '@/mastodon/actions/compose';
-import {
-  initDomainBlockModal,
-  unblockDomain,
-} from '@/mastodon/actions/domain_blocks';
+import { unblockDomain } from '@/mastodon/actions/domain_blocks';
 import type { StatusInteractionIntent } from '@/mastodon/actions/interactions_typed';
 import { statusInteraction } from '@/mastodon/actions/interactions_typed';
 import { openModal } from '@/mastodon/actions/modal';
@@ -59,7 +56,11 @@ import type { OnElementHandler } from '@/mastodon/utils/html';
 import type { HotkeyHandlerFunction, HotkeyName } from '../hotkeys';
 import { FOCUS_TARGET } from '../navigation_focus_target';
 
-import { boostItemState, quoteItemState } from './boost_button_utils';
+import {
+  boostItemState,
+  quoteItemState,
+  referenceItemState,
+} from './boost_button_utils';
 import { useElementHandledLink } from './handled_link';
 import {
   StatusBookmarkActiveIcon,
@@ -312,6 +313,8 @@ export function useStatusHandlers({
       onFavourite: handlerFactory('favourite'),
       onBoost: handlerFactory('reblog'),
       onQuote: handlerFactory('quote'),
+      onQuoteLink: handlerFactory('quote_link'),
+      onReferenceLink: handlerFactory('reference_link'),
       onTranslate: handlerFactory('translate'),
     }),
     [
@@ -417,6 +420,19 @@ export function useStatusIcons(statusId: string) {
     disabled: boostState.disabled ?? false,
   };
 
+  const boostModalState = boostItemState(conditions, true);
+  const boostForceModal: StatusIcon = {
+    icon: status?.reblogged ? StatusBoostActiveIcon : StatusBoostIcon,
+    title: intl.formatMessage(boostModalState.title),
+    meta: boostModalState.meta
+      ? intl.formatMessage(boostModalState.meta)
+      : undefined,
+    counter: status?.reblogs_count,
+    active: status?.reblogged ?? false,
+    action: interactionFactory('reblog_modal'),
+    disabled: boostModalState.disabled ?? false,
+  };
+
   const quoteState = quoteItemState(conditions);
   const quote: StatusIcon = {
     icon: quoteState.iconComponent,
@@ -425,6 +441,30 @@ export function useStatusIcons(statusId: string) {
     counter: status?.quotes_count,
     action: interactionFactory('quote'),
     disabled: quoteState.disabled ?? false,
+  };
+
+  const quoteLinkState = quoteItemState(conditions, true);
+  const quoteLink: StatusIcon = {
+    icon: quoteLinkState.iconComponent,
+    title: intl.formatMessage(quoteLinkState.title),
+    meta: quoteLinkState.meta
+      ? intl.formatMessage(quoteLinkState.meta)
+      : undefined,
+    counter: status?.quotes_count,
+    action: interactionFactory('quote_link'),
+    disabled: quoteLinkState.disabled ?? false,
+  };
+
+  const referenceState = referenceItemState(conditions);
+  const referenceLink: StatusIcon = {
+    icon: referenceState.iconComponent,
+    title: intl.formatMessage(referenceState.title),
+    meta: referenceState.meta
+      ? intl.formatMessage(referenceState.meta)
+      : undefined,
+    counter: status?.status_references_count,
+    action: interactionFactory('reference_link'),
+    disabled: referenceState.disabled ?? false,
   };
 
   const isLiked = !!status?.favourited;
@@ -442,6 +482,10 @@ export function useStatusIcons(statusId: string) {
   const emojiReaction: StatusIcon = {
     icon: StatusEmojiReactionIcon,
     title: intl.formatMessage(iconMessages.emojiReaction),
+    counter: status?.emoji_reactions.reduce(
+      (sum, reaction) => sum + reaction.count,
+      0,
+    ),
     action: () => {
       /* noop */
     },
@@ -463,7 +507,10 @@ export function useStatusIcons(statusId: string) {
   return {
     reply,
     boost,
+    boostForceModal,
     quote,
+    quoteLink,
+    referenceLink,
     like,
     emojiReaction,
     bookmark,
@@ -1022,7 +1069,16 @@ function getMenuItems({
         if (isDomainBlocking) {
           dispatch(unblockDomain(domain));
         } else {
-          dispatch(initDomainBlockModal(account));
+          dispatch(
+            openModal({
+              modalType: 'DOMAIN_BLOCK',
+              modalProps: {
+                domain,
+                acct: account.acct,
+                accountId: account.id,
+              },
+            }),
+          );
         }
       },
       dangerous: !isDomainBlocking,

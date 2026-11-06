@@ -388,6 +388,30 @@ setupTableList('sensitive-words-table');
 setupTableList('ng-words-table');
 setupTableList('white-list-table');
 
+function onChangeOverrideRobots(target: HTMLInputElement) {
+  const enabled = target.checked;
+
+  document
+    .querySelectorAll<HTMLDivElement>('.form_admin_settings_custom_robots')
+    .forEach((element) => {
+      const container = element.closest<HTMLDivElement>('.fields-group');
+
+      if (!container) {
+        return;
+      }
+
+      if (enabled) {
+        container.classList.remove('hidden');
+      } else {
+        container.classList.add('hidden');
+      }
+    });
+}
+
+on('change', '#form_admin_settings_override_robots', ({ target }) => {
+  if (target instanceof HTMLInputElement) onChangeOverrideRobots(target);
+});
+
 async function mountReactComponent(element: Element) {
   const componentName = element.getAttribute('data-admin-component');
   const stringProps = element.getAttribute('data-props');
@@ -430,6 +454,11 @@ ready(() => {
     'select#form_admin_settings_registrations_mode',
   );
   if (registrationMode) onChangeRegistrationMode(registrationMode);
+
+  const overrideRobots = document.querySelector<HTMLInputElement>(
+    '#form_admin_settings_override_robots',
+  );
+  if (overrideRobots) onChangeOverrideRobots(overrideRobots);
 
   const accountActionSelection = document.querySelector<HTMLInputElement>(
     'input[name="admin_account_action[type]"]:checked',

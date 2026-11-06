@@ -19,12 +19,21 @@ import {
   createDataLoadingThunk,
 } from '@/mastodon/store/typed_functions';
 
-import { boostModal, deleteModal } from '../initial_state';
+import {
+  bookmarkCategoryNeeded,
+  boostModal,
+  deleteModal,
+} from '../initial_state';
 import { selectComposerIsChanged } from '../reducers/slices/composer';
 import { selectStatusInteractions } from '../selectors/statuses';
 
 import { showAlert, showGenericAlert } from './alerts';
-import { replyComposeById, quoteComposeById } from './compose_typed';
+import {
+  replyComposeById,
+  quoteComposeById,
+  quoteLinkComposeById,
+  referenceLinkComposeById,
+} from './compose_typed';
 import { importFetchedStatus, importFetchedStatuses } from './importer';
 import {
   bookmark,
@@ -59,7 +68,10 @@ export type StatusInteractionIntent =
   | 'mute'
   | 'pin'
   | 'quote'
+  | 'quote_link'
+  | 'reference_link'
   | 'reblog'
+  | 'reblog_modal'
   | 'redraft'
   | 'reply'
   | 'report'
@@ -153,10 +165,21 @@ export const statusInteraction = createAppThunk(
     // Handle intents for all statuses.
     switch (intent) {
       case 'bookmark':
-        if (status.bookmarked) {
-          dispatch(unbookmark(statusImmutable));
+        if (bookmarkCategoryNeeded) {
+          dispatch(
+            openModal({
+              modalType: 'BOOKMARK_CATEGORY_ADDER',
+              modalProps: {
+                statusId: status.id,
+              },
+            }),
+          );
         } else {
-          dispatch(bookmark(statusImmutable));
+          if (status.bookmarked) {
+            dispatch(unbookmark(statusImmutable));
+          } else {
+            dispatch(bookmark(statusImmutable));
+          }
         }
         return;
       case 'copy':
@@ -241,11 +264,18 @@ export const statusInteraction = createAppThunk(
       case 'quote':
         dispatch(quoteComposeById({ statusId }));
         return;
+      case 'quote_link':
+        dispatch(quoteLinkComposeById({ statusId }));
+        return;
+      case 'reference_link':
+        dispatch(referenceLinkComposeById({ statusId }));
+        return;
       case 'reblog':
+      case 'reblog_modal':
         if (status.reblogged) {
           void dispatch(unreblog({ statusId }));
         } else {
-          if (boostModal && !force) {
+          if ((boostModal && !force) || intent === 'reblog_modal') {
             dispatch(
               openModal({
                 modalType: 'BOOST',

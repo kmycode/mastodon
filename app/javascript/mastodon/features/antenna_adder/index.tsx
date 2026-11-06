@@ -1,33 +1,33 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useId } from 'react';
 
 import { FormattedMessage, useIntl, defineMessages } from 'react-intl';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import CloseIcon from '@/material-icons/400-24px/close.svg?react';
-import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
+import { WifiXIcon, XIcon } from '@phosphor-icons/react';
+
+import { Toggle } from '@/mastodon/components/form_fields';
 import { fetchAntennas } from 'mastodon/actions/antennas';
 import { createAntenna } from 'mastodon/actions/antennas_typed';
 import {
   apiGetAccountAntennas,
   apiAddAccountToAntenna,
-  apiAddExcludeAccountToAntenna,
   apiRemoveAccountFromAntenna,
-  apiRemoveExcludeAccountFromAntenna,
   apiGetExcludeAccountAntennas,
+  apiAddExcludeAccountToAntenna,
+  apiRemoveExcludeAccountFromAntenna,
 } from 'mastodon/api/antennas';
 import type { ApiAntennaJSON } from 'mastodon/api_types/antennas';
-import { Button } from 'mastodon/components/button';
-import { CheckBox } from 'mastodon/components/check_box';
+import { Button, IconButton } from 'mastodon/components/button/redesign';
 import { Icon } from 'mastodon/components/icon';
-import { IconButton } from 'mastodon/components/icon_button';
+import { NavigationFocusTarget } from 'mastodon/components/navigation_focus_target';
 import { getOrderedAntennas } from 'mastodon/selectors/antennas';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 const messages = defineMessages({
-  newAntenna: {
-    id: 'antennas.new_antenna_name',
-    defaultMessage: 'New antenna name',
+  newItem: {
+    id: 'antennas.new_bookmark_category_name',
+    defaultMessage: 'New bookmark_category name',
   },
   createAntenna: {
     id: 'antennas.create',
@@ -45,6 +45,8 @@ const AntennaItem: React.FC<{
   checked: boolean;
   onChange: (id: string, checked: boolean) => void;
 }> = ({ id, title, checked, onChange }) => {
+  const uniqueId = useId();
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onChange(id, e.target.checked);
@@ -53,14 +55,13 @@ const AntennaItem: React.FC<{
   );
 
   return (
-    // eslint-disable-next-line jsx-a11y/label-has-associated-control
-    <label className='lists__item'>
+    <label className='lists__item' htmlFor={uniqueId}>
       <div className='lists__item__title'>
-        <Icon id='antenna-ul' icon={AntennaIcon} />
+        <Icon id='list-ul' icon={WifiXIcon} />
         <span>{title}</span>
       </div>
 
-      <CheckBox value={id} checked={checked} onChange={handleChange} />
+      <Toggle id={uniqueId} checked={checked} onChange={handleChange} />
     </label>
   );
 };
@@ -97,7 +98,7 @@ const NewAntennaItem: React.FC<{
   return (
     <form className='lists__item' onSubmit={handleSubmit}>
       <label className='lists__item__title'>
-        <Icon id='antenna-ul' icon={AntennaIcon} />
+        <Icon id='list-ul' icon={WifiXIcon} />
 
         <input
           type='text'
@@ -105,11 +106,13 @@ const NewAntennaItem: React.FC<{
           onChange={handleChange}
           maxLength={30}
           required
-          placeholder={intl.formatMessage(messages.newAntenna)}
+          placeholder={intl.formatMessage(messages.newItem)}
         />
       </label>
 
-      <Button text={intl.formatMessage(messages.createAntenna)} type='submit' />
+      <Button type='submit' variant='solid' color='accent' size='sm'>
+        {intl.formatMessage(messages.createAntenna)}
+      </Button>
     </form>
   );
 };
@@ -128,11 +131,11 @@ const AntennaAdder: React.FC<{
   useEffect(() => {
     void dispatch(fetchAntennas());
 
-    const api = isExclude
+    const func = isExclude
       ? apiGetExcludeAccountAntennas
       : apiGetAccountAntennas;
 
-    api(accountId)
+    func(accountId)
       .then((data) => {
         setAntennaIds(data.map((l) => l.id));
         return '';
@@ -180,13 +183,17 @@ const AntennaAdder: React.FC<{
     (antenna: ApiAntennaJSON) => {
       setAntennaIds((currentAntennaIds) => [antenna.id, ...currentAntennaIds]);
 
-      apiAddAccountToAntenna(antenna.id, accountId).catch(() => {
+      const func = isExclude
+        ? apiAddExcludeAccountToAntenna
+        : apiAddAccountToAntenna;
+
+      func(antenna.id, accountId).catch(() => {
         setAntennaIds((currentAntennaIds) =>
           currentAntennaIds.filter((id) => id !== antenna.id),
         );
       });
     },
-    [setAntennaIds, accountId],
+    [setAntennaIds, accountId, isExclude],
   );
 
   return (
@@ -194,23 +201,25 @@ const AntennaAdder: React.FC<{
       <div className='dialog-modal__header'>
         <IconButton
           className='dialog-modal__header__close'
-          title={intl.formatMessage(messages.close)}
-          icon='times'
-          iconComponent={CloseIcon}
+          icon={XIcon}
           onClick={onClose}
-        />
+          size='sm'
+          variant='ghost'
+        >
+          {intl.formatMessage(messages.close)}
+        </IconButton>
 
-        <span className='dialog-modal__header__title'>
+        <NavigationFocusTarget as='h1' className='dialog-modal__header__title'>
           <FormattedMessage
             id='antennas.add_to_antennas'
             defaultMessage='Add {name} to antennas'
-            values={{ name: <strong>@{account?.acct}</strong> }}
+            values={{ name: <strong>{account?.display_name}</strong> }}
           />
-        </span>
+        </NavigationFocusTarget>
       </div>
 
       <div className='dialog-modal__content'>
-        <div className='lists-scrollable'>
+        <div className='antennas-scrollable'>
           <NewAntennaItem onCreate={handleCreate} />
 
           {antennas.map((antenna) => (

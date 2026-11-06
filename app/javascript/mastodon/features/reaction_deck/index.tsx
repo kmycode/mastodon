@@ -130,7 +130,7 @@ const ReactionEmoji: React.FC<{
             <div>{content}</div>
           </div>
           <div className='reaction_deck__emoji__wrapper__options'>
-            <Button secondary text={'Remove'} onClick={handleRemove} />
+            <Button onClick={handleRemove}>{'Remove'}</Button>
           </div>
         </div>
       </div>

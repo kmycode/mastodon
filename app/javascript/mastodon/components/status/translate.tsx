@@ -2,6 +2,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { TranslateIcon } from '@phosphor-icons/react';
 
+import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useIdentity } from '@/mastodon/identity_context';
 import { languages as preloadedLanguages } from '@/mastodon/initial_state';
 import type { AnyStatusShape } from '@/mastodon/models/status';
@@ -19,15 +20,20 @@ export const TranslateButton: React.FC<{
   const targetLanguages = useAppSelector(
     (state) => state.server.translationLanguages.item?.[status.language],
   );
+  const account = useAccount(
+    typeof status.account === 'string' ? status.account : status.account.id,
+  );
   const intl = useIntl();
 
   const { translation } = status;
 
   if (
     !signedIn ||
-    !['public', 'unlisted'].includes(status.visibility) ||
+    (!['public', 'unlisted'].includes(status.visibility) &&
+      !account?.other_settings.translatable_private) ||
     status.search_index?.trim().length === 0 ||
-    !targetLanguages?.includes(intl.locale.replace(/[_-].*/, ''))
+    !targetLanguages?.includes(intl.locale.replace(/[_-].*/, '')) ||
+    !status.language
   ) {
     return null;
   }

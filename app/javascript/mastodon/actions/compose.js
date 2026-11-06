@@ -839,11 +839,10 @@ export function insertFeaturedTagCompose(position, data) {
   };
 }
 
-export function insertReferenceCompose(position, url, attributeType) {
+export function insertReferenceCompose(url, attributeType) {
   return (dispatch, getState) => {
     dispatch({
       type: COMPOSE_REFERENCE_INSERT,
-      position,
       url,
       attributeType,
     });

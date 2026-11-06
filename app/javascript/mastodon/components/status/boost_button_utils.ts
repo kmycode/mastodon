@@ -3,12 +3,7 @@ import type { MessageDescriptor } from 'react-intl';
 
 import { isHideItem } from '@/mastodon/initial_state';
 import type { StatusConditions } from '@/mastodon/selectors/statuses';
-import { isRedesignEnabled } from '@/mastodon/utils/environment';
-import FormatQuoteOff from '@/material-icons/400-24px/format_quote_off-fill.svg?react';
 import ReferenceIcon from '@/material-icons/400-24px/link.svg?react';
-import RepeatDisabledIcon from '@/svg-icons/repeat_disabled.svg?react';
-import RepeatPrivateIcon from '@/svg-icons/repeat_private.svg?react';
-import RepeatPrivateActiveIcon from '@/svg-icons/repeat_private_active.svg?react';
 
 import type { IconProp } from '../icon';
 
@@ -94,10 +89,7 @@ export function boostItemState(
   if (isBoosted) {
     return {
       title: messages.reblog_cancel,
-      iconComponent:
-        isPublic || isRedesignEnabled()
-          ? StatusBoostActiveIcon
-          : RepeatPrivateActiveIcon,
+      iconComponent: StatusBoostActiveIcon,
     };
   }
   const iconText: MenuItemState = {
@@ -107,14 +99,8 @@ export function boostItemState(
 
   if (isPrivateReblog) {
     iconText.meta = messages.reblog_private;
-    if (!isRedesignEnabled()) {
-      iconText.iconComponent = RepeatPrivateIcon;
-    }
   } else if (!isPublic) {
     iconText.meta = messages.reblog_cannot;
-    if (!isRedesignEnabled()) {
-      iconText.iconComponent = RepeatDisabledIcon;
-    }
     iconText.disabled = true;
   }
   return iconText;
@@ -138,9 +124,6 @@ export function quoteItemState(
 
   if (!isPublic && !isMine) {
     iconText.disabled = true;
-    if (!isRedesignEnabled()) {
-      iconText.iconComponent = FormatQuoteOff;
-    }
     iconText.meta = messages.quote_private;
   } else if (isQuoteAutomaticallyAccepted) {
     iconText.title = messages.quote;
@@ -150,9 +133,6 @@ export function quoteItemState(
     // We don't show the disabled state when logged out
   } else if (isLoggedIn) {
     iconText.disabled = true;
-    if (!isRedesignEnabled()) {
-      iconText.iconComponent = FormatQuoteOff;
-    }
     iconText.meta = isQuoteFollowersOnly
       ? messages.quote_followers_only
       : messages.quote_cannot;

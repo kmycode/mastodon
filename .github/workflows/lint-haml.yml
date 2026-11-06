@@ -8,7 +8,7 @@ on:
       - 'upstream-*'
       - 'releases/*'
       - 'stable-*'
-    paths:
+    paths: &paths
       - '.github/workflows/lint-haml.yml'
       - '.haml-lint*.yml'
       - '.rubocop*.yml'
@@ -17,13 +17,7 @@ on:
       - 'Gemfile*'
 
   pull_request:
-    paths:
-      - '.github/workflows/lint-haml.yml'
-      - '.haml-lint*.yml'
-      - '.rubocop*.yml'
-      - '.ruby-version'
-      - '**/*.haml'
-      - 'Gemfile*'
+    paths: *paths
 
 jobs:
   lint:

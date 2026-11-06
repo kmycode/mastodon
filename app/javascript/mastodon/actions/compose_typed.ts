@@ -26,6 +26,7 @@ import { showAlert } from './alerts';
 import {
   changeCompose,
   focusCompose,
+  insertReferenceCompose,
   replyCompose,
   uploadCompose,
 } from './compose';
@@ -266,6 +267,28 @@ export const quoteComposeByStatus = createAppThunk(
   },
 );
 
+export const insertLinkCompose = createAppThunk(
+  'compose/insertLinkComposeStatus',
+  (status: Status, { dispatch }) => {
+    dispatch(focusCompose());
+    return status;
+  },
+);
+
+export const insertLinkComposeByStatus = createAppThunk(
+  (
+    { status, attributeType }: { status: Status; attributeType: string },
+    { dispatch },
+  ) => {
+    const attribute = attributeType;
+    const url = status.get('url') as string;
+
+    dispatch(insertReferenceCompose(url, attribute));
+    dispatch(focusCompose());
+    return status;
+  },
+);
+
 export const quoteComposeById = createAppThunk(
   (
     { statusId, force = false }: { statusId: string; force?: boolean },
@@ -274,6 +297,36 @@ export const quoteComposeById = createAppThunk(
     const status = getState().statuses.get(statusId);
     if (status) {
       dispatch(quoteComposeByStatus({ status, force }));
+    }
+  },
+);
+
+export const insertLinkComposeById = createAppThunk(
+  (
+    { statusId, attributeType }: { statusId: string; attributeType: string },
+    { dispatch, getState },
+  ) => {
+    const status = getState().statuses.get(statusId);
+    if (status) {
+      dispatch(insertLinkComposeByStatus({ status, attributeType }));
+    }
+  },
+);
+
+export const quoteLinkComposeById = createAppThunk(
+  ({ statusId }: { statusId: string }, { dispatch, getState }) => {
+    const status = getState().statuses.get(statusId);
+    if (status) {
+      dispatch(insertLinkComposeByStatus({ status, attributeType: 'RE' }));
+    }
+  },
+);
+
+export const referenceLinkComposeById = createAppThunk(
+  ({ statusId }: { statusId: string }, { dispatch, getState }) => {
+    const status = getState().statuses.get(statusId);
+    if (status) {
+      dispatch(insertLinkComposeByStatus({ status, attributeType: 'BT' }));
     }
   },
 );
