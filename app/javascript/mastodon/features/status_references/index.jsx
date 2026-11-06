@@ -14,9 +14,8 @@ import { fetchStatusReferences } from 'mastodon/actions/interactions';
 import { ColumnHeader } from '@/mastodon/components/column/header';
 import { Icon }  from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
-import ScrollableList from 'mastodon/components/scrollable_list';
-import StatusContainer from '@/mastodon/components/status/legacy/container';
 import { Column } from 'mastodon/components/column';
+import StatusList from '@/mastodon/components/status_list';
 
 
 const messages = defineMessages({
@@ -76,15 +75,12 @@ class StatusReferences extends ImmutablePureComponent {
           )}
         />
 
-        <ScrollableList
-          scrollKey='references'
+        <StatusList
+          scrollKey='references_timeline'
+          statusIds={accountIds}
           emptyMessage={emptyMessage}
           bindToDocument={!multiColumn}
-        >
-          {accountIds.map(id =>
-            <StatusContainer key={id} id={id} withNote={false} />,
-          )}
-        </ScrollableList>
+        />
 
         <Helmet>
           <meta name='robots' content='noindex' />
