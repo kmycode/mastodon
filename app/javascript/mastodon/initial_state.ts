@@ -5,7 +5,6 @@ type HideItemsDefinition =
   | 'emoji_reaction_on_timeline'
   | 'emoji_reaction_unavailable_server'
   | 'emoji_reaction_count'
-  | 'favourite_menu'
   | 'recent_emojis'
   | 'relationships'
   | 'status_reference_unavailable_server'
@@ -73,7 +72,6 @@ interface InitialStateMeta {
   featured_tags: string[];
   hide_items: HideItemsDefinition[];
   registrations_reach_limit: boolean;
-  simple_timeline_menu: boolean;
   wrapstodon?: InitialStateWrapstodon | null;
 }
 
@@ -187,7 +185,6 @@ export const enableLocalTimeline = getMeta('enable_local_timeline');
 export const enableDtlMenu = getMeta('enable_dtl_menu');
 export const featuredTags = getMeta('featured_tags') ?? [];
 export const registrationsReachLimit = getMeta('registrations_reach_limit');
-export const simpleTimelineMenu = getMeta('simple_timeline_menu');
 export const communityTimelineInsteadOfSearchMenu = getMeta(
   'community_timeline_instead_of_search_menu',
 );

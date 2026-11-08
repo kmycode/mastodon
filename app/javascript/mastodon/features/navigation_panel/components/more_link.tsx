@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
 
-import { enableEmojiReaction, isHideItem } from '@/mastodon/initial_state';
+import { enableEmojiReaction } from '@/mastodon/initial_state';
 import MoreHorizIcon from '@/material-icons/400-24px/more_horiz.svg?react';
 import { openModal } from 'mastodon/actions/modal';
 import { Dropdown } from 'mastodon/components/dropdown_menu';
@@ -72,16 +72,6 @@ export const MoreLink: React.FC = () => {
     ];
   }, [intl]);
 
-  const favouritesMenu = useMemo(() => {
-    if (!isHideItem('favourite_menu')) return [];
-    return [
-      {
-        text: intl.formatMessage(messages.favourites),
-        to: '/favourites',
-      },
-    ];
-  }, [intl]);
-
   const menu = useMemo(() => {
     const arr: MenuItem[] = [
       ...emojiReactionMenu,
@@ -94,7 +84,10 @@ export const MoreLink: React.FC = () => {
         to: '/reaction_deck',
       },
       null,
-      ...favouritesMenu,
+      {
+        text: intl.formatMessage(messages.favourites),
+        to: '/favourites',
+      },
       {
         href: '/filters',
         text: intl.formatMessage(messages.filters),
@@ -154,7 +147,7 @@ export const MoreLink: React.FC = () => {
     });
 
     return arr;
-  }, [intl, dispatch, permissions, emojiReactionMenu, favouritesMenu]);
+  }, [intl, dispatch, permissions, emojiReactionMenu]);
 
   return (
     <Dropdown items={menu} placement='bottom-start'>

@@ -1930,7 +1930,6 @@ en:
     remote_server_features: Other server features
     saved_posts: Saving posts
     sensitive_content: Sensitive content
-    status_action_bar: Post menu
   application_mailer:
     notification_preferences: Change email preferences
     salutation: "%{name},"

@@ -37,10 +37,8 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:use_pending_items] = object_account_user.setting_use_pending_items
       store[:show_trends]       = Setting.trends && object_account_user.setting_trends
       store[:bookmark_category_needed] = object_account_user.setting_bookmark_category_needed
-      store[:simple_timeline_menu] = object_account_user.setting_simple_timeline_menu
       store[:community_timeline_instead_of_search_menu] = object_account_user.setting_community_timeline_instead_of_search_menu
       store[:hide_items] = [
-        object_account_user.setting_hide_favourite_menu ? 'favourite_menu' : nil,
         object_account_user.setting_hide_recent_emojis ? 'recent_emojis' : nil,
         object_account_user.setting_hide_emoji_reaction_unavailable_server ? 'emoji_reaction_unavailable_server' : nil,
         object_account_user.setting_hide_status_reference_unavailable_server ? 'status_reference_unavailable_server' : nil,

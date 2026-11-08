@@ -48,7 +48,6 @@ import {
   enableDtlMenu,
   dtlTag,
   enableLocalTimeline,
-  isShowItem,
   localLiveFeedAccess,
   remoteLiveFeedAccess,
   trendsEnabled,
@@ -396,18 +395,16 @@ export const NavigationPanel: React.FC<{ multiColumn?: boolean }> = ({
                 text={intl.formatMessage(messages.circles)}
               />
             </li>
-            {isShowItem('favourite_menu') && (
-              <li>
-                <ColumnLink
-                  transparent
-                  to='/favourites'
-                  icon='star'
-                  iconComponent={StatusLikeIcon}
-                  activeIconComponent={StatusLikeActiveIcon}
-                  text={intl.formatMessage(messages.favourites)}
-                />
-              </li>
-            )}
+            <li>
+              <ColumnLink
+                transparent
+                to='/favourites'
+                icon='star'
+                iconComponent={StatusLikeIcon}
+                activeIconComponent={StatusLikeActiveIcon}
+                text={intl.formatMessage(messages.favourites)}
+              />
+            </li>
             <li>
               <ColumnLink
                 transparent

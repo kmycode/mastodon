@@ -322,13 +322,11 @@ ja:
         setting_show_avatar_on_filter: フィルター対象投稿の投稿者名やアイコンを表示する
         setting_show_emoji_reaction_count: 投稿につけられた各絵文字の数を表示する
         setting_show_emoji_reaction_on_timeline: タイムライン上の投稿に他の人のつけた絵文字を表示する
-        setting_show_favourite_menu: 右サイドメニューに「お気に入り」を表示する
         setting_show_followers_count: フォロワー数を公開する
         setting_show_following_count: フォロー数を公開する
         setting_show_recent_emojis: 絵文字ピッカーで絵文字デッキと一緒に、絵文字の使用履歴も表示する
         setting_show_relationships: アカウント詳細ベージで、相手からのフォロー状況を表示する
         setting_show_statuses_count: 投稿数を公開する
-        setting_simple_timeline_menu: タイムライン上でメニューの項目を減らす
         setting_slip_local_emoji_reaction: ローカルユーザーに限って上記設定を無視して絵文字リアクションを許可する
         setting_stay_privacy: 投稿時に公開範囲を保存する
         setting_stop_emoji_reaction_streaming: 絵文字リアクションのストリーミングを停止する

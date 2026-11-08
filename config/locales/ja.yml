@@ -1467,7 +1467,6 @@ ja:
     remote_server_features: 他のサーバーの機能
     saved_posts: 投稿の記録
     sensitive_content: 閲覧注意コンテンツ
-    status_action_bar: 投稿のメニュー
   application_mailer:
     notification_preferences: メール設定の変更
     salutation: "%{name}さん"

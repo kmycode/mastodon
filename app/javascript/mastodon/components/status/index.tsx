@@ -15,10 +15,12 @@ import type {
 } from '../hotkeys';
 import { Hotkeys } from '../hotkeys';
 import { Poll } from '../poll';
+import { StatusEmojiReactionsBar } from '../status_emoji_reactions_bar_redesign';
 
 import { StatusActionBar } from './action_bar';
 import { StatusAttachments } from './attachments';
 import { StatusContent } from './content';
+import { EmojiReactionEnabledWrapper } from './emoji_reaction_enabled_wrapper';
 import { StatusHashtagBar } from './hashtag_bar';
 import { computeHashtagBarForStatus } from './hashtag_utils';
 import { StatusHeader } from './header';
@@ -92,6 +94,7 @@ export const Status: React.FC<StatusProps> = ({
   shouldHighlightOnMount,
   variant = contextToVariant(contextType),
   nextId,
+  withoutEmojiReactions,
 }) => {
   // Select data from store
   const { status, parent } = useAppSelector((state) =>
@@ -151,6 +154,12 @@ export const Status: React.FC<StatusProps> = ({
     'data-variant': variant,
     handlers: hotkeyHandlers,
   };
+
+  const isShowEmojiReactions =
+    !withoutEmojiReactions &&
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    status.emoji_reactions &&
+    status.emoji_reactions.length > 0;
 
   const isHidden =
     (!showDespiteFilter && isFiltered) ||
@@ -245,6 +254,15 @@ export const Status: React.FC<StatusProps> = ({
                   accountId={status.account.id}
                   lang={status.translation?.language ?? status.language}
                 />
+              )}
+
+              {isShowEmojiReactions && (
+                <EmojiReactionEnabledWrapper accountId={status.account.id}>
+                  <StatusEmojiReactionsBar
+                    statusId={status.id}
+                    emojiReactions={status.emoji_reactions}
+                  />
+                </EmojiReactionEnabledWrapper>
               )}
 
               <StatusAttachments statusId={status.id} />

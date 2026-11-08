@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -24,11 +24,14 @@ import { ComposeButton } from '@/mastodon/features/compose/trigger';
 import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useIdentity } from '@/mastodon/identity_context';
 import {
+  communityTimelineInsteadOfSearchMenu,
+  enableLocalTimeline,
   registrationsOpen,
   sso_redirect,
   trendsEnabled,
 } from '@/mastodon/initial_state';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
+import PeopleIcon from '@/material-icons/400-24px/group.svg?react';
 
 import {
   RedesignNavigationPanel,
@@ -59,6 +62,29 @@ export const RedesignMobileNavigation: React.FC = () => {
     (state) => state.server.server.item?.registrations.url ?? '/auth/sign_up',
   );
 
+  const exploreLink = useMemo(() => {
+    if (communityTimelineInsteadOfSearchMenu && enableLocalTimeline) {
+      return (
+        <MobileNavLink to='/public/local/fixed' iconComponent={PeopleIcon}>
+          <FormattedMessage id='column.local' defaultMessage='Local' />
+        </MobileNavLink>
+      );
+    }
+
+    return (
+      <MobileNavLink
+        to={{
+          pathname: trendsEnabled ? '/explore' : '/search',
+          state: { focusTarget: FOCUS_TARGET.SEARCH },
+        }}
+        iconComponent={MagnifyingGlassIcon}
+        onClick={handleSearchLinkClick}
+      >
+        <FormattedMessage id='tabs_bar.search' defaultMessage='Search' />
+      </MobileNavLink>
+    );
+  }, []);
+
   return (
     <>
       {signedIn ? (
@@ -67,16 +93,7 @@ export const RedesignMobileNavigation: React.FC = () => {
             <MobileNavLink to='/home' iconComponent={HouseIcon}>
               <FormattedMessage id='tabs_bar.home' defaultMessage='Home' />
             </MobileNavLink>
-            <MobileNavLink
-              to={{
-                pathname: trendsEnabled ? '/explore' : '/search',
-                state: { focusTarget: FOCUS_TARGET.SEARCH },
-              }}
-              iconComponent={MagnifyingGlassIcon}
-              onClick={handleSearchLinkClick}
-            >
-              <FormattedMessage id='tabs_bar.search' defaultMessage='Search' />
-            </MobileNavLink>
+            {exploreLink}
             <MobileNavLink
               to='/conversations'
               iconComponent={ChatCircleDotsIcon}

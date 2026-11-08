@@ -358,13 +358,11 @@ en:
         setting_show_avatar_on_filter: Show filtered posts with avatar and user profile
         setting_show_emoji_reaction_count: Show emoji reaction number
         setting_show_emoji_reaction_on_timeline: Show all emoji reactions on timeline
-        setting_show_favourite_menu: Show favourite menu
         setting_show_followers_count: Show followers count
         setting_show_following_count: Show following count
         setting_show_recent_emojis: Show recent emojis
         setting_show_relationships: Show relationships on account page
         setting_show_statuses_count: Show statuses count
-        setting_simple_timeline_menu: Reduce post menu on timeline
         setting_slip_local_emoji_reaction: Allow bypassing emoji reaction from local users
         setting_split_default_privacy_discoverable: Make my posts discoverable in public feed & search results
         setting_stay_privacy: Keep visibility after post

@@ -186,12 +186,27 @@ const ComposeVisibilityMenu: React.FC = () => {
       if (value === privacy) return;
 
       // Logic in upstream mastodon
+      // on change from list (not toggle)
       if (value === 'public') {
         dispatch(
           changeComposeVisibility(
-            defaultPrivacy === 'unlisted' ? 'unlisted' : 'public',
+            ['unlisted', 'public_unlisted', 'login'].includes(defaultPrivacy)
+              ? defaultPrivacy
+              : 'public',
           ),
         );
+
+        switch (defaultPrivacy) {
+          case 'unlisted':
+            setDiscoverableCheck(true);
+            break;
+          case 'public_unlisted':
+            setDiscoverableInRemoteCheck(true);
+            break;
+          case 'login':
+            setLoginOnlyCheck(true);
+            break;
+        }
       } else if (value === 'unlisted') {
         dispatch(
           changeComposeVisibility(privacy === 'public' ? 'unlisted' : 'public'),
