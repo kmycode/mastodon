@@ -10,21 +10,17 @@ import { ArrowClockwiseIcon } from '@phosphor-icons/react';
 import { Helmet } from '@unhead/react/helmet';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { ColumnHeader as LegacyColumnHeader } from '@/mastodon/components/column/header';
 import {
   ColumnHeader,
   ColumnHeaderButton,
 } from '@/mastodon/components/column_header';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
-import { isRedesignEnabled } from '@/mastodon/utils/environment';
-import RefreshIcon from '@/material-icons/400-24px/refresh.svg?react';
 import {
   fetchMentionedUsers,
   expandMentionedUsers,
 } from 'mastodon/actions/interactions';
 import { Account } from 'mastodon/components/account';
 import { Column } from 'mastodon/components/column';
-import { Icon } from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import ScrollableList from 'mastodon/components/scrollable_list';
 
@@ -94,36 +90,15 @@ const MentionedUsers: React.FC<{ multiColumn?: boolean }> = ({
 
   return (
     <Column bindToDocument={!multiColumn}>
-      {isRedesignEnabled() ? (
-        <ColumnHeader
-          withBackButton
-          title={intl.formatMessage(messages.title)}
-          extraButtons={
-            <ColumnHeaderButton
-              icon={ArrowClockwiseIcon}
-              onClick={handleRefresh}
-            >
-              {intl.formatMessage(messages.refresh)}
-            </ColumnHeaderButton>
-          }
-        />
-      ) : (
-        <LegacyColumnHeader
-          showBackButton
-          multiColumn={multiColumn}
-          extraButton={
-            <button
-              type='button'
-              className='column-header__button'
-              title={intl.formatMessage(messages.refresh)}
-              aria-label={intl.formatMessage(messages.refresh)}
-              onClick={handleRefresh}
-            >
-              <Icon id='refresh' icon={RefreshIcon} />
-            </button>
-          }
-        />
-      )}
+      <ColumnHeader
+        withBackButton
+        title={intl.formatMessage(messages.title)}
+        extraButtons={
+          <ColumnHeaderButton icon={ArrowClockwiseIcon} onClick={handleRefresh}>
+            {intl.formatMessage(messages.refresh)}
+          </ColumnHeaderButton>
+        }
+      />
 
       <ScrollableList
         scrollKey='mentioned_users'

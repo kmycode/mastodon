@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -13,7 +13,7 @@ import {
 
 import { changeComposeVisibility } from '@/mastodon/actions/compose_typed';
 import type { StatusVisibility } from '@/mastodon/api_types/statuses';
-import { Button, CaretIcon } from '@/mastodon/components/button/redesign';
+import { Button, CaretIcon } from '@/mastodon/components/button';
 import { Icon } from '@/mastodon/components/icon';
 import {
   Menu,
@@ -93,9 +93,20 @@ export const ComposeVisibility: React.FC<{ className?: string }> = ({
 export const ComposeVisibilityButtonText: React.FC<{
   privacy: StatusVisibility;
 }> = ({ privacy }) => {
-  if (['public', 'unlisted', 'public_unlisted', 'login'].includes(privacy)) {
+  if (privacy === 'public') {
     return (
       <FormattedMessage id='privacy.public.short' defaultMessage='Public' />
+    );
+  } else if (privacy === 'public_unlisted') {
+    return (
+      <FormattedMessage
+        id='privacy.public_unlisted.short'
+        defaultMessage='Local public'
+      />
+    );
+  } else if (privacy === 'login') {
+    return (
+      <FormattedMessage id='privacy.login.short' defaultMessage='Login only' />
     );
   } else if (privacy === 'unlisted') {
     return (
@@ -128,6 +139,9 @@ export const ComposeVisibilityButtonText: React.FC<{
 
 const ComposeVisibilityMenu: React.FC = () => {
   const privacy = useAppSelector(selectComposePrivacy);
+  const originalPrivacy = useAppSelector(
+    (state) => state.compose.get('privacy') as StatusVisibility | null,
+  );
   const defaultPrivacy = useAppSelector(
     (state) => state.compose.get('default_privacy') as StatusVisibility,
   );
@@ -143,43 +157,42 @@ const ComposeVisibilityMenu: React.FC = () => {
   const [loginOnlyCheck, setLoginOnlyCheck] = useState(false);
 
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    const updatePrivacy = (p: StatusVisibility) => {
-      if (privacy !== p) {
-        dispatch(changeComposeVisibility(p));
-      }
-    };
-
-    if (['public', 'unlisted', 'public_unlisted', 'login'].includes(privacy)) {
-      if (!discoverableCheck && loginOnlyCheck) {
-        updatePrivacy('login');
-      } else if (!discoverableCheck && !discoverableInRemoteCheck) {
-        updatePrivacy('public');
-      } else if (!discoverableCheck && discoverableInRemoteCheck) {
-        updatePrivacy('public_unlisted');
-      } else if (discoverableCheck) {
-        updatePrivacy('unlisted');
-      }
-    }
-  }, [
-    dispatch,
-    privacy,
-    discoverableCheck,
-    discoverableInRemoteCheck,
-    loginOnlyCheck,
-  ]);
 
   const handlePrivacyChange = useCallback(
     ({ value }: { value: string }) => {
+      const updatePrivacy = (p: StatusVisibility) => {
+        if (privacy !== p) {
+          dispatch(changeComposeVisibility(p));
+        }
+      };
+
       switch (value) {
         case 'notDiscoverable':
-          setDiscoverableCheck(!discoverableCheck);
+          {
+            const newValue = originalPrivacy
+              ? !discoverableCheck
+              : defaultPrivacy === 'unlisted';
+            setDiscoverableCheck(newValue);
+            updatePrivacy(newValue ? 'unlisted' : 'public');
+          }
           return;
         case 'notDiscoverableInRemote':
-          setDiscoverableInRemoteCheck(!discoverableInRemoteCheck);
+          {
+            const newValue = originalPrivacy
+              ? !discoverableInRemoteCheck
+              : defaultPrivacy === 'public_unlisted';
+            setDiscoverableInRemoteCheck(newValue);
+            updatePrivacy(newValue ? 'public_unlisted' : 'public');
+          }
           return;
         case 'loginOnly':
-          setLoginOnlyCheck(!loginOnlyCheck);
+          {
+            const newValue = originalPrivacy
+              ? !loginOnlyCheck
+              : defaultPrivacy === 'login';
+            setLoginOnlyCheck(newValue);
+            updatePrivacy(newValue ? 'login' : 'public');
+          }
           return;
       }
 
@@ -188,12 +201,10 @@ const ComposeVisibilityMenu: React.FC = () => {
       // Logic in upstream mastodon
       // on change from list (not toggle)
       if (value === 'public') {
-        dispatch(
-          changeComposeVisibility(
-            ['unlisted', 'public_unlisted', 'login'].includes(defaultPrivacy)
-              ? defaultPrivacy
-              : 'public',
-          ),
+        updatePrivacy(
+          ['unlisted', 'public_unlisted', 'login'].includes(defaultPrivacy)
+            ? defaultPrivacy
+            : 'public',
         );
 
         switch (defaultPrivacy) {
@@ -208,15 +219,14 @@ const ComposeVisibilityMenu: React.FC = () => {
             break;
         }
       } else if (value === 'unlisted') {
-        dispatch(
-          changeComposeVisibility(privacy === 'public' ? 'unlisted' : 'public'),
-        );
+        updatePrivacy(privacy === 'public' ? 'unlisted' : 'public');
       } else if (['private', 'mutual', 'circle', 'reply'].includes(value)) {
-        dispatch(changeComposeVisibility(value as StatusVisibility));
+        updatePrivacy(value as StatusVisibility);
       }
     },
     [
       defaultPrivacy,
+      originalPrivacy,
       dispatch,
       privacy,
       discoverableCheck,
@@ -305,10 +315,7 @@ const ComposeVisibilityMenu: React.FC = () => {
         <MenuItemCheckbox
           value='notDiscoverable'
           disabled={!['public', 'unlisted'].includes(privacy)}
-          checked={
-            discoverableCheck &&
-            ['public', 'unlisted', 'public_unlisted', 'login'].includes(privacy)
-          }
+          checked={privacy === 'unlisted'}
           onChange={handlePrivacyChange}
           keepMenuOpenOnClick
           description={
@@ -327,9 +334,7 @@ const ComposeVisibilityMenu: React.FC = () => {
         <MenuItemCheckbox
           value='notDiscoverableInRemote'
           disabled={!['public', 'public_unlisted'].includes(privacy)}
-          checked={
-            discoverableInRemoteCheck && !['public', 'login'].includes(privacy)
-          }
+          checked={privacy === 'public_unlisted'}
           onChange={handlePrivacyChange}
           icon={CloudIcon}
           keepMenuOpenOnClick
@@ -343,7 +348,7 @@ const ComposeVisibilityMenu: React.FC = () => {
         <MenuItemCheckbox
           value='loginOnly'
           disabled={!['public', 'login'].includes(privacy)}
-          checked={loginOnlyCheck && privacy === 'login'}
+          checked={privacy === 'login'}
           onChange={handlePrivacyChange}
           icon={KeyIcon}
           keepMenuOpenOnClick

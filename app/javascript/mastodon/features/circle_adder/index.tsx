@@ -15,7 +15,7 @@ import {
   apiRemoveAccountFromCircle,
 } from 'mastodon/api/circles';
 import type { ApiCircleJSON } from 'mastodon/api_types/circles';
-import { Button, IconButton } from 'mastodon/components/button/redesign';
+import { Button, IconButton } from 'mastodon/components/button';
 import { Icon } from 'mastodon/components/icon';
 import { NavigationFocusTarget } from 'mastodon/components/navigation_focus_target';
 import { getOrderedCircles } from 'mastodon/selectors/circles';

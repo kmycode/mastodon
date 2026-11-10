@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { changeComposeCircle } from '@/mastodon/actions/compose_typed';
-import { Button, CaretIcon } from '@/mastodon/components/button/redesign';
+import { Button, CaretIcon } from '@/mastodon/components/button';
 import {
   Menu,
   MenuList,

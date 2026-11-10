@@ -229,6 +229,16 @@ RSpec.describe UserRole do
       expect(subject.position).to eq(described_class::NOBODY_POSITION)
     end
 
+    it 'returns correct role with permissions and position' do
+      expect(subject)
+        .to be_a(described_class)
+        .and be_everyone
+        .and have_attributes(
+          permissions: described_class::FLAGS[:invite_users],
+          position: described_class::NOBODY_POSITION
+        )
+    end
+
     it 'is able to add invite permission' do
       expect { subject.update!(permissions: UserRole::FLAGS[:invite_users]) }.to_not raise_error
     end
@@ -237,20 +247,14 @@ RSpec.describe UserRole do
   describe '.nobody' do
     subject { described_class.nobody }
 
-    it 'returns a role' do
-      expect(subject).to be_a(described_class)
-    end
-
-    it 'is identified as the nobody role' do
-      expect(subject.nobody?).to be true
-    end
-
-    it 'has no permissions' do
-      expect(subject.permissions).to eq described_class::Flags::NONE
-    end
-
-    it 'has negative position' do
-      expect(subject.position).to eq(described_class::NOBODY_POSITION)
+    it 'returns correct role with permissions and position' do
+      expect(subject)
+        .to be_a(described_class)
+        .and be_nobody
+        .and have_attributes(
+          permissions: described_class::Flags::NONE,
+          position: described_class::NOBODY_POSITION
+        )
     end
   end
 

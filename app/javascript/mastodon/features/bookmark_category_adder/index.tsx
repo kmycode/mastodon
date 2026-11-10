@@ -20,7 +20,7 @@ import {
   apiRemoveStatusFromBookmarkCategory,
 } from 'mastodon/api/bookmark_categories';
 import type { ApiBookmarkCategoryJSON } from 'mastodon/api_types/bookmark_categories';
-import { Button, IconButton } from 'mastodon/components/button/redesign';
+import { Button, IconButton } from 'mastodon/components/button';
 import { Icon } from 'mastodon/components/icon';
 import { NavigationFocusTarget } from 'mastodon/components/navigation_focus_target';
 import { getOrderedBookmarkCategories } from 'mastodon/selectors/bookmark_categories';

@@ -24,7 +24,7 @@ import { fetchAntennas } from '@/mastodon/actions/antennas_typed';
 import { fetchLists } from '@/mastodon/actions/lists';
 import { closeNavigation } from '@/mastodon/actions/navigation';
 import { fetchFollowedHashtags } from '@/mastodon/actions/tags_typed';
-import { Button } from '@/mastodon/components/button/redesign';
+import { Button } from '@/mastodon/components/button';
 import { Callout } from '@/mastodon/components/callout/redesign';
 import { FOCUS_TARGET } from '@/mastodon/components/navigation_focus_target';
 import { useScrollSensor } from '@/mastodon/hooks/useScrollSensor';

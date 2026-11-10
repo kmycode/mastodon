@@ -18,7 +18,7 @@ import {
   apiRemoveExcludeAccountFromAntenna,
 } from 'mastodon/api/antennas';
 import type { ApiAntennaJSON } from 'mastodon/api_types/antennas';
-import { Button, IconButton } from 'mastodon/components/button/redesign';
+import { Button, IconButton } from 'mastodon/components/button';
 import { Icon } from 'mastodon/components/icon';
 import { NavigationFocusTarget } from 'mastodon/components/navigation_focus_target';
 import { getOrderedAntennas } from 'mastodon/selectors/antennas';

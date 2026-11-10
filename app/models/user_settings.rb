@@ -92,6 +92,7 @@ class UserSettings
     setting_inverse_alias :'web.show_recent_emojis', :'web.hide_recent_emojis'
 
     setting :theme_color, default: 'indigo' # TODO: dynamic inclusion checking?
+    setting :show_stats_in_feed, default: true
   end
 
   namespace :notification_emails do

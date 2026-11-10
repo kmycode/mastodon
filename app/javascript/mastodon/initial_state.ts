@@ -61,6 +61,7 @@ interface InitialStateMeta {
   sso_redirect: string;
   status_page_url: string;
   terms_of_service_enabled: boolean;
+  show_stats_in_feed: boolean;
   emoji_style?: string;
   bookmark_category_needed: boolean;
   community_timeline_instead_of_search_menu: boolean;
@@ -189,6 +190,7 @@ export const communityTimelineInsteadOfSearchMenu = getMeta(
   'community_timeline_instead_of_search_menu',
 );
 export const wrapstodon = getMeta('wrapstodon');
+export const showStatsInFeed = getMeta('show_stats_in_feed');
 
 const displayNames =
   // Intl.DisplayNames can be undefined in old browsers

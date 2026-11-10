@@ -213,7 +213,7 @@ export const selectStatusInteractions = createAppSelector(
       emoji_reaction: addAllowed({ isLoggedIn }),
       remove_emoji_reaction: addAllowed({ isLoggedIn }),
       filter: addAllowed({ isLoggedIn, isNotMine }),
-      mute: addAllowed({ isMine }),
+      mute: addAllowed({ isLoggedIn }),
       pin: addAllowed({ isMine, isNotDirect }),
       quote: addAllowed({ isLoggedIn }),
       quote_link: addAllowed({ isLoggedIn }),
