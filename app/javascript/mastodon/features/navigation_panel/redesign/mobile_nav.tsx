@@ -11,6 +11,7 @@ import {
   HouseIcon,
   InfoIcon,
   MagnifyingGlassIcon,
+  GlobeIcon,
 } from '@phosphor-icons/react';
 import { animated, useSpring } from '@react-spring/web';
 import { useDrag } from '@use-gesture/react';
@@ -32,7 +33,6 @@ import {
   trendsEnabled,
 } from '@/mastodon/initial_state';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
-import PeopleIcon from '@/material-icons/400-24px/group.svg?react';
 
 import {
   RedesignNavigationPanel,
@@ -66,7 +66,7 @@ export const RedesignMobileNavigation: React.FC = () => {
   const exploreLink = useMemo(() => {
     if (communityTimelineInsteadOfSearchMenu && enableLocalTimeline) {
       return (
-        <MobileNavLink to='/public/local/fixed' iconComponent={PeopleIcon}>
+        <MobileNavLink to='/public/local/fixed' iconComponent={GlobeIcon}>
           <FormattedMessage id='column.local' defaultMessage='Local' />
         </MobileNavLink>
       );
