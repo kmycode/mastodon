@@ -51,7 +51,7 @@ class AccountStatusesFilter
     elsif anonymous?
       account.statuses.distributable_visibility_for_anonymous
     elsif author?
-      exclude_direct? ? account.statuses.where(visibility: %i(public unlisted private)) : account.statuses.all # NOTE: #merge! does not work without the #all
+      exclude_direct? ? account.statuses.where.not(visibility: %i(direct)) : account.statuses.all # NOTE: #merge! does not work without the #all
     else
       filtered_scope
     end
