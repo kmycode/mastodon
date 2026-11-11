@@ -9,6 +9,7 @@ import { CopyIcon, QuestionIcon } from '@phosphor-icons/react';
 
 import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useRelationship } from '@/mastodon/hooks/useRelationship';
+import { isShowItem } from '@/mastodon/initial_state';
 import { useAppSelector } from '@/mastodon/store';
 import AtIcon from '@/material-icons/400-24px/alternate_email.svg?react';
 import HelpIcon from '@/material-icons/400-24px/help.svg?react';
@@ -60,7 +61,9 @@ export const AccountName: FC<{ accountId: string }> = ({ accountId }) => {
         <NavigationFocusTarget as='h1'>
           <DisplayName account={account} variant='simple' />
         </NavigationFocusTarget>
-        {relationship?.followed_by && <FollowsYouBadge />}
+        {relationship?.followed_by && isShowItem('relationships') && (
+          <FollowsYouBadge />
+        )}
       </div>
 
       {account.invalid_handle ? (

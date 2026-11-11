@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { FollowsYouBadge, VerifiedBadge } from 'mastodon/components/badge';
 import { useAccount } from 'mastodon/hooks/useAccount';
 import { useRelationship } from 'mastodon/hooks/useRelationship';
-import { domain } from 'mastodon/initial_state';
+import { domain, isShowItem } from 'mastodon/initial_state';
 import type { Relationship } from 'mastodon/models/relationship';
 
 import { Avatar } from '../avatar';
@@ -75,7 +75,10 @@ export const AccountListItem: React.FC<Props> = ({
   }
 
   const badge =
-    badgeProp ?? (relationship?.followed_by ? <FollowsYouBadge /> : null);
+    badgeProp ??
+    (relationship?.followed_by && isShowItem('relationships') ? (
+      <FollowsYouBadge />
+    ) : null);
 
   const firstVerifiedField = account.fields.find((item) => !!item.verified_at);
 
@@ -114,8 +117,12 @@ export const AccountListItem: React.FC<Props> = ({
               />
             }
             hint={intl.formatNumber(account.followers_count)}
+            isHide={account.other_settings.hide_followers_count}
           >
-            <ShortNumber value={account.followers_count} />
+            <ShortNumber
+              value={account.followers_count}
+              isHide={account.other_settings.hide_followers_count}
+            />
           </NumberFieldsItem>
         )}
         {stats.includes('following') && (
@@ -127,9 +134,13 @@ export const AccountListItem: React.FC<Props> = ({
               />
             }
             hint={intl.formatNumber(account.following_count)}
+            isHide={account.other_settings.hide_following_count}
             link={`/@${account.acct}/following`}
           >
-            <ShortNumber value={account.following_count} />
+            <ShortNumber
+              value={account.following_count}
+              isHide={account.other_settings.hide_following_count}
+            />
           </NumberFieldsItem>
         )}
         {stats.includes('posts') && (

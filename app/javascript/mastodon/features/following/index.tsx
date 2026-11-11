@@ -87,7 +87,11 @@ const Followers: FC = () => {
         accountId && (
           <AccountListHeader
             accountId={accountId}
-            total={account?.following_count}
+            total={
+              account?.other_settings.hide_following_count
+                ? 0
+                : account?.following_count
+            }
           />
         )
       }
