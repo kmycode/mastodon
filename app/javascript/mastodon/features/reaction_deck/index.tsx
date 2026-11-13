@@ -38,11 +38,10 @@ import {
 import { useCustomEmojis } from '@/mastodon/hooks/useCustomEmojis';
 import { autoPlayGif } from '@/mastodon/initial_state';
 import MenuIcon from '@/material-icons/400-24px/menu.svg?react';
-import EmojiReactionIcon from '@/material-icons/400-24px/mood.svg?react';
 import { updateReactionDeck } from 'mastodon/actions/reaction_deck_typed';
 import { Button } from 'mastodon/components/button';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import { ColumnHeader } from 'mastodon/components/column_header';
 import { Icon } from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
@@ -258,11 +257,8 @@ export const ReactionDeck: React.FC<{
   return (
     <Column bindToDocument={!multiColumn}>
       <ColumnHeader
-        icon='smile-o'
-        iconComponent={EmojiReactionIcon}
         title={intl.formatMessage(messages.heading)}
-        multiColumn={multiColumn}
-        showBackButton
+        withBackButton
       />
 
       <DndContext

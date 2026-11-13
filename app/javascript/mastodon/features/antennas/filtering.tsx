@@ -9,7 +9,6 @@ import DeleteIcon from '@/material-icons/400-24px/delete.svg?react';
 import DomainIcon from '@/material-icons/400-24px/dns.svg?react';
 import HashtagIcon from '@/material-icons/400-24px/tag.svg?react';
 import KeywordIcon from '@/material-icons/400-24px/title.svg?react';
-import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import { fetchAntenna } from 'mastodon/actions/antennas';
 import {
   apiGetAccounts,
@@ -32,7 +31,7 @@ import {
 } from 'mastodon/api/antennas';
 import { Button } from 'mastodon/components/button';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import { ColumnHeader } from 'mastodon/components/column_header';
 import type { IconProp } from 'mastodon/components/icon';
 import { Icon } from 'mastodon/components/icon';
 import { IconButton } from 'mastodon/components/icon_button';
@@ -585,13 +584,7 @@ const AntennaSetting: React.FC<{
 
   return (
     <Column bindToDocument={!multiColumn} label={antenna.title}>
-      <ColumnHeader
-        title={antenna.title}
-        icon='antenna-ul'
-        iconComponent={AntennaIcon}
-        multiColumn={multiColumn}
-        showBackButton
-      />
+      <ColumnHeader title={antenna.title} withBackButton />
 
       <div className='scrollable antenna-setting'>
         <RadioPanel

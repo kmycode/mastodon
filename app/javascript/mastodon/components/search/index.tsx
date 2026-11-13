@@ -28,6 +28,7 @@ import {
 } from '@/mastodon/components/navigation_focus_target';
 import { getCollectionPath } from '@/mastodon/features/collections/utils';
 import { useMergedRefs } from '@/mastodon/hooks/useMergedRefs';
+import { isKeyComposing } from '@/mastodon/utils/events';
 import {
   clickSearchResult,
   forgetSearchResult,
@@ -511,6 +512,9 @@ export const Search: React.FC<{
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (isKeyComposing(e)) {
+        return;
+      }
       switch (e.key) {
         case 'Escape':
           e.preventDefault();

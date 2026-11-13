@@ -251,7 +251,7 @@ export const Profile: React.FC<{
                 defaultMessage='You can @mention other people or #hashtags…'
               />
             }
-            value={note}
+            value={note || undefined}
             onChange={handleNoteChange}
             status={errors?.note ? 'error' : undefined}
             id='note'

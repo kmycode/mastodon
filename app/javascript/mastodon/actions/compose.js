@@ -235,7 +235,7 @@ export function submitCompose(successCallback) {
         in_reply_to_id: getState().getIn(['compose', 'in_reply_to'], null),
         media_ids: media.map(item => item.get('id')),
         media_attributes,
-        sensitive: getState().getIn(['compose', 'spoiler']),
+        sensitive: getState().getIn(['compose', 'spoiler']) || (media.size > 0 && getState().getIn(['compose', 'sensitive'])),
         markdown: getState().getIn(['compose', 'markdown']),
         visibility: visibility,
         searchability: getState().getIn(['compose', 'searchability']),

@@ -9,12 +9,11 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { Helmet } from '@unhead/react/helmet';
 
 import type { Circle } from '@/mastodon/models/circle';
-import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';
 import { fetchCircle } from 'mastodon/actions/circles';
 import { createCircle, updateCircle } from 'mastodon/actions/circles_typed';
 import { apiGetAccounts } from 'mastodon/api/circles';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import { ColumnHeader } from 'mastodon/components/column_header';
 import { TextInputField } from 'mastodon/components/form_fields';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
@@ -191,18 +190,11 @@ const NewCircleWrapper: React.FC<{
 
   const isLoading = id && !circle;
 
+  const title = intl.formatMessage(id ? messages.edit : messages.create);
+
   return (
-    <Column
-      bindToDocument={!multiColumn}
-      label={intl.formatMessage(id ? messages.edit : messages.create)}
-    >
-      <ColumnHeader
-        title={intl.formatMessage(id ? messages.edit : messages.create)}
-        icon='list-ul'
-        iconComponent={CircleIcon}
-        multiColumn={multiColumn}
-        showBackButton
-      />
+    <Column bindToDocument={!multiColumn} label={title}>
+      <ColumnHeader title={title} withBackButton />
 
       <div className='scrollable'>
         {isLoading ? <LoadingIndicator /> : <NewCircle circle={circle} />}

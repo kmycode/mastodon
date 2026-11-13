@@ -162,28 +162,22 @@ class AntennaTimeline extends PureComponent {
     return (
       <Column bindToDocument={!multiColumn} ref={this.setRef} label={title}>
         <ColumnHeader
-          icon='wifi'
-          iconComponent={AntennaIcon}
-          active={hasUnread}
           title={title}
-          onPin={this.handlePin}
-          onMove={this.handleMove}
-          onClick={this.handleHeaderClick}
-          pinned={pinned}
-          multiColumn={multiColumn}
-        >
-          <div className='column-settings'>
-            <section className='column-header__links'>
-              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditClick}>
-                <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='antennas.edit' defaultMessage='Edit antenna' />
-              </button>
+          withBackButton={multiColumn && !pinned && 'auto'}
+          extraButtons={(
+            <div className='column-settings'>
+              <section className='column-header__links'>
+                <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditClick}>
+                  <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='antennas.edit' defaultMessage='Edit antenna' />
+                </button>
 
-              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
-                <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='antennas.delete' defaultMessage='Delete antenna' />
-              </button>
-            </section>
-          </div>
-        </ColumnHeader>
+                <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
+                  <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='antennas.delete' defaultMessage='Delete antenna' />
+                </button>
+              </section>
+            </div>
+          )}
+        />
 
         <StatusListContainer
           trackScroll={!pinned}

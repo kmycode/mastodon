@@ -8,12 +8,11 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { Helmet } from '@unhead/react/helmet';
 
-import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import { fetchAntenna } from 'mastodon/actions/antennas';
 import { createAntenna, updateAntenna } from 'mastodon/actions/antennas_typed';
 import { fetchLists } from 'mastodon/actions/lists';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import { ColumnHeader } from 'mastodon/components/column_header';
 import {
   SelectField,
   TextInputField,
@@ -258,18 +257,11 @@ const NewAntenna: React.FC<{
     favourite,
   ]);
 
+  const columnTitle = intl.formatMessage(id ? messages.edit : messages.create);
+
   return (
-    <Column
-      bindToDocument={!multiColumn}
-      label={intl.formatMessage(id ? messages.edit : messages.create)}
-    >
-      <ColumnHeader
-        title={intl.formatMessage(id ? messages.edit : messages.create)}
-        icon='antenna-ul'
-        iconComponent={AntennaIcon}
-        multiColumn={multiColumn}
-        showBackButton
-      />
+    <Column bindToDocument={!multiColumn} label={columnTitle}>
+      <ColumnHeader title={columnTitle} withBackButton />
 
       <div className='scrollable'>
         <form className='simple_form app-form' onSubmit={handleSubmit}>
