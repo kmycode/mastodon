@@ -15,6 +15,7 @@ import {
   SignOutIcon,
   BellSlashIcon,
   HandWavingIcon,
+  ArrowCircleUpIcon,
 } from '@phosphor-icons/react';
 
 import { openModal } from '@/mastodon/actions/modal';
@@ -39,6 +40,8 @@ import {
 import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useIdentity } from '@/mastodon/identity_context';
 import { useAppDispatch } from '@/mastodon/store';
+
+import { useBreakpoint } from '../ui/hooks/useBreakpoint';
 
 import classes from './account_card_and_menu.module.scss';
 
@@ -96,6 +99,12 @@ export const AccountMenuItems: React.FC<{
   const confirmLogout = useCallback(() => {
     dispatch(openModal({ modalType: 'CONFIRM_LOG_OUT', modalProps: {} }));
   }, [dispatch]);
+
+  const isMobile = useBreakpoint('openable');
+
+  const handleRefresh = useCallback(() => {
+    window.location.reload();
+  }, []);
 
   if (!accountId) {
     return null;
@@ -206,6 +215,15 @@ export const AccountMenuItems: React.FC<{
       </MenuItemGroup>
 
       <MenuItemDivider />
+
+      {isMobile && (
+        <MenuItemLink to='#' onClick={handleRefresh} icon={ArrowCircleUpIcon}>
+          <FormattedMessage
+            id='navigation_bar.refresh'
+            defaultMessage='Refresh'
+          />
+        </MenuItemLink>
+      )}
 
       <MenuItem onClick={confirmLogout} icon={SignOutIcon}>
         <FormattedMessage

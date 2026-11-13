@@ -4,7 +4,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import classNames from 'classnames';
 
-import { DotsThreeIcon, ShareFatIcon } from '@phosphor-icons/react';
+import { DotsThreeIcon, ShareNetworkIcon } from '@phosphor-icons/react';
 import type { EmojiData } from 'emoji-mart';
 
 import { statusInteraction } from '@/mastodon/actions/interactions';
@@ -46,6 +46,7 @@ import {
   StatusLikeBurstIcon,
 } from './like_burst_icon';
 import classes from './styles.module.scss';
+import { getStatusContent } from './utils';
 
 interface StatusActionBarProps {
   statusId: string;
@@ -75,14 +76,27 @@ export const StatusActionBar: React.FC<StatusActionBarProps> = ({
     // We need to make this partial as by default share always is set, despite not being supported in FF.
     const nav = navigator as Partial<Pick<Navigator, 'share'>> &
       Pick<Navigator, 'clipboard'>;
+
     if (nav.share) {
+      const statusContentHtml =
+        status?.translation?.contentHtml ?? status?.contentHtml;
+      const statusContent = getStatusContent(statusContentHtml ?? '');
+
       void nav.share({
+        text: statusContent,
         url: statusUrl,
       });
     } else {
       dispatch(statusInteraction({ statusId, intent: 'copy', contextType }));
     }
-  }, [contextType, dispatch, statusId, statusUrl]);
+  }, [
+    contextType,
+    status?.contentHtml,
+    status?.translation?.contentHtml,
+    dispatch,
+    statusId,
+    statusUrl,
+  ]);
 
   const { reply, like, emojiReaction, bookmark } = useStatusIcons(statusId);
 
@@ -167,7 +181,7 @@ export const StatusActionBar: React.FC<StatusActionBarProps> = ({
         <IconButton
           size='sm'
           variant='ghost'
-          icon={ShareFatIcon}
+          icon={ShareNetworkIcon}
           onClick={handleShareClick}
         >
           <FormattedMessage id='status.share' defaultMessage='Share' />

@@ -17,7 +17,6 @@ import {
   GavelIcon,
   ShieldStarIcon,
   GlobeIcon,
-  ArrowCircleUpIcon,
 } from '@phosphor-icons/react';
 
 import FediIcon from '@/images/icons/icon_fediverse.svg?react';
@@ -54,8 +53,6 @@ import { getFavouritedLists } from '@/mastodon/selectors/lists';
 import { selectUnreadNotificationGroupsCount } from '@/mastodon/selectors/notifications';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 import { invokeVirtualIosKeyboard } from '@/mastodon/utils/invoke_virtual_ios_keyboard';
-
-import { useBreakpoint } from '../ui/hooks/useBreakpoint';
 
 import { NavigationAccountCardAndMenu } from './account_card_and_menu';
 import { NavigationHeader } from './header';
@@ -178,12 +175,6 @@ export const RedesignNavigationPanel: React.FC<{
   const dispatch = useAppDispatch();
   const { signedIn, permissions } = useIdentity();
   const notificationsCount = useNotificationsCount();
-
-  const handleRefresh = useCallback(() => {
-    window.location.reload();
-  }, []);
-
-  const isMobile = useBreakpoint('openable');
 
   const isManager = canManageReports(permissions);
   const isAdmin = canViewAdminDashboard(permissions);
@@ -423,18 +414,6 @@ export const RedesignNavigationPanel: React.FC<{
             <FooterLinks context='navigation' multiColumn={multiColumn} />
           </footer>
         </>
-      )}
-
-      {isMobile && (
-        <NavigationLink
-          onClick={handleRefresh}
-          iconComponent={ArrowCircleUpIcon}
-        >
-          <FormattedMessage
-            id='navigation_bar.refresh'
-            defaultMessage='Refresh'
-          />
-        </NavigationLink>
       )}
 
       {bottomSensor}

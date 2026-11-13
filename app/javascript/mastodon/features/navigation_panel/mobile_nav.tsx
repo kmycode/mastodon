@@ -66,7 +66,7 @@ export const RedesignMobileNavigation: React.FC = () => {
   const exploreLink = useMemo(() => {
     if (communityTimelineInsteadOfSearchMenu && enableLocalTimeline) {
       return (
-        <MobileNavLink to='/public/local/fixed' iconComponent={GlobeIcon}>
+        <MobileNavLink to='/public/local' iconComponent={GlobeIcon}>
           <FormattedMessage id='column.local' defaultMessage='Local' />
         </MobileNavLink>
       );

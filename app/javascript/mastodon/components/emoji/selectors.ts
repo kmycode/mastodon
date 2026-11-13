@@ -1,3 +1,4 @@
+import { isHideItem } from '@/mastodon/initial_state';
 import { createAppSelector } from '@/mastodon/store/typed_functions';
 
 export const PER_LINE = 8;
@@ -28,11 +29,19 @@ export const selectFrequentlyUsedEmoji = createAppSelector(
       state.settings.get('frequentlyUsedEmojis') as
         | Immutable.Map<string, number>
         | undefined,
+    (state) => state.reaction_deck.items,
   ],
-  (emojiCounters) => {
-    if (!emojiCounters) {
-      return DEFAULTS;
+  (emojiCounters, deck) => {
+    const deckEmojis = deck.map((d) => d.name);
+
+    if (isHideItem('recent_emojis')) {
+      return deckEmojis;
     }
+
+    if (!emojiCounters) {
+      return deckEmojis.concat(DEFAULTS);
+    }
+
     let emojis = emojiCounters
       .toArray()
       .sort((a, b) => a[1] - b[1])
@@ -49,6 +58,6 @@ export const selectFrequentlyUsedEmoji = createAppSelector(
       );
     }
 
-    return emojis;
+    return deckEmojis.concat(emojis);
   },
 );
