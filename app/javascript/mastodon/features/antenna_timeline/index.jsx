@@ -13,14 +13,13 @@ import { connect } from 'react-redux';
 
 import DeleteIcon from '@/material-icons/400-24px/delete.svg?react';
 import EditIcon from '@/material-icons/400-24px/edit.svg?react';
-import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import { fetchAntenna, deleteAntenna } from 'mastodon/actions/antennas';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { openModal } from 'mastodon/actions/modal';
 import { connectAntennaStream } from 'mastodon/actions/streaming';
 import { expandAntennaTimeline } from 'mastodon/actions/timelines';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from '@/mastodon/components/column/header';
+import { ColumnHeader } from '@/mastodon/components/column_header';
 import { Icon }  from 'mastodon/components/icon';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';

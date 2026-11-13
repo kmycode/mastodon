@@ -9,10 +9,9 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import ImmutablePureComponent from 'react-immutable-pure-component';
 import { connect } from 'react-redux';
 
-import RefreshIcon from '@/material-icons/400-24px/refresh.svg?react';
+import { ArrowClockwiseIcon } from '@phosphor-icons/react';
 import { fetchStatusReferences } from 'mastodon/actions/interactions';
-import { ColumnHeader } from '@/mastodon/components/column/header';
-import { Icon }  from 'mastodon/components/icon';
+import { ColumnHeader } from '@/mastodon/components/column_header';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import { Column } from 'mastodon/components/column';
 import StatusList from '@/mastodon/components/status_list';
@@ -68,10 +67,11 @@ class StatusReferences extends ImmutablePureComponent {
     return (
       <Column bindToDocument={!multiColumn}>
         <ColumnHeader
-          showBackButton
-          multiColumn={multiColumn}
-          extraButton={(
-            <button type='button' className='column-header__button' title={intl.formatMessage(messages.refresh)} aria-label={intl.formatMessage(messages.refresh)} onClick={this.handleRefresh}><Icon id='refresh' icon={RefreshIcon} /></button>
+          withBackButton
+          extraButtons={(
+            <ColumnHeaderButton icon={ArrowClockwiseIcon} onClick={handleRefresh}>
+              {intl.formatMessage(messages.refresh)}
+            </ColumnHeaderButton>
           )}
         />
 
