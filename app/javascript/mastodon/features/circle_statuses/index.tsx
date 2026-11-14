@@ -6,7 +6,7 @@ import { useParams } from 'react-router';
 
 import { Helmet } from '@unhead/react/helmet';
 
-import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';
+import { MultiColumnMenuItems } from '@/mastodon/components/column_header/multicolumn_settings';
 import {
   expandCircleStatuses,
   fetchCircle,
@@ -14,7 +14,10 @@ import {
 } from 'mastodon/actions/circles';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import {
+  ColumnHeader,
+  ColumnSettingsMenu,
+} from 'mastodon/components/column_header';
 import StatusList from 'mastodon/components/status_list';
 import { getSubStatusList } from 'mastodon/selectors';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
@@ -76,14 +79,19 @@ const CircleStatuses: React.FC<{
   return (
     <Column bindToDocument={!multiColumn} label={circle?.get('title')}>
       <ColumnHeader
-        icon='bookmark'
-        iconComponent={CircleIcon}
         title={circle?.get('title')}
-        onPin={handlePin}
-        onMove={handleMove}
-        pinned={pinned}
-        multiColumn={multiColumn}
-        scrollTopOnClick
+        withBackButton={multiColumn && !pinned && 'auto'}
+        extraButtons={
+          multiColumn && (
+            <ColumnSettingsMenu labelPrefix={circle?.get('title')}>
+              <MultiColumnMenuItems
+                onPin={handlePin}
+                onMove={handleMove}
+                pinned={pinned}
+              />
+            </ColumnSettingsMenu>
+          )
+        }
       />
 
       <StatusList

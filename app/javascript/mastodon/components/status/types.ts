@@ -1,12 +1,5 @@
-import type { ComponentType, ReactNode } from 'react';
-
-import StatusContainer from '@/mastodon/containers/status_container';
 import type { Account as TAccount } from '@/mastodon/models/account';
 import type { Status as TStatus } from '@/mastodon/models/status';
-
-import Status from '../status';
-
-import type { StatusHeaderRenderFn } from './header';
 
 export type StatusContextType =
   | 'account'
@@ -24,7 +17,7 @@ export type StatusContextType =
 export interface StatusContainerProps {
   id?: string | null;
   account?: TAccount;
-  children?: ReactNode;
+  children?: React.ReactNode;
   rootId?: string;
   previousId?: string;
   nextId?: string;
@@ -40,7 +33,6 @@ export interface StatusContainerProps {
   contextType?: StatusContextType;
   withCounters?: boolean;
   unfocusable?: boolean;
-  headerRenderFn?: StatusHeaderRenderFn;
   getScrollPosition?: () => null | { height: number; top: number };
   updateScrollBottom?: (snapshot: number) => void;
   cacheMediaWidth?: (width: number) => void;
@@ -50,10 +42,8 @@ export interface StatusContainerProps {
   avatarSize?: number;
   withDismiss?: boolean;
   myEmojiReactionsOnly?: boolean;
+  withoutEmojiReactions?: boolean;
 }
-
-export const TypedStatusContainer =
-  StatusContainer as ComponentType<StatusContainerProps>;
 
 // Taken from the Status component.
 export interface StatusProps extends Omit<StatusContainerProps, 'nextId'> {
@@ -94,5 +84,3 @@ export interface StatusProps extends Omit<StatusContainerProps, 'nextId'> {
   ) => void;
   pictureInPicture: Immutable.Map<'inUse' | 'available', boolean>;
 }
-
-export const TypedStatus = Status as ComponentType<StatusProps>;

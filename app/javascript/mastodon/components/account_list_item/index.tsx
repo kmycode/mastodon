@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { FollowsYouBadge, VerifiedBadge } from 'mastodon/components/badge';
 import { useAccount } from 'mastodon/hooks/useAccount';
 import { useRelationship } from 'mastodon/hooks/useRelationship';
-import { domain } from 'mastodon/initial_state';
+import { domain, isShowItem } from 'mastodon/initial_state';
 import type { Relationship } from 'mastodon/models/relationship';
 
 import { Avatar } from '../avatar';
@@ -17,7 +17,7 @@ import { DisplayNameSimple } from '../display_name/simple';
 import { EmojiHTML } from '../emoji/html';
 import { FollowButton } from '../follow_button';
 import { FormattedDateWrapper } from '../formatted_date';
-import { ListItemLink, ListItemWrapper } from '../list_item';
+import { LockupLink, LockupWrapper } from '../lockup';
 import { NumberFields, NumberFieldsItem } from '../number_fields';
 import { RelativeTimestamp } from '../relative_timestamp';
 import { ShortNumber } from '../short_number';
@@ -75,13 +75,16 @@ export const AccountListItem: React.FC<Props> = ({
   }
 
   const badge =
-    badgeProp ?? (relationship?.followed_by ? <FollowsYouBadge /> : null);
+    badgeProp ??
+    (relationship?.followed_by && isShowItem('relationships') ? (
+      <FollowsYouBadge />
+    ) : null);
 
   const firstVerifiedField = account.fields.find((item) => !!item.verified_at);
 
   return (
     <div className={classes.wrapper} data-with-border={withBorder}>
-      <ListItemWrapper
+      <LockupWrapper
         className={classes.main}
         icon={<Avatar account={account} size={40} />}
         sideContent={
@@ -90,7 +93,7 @@ export const AccountListItem: React.FC<Props> = ({
           </span>
         }
       >
-        <ListItemLink
+        <LockupLink
           to={{ pathname: `/@${account.acct}`, state: { reference } }}
           data-hover-card-account={accountId}
           data-hover-card-reference={reference}
@@ -101,8 +104,8 @@ export const AccountListItem: React.FC<Props> = ({
             className={classes.displayName}
           />
           {badge && <span className={classes.badge}>{badge}</span>}
-        </ListItemLink>
-      </ListItemWrapper>
+        </LockupLink>
+      </LockupWrapper>
 
       <NumberFields>
         {stats.includes('followers') && (
@@ -114,8 +117,12 @@ export const AccountListItem: React.FC<Props> = ({
               />
             }
             hint={intl.formatNumber(account.followers_count)}
+            isHide={account.other_settings.hide_followers_count}
           >
-            <ShortNumber value={account.followers_count} />
+            <ShortNumber
+              value={account.followers_count}
+              isHide={account.other_settings.hide_followers_count}
+            />
           </NumberFieldsItem>
         )}
         {stats.includes('following') && (
@@ -127,9 +134,13 @@ export const AccountListItem: React.FC<Props> = ({
               />
             }
             hint={intl.formatNumber(account.following_count)}
+            isHide={account.other_settings.hide_following_count}
             link={`/@${account.acct}/following`}
           >
-            <ShortNumber value={account.following_count} />
+            <ShortNumber
+              value={account.following_count}
+              isHide={account.other_settings.hide_following_count}
+            />
           </NumberFieldsItem>
         )}
         {stats.includes('posts') && (
@@ -206,7 +217,7 @@ export const AccountListItemFollowButton: React.FC<{
   reference?: string;
 }> = ({ accountId, reference }) => (
   <FollowButton
-    compact
+    size='sm'
     labelLength='short'
     accountId={accountId}
     reference={reference}

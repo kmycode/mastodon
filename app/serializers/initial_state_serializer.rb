@@ -37,10 +37,8 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:use_pending_items] = object_account_user.setting_use_pending_items
       store[:show_trends]       = Setting.trends && object_account_user.setting_trends
       store[:bookmark_category_needed] = object_account_user.setting_bookmark_category_needed
-      store[:simple_timeline_menu] = object_account_user.setting_simple_timeline_menu
       store[:community_timeline_instead_of_search_menu] = object_account_user.setting_community_timeline_instead_of_search_menu
       store[:hide_items] = [
-        object_account_user.setting_hide_favourite_menu ? 'favourite_menu' : nil,
         object_account_user.setting_hide_recent_emojis ? 'recent_emojis' : nil,
         object_account_user.setting_hide_emoji_reaction_unavailable_server ? 'emoji_reaction_unavailable_server' : nil,
         object_account_user.setting_hide_status_reference_unavailable_server ? 'status_reference_unavailable_server' : nil,
@@ -52,7 +50,10 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:enabled_visibilities] = enabled_visibilities
       store[:featured_tags]     = object.current_account.featured_tags.pluck(:name)
       store[:emoji_style]       = object_account_user.settings['web.emoji_style']
-      store[:wrapstodon]        = wrapstodon
+      store[:display_own_boosts] = object_account_user.setting_display_own_boosts
+      store[:display_own_posts] = object_account_user.setting_display_own_posts
+      store[:show_stats_in_feed] = object_account_user.settings['web.show_stats_in_feed']
+      store[:wrapstodon] = wrapstodon
     else
       store[:auto_play_gif] = Setting.auto_play_gif
       store[:display_media] = Setting.display_media
@@ -83,6 +84,7 @@ class InitialStateSerializer < ActiveModel::Serializer
       store[:default_sensitive]     = object_account_user.setting_default_sensitive
       store[:default_language]      = object_account_user.preferred_posting_language
       store[:default_quote_policy]  = object_account_user.setting_default_quote_policy
+      store[:default_spoiler_field] = object_account_user.setting_default_spoiler_field
     end
 
     store[:text] = object.text if object.text

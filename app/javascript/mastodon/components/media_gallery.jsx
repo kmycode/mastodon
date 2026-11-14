@@ -16,6 +16,8 @@ import { SpoilerButton } from 'mastodon/components/spoiler_button';
 import { formatTime } from 'mastodon/features/video';
 
 import { autoPlayGif, displayMedia, useBlurhash } from '../initial_state';
+import { Button, IconButton } from './button';
+import { EyeIcon, EyeSlashIcon } from '@phosphor-icons/react';
 
 class Item extends PureComponent {
 
@@ -121,10 +123,6 @@ class Item extends PureComponent {
 
     const description = attachment.getIn(['translation', 'description']) || attachment.get('description');
 
-    if (description?.length > 0) {
-      badges.push(<AltTextBadge key='alt' description={description} />);
-    }
-
     if (attachment.get('type') === 'unknown') {
       return (
         <div className={classNames('media-gallery__item', { standalone, 'media-gallery__item--tall': height === 100, 'media-gallery__item--wide': width === 100 })} key={attachment.get('id')}>
@@ -179,9 +177,9 @@ class Item extends PureComponent {
       const duration = attachment.getIn(['meta', 'original', 'duration']);
 
       if (attachment.get('type') === 'gifv') {
-        badges.push(<span key='gif' className='media-gallery__alt__label media-gallery__alt__label--non-interactive'>GIF</span>);
+        badges.push(<span key='gif' className='media-gallery__label'>GIF</span>);
       } else {
-        badges.push(<span key='video' className='media-gallery__alt__label media-gallery__alt__label--non-interactive'>{formatTime(Math.floor(duration))}</span>);
+        badges.push(<span key='video' className='media-gallery__label'>{formatTime(Math.floor(duration))}</span>);
       }
 
       thumbnail = (
@@ -216,6 +214,8 @@ class Item extends PureComponent {
         />
 
         {visible && thumbnail}
+
+        {visible && description && <AltTextBadge description={description} />}
 
         {visible && badges && (
           <div className='media-gallery__item__badges'>
@@ -275,7 +275,8 @@ class MediaGallery extends PureComponent {
     trailing: true,
   });
 
-  handleOpen = () => {
+  handleOpen = (e) => {
+    e.preventDefault();
     if (this.props.onToggleVisibility) {
       this.props.onToggleVisibility();
     } else {
@@ -314,7 +315,7 @@ class MediaGallery extends PureComponent {
   }
 
   render () {
-    const { media, lang, sensitive, defaultWidth, autoplay, compact, matchedFilters } = this.props;
+    const { media, lang, sensitive, defaultWidth, autoplay, compact, matchedFilters, showSpoilerButton } = this.props;
     const { visible } = this.state;
     const width = this.state.width || defaultWidth;
 
@@ -356,9 +357,23 @@ class MediaGallery extends PureComponent {
 
         {(!visible || uncached) && <SpoilerButton uncached={uncached} sensitive={sensitive} onClick={this.handleOpen} matchedFilters={matchedFilters} />}
 
-        {(visible && !uncached) && (
+        {showSpoilerButton && (
           <div className='media-gallery__actions'>
-            <button className='media-gallery__actions__pill' onClick={this.handleOpen}><FormattedMessage id='media_gallery.hide' defaultMessage='Hide' /></button>
+            <IconButton
+              icon={visible ? EyeSlashIcon : EyeIcon}
+              size='xs'
+              variant='onMedia'
+              className='media-gallery__actions__pill'
+              onClick={this.handleOpen}
+            >
+              {visible
+                ? <FormattedMessage id='media_gallery.hide' defaultMessage='Hide' />
+                : <FormattedMessage
+                    id='content_warning.media.show_short'
+                    defaultMessage='Show media'
+                  />
+              }
+            </IconButton>
           </div>
         )}
       </div>

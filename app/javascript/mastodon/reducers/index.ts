@@ -31,7 +31,7 @@ import notifications from './notifications';
 import { pictureInPictureReducer } from './picture_in_picture';
 import { pollsReducer } from './polls';
 import push_notifications from './push_notifications';
-import reaction_deck from './reaction_deck';
+import { reactionDeckReducer } from './reaction_deck';
 import { relationshipsReducer } from './relationships';
 import { searchReducer } from './search';
 import { serverReducer } from './server';
@@ -83,7 +83,7 @@ const reducers = {
   markers: markersReducer,
   picture_in_picture: pictureInPictureReducer,
   history,
-  reaction_deck,
+  reaction_deck: reactionDeckReducer,
   notificationPolicy: notificationPolicyReducer,
   notificationRequests: notificationRequestsReducer,
   navigation: navigationReducer,

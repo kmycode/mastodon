@@ -4,12 +4,11 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { Helmet } from '@unhead/react/helmet';
 
-import ImmutablePureComponent from 'react-immutable-pure-component';
+import { ImmutablePureComponent } from 'react-immutable-pure-component';
 
-import InfoIcon from '@/material-icons/400-24px/info.svg?react';
 import { Column } from '@/mastodon/components/column';
-import { ColumnHeader } from '@/mastodon/components/column/header';
 import { injectIntl } from '@/mastodon/components/intl';
+import { ColumnHeader } from '@/mastodon/components/column_header';
 
 const messages = defineMessages({
   heading: { id: 'keyboard_shortcuts.heading', defaultMessage: 'Keyboard Shortcuts' },
@@ -29,9 +28,7 @@ class KeyboardShortcuts extends ImmutablePureComponent {
       <Column>
         <ColumnHeader
           title={intl.formatMessage(messages.heading)}
-          icon='info-circle'
-          iconComponent={InfoIcon}
-          multiColumn={multiColumn}
+          withBackButton='auto'
         />
 
         <div className='keyboard-shortcuts scrollable optionally-scrollable'>
@@ -57,7 +54,9 @@ class KeyboardShortcuts extends ImmutablePureComponent {
               </tr>
               <tr>
                 <td><kbd>f</kbd></td>
-                <td><FormattedMessage id='keyboard_shortcuts.favourite' defaultMessage='to favorite' /></td>
+                <td>
+                  <FormattedMessage id='keyboard_shortcuts.like' defaultMessage='Like post' />
+                </td>
               </tr>
               <tr>
                 <td><kbd>b</kbd></td>
@@ -168,8 +167,9 @@ class KeyboardShortcuts extends ImmutablePureComponent {
                 <td><FormattedMessage id='keyboard_shortcuts.emoji_reactions' defaultMessage='to open stamps list' /></td>
               </tr>
               <tr>
-                <td><kbd>g</kbd>+<kbd>p</kbd></td>
-                <td><FormattedMessage id='keyboard_shortcuts.pinned' defaultMessage='to open pinned posts list' /></td>
+                <td>
+                  <FormattedMessage id='keyboard_shortcuts.liked_posts' defaultMessage='Open liked posts' />
+                </td>
               </tr>
               <tr>
                 <td><kbd>g</kbd>+<kbd>u</kbd></td>

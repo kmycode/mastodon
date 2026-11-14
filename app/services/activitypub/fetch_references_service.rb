@@ -39,11 +39,11 @@ class ActivityPub::FetchReferencesService < BaseService
     #
     # Therefore, retry with correct signatures if this fails.
     begin
-      fetch_resource_without_id_validation(collection_or_uri, nil)
+      fetch_resource_without_id_validation(collection_or_uri, on_behalf_of: nil)
     rescue Mastodon::UnexpectedResponseError => e
       raise unless e.response && e.response.code == 401 && Addressable::URI.parse(collection_or_uri).query.present?
 
-      fetch_resource_without_id_validation(collection_or_uri, nil, request_options: { with_query_string: true })
+      fetch_resource_without_id_validation(collection_or_uri, on_behalf_of: nil, request_options: { with_query_string: true })
     end
   end
 end

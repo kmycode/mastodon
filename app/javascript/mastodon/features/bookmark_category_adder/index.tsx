@@ -1,34 +1,33 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useId } from 'react';
 
 import { FormattedMessage, useIntl, defineMessages } from 'react-intl';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import BookmarkIcon from '@/material-icons/400-24px/bookmark-fill.svg?react';
-import CloseIcon from '@/material-icons/400-24px/close.svg?react';
+import { BookmarkSimpleIcon, XIcon } from '@phosphor-icons/react';
+
 import {
-  bookmarkCategoryEditorAddSuccess,
-  bookmarkCategoryEditorRemoveSuccess,
-  fetchBookmarkCategories,
-} from 'mastodon/actions/bookmark_categories';
+  performBookmarkSuccess,
+  unbookmark,
+} from '@/mastodon/actions/interactions';
+import { Toggle } from '@/mastodon/components/form_fields';
+import { bookmarkCategoryNeeded } from '@/mastodon/initial_state';
+import { fetchBookmarkCategories } from 'mastodon/actions/bookmark_categories';
 import { createBookmarkCategory } from 'mastodon/actions/bookmark_categories_typed';
-import { unbookmark } from 'mastodon/actions/interactions';
 import {
   apiGetStatusBookmarkCategories,
   apiAddStatusToBookmarkCategory,
   apiRemoveStatusFromBookmarkCategory,
 } from 'mastodon/api/bookmark_categories';
 import type { ApiBookmarkCategoryJSON } from 'mastodon/api_types/bookmark_categories';
-import { Button } from 'mastodon/components/button';
-import { CheckBox } from 'mastodon/components/check_box';
+import { Button, IconButton } from 'mastodon/components/button';
 import { Icon } from 'mastodon/components/icon';
-import { IconButton } from 'mastodon/components/icon_button';
-import { bookmarkCategoryNeeded } from 'mastodon/initial_state';
+import { NavigationFocusTarget } from 'mastodon/components/navigation_focus_target';
 import { getOrderedBookmarkCategories } from 'mastodon/selectors/bookmark_categories';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 const messages = defineMessages({
-  newBookmarkCategory: {
+  newItem: {
     id: 'bookmark_categories.new_bookmark_category_name',
     defaultMessage: 'New bookmark_category name',
   },
@@ -48,6 +47,8 @@ const BookmarkCategoryItem: React.FC<{
   checked: boolean;
   onChange: (id: string, checked: boolean) => void;
 }> = ({ id, title, checked, onChange }) => {
+  const uniqueId = useId();
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onChange(id, e.target.checked);
@@ -56,20 +57,19 @@ const BookmarkCategoryItem: React.FC<{
   );
 
   return (
-    // eslint-disable-next-line jsx-a11y/label-has-associated-control
-    <label className='lists__item'>
+    <label className='lists__item' htmlFor={uniqueId}>
       <div className='lists__item__title'>
-        <Icon id='bookmark_category-ul' icon={BookmarkIcon} />
+        <Icon id='list-ul' icon={BookmarkSimpleIcon} />
         <span>{title}</span>
       </div>
 
-      <CheckBox value={id} checked={checked} onChange={handleChange} />
+      <Toggle id={uniqueId} checked={checked} onChange={handleChange} />
     </label>
   );
 };
 
 const NewBookmarkCategoryItem: React.FC<{
-  onCreate: (bookmark_category: ApiBookmarkCategoryJSON) => void;
+  onCreate: (bookmarkCategory: ApiBookmarkCategoryJSON) => void;
 }> = ({ onCreate }) => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
@@ -100,7 +100,7 @@ const NewBookmarkCategoryItem: React.FC<{
   return (
     <form className='lists__item' onSubmit={handleSubmit}>
       <label className='lists__item__title'>
-        <Icon id='bookmark_category-ul' icon={BookmarkIcon} />
+        <Icon id='list-ul' icon={BookmarkSimpleIcon} />
 
         <input
           type='text'
@@ -108,14 +108,13 @@ const NewBookmarkCategoryItem: React.FC<{
           onChange={handleChange}
           maxLength={30}
           required
-          placeholder={intl.formatMessage(messages.newBookmarkCategory)}
+          placeholder={intl.formatMessage(messages.newItem)}
         />
       </label>
 
-      <Button
-        text={intl.formatMessage(messages.createBookmarkCategory)}
-        type='submit'
-      />
+      <Button type='submit' variant='solid' color='accent' size='sm'>
+        {intl.formatMessage(messages.createBookmarkCategory)}
+      </Button>
     </form>
   );
 };
@@ -126,13 +125,11 @@ const BookmarkCategoryAdder: React.FC<{
 }> = ({ statusId, onClose }) => {
   const intl = useIntl();
   const dispatch = useAppDispatch();
-  const bookmark_categories = useAppSelector((state) =>
+  const status = useAppSelector((state) => state.statuses.get(statusId));
+  const bookmarkCategories = useAppSelector((state) =>
     getOrderedBookmarkCategories(state),
   );
-  const status = useAppSelector((state) => state.statuses.get(statusId));
-  const [bookmark_categoryIds, setBookmarkCategoryIds] = useState<string[]>(
-    [] as string[],
-  );
+  const [bookmarkCategoryIds, setBookmarkCategoryIds] = useState<string[]>([]);
 
   useEffect(() => {
     void dispatch(fetchBookmarkCategories());
@@ -148,74 +145,71 @@ const BookmarkCategoryAdder: React.FC<{
   }, [dispatch, setBookmarkCategoryIds, statusId]);
 
   const handleToggle = useCallback(
-    (bookmark_categoryId: string, checked: boolean) => {
+    (bookmarkCategoryId: string, checked: boolean) => {
       if (checked) {
         setBookmarkCategoryIds((currentBookmarkCategoryIds) => [
-          bookmark_categoryId,
+          bookmarkCategoryId,
           ...currentBookmarkCategoryIds,
         ]);
 
-        apiAddStatusToBookmarkCategory(bookmark_categoryId, statusId)
-          .then(() => {
-            dispatch(
-              bookmarkCategoryEditorAddSuccess(bookmark_categoryId, statusId),
-            );
-            return true;
-          })
-          .catch(() => {
+        apiAddStatusToBookmarkCategory(bookmarkCategoryId, statusId).catch(
+          () => {
             setBookmarkCategoryIds((currentBookmarkCategoryIds) =>
               currentBookmarkCategoryIds.filter(
-                (id) => id !== bookmark_categoryId,
+                (id) => id !== bookmarkCategoryId,
               ),
             );
-          });
-      } else {
-        setBookmarkCategoryIds((currentBookmarkCategoryIds) =>
-          currentBookmarkCategoryIds.filter((id) => id !== bookmark_categoryId),
+          },
         );
 
-        apiRemoveStatusFromBookmarkCategory(bookmark_categoryId, statusId)
-          .then(() => {
-            dispatch(
-              bookmarkCategoryEditorRemoveSuccess(
-                bookmark_categoryId,
-                statusId,
-              ),
-            );
+        if (
+          bookmarkCategoryNeeded &&
+          !bookmarkCategoryIds.some(
+            (categoryId) => categoryId !== bookmarkCategoryId,
+          )
+        ) {
+          dispatch(performBookmarkSuccess(status));
+        }
+      } else {
+        setBookmarkCategoryIds((currentBookmarkCategoryIds) =>
+          currentBookmarkCategoryIds.filter((id) => id !== bookmarkCategoryId),
+        );
 
-            if (
-              bookmarkCategoryNeeded &&
-              bookmark_categoryIds.filter((id) => id !== bookmark_categoryId)
-                .length === 0
-            ) {
-              dispatch(unbookmark(status));
-            }
-
-            return true;
-          })
-          .catch(() => {
+        apiRemoveStatusFromBookmarkCategory(bookmarkCategoryId, statusId).catch(
+          () => {
             setBookmarkCategoryIds((currentBookmarkCategoryIds) => [
-              bookmark_categoryId,
+              bookmarkCategoryId,
               ...currentBookmarkCategoryIds,
             ]);
-          });
+          },
+        );
+
+        // これreducerに移すべきでは？
+        if (
+          bookmarkCategoryNeeded &&
+          !bookmarkCategoryIds.some(
+            (categoryId) => categoryId !== bookmarkCategoryId,
+          )
+        ) {
+          dispatch(unbookmark(status));
+        }
       }
     },
-    [setBookmarkCategoryIds, statusId, dispatch, bookmark_categoryIds, status],
+    [setBookmarkCategoryIds, statusId, dispatch, status, bookmarkCategoryIds],
   );
 
   const handleCreate = useCallback(
-    (bookmark_category: ApiBookmarkCategoryJSON) => {
+    (bookmarkCategory: ApiBookmarkCategoryJSON) => {
       setBookmarkCategoryIds((currentBookmarkCategoryIds) => [
-        bookmark_category.id,
+        bookmarkCategory.id,
         ...currentBookmarkCategoryIds,
       ]);
 
-      apiAddStatusToBookmarkCategory(bookmark_category.id, statusId).catch(
+      apiAddStatusToBookmarkCategory(bookmarkCategory.id, statusId).catch(
         () => {
           setBookmarkCategoryIds((currentBookmarkCategoryIds) =>
             currentBookmarkCategoryIds.filter(
-              (id) => id !== bookmark_category.id,
+              (id) => id !== bookmarkCategory.id,
             ),
           );
         },
@@ -229,31 +223,33 @@ const BookmarkCategoryAdder: React.FC<{
       <div className='dialog-modal__header'>
         <IconButton
           className='dialog-modal__header__close'
-          title={intl.formatMessage(messages.close)}
-          icon='times'
-          iconComponent={CloseIcon}
+          icon={XIcon}
           onClick={onClose}
-        />
+          size='sm'
+          variant='ghost'
+        >
+          {intl.formatMessage(messages.close)}
+        </IconButton>
 
-        <span className='dialog-modal__header__title'>
+        <NavigationFocusTarget as='h1' className='dialog-modal__header__title'>
           <FormattedMessage
-            id='bookmark_categories.add_to_bookmark_categories'
+            id='bookmark_categories.add_to_bookmark_category'
             defaultMessage='Add {name} to bookmark_categories'
-            values={{ name: <strong>@</strong> }}
+            values={{ name: <strong>{statusId}</strong> }}
           />
-        </span>
+        </NavigationFocusTarget>
       </div>
 
       <div className='dialog-modal__content'>
-        <div className='lists-scrollable'>
+        <div className='bookmarkCategories-scrollable'>
           <NewBookmarkCategoryItem onCreate={handleCreate} />
 
-          {bookmark_categories.map((bookmark_category) => (
+          {bookmarkCategories.map((bookmarkCategory) => (
             <BookmarkCategoryItem
-              key={bookmark_category.id}
-              id={bookmark_category.id}
-              title={bookmark_category.title}
-              checked={bookmark_categoryIds.includes(bookmark_category.id)}
+              key={bookmarkCategory.id}
+              id={bookmarkCategory.id}
+              title={bookmarkCategory.title}
+              checked={bookmarkCategoryIds.includes(bookmarkCategory.id)}
               onChange={handleToggle}
             />
           ))}

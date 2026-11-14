@@ -51,10 +51,6 @@ module User::HasSettings
     settings['web.show_emoji_reaction_on_timeline']
   end
 
-  def setting_simple_timeline_menu
-    settings['web.simple_timeline_menu']
-  end
-
   def setting_default_sensitive
     settings['default_sensitive']
   end
@@ -97,6 +93,14 @@ module User::HasSettings
 
   def setting_delete_modal
     settings['web.delete_modal']
+  end
+
+  def setting_display_own_boosts
+    settings['display_own_boosts']
+  end
+
+  def setting_display_own_posts
+    settings['display_own_posts']
   end
 
   def setting_reduce_motion
@@ -165,6 +169,10 @@ module User::HasSettings
 
   def setting_discoverable_local
     settings['discoverable_local']
+  end
+
+  def setting_theme_color
+    settings['web.theme_color']
   end
 
   def setting_color_scheme
@@ -279,10 +287,6 @@ module User::HasSettings
     settings['web.hide_emoji_reaction_count']
   end
 
-  def setting_hide_favourite_menu
-    settings['web.hide_favourite_menu']
-  end
-
   def setting_community_timeline_instead_of_search_menu
     settings['web.community_timeline_instead_of_search_menu']
   end
@@ -297,6 +301,10 @@ module User::HasSettings
 
   def setting_default_quote_policy
     settings['default_quote_policy'] || 'public'
+  end
+
+  def setting_default_spoiler_field
+    settings['default_spoiler_field']
   end
 
   def allows_report_emails?

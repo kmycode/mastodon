@@ -7,10 +7,9 @@ import { useParams, Link } from 'react-router-dom';
 import { Helmet } from '@unhead/react/helmet';
 import { useDebouncedCallback } from 'use-debounce';
 
-import { ColumnHeader } from '@/mastodon/components/column/header';
 import { ColumnSearchHeader } from '@/mastodon/components/column/search_header';
+import { ColumnHeader } from '@/mastodon/components/column_header';
 import AddIcon from '@/material-icons/400-24px/add.svg?react';
-import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import SquigglyArrow from '@/svg-icons/squiggly_arrow.svg?react';
 import { fetchFollowing } from 'mastodon/actions/accounts';
 import { fetchAntenna } from 'mastodon/actions/antennas';
@@ -120,12 +119,9 @@ const AccountItem: React.FC<{
         </Link>
 
         <div className='account__relationship'>
-          <Button
-            text={intl.formatMessage(
-              partOfAntenna ? messages.remove : messages.add,
-            )}
-            onClick={handleClick}
-          />
+          <Button onClick={handleClick}>
+            {intl.formatMessage(partOfAntenna ? messages.remove : messages.add)}
+          </Button>
         </div>
       </div>
     </div>
@@ -244,11 +240,8 @@ const AntennaMembers: React.FC<{
       {mode === 'remove' ? (
         <ColumnHeader
           title={intl.formatMessage(messages.heading)}
-          icon='antenna-ul'
-          iconComponent={AntennaIcon}
-          multiColumn={multiColumn}
-          showBackButton
-          extraButton={
+          withBackButton
+          extraButtons={
             <button
               onClick={handleSearchClick}
               type='button'

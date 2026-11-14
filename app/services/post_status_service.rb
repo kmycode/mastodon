@@ -316,7 +316,7 @@ class PostStatusService < BaseService
     return @mention_to_stranger if defined?(@mention_to_stranger)
 
     @mention_to_stranger = @status.mentions.map(&:account).to_a.any? { |mentioned_account| !mentioned_account.following_or_self?(@account) } ||
-                           (@in_reply_to && !@in_reply_to.account.following_or_self?(@account))
+      (@in_reply_to && !@in_reply_to.account.following_or_self?(@account))
   end
 
   def reference_to_stranger?
@@ -350,9 +350,9 @@ class PostStatusService < BaseService
 
   def process_email_subscriptions!
     return unless Rails.application.config.x.email_subscriptions && Setting.email_subscriptions &&
-                  @status.public_visibility? && (!@status.reply? || @status.in_reply_to_account_id == @status.account_id) &&
-                  @status.account.user_can?(:manage_email_subscriptions) &&
-                  @status.account.user_email_subscriptions_enabled?
+      @status.public_visibility? && (!@status.reply? || @status.in_reply_to_account_id == @status.account_id) &&
+      @status.account.user_can?(:manage_email_subscriptions) &&
+      @status.account.user_email_subscriptions_enabled?
 
     # To allow e-mail grouping, pass the arguments via a redis set and schedule
     # a unique worker a few minutes in the future, in case the user makes subsequent

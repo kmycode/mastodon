@@ -4,14 +4,17 @@ import { defineMessages, useIntl, FormattedMessage } from 'react-intl';
 
 import { Helmet } from '@unhead/react/helmet';
 
-import EmojiReactionIcon from '@/material-icons/400-24px/mood.svg?react';
+import { MultiColumnMenuItems } from '@/mastodon/components/column_header/multicolumn_settings';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import {
   fetchEmojiReactedStatuses,
   expandEmojiReactedStatuses,
 } from 'mastodon/actions/emoji_reactions';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import {
+  ColumnHeader,
+  ColumnSettingsMenu,
+} from 'mastodon/components/column_header';
 import StatusList from 'mastodon/components/status_list';
 import { getStatusList } from 'mastodon/selectors';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
@@ -78,14 +81,21 @@ const Favourites: React.FC<{ columnId: string; multiColumn: boolean }> = ({
       label={intl.formatMessage(messages.heading)}
     >
       <ColumnHeader
-        icon='star'
-        iconComponent={EmojiReactionIcon}
         title={intl.formatMessage(messages.heading)}
-        onPin={handlePin}
-        onMove={handleMove}
-        pinned={pinned}
-        multiColumn={multiColumn}
-        scrollTopOnClick
+        withBackButton
+        extraButtons={
+          multiColumn && (
+            <ColumnSettingsMenu
+              labelPrefix={intl.formatMessage(messages.heading)}
+            >
+              <MultiColumnMenuItems
+                onPin={handlePin}
+                onMove={handleMove}
+                pinned={pinned}
+              />
+            </ColumnSettingsMenu>
+          )
+        }
       />
 
       <StatusList

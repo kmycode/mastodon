@@ -8,7 +8,6 @@ import { Helmet } from '@unhead/react/helmet';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { ColumnSearchHeader } from '@/mastodon/components/column/search_header';
-import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';
 import AddIcon from '@/material-icons/400-24px/add.svg?react';
 import SquigglyArrow from '@/svg-icons/squiggly_arrow.svg?react';
 import { fetchFollowers } from 'mastodon/actions/accounts';
@@ -25,7 +24,7 @@ import { Avatar } from 'mastodon/components/avatar';
 import { VerifiedBadge } from 'mastodon/components/badge';
 import { Button } from 'mastodon/components/button';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import { ColumnHeader } from 'mastodon/components/column_header';
 import { FollowersCounter } from 'mastodon/components/counters';
 import { DisplayName } from 'mastodon/components/display_name';
 import { Icon } from 'mastodon/components/icon';
@@ -107,12 +106,9 @@ const AccountItem: React.FC<{
         </Link>
 
         <div className='account__relationship'>
-          <Button
-            text={intl.formatMessage(
-              partOfCircle ? messages.remove : messages.add,
-            )}
-            onClick={handleClick}
-          />
+          <Button onClick={handleClick}>
+            {intl.formatMessage(partOfCircle ? messages.remove : messages.add)}
+          </Button>
         </div>
       </div>
     </div>
@@ -233,11 +229,8 @@ const CircleMembers: React.FC<{
       {mode === 'remove' ? (
         <ColumnHeader
           title={intl.formatMessage(messages.heading)}
-          icon='circle-ul'
-          iconComponent={CircleIcon}
-          multiColumn={multiColumn}
-          showBackButton
-          extraButton={
+          withBackButton
+          extraButtons={
             <button
               onClick={handleSearchClick}
               type='button'
