@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
@@ -151,11 +151,6 @@ const ComposeVisibilityMenu: React.FC = () => {
     (state) => !!state.compose.get('reply_to_limited'),
   );
 
-  const [discoverableCheck, setDiscoverableCheck] = useState(false);
-  const [discoverableInRemoteCheck, setDiscoverableInRemoteCheck] =
-    useState(false);
-  const [loginOnlyCheck, setLoginOnlyCheck] = useState(false);
-
   const dispatch = useAppDispatch();
 
   const handlePrivacyChange = useCallback(
@@ -169,29 +164,20 @@ const ComposeVisibilityMenu: React.FC = () => {
       switch (value) {
         case 'notDiscoverable':
           {
-            const newValue = originalPrivacy
-              ? !discoverableCheck
-              : defaultPrivacy === 'unlisted';
-            setDiscoverableCheck(newValue);
-            updatePrivacy(newValue ? 'unlisted' : 'public');
+            const newValue = originalPrivacy === 'unlisted';
+            updatePrivacy(!newValue ? 'unlisted' : 'public');
           }
           return;
         case 'notDiscoverableInRemote':
           {
-            const newValue = originalPrivacy
-              ? !discoverableInRemoteCheck
-              : defaultPrivacy === 'public_unlisted';
-            setDiscoverableInRemoteCheck(newValue);
-            updatePrivacy(newValue ? 'public_unlisted' : 'public');
+            const newValue = originalPrivacy === 'public_unlisted';
+            updatePrivacy(!newValue ? 'public_unlisted' : 'public');
           }
           return;
         case 'loginOnly':
           {
-            const newValue = originalPrivacy
-              ? !loginOnlyCheck
-              : defaultPrivacy === 'login';
-            setLoginOnlyCheck(newValue);
-            updatePrivacy(newValue ? 'login' : 'public');
+            const newValue = originalPrivacy === 'login';
+            updatePrivacy(!newValue ? 'login' : 'public');
           }
           return;
       }
@@ -206,36 +192,13 @@ const ComposeVisibilityMenu: React.FC = () => {
             ? defaultPrivacy
             : 'public',
         );
-
-        switch (defaultPrivacy) {
-          case 'unlisted':
-            setDiscoverableCheck(true);
-            break;
-          case 'public_unlisted':
-            setDiscoverableInRemoteCheck(true);
-            break;
-          case 'login':
-            setLoginOnlyCheck(true);
-            break;
-        }
       } else if (value === 'unlisted') {
         updatePrivacy(privacy === 'public' ? 'unlisted' : 'public');
       } else if (['private', 'mutual', 'circle', 'reply'].includes(value)) {
         updatePrivacy(value as StatusVisibility);
       }
     },
-    [
-      defaultPrivacy,
-      originalPrivacy,
-      dispatch,
-      privacy,
-      discoverableCheck,
-      discoverableInRemoteCheck,
-      loginOnlyCheck,
-      setDiscoverableCheck,
-      setDiscoverableInRemoteCheck,
-      setLoginOnlyCheck,
-    ],
+    [defaultPrivacy, originalPrivacy, dispatch, privacy],
   );
 
   const handleSwitchToMessage: React.MouseEventHandler<HTMLButtonElement> =
@@ -314,7 +277,11 @@ const ComposeVisibilityMenu: React.FC = () => {
 
         <MenuItemCheckbox
           value='notDiscoverable'
-          disabled={!['public', 'unlisted'].includes(privacy)}
+          disabled={
+            !['public', 'unlisted', 'public_unlisted', 'login'].includes(
+              privacy,
+            )
+          }
           checked={privacy === 'unlisted'}
           onChange={handlePrivacyChange}
           keepMenuOpenOnClick
@@ -333,7 +300,11 @@ const ComposeVisibilityMenu: React.FC = () => {
 
         <MenuItemCheckbox
           value='notDiscoverableInRemote'
-          disabled={!['public', 'public_unlisted'].includes(privacy)}
+          disabled={
+            !['public', 'unlisted', 'public_unlisted', 'login'].includes(
+              privacy,
+            )
+          }
           checked={privacy === 'public_unlisted'}
           onChange={handlePrivacyChange}
           icon={CloudIcon}
@@ -347,7 +318,11 @@ const ComposeVisibilityMenu: React.FC = () => {
 
         <MenuItemCheckbox
           value='loginOnly'
-          disabled={!['public', 'login'].includes(privacy)}
+          disabled={
+            !['public', 'unlisted', 'public_unlisted', 'login'].includes(
+              privacy,
+            )
+          }
           checked={privacy === 'login'}
           onChange={handlePrivacyChange}
           icon={KeyIcon}
