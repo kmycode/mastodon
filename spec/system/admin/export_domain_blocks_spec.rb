@@ -32,7 +32,7 @@ RSpec.describe 'Admin Export Domain Blocks' do
 
         expect(page)
           .to have_title(I18n.t('admin.export_domain_blocks.import.title'))
-          .and have_css('.batch-table__row', count: 3)
+          .and have_css('.batch-table__row', count: 4)
 
         within('.batch-table__row', text: 'bad.domain') do
           expect(page)
@@ -51,9 +51,9 @@ RSpec.describe 'Admin Export Domain Blocks' do
         end
 
         expect { confirm_import }
-          .to change(DomainBlock, :count).by(3)
+          .to change(DomainBlock, :count).by(4)
         expect(DomainBlock.pluck(:domain, :severity))
-          .to contain_exactly(['bad.domain', 'silence'], ['worse.domain', 'suspend'], ['reject.media', 'noop'])
+          .to contain_exactly(['bad.domain', 'silence'], ['worse.domain', 'suspend'], ['reject.media', 'noop'], ['little.spam', 'noop'])
         expect(page)
           .to have_text(I18n.t('admin.domain_blocks.created_msg'))
       end

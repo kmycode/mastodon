@@ -234,7 +234,7 @@ RSpec.describe UserRole do
         .to be_a(described_class)
         .and be_everyone
         .and have_attributes(
-          permissions: described_class::FLAGS[:invite_users],
+          permissions: described_class::Flags::DEFAULT,
           position: described_class::NOBODY_POSITION
         )
     end
