@@ -311,11 +311,7 @@ function statusVisibilityText(
       );
     case 'direct':
       return (
-        <FormattedMessage
-          id='privacy.message.short'
-          defaultMessage='Message'
-          description='Message refers to a direct message. For languages where this is confusing, "chat" or "direct message" can be used.'
-        />
+        <FormattedMessage id='privacy.message.short' defaultMessage='Private' />
       );
     case 'unlisted':
       return (

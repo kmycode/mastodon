@@ -31,7 +31,7 @@ import { fetchServer, fetchServerTranslationLanguages } from '../../actions/serv
 import { expandHomeTimeline } from '../../actions/timelines';
 import { initialState, forceSingleColumn, me, owner, singleUserMode, trendsEnabled, landingPage, localLiveFeedAccess, disableHoverCards, domain } from '../../initial_state';
 
-import { openNewComposer, toggleContentWarning } from '@/mastodon/reducers/slices/composer';
+import { openNewComposer } from '@/mastodon/reducers/slices/composer';
 
 import { BundleColumnError } from './components/bundle_column_error';
 import { UploadArea } from './components/upload_area';
@@ -529,7 +529,7 @@ class UI extends PureComponent {
 
     const searchField = this.node.querySelector('[data-main-search="true"]');
 
-    if (searchField.checkVisibility()) {
+    if (searchField?.checkVisibility()) {
       searchField.focus();
     } else {
       this.props.history.push('/search', { focusTarget: FOCUS_TARGET.SEARCH });
@@ -538,11 +538,6 @@ class UI extends PureComponent {
 
   handleHotkeyForceNew = e => {
     this.props.dispatch(openNewComposer({ force: true }));
-  };
-
-  handleHotkeyToggleComposeSpoilers = e => {
-    e.preventDefault();
-    this.props.dispatch(toggleContentWarning());
   };
 
   handleHotkeyFocusColumn = e => {
@@ -665,7 +660,6 @@ class UI extends PureComponent {
       search: this.handleHotkeySearch,
       forceNew: this.handleHotkeyForceNew,
       newMessage: this.handleHotkeyNewMessage,
-      toggleComposeSpoilers: this.handleHotkeyToggleComposeSpoilers,
       focusColumn: this.handleHotkeyFocusColumn,
       focusLoadMore: this.handleHotkeyLoadMore,
       moveDown: this.handleMoveDown,

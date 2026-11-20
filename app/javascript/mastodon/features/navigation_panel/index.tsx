@@ -1,61 +1,41 @@
-import { useCallback, useEffect } from 'react';
-
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
-import type { Map as ImmutableMap } from 'immutable';
-
 import {
-  PenNibIcon,
-  HouseIcon,
-  MagnifyingGlassIcon,
   RssSimpleIcon,
-  BellIcon,
-  ChatCircleDotsIcon,
   BookmarkSimpleIcon,
   PlusIcon,
   InfoIcon,
   GavelIcon,
   ShieldStarIcon,
   GlobeIcon,
+  CompassIcon,
 } from '@phosphor-icons/react';
 
-import FediIcon from '@/images/icons/icon_fediverse.svg?react';
-import { fetchFollowRequests } from '@/mastodon/actions/accounts';
-import { fetchAntennas } from '@/mastodon/actions/antennas';
-import { fetchLists } from '@/mastodon/actions/lists';
-import { closeNavigation } from '@/mastodon/actions/navigation';
-import { fetchFollowedHashtags } from '@/mastodon/actions/tags_typed';
-import { Button } from '@/mastodon/components/button';
 import { Callout } from '@/mastodon/components/callout/redesign';
-import { FOCUS_TARGET } from '@/mastodon/components/navigation_focus_target';
-import { useHasAnnouncements } from '@/mastodon/features/announcements/hooks';
-import { FooterLinks } from '@/mastodon/features/discovery_panel/footer_links';
 import { useScrollSensor } from '@/mastodon/hooks/useScrollSensor';
 import { useIdentity } from '@/mastodon/identity_context';
 import {
   disabledAccountId,
   enableDtlMenu,
   dtlTag,
-  enableLocalTimeline,
-  localLiveFeedAccess,
-  remoteLiveFeedAccess,
   trendsEnabled,
 } from '@/mastodon/initial_state';
 import { transientSingleColumn } from '@/mastodon/is_mobile';
 import {
   canManageReports,
   canViewAdminDashboard,
-  canViewFeed,
 } from '@/mastodon/permissions';
-import { openNewComposer } from '@/mastodon/reducers/slices/composer';
-import { getFavouritedAntennas } from '@/mastodon/selectors/antennas';
-import { getFavouritedLists } from '@/mastodon/selectors/lists';
-import { selectUnreadNotificationGroupsCount } from '@/mastodon/selectors/notifications';
-import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 import { invokeVirtualIosKeyboard } from '@/mastodon/utils/invoke_virtual_ios_keyboard';
 
-import { NavigationAccountCardAndMenu } from './account_card_and_menu';
+import { CollapsedNavigationPanel } from './collapsed';
+import { FooterLinks } from './footer_links';
 import { NavigationHeader } from './header';
+import {
+  useCustomFeeds,
+  useAntennas,
+  useFollowedHashtags,
+  usePublicFeedsLink,
+} from './hooks';
 import { ListSection } from './list_section';
 import { DisabledAccountBanner, LoggedOutInfo } from './logged_out_info';
 import { NavigationLink } from './navigation_link';
@@ -70,119 +50,46 @@ const messages = defineMessages({
   },
 });
 
-function useCustomFeeds() {
-  const dispatch = useAppDispatch();
-  const { signedIn } = useIdentity();
-  const customFeeds = useAppSelector((state) => getFavouritedLists(state));
-
-  useEffect(() => {
-    if (signedIn) {
-      void dispatch(fetchLists());
-    }
-  }, [dispatch, signedIn]);
-
-  return {
-    customFeeds,
-  };
-}
-
-function useAntennas() {
-  const dispatch = useAppDispatch();
-  const { signedIn } = useIdentity();
-  const antennas = useAppSelector((state) => getFavouritedAntennas(state));
-
-  useEffect(() => {
-    if (signedIn) {
-      void dispatch(fetchAntennas());
-    }
-  }, [dispatch, signedIn]);
-
-  return {
-    antennas,
-  };
-}
-
-function useFollowedHashtags() {
-  const dispatch = useAppDispatch();
-  const { signedIn } = useIdentity();
-  const { tags, stale } = useAppSelector((state) => state.followedTags);
-
-  useEffect(() => {
-    if (stale && signedIn) {
-      void dispatch(fetchFollowedHashtags());
-    }
-  }, [dispatch, stale, signedIn]);
-
-  return { followedHashtags: tags };
-}
-
-export function useFollowRequestsCount({
-  fetch = true,
-}: { fetch?: boolean } = {}) {
-  const followRequestsCount = useAppSelector(
-    (state) =>
-      (
-        state.user_lists.getIn(['follow_requests', 'items']) as
-          | ImmutableMap<string, unknown>
-          | undefined
-      )?.size ?? 0,
-  );
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    if (fetch) {
-      dispatch(fetchFollowRequests());
-    }
-  }, [dispatch, fetch]);
-
-  return followRequestsCount;
-}
-
-export function useNotificationsCount() {
-  const unreadNotificationsCount = useAppSelector(
-    selectUnreadNotificationGroupsCount,
-  );
-  const { signedIn } = useIdentity();
-  const followRequestsCount = useFollowRequestsCount({ fetch: signedIn });
-
-  const { unreadAnnouncementCount } = useHasAnnouncements({ fetch: signedIn });
-
-  return (
-    unreadNotificationsCount + followRequestsCount + unreadAnnouncementCount
-  );
-}
-
-const isFediverseFeedsLinkActive = (
-  match: unknown,
-  { pathname }: { pathname: string },
-) => {
-  if (pathname.startsWith('/public/local/fixed')) return false;
-  return !!match || pathname.startsWith('/public');
-};
-
 const MAX_HASHTAG_COUNT = 5;
 
-export const RedesignNavigationPanel: React.FC<{
+interface NavigationPanelProps {
   siteName?: string;
   /**
-   * In 'slide-out' mode (used on smaller viewport sizes), some
-   * menu items are hidden and the design is tweaked slightly
+   * In 'slide-out' mode (used on mobile), some menu items
+   * are hidden and the design is tweaked slightly
    */
   mode?: 'static' | 'slide-out';
   multiColumn?: boolean;
-}> = ({ siteName, mode = 'static', multiColumn }) => {
+  collapsed?: boolean;
+  onToggleCollapsed?: () => void;
+}
+
+export const NavigationPanel: React.FC<NavigationPanelProps> = (props) => {
+  const { mode = 'static', multiColumn, collapsed, onToggleCollapsed } = props;
+
+  if (mode === 'static' && collapsed) {
+    return (
+      <CollapsedNavigationPanel
+        multiColumn={multiColumn}
+        onToggleCollapsed={onToggleCollapsed}
+      />
+    );
+  } else {
+    return <ExpandedNavigationPanel {...props} />;
+  }
+};
+
+const ExpandedNavigationPanel: React.FC<NavigationPanelProps> = ({
+  siteName,
+  mode = 'static',
+  multiColumn,
+  onToggleCollapsed,
+}) => {
   const intl = useIntl();
-  const dispatch = useAppDispatch();
   const { signedIn, permissions } = useIdentity();
-  const notificationsCount = useNotificationsCount();
 
   const isManager = canManageReports(permissions);
   const isAdmin = canViewAdminDashboard(permissions);
-
-  const openComposer = useCallback(() => {
-    dispatch(closeNavigation());
-    dispatch(openNewComposer({ type: 'post' }));
-  }, [dispatch]);
 
   const { customFeeds } = useCustomFeeds();
   const { antennas } = useAntennas();
@@ -197,6 +104,23 @@ export const RedesignNavigationPanel: React.FC<{
       placement: 'bottom',
     });
 
+  const explore = trendsEnabled && (
+    <NavigationLink to='/explore' icon={CompassIcon}>
+      <FormattedMessage id='tabs_bar.explore' defaultMessage='Explore' />
+    </NavigationLink>
+  );
+
+  const publicFeedsLink = usePublicFeedsLink();
+  const publicFeeds = publicFeedsLink && (
+    <NavigationLink
+      to={publicFeedsLink.link}
+      icon={publicFeedsLink.icon}
+      isActive={publicFeedsLink.isActive}
+    >
+      {publicFeedsLink.label}
+    </NavigationLink>
+  );
+
   return (
     <nav
       className={classes.root}
@@ -205,45 +129,28 @@ export const RedesignNavigationPanel: React.FC<{
       aria-label={intl.formatMessage(messages.main)}
     >
       {topSensor}
-      <NavigationHeader siteName={siteName} isStuck={!isScrolledToTop} />
+      <NavigationHeader
+        multiColumn={multiColumn}
+        siteName={siteName}
+        isStuck={!isScrolledToTop}
+        onToggleCollapsed={onToggleCollapsed}
+        mode={mode}
+      />
       {signedIn && (
         <>
           {transientSingleColumn && <TransientSingleColumnCallout />}
           <ul className={classes.list}>
-            <NavigationLink to='/home' iconComponent={HouseIcon}>
-              <FormattedMessage id='tabs_bar.home' defaultMessage='Home' />
+            {explore}
+            {publicFeeds}
+            <NavigationLink to='/bookmark_categories' icon={BookmarkSimpleIcon}>
+              <FormattedMessage
+                id='navigation_bar.saved_posts'
+                defaultMessage='Saved Posts'
+              />
             </NavigationLink>
-            <ExploreLink />
-            <PublicFeedsLink />
-
-            {isAdmin && (
-              <NavigationLink
-                as='a'
-                href='/admin/dashboard'
-                iconComponent={GavelIcon}
-              >
-                <FormattedMessage
-                  id='navigation_bar.administration'
-                  defaultMessage='Administration'
-                />
-              </NavigationLink>
-            )}
-
-            {isManager && (
-              <NavigationLink
-                as='a'
-                href='/admin/reports'
-                iconComponent={ShieldStarIcon}
-              >
-                <FormattedMessage
-                  id='navigation_bar.moderation'
-                  defaultMessage='Moderation'
-                />
-              </NavigationLink>
-            )}
 
             {enableDtlMenu && (
-              <NavigationLink to={`/tags/${dtlTag}`} iconComponent={GlobeIcon}>
+              <NavigationLink to={`/tags/${dtlTag}`} icon={GlobeIcon}>
                 <FormattedMessage
                   id='navigation_bar.deep_timeline'
                   defaultMessage='Deep timeline'
@@ -260,11 +167,7 @@ export const RedesignNavigationPanel: React.FC<{
                 />
               }
             >
-              <NavigationLink
-                key='new'
-                to='/lists/new'
-                iconComponent={PlusIcon}
-              >
+              <NavigationLink key='new' to='/lists/new' icon={PlusIcon}>
                 <FormattedMessage
                   id='tabs_bar.create_custom_feed'
                   defaultMessage='Create Feed'
@@ -274,7 +177,7 @@ export const RedesignNavigationPanel: React.FC<{
                 <NavigationLink
                   key={feed.id}
                   to={`/lists/${feed.id}`}
-                  iconComponent={RssSimpleIcon}
+                  icon={RssSimpleIcon}
                 >
                   {feed.title}
                 </NavigationLink>
@@ -290,11 +193,7 @@ export const RedesignNavigationPanel: React.FC<{
                 />
               }
             >
-              <NavigationLink
-                key='new'
-                to='/antennas/new'
-                iconComponent={PlusIcon}
-              >
+              <NavigationLink key='new' to='/antennas/new' icon={PlusIcon}>
                 <FormattedMessage
                   id='tabs_bar.create_antenna'
                   defaultMessage='Create Antenna'
@@ -304,7 +203,7 @@ export const RedesignNavigationPanel: React.FC<{
                 <NavigationLink
                   key={antenna.id}
                   to={`/antennas/${antenna.id}`}
-                  iconComponent={RssSimpleIcon}
+                  icon={RssSimpleIcon}
                 >
                   {antenna.title}
                 </NavigationLink>
@@ -336,109 +235,83 @@ export const RedesignNavigationPanel: React.FC<{
                 )}
               </ListSection>
             )}
-          </ul>
 
-          <footer className={classes.footer} data-stuck={!isScrolledToBottom}>
-            <div className={classes.newPostButton}>
-              <Button
-                leadingIcon={PenNibIcon}
-                onClick={openComposer}
-                variant='solid'
-                color='accent'
-                size='md'
+            {isAdmin && (
+              <NavigationLink
+                withDivider
+                as='a'
+                href='/admin/dashboard'
+                icon={GavelIcon}
               >
                 <FormattedMessage
-                  id='tabs_bar.publish'
-                  defaultMessage='New Post'
+                  id='navigation_bar.administration'
+                  defaultMessage='Administration'
                 />
-              </Button>
-            </div>
-
-            {mode !== 'slide-out' && (
-              <>
-                <ul className={classes.footerNav}>
-                  <NavigationLink
-                    stacked
-                    to='/notifications'
-                    iconComponent={BellIcon}
-                    badgeCount={notificationsCount}
-                  >
-                    <FormattedMessage
-                      id='tabs_bar.notifications'
-                      defaultMessage='Notifications'
-                    />
-                  </NavigationLink>
-                  <NavigationLink
-                    stacked
-                    to='/conversations'
-                    iconComponent={ChatCircleDotsIcon}
-                  >
-                    <FormattedMessage
-                      id='tabs_bar.messages'
-                      defaultMessage='Messages'
-                      description='Message refers to a direct message. For languages where this is confusing, "chat" or "direct message" can be used.'
-                    />
-                  </NavigationLink>
-                  <NavigationLink
-                    stacked
-                    to='/bookmark_categories'
-                    iconComponent={BookmarkSimpleIcon}
-                  >
-                    <FormattedMessage
-                      id='tabs_bar.saved'
-                      defaultMessage='Saved'
-                    />
-                  </NavigationLink>
-                </ul>
-                <NavigationAccountCardAndMenu />
-              </>
+              </NavigationLink>
             )}
-            <FooterLinks context='navigation' multiColumn={multiColumn} />
+
+            {isManager && (
+              <NavigationLink
+                withDivider={!isAdmin}
+                as='a'
+                href='/admin/reports'
+                icon={ShieldStarIcon}
+              >
+                <FormattedMessage
+                  id='navigation_bar.moderation'
+                  defaultMessage='Moderation'
+                />
+              </NavigationLink>
+            )}
+          </ul>
+
+          <footer className={classes.footer}>
+            <FooterLinks multiColumn={multiColumn} />
           </footer>
         </>
       )}
       {!signedIn && (
         <>
           <ul className={classes.list}>
-            <NavigationLink to='/about' iconComponent={InfoIcon}>
+            <NavigationLink to='/about' icon={InfoIcon}>
               <FormattedMessage
                 id='footer.about_this_server'
                 defaultMessage='About'
               />
             </NavigationLink>
-            <ExploreLink />
-            <PublicFeedsLink />
+            {explore}
+            {publicFeeds}
           </ul>
-          <footer className={classes.footer} data-stuck={!isScrolledToBottom}>
+          <footer className={classes.footer}>
             {disabledAccountId ? <DisabledAccountBanner /> : <LoggedOutInfo />}
-            <FooterLinks context='navigation' multiColumn={multiColumn} />
+            <FooterLinks multiColumn={multiColumn} />
           </footer>
         </>
       )}
-
+      <div
+        className={classes.bottomScrollFade}
+        data-stuck={!isScrolledToBottom}
+      />
       {bottomSensor}
     </nav>
   );
 };
 
-const ExploreLink: React.FC = () => {
-  return (
-    <NavigationLink
-      to={{
-        pathname: trendsEnabled ? '/explore' : '/search',
-        state: { focusTarget: FOCUS_TARGET.SEARCH },
-      }}
-      iconComponent={MagnifyingGlassIcon}
-      onClick={handleSearchLinkClick}
-    >
-      {trendsEnabled ? (
-        <FormattedMessage id='tabs_bar.explore' defaultMessage='Explore' />
-      ) : (
-        <FormattedMessage id='navigation_bar.search' defaultMessage='Search' />
-      )}
-    </NavigationLink>
-  );
-};
+const TransientSingleColumnCallout: React.FC = () => (
+  <Callout className={classes.callout}>
+    <FormattedMessage
+      id='navigation_bar.opened_in_single_column_layout'
+      defaultMessage='Posts, profiles, and other pages are opened in the single-column layout by default.'
+    />
+    <br />
+    <a href={`/deck${location.pathname}`}>
+      <FormattedMessage
+        id='navigation_bar.advanced_interface'
+        defaultMessage='Open in advanced web interface'
+      />
+    </a>
+  </Callout>
+);
 
 export function handleSearchLinkClick() {
   const mainSearchInput = document.querySelector<HTMLInputElement>(
@@ -458,58 +331,3 @@ export function handleSearchLinkClick() {
   // focused synchronously.
   invokeVirtualIosKeyboard();
 }
-
-const PublicFeedsLink: React.FC = () => {
-  const { signedIn, permissions } = useIdentity();
-
-  const canViewLocalFeed =
-    canViewFeed(signedIn, permissions, localLiveFeedAccess) &&
-    enableLocalTimeline;
-  const canViewRemoteFeed = canViewFeed(
-    signedIn,
-    permissions,
-    remoteLiveFeedAccess,
-  );
-
-  if (!canViewLocalFeed && !canViewRemoteFeed) {
-    return null;
-  }
-
-  const canViewOnlyOneFeed = canViewLocalFeed !== canViewRemoteFeed;
-
-  return (
-    <NavigationLink
-      to={canViewLocalFeed ? '/public/local' : '/public/remote'}
-      iconComponent={FediIcon}
-      isActive={isFediverseFeedsLinkActive}
-    >
-      {canViewOnlyOneFeed ? (
-        <FormattedMessage
-          id='tabs_bar.public_feed'
-          defaultMessage='Public Feed'
-        />
-      ) : (
-        <FormattedMessage
-          id='tabs_bar.public_feeds'
-          defaultMessage='Public Feeds'
-        />
-      )}
-    </NavigationLink>
-  );
-};
-
-const TransientSingleColumnCallout: React.FC = () => (
-  <Callout className={classes.callout}>
-    <FormattedMessage
-      id='navigation_bar.opened_in_single_column_layout'
-      defaultMessage='Posts, profiles, and other pages are opened in the single-column layout by default.'
-    />
-    <br />
-    <a href={`/deck${location.pathname}`}>
-      <FormattedMessage
-        id='navigation_bar.advanced_interface'
-        defaultMessage='Open in advanced web interface'
-      />
-    </a>
-  </Callout>
-);

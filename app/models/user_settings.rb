@@ -42,7 +42,6 @@ class UserSettings
   setting :dtl_force_searchability, default: :unchange, in: %w(unchange public public_unlisted)
   setting :lock_follow_from_bot, default: false
   setting :reject_send_limited_to_suspects, default: false
-  setting :default_spoiler_field, default: false
   setting :email_subscriptions, default: false
   setting :display_own_boosts, default: false
   setting :display_own_posts, default: true

@@ -71,7 +71,6 @@ en:
         setting_default_quote_policy_unlisted: When people quote you, their post will also be hidden from trending timelines.
         setting_default_searchability: On kmyblue and Fedibird, the search is based on the search permission setting; on Misskey, all public, local public, and non-public posts are searched regardless of this setting; on Mastodon and Firefish, instead of search permission, the "Make public posts freely searchable on other servers" setting in the profile settings is applied. In Mastodon and Firefish, the "Make public posts freely searchable on other servers" setting in the profile settings is applied instead of the search permission.
         setting_default_sensitive: Sensitive media is hidden by default and can be revealed with a click
-        setting_default_spoiler_field: Keeps the content warning field open within the composer. You can customise the text on each post.
         setting_disallow_unlisted_public_searchability: この設定を有効にすると、非収載投稿と検索範囲「誰でも」は両立できず不特定多数からの検索が不可になります。Fedibirdと同じ挙動になります
         setting_display_media_default: Warn before showing media marked as sensitive
         setting_display_media_hide_all: Warn before showing all media
@@ -315,7 +314,6 @@ en:
         setting_default_searchability: Searchability of your own post
         setting_default_searchability_of_search: Your search setting
         setting_default_sensitive: Always mark media as sensitive
-        setting_default_spoiler_field: Use content warnings by default
         setting_delete_modal: Warn me before deleting a post
         setting_disable_hover_cards: Disable profile preview on hover
         setting_disable_swiping: Disable swiping motions

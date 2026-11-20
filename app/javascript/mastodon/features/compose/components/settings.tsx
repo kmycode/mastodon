@@ -2,14 +2,8 @@ import { useCallback } from 'react';
 
 import { FormattedMessage } from 'react-intl';
 
-import {
-  EyeSlashIcon,
-  GearIcon,
-  WarningIcon,
-  MarkdownLogoIcon,
-} from '@phosphor-icons/react';
+import { GearIcon, MarkdownLogoIcon } from '@phosphor-icons/react';
 
-import { changeComposeSensitivity } from '@/mastodon/actions/compose';
 import {
   changeComposeMarkdown,
   setComposeQuotePolicy,
@@ -18,15 +12,12 @@ import type { ApiQuotePolicy } from '@/mastodon/api_types/quotes';
 import { IconButton } from '@/mastodon/components/button';
 import {
   Menu,
-  MenuItem,
-  MenuItemCheckbox,
-  MenuItemDivider,
   MenuItemGroup,
   MenuItemRadio,
+  MenuItemCheckbox,
   MenuList,
   MenuTrigger,
 } from '@/mastodon/components/menu';
-import { toggleContentWarning } from '@/mastodon/reducers/slices/composer';
 import {
   useAppDispatch,
   useAppSelector,
@@ -36,17 +27,22 @@ import {
   selectComposeMarkdown,
   selectComposePrivacy,
   selectComposeQuotePolicy,
-  selectComposeSensitive,
 } from './selectors';
 
 export const ComposeSettingsMenu: React.FC = () => {
+  const privacy = useAppSelector(selectComposePrivacy);
+
+  if (privacy === 'direct') {
+    return null;
+  }
+
   return (
     <Menu>
       <MenuTrigger as={IconButton} icon={GearIcon} size='sm'>
         <FormattedMessage id='compose.settings' defaultMessage='Settings' />
       </MenuTrigger>
 
-      <MenuList maxWidth={310} placement='top-end' strategy='fixed'>
+      <MenuList maxWidth={310} placement='bottom-end' strategy='fixed'>
         <ComposeSettingsInnerMenu />
       </MenuList>
     </Menu>
@@ -77,139 +73,68 @@ const ComposeSettingsInnerMenu: React.FC = () => {
     [dispatch],
   );
 
-  // Sensitive content
-  const { sensitive, mediaSensitive } = useAppSelector(selectComposeSensitive);
-
-  const onSensitiveChange = useCallback(() => {
-    dispatch(toggleContentWarning());
-  }, [dispatch]);
-  const onMediaSensitiveChange = useCallback(() => {
-    dispatch(changeComposeSensitivity());
-  }, [dispatch]);
   const onMarkdownChange = useCallback(() => {
     dispatch(changeComposeMarkdown());
   }, [dispatch]);
 
-  const isMac = navigator.userAgent.includes('Mac');
-
   return (
     <>
-      {privacy !== 'direct' && (
-        <MenuItemGroup
-          label={
-            <FormattedMessage
-              id='compose.visibility.quote_policy'
-              defaultMessage='Who can quote'
-            />
-          }
-        >
-          <MenuItemRadio
-            name='quote_policy'
-            value='public'
-            checked={quotePolicy === 'public'}
-            onChange={onQuotePolicyChange}
-            disabled={disablePublicQuotes}
-            keepMenuOpenOnClick
-          >
-            <FormattedMessage
-              id='visibility_modal.quote_public'
-              defaultMessage='Anyone'
-            />
-          </MenuItemRadio>
-
-          <MenuItemRadio
-            name='quote_policy'
-            value='followers'
-            checked={quotePolicy === 'followers'}
-            onChange={onQuotePolicyChange}
-            disabled={disablePublicQuotes}
-            keepMenuOpenOnClick
-          >
-            <FormattedMessage
-              id='compose.visibility.quote_policy.followers'
-              defaultMessage='Followers'
-            />
-          </MenuItemRadio>
-
-          <MenuItemRadio
-            name='quote_policy'
-            value='nobody'
-            checked={quotePolicy === 'nobody'}
-            onChange={onQuotePolicyChange}
-            description={
-              disablePublicQuotes && (
-                <FormattedMessage
-                  id='compose.visibility.quote_policy.only_me_hint'
-                  defaultMessage="When your post's visibility is set to Followers, it can only be quoted by you."
-                />
-              )
-            }
-            keepMenuOpenOnClick
-          >
-            <FormattedMessage
-              id='visibility_modal.quote_nobody'
-              defaultMessage='Just me'
-            />
-          </MenuItemRadio>
-        </MenuItemGroup>
-      )}
-
-      {privacy !== 'direct' && <MenuItemDivider />}
-
       <MenuItemGroup
         label={
           <FormattedMessage
-            id='compose.sensitive.label'
-            defaultMessage='Sensitive content'
+            id='compose.visibility.quote_policy'
+            defaultMessage='Who can quote'
           />
         }
       >
-        <MenuItem
-          onClick={onSensitiveChange}
+        <MenuItemRadio
+          name='quote_policy'
+          value='public'
+          checked={quotePolicy === 'public'}
+          onChange={onQuotePolicyChange}
+          disabled={disablePublicQuotes}
           keepMenuOpenOnClick
-          icon={WarningIcon}
-          disabled={sensitive}
+        >
+          <FormattedMessage
+            id='visibility_modal.quote_public'
+            defaultMessage='Anyone'
+          />
+        </MenuItemRadio>
+
+        <MenuItemRadio
+          name='quote_policy'
+          value='followers'
+          checked={quotePolicy === 'followers'}
+          onChange={onQuotePolicyChange}
+          disabled={disablePublicQuotes}
+          keepMenuOpenOnClick
+        >
+          <FormattedMessage
+            id='compose.visibility.quote_policy.followers'
+            defaultMessage='Followers'
+          />
+        </MenuItemRadio>
+
+        <MenuItemRadio
+          name='quote_policy'
+          value='nobody'
+          checked={quotePolicy === 'nobody'}
+          onChange={onQuotePolicyChange}
           description={
-            sensitive && (
+            disablePublicQuotes && (
               <FormattedMessage
-                id='compose.sensitive.added'
-                defaultMessage='You already added this'
+                id='compose.visibility.quote_policy.only_me_hint'
+                defaultMessage="When your post's visibility is set to Followers, it can only be quoted by you."
               />
             )
           }
-          trailingContent={
-            <>
-              <kbd>{isMac ? 'Option' : 'Alt'}</kbd> + <kbd>x</kbd>
-            </>
-          }
-        >
-          <FormattedMessage
-            id='compose_form.spoiler.unmarked'
-            defaultMessage='Add content warning'
-          />
-        </MenuItem>
-        <MenuItemCheckbox
-          name='media_spoiler'
-          value='on'
-          checked={mediaSensitive}
-          disabled={sensitive}
-          description={
-            sensitive && (
-              <FormattedMessage
-                id='compose.sensitive.media_added'
-                defaultMessage='Media is always blurred if a content warning is added'
-              />
-            )
-          }
-          onChange={onMediaSensitiveChange}
           keepMenuOpenOnClick
-          icon={EyeSlashIcon}
         >
           <FormattedMessage
-            id='compose.blur_media'
-            defaultMessage='Blur media'
+            id='visibility_modal.quote_nobody'
+            defaultMessage='Just me'
           />
-        </MenuItemCheckbox>
+        </MenuItemRadio>
       </MenuItemGroup>
 
       <MenuItemGroup
