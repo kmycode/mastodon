@@ -17,6 +17,7 @@
     "clean:kbdraft": "git branch | grep kb-draft- | xargs git branch -d",
     "clean:kbtopic": "git branch | grep kbtopic- | xargs git branch -d",
     "clean:upstream": "git branch | grep upstream- | xargs git branch -d",
+    "install:ruby": "RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install",
     "fix:js": "eslint . --cache --fix",
     "fix:css": "stylelint --fix \"**/*.{css,scss}\"",
     "fix": "yarn fix:js && yarn fix:css",
