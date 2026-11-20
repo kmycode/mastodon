@@ -1136,8 +1136,8 @@ en:
       action_taken_by: Action taken by
       actions:
         delete_description_html: The reported posts and/or collections will be deleted and a strike will be recorded to help you escalate on future infractions by the same account.
-        force_cw_description_html: The sensitive message in the reported posts will be added content warning and a strike will be recorded to help you escalate on future infractions by the same account.
         disable_description_html: Prevent the user from using their account, but do not delete or hide their contents. This action can be reverted. This closes all reports against this account.
+        force_cw_description_html: The sensitive message in the reported posts will be added content warning and a strike will be recorded to help you escalate on future infractions by the same account.
         force_sensitive_descption_html: Force all this user's media attachments to be flagged as sensitive. This can be reverted. This closes all reports against this account.
         mark_as_sensitive_description_html: The media in the reported posts will be marked as sensitive and a strike will be recorded to help you escalate on future infractions by the same account.
         resolve_description_html: No action will be taken against the reported account, no strike recorded, and the report will be closed.
