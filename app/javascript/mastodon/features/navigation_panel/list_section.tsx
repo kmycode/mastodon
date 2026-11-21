@@ -1,7 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
 
+import { FormattedMessage } from 'react-intl';
+
 import { CaretDownIcon } from '@phosphor-icons/react';
+import { CaretUpIcon } from '@phosphor-icons/react/dist/ssr';
 
 import { useStorageState } from '@/mastodon/hooks/useStorage';
 import { useIdentity } from '@/mastodon/identity_context';
@@ -18,15 +21,44 @@ export const ListSection: React.FC<{
   id: string;
   children: ReactNode;
   emptyMessage?: ReactNode;
-}> = ({ title, id, children, emptyMessage }) => {
+  hiddenChildren?: ReactNode;
+  hiddenContentToggle?: ReactNode;
+}> = ({
+  title,
+  id,
+  children,
+  emptyMessage,
+  hiddenChildren,
+  hiddenContentToggle,
+}) => {
   const hasContent = hasReactChildren(children);
+  const hasHiddenContent = hasReactChildren(hiddenChildren);
 
   const { accountId } = useIdentity();
   const storageKey = `ListSection-${id}-toggle-state-${accountId}`;
   const [isOpen, setIsOpen] = useStorageState<boolean>(storageKey, true);
+  const [isOpenHiddenContent, setIsOpenHiddenContent] =
+    useState<boolean>(false);
   const toggleIsOpen = useCallback(() => {
     setIsOpen(!isOpen);
   }, [isOpen, setIsOpen]);
+  const toggleHiddenContent = useCallback(() => {
+    setIsOpenHiddenContent(!isOpenHiddenContent);
+  }, [isOpenHiddenContent, setIsOpenHiddenContent]);
+
+  const hiddenContentToggleView = hasReactChildren(hiddenContentToggle) ? (
+    hiddenContentToggle
+  ) : (
+    <div className={classes.hiddenContentToggle}>
+      <button type='button' onClick={toggleHiddenContent}>
+        <FormattedMessage
+          id='tabs_bar.toggle_hidden'
+          defaultMessage='Toggle hidden contents'
+        />
+        {isOpenHiddenContent ? <CaretUpIcon /> : <CaretDownIcon />}
+      </button>
+    </div>
+  );
 
   return (
     <li className={classes.root}>
@@ -46,7 +78,17 @@ export const ListSection: React.FC<{
         )}
       </div>
       {hasContent
-        ? isOpen && <ul>{children}</ul>
+        ? isOpen && (
+            <>
+              <ul>{children}</ul>
+              {hasHiddenContent && (
+                <>
+                  {isOpenHiddenContent && <ul>{hiddenChildren}</ul>}
+                  {hiddenContentToggleView}
+                </>
+              )}
+            </>
+          )
         : emptyMessage && (
             <div className={classes.emptyState}>{emptyMessage}</div>
           )}

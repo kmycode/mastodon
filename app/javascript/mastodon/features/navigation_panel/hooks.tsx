@@ -15,17 +15,19 @@ import {
   remoteLiveFeedAccess,
 } from '@/mastodon/initial_state';
 import { canViewFeed } from '@/mastodon/permissions';
-import { getFavouritedAntennas } from '@/mastodon/selectors/antennas';
-import { getFavouritedLists } from '@/mastodon/selectors/lists';
+import { getOrderedAntennas } from '@/mastodon/selectors/antennas';
+import { getOrderedLists } from '@/mastodon/selectors/lists';
 import { selectUnreadNotificationGroupsCount } from '@/mastodon/selectors/notifications';
 import { useAppDispatch, useAppSelector } from '@/mastodon/store';
 
 import { useHasAnnouncements } from '../announcements/hooks';
 
-export function useCustomFeeds() {
+export function useCustomFeeds(
+  option?: 'favourited' | 'notFavourited' | 'all',
+) {
   const dispatch = useAppDispatch();
   const { signedIn } = useIdentity();
-  const customFeeds = useAppSelector((state) => getFavouritedLists(state));
+  const allCustomFeeds = useAppSelector((state) => getOrderedLists(state));
 
   useEffect(() => {
     if (signedIn) {
@@ -33,15 +35,22 @@ export function useCustomFeeds() {
     }
   }, [dispatch, signedIn]);
 
+  switch (option) {
+    case 'favourited':
+      return { customFeeds: allCustomFeeds.filter((a) => a.favourite) };
+    case 'notFavourited':
+      return { customFeeds: allCustomFeeds.filter((a) => !a.favourite) };
+  }
+
   return {
-    customFeeds,
+    customFeeds: allCustomFeeds,
   };
 }
 
-export function useAntennas() {
+export function useAntennas(option?: 'favourited' | 'notFavourited' | 'all') {
   const dispatch = useAppDispatch();
   const { signedIn } = useIdentity();
-  const antennas = useAppSelector((state) => getFavouritedAntennas(state));
+  const allAntennas = useAppSelector((state) => getOrderedAntennas(state));
 
   useEffect(() => {
     if (signedIn) {
@@ -49,8 +58,15 @@ export function useAntennas() {
     }
   }, [dispatch, signedIn]);
 
+  switch (option) {
+    case 'favourited':
+      return { antennas: allAntennas.filter((a) => a.favourite) };
+    case 'notFavourited':
+      return { antennas: allAntennas.filter((a) => !a.favourite) };
+  }
+
   return {
-    antennas,
+    antennas: allAntennas,
   };
 }
 

@@ -6,7 +6,9 @@ import { useParams } from 'react-router';
 
 import { Helmet } from '@unhead/react/helmet';
 
+import { openModal } from '@/mastodon/actions/modal';
 import { MultiColumnMenuItems } from '@/mastodon/components/column_header/multicolumn_settings';
+import { MenuItem, MenuItemLink } from '@/mastodon/components/menu';
 import {
   expandBookmarkCategoryStatuses,
   fetchBookmarkCategory,
@@ -66,6 +68,15 @@ const BookmarkCategoryStatuses: React.FC<{
     [dispatch, columnId],
   );
 
+  const handleDelete = useCallback(() => {
+    dispatch(
+      openModal({
+        modalType: 'CONFIRM_DELETE_BOOKMARK_CATEGORY',
+        modalProps: { bookmark_categoryId: id, columnId },
+      }),
+    );
+  }, [dispatch, columnId, id]);
+
   const handleLoadMore = useCallback(() => {
     dispatch(expandBookmarkCategoryStatuses(id));
   }, [dispatch, id]);
@@ -87,15 +98,36 @@ const BookmarkCategoryStatuses: React.FC<{
       <ColumnHeader
         title={bookmarkCategory?.get('title')}
         extraButtons={
-          multiColumn && (
-            <ColumnSettingsMenu labelPrefix={bookmarkCategory?.get('title')}>
+          <ColumnSettingsMenu
+            label={
+              <FormattedMessage
+                id='bookmark_categories.options'
+                defaultMessage='Category Options'
+              />
+            }
+          >
+            <MenuItemLink as='link' to={`/bookmark_categories/${id}/edit`}>
+              <FormattedMessage
+                id='bookmark_categories.edit'
+                defaultMessage='Edit category'
+              />
+            </MenuItemLink>
+            <MenuItem onClick={handleDelete}>
+              <FormattedMessage
+                id='bookmark_categories.delete'
+                defaultMessage='Delete category'
+              />
+            </MenuItem>
+
+            {multiColumn && (
               <MultiColumnMenuItems
+                withDivider
+                pinned={pinned}
                 onPin={handlePin}
                 onMove={handleMove}
-                pinned={pinned}
               />
-            </ColumnSettingsMenu>
-          )
+            )}
+          </ColumnSettingsMenu>
         }
       />
 

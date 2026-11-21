@@ -49,3 +49,17 @@
 
   padding-inline: var(--space-2);
 }
+
+.hiddenContentToggle {
+  opacity: 0.6;
+  font-size: small;
+  text-align: center;
+
+  button {
+    @include navigation-link.link-base;
+
+    padding: 0;
+    width: 180px;
+    margin: 8px auto 12px;
+  }
+}

@@ -6,7 +6,9 @@ import { useParams } from 'react-router';
 
 import { Helmet } from '@unhead/react/helmet';
 
+import { openModal } from '@/mastodon/actions/modal';
 import { MultiColumnMenuItems } from '@/mastodon/components/column_header/multicolumn_settings';
+import { MenuItem, MenuItemLink } from '@/mastodon/components/menu';
 import {
   expandCircleStatuses,
   fetchCircle,
@@ -63,6 +65,15 @@ const CircleStatuses: React.FC<{
     [dispatch, columnId],
   );
 
+  const handleDelete = useCallback(() => {
+    dispatch(
+      openModal({
+        modalType: 'CONFIRM_DELETE_CIRCLE',
+        modalProps: { circleId: id, columnId },
+      }),
+    );
+  }, [dispatch, columnId, id]);
+
   const handleLoadMore = useCallback(() => {
     dispatch(expandCircleStatuses(id));
   }, [dispatch, id]);
@@ -82,15 +93,36 @@ const CircleStatuses: React.FC<{
         title={circle?.get('title')}
         withBackButton={multiColumn && !pinned && 'auto'}
         extraButtons={
-          multiColumn && (
-            <ColumnSettingsMenu labelPrefix={circle?.get('title')}>
+          <ColumnSettingsMenu
+            label={
+              <FormattedMessage
+                id='circles.options'
+                defaultMessage='Circle Options'
+              />
+            }
+          >
+            <MenuItemLink as='link' to={`/circles/${id}/edit`}>
+              <FormattedMessage
+                id='circles.edit'
+                defaultMessage='Edit circle'
+              />
+            </MenuItemLink>
+            <MenuItem onClick={handleDelete}>
+              <FormattedMessage
+                id='circles.delete'
+                defaultMessage='Delete circle'
+              />
+            </MenuItem>
+
+            {multiColumn && (
               <MultiColumnMenuItems
+                withDivider
+                pinned={pinned}
                 onPin={handlePin}
                 onMove={handleMove}
-                pinned={pinned}
               />
-            </ColumnSettingsMenu>
-          )
+            )}
+          </ColumnSettingsMenu>
         }
       />
 

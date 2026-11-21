@@ -91,8 +91,11 @@ const ExpandedNavigationPanel: React.FC<NavigationPanelProps> = ({
   const isManager = canManageReports(permissions);
   const isAdmin = canViewAdminDashboard(permissions);
 
-  const { customFeeds } = useCustomFeeds();
-  const { antennas } = useAntennas();
+  const { customFeeds: favouritedCustomFeeds } = useCustomFeeds('favourited');
+  const { customFeeds: notFavouritedCustomFeeds } =
+    useCustomFeeds('notFavourited');
+  const { antennas: favouritedAntennas } = useAntennas('favourited');
+  const { antennas: notFavouritedAntennas } = useAntennas('notFavourited');
   const { followedHashtags } = useFollowedHashtags();
 
   const { sensor: topSensor, isInViewport: isScrolledToTop } = useScrollSensor({
@@ -166,6 +169,15 @@ const ExpandedNavigationPanel: React.FC<NavigationPanelProps> = ({
                   defaultMessage='Custom Feeds'
                 />
               }
+              hiddenChildren={notFavouritedCustomFeeds.map((feed) => (
+                <NavigationLink
+                  key={feed.id}
+                  to={`/lists/${feed.id}`}
+                  icon={RssSimpleIcon}
+                >
+                  {feed.title}
+                </NavigationLink>
+              ))}
             >
               <NavigationLink key='new' to='/lists/new' icon={PlusIcon}>
                 <FormattedMessage
@@ -173,7 +185,7 @@ const ExpandedNavigationPanel: React.FC<NavigationPanelProps> = ({
                   defaultMessage='Create Feed'
                 />
               </NavigationLink>
-              {customFeeds.map((feed) => (
+              {favouritedCustomFeeds.map((feed) => (
                 <NavigationLink
                   key={feed.id}
                   to={`/lists/${feed.id}`}
@@ -192,6 +204,15 @@ const ExpandedNavigationPanel: React.FC<NavigationPanelProps> = ({
                   defaultMessage='Antennas'
                 />
               }
+              hiddenChildren={notFavouritedAntennas.map((antenna) => (
+                <NavigationLink
+                  key={antenna.id}
+                  to={`/antennas/${antenna.id}`}
+                  icon={RssSimpleIcon}
+                >
+                  {antenna.title}
+                </NavigationLink>
+              ))}
             >
               <NavigationLink key='new' to='/antennas/new' icon={PlusIcon}>
                 <FormattedMessage
@@ -199,7 +220,7 @@ const ExpandedNavigationPanel: React.FC<NavigationPanelProps> = ({
                   defaultMessage='Create Antenna'
                 />
               </NavigationLink>
-              {antennas.map((antenna) => (
+              {favouritedAntennas.map((antenna) => (
                 <NavigationLink
                   key={antenna.id}
                   to={`/antennas/${antenna.id}`}
