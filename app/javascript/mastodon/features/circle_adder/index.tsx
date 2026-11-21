@@ -1,11 +1,12 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useId } from 'react';
 
 import { FormattedMessage, useIntl, defineMessages } from 'react-intl';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';
-import CloseIcon from '@/material-icons/400-24px/close.svg?react';
+import { UserCircleIcon, XIcon } from '@phosphor-icons/react';
+
+import { Toggle } from '@/mastodon/components/form_fields';
 import { fetchCircles } from 'mastodon/actions/circles';
 import { createCircle } from 'mastodon/actions/circles_typed';
 import {
@@ -14,17 +15,16 @@ import {
   apiRemoveAccountFromCircle,
 } from 'mastodon/api/circles';
 import type { ApiCircleJSON } from 'mastodon/api_types/circles';
-import { Button } from 'mastodon/components/button';
-import { CheckBox } from 'mastodon/components/check_box';
+import { Button, IconButton } from 'mastodon/components/button';
 import { Icon } from 'mastodon/components/icon';
-import { IconButton } from 'mastodon/components/icon_button';
+import { NavigationFocusTarget } from 'mastodon/components/navigation_focus_target';
 import { getOrderedCircles } from 'mastodon/selectors/circles';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
 
 const messages = defineMessages({
-  newCircle: {
-    id: 'circles.new_circle_name',
-    defaultMessage: 'New circle name',
+  newItem: {
+    id: 'circles.new_bookmark_category_name',
+    defaultMessage: 'New bookmark_category name',
   },
   createCircle: {
     id: 'circles.create',
@@ -42,6 +42,8 @@ const CircleItem: React.FC<{
   checked: boolean;
   onChange: (id: string, checked: boolean) => void;
 }> = ({ id, title, checked, onChange }) => {
+  const uniqueId = useId();
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onChange(id, e.target.checked);
@@ -50,14 +52,13 @@ const CircleItem: React.FC<{
   );
 
   return (
-    // eslint-disable-next-line jsx-a11y/label-has-associated-control
-    <label className='lists__item'>
+    <label className='lists__item' htmlFor={uniqueId}>
       <div className='lists__item__title'>
-        <Icon id='circle-ul' icon={CircleIcon} />
+        <Icon id='list-ul' icon={UserCircleIcon} />
         <span>{title}</span>
       </div>
 
-      <CheckBox value={id} checked={checked} onChange={handleChange} />
+      <Toggle id={uniqueId} checked={checked} onChange={handleChange} />
     </label>
   );
 };
@@ -94,7 +95,7 @@ const NewCircleItem: React.FC<{
   return (
     <form className='lists__item' onSubmit={handleSubmit}>
       <label className='lists__item__title'>
-        <Icon id='circle-ul' icon={CircleIcon} />
+        <Icon id='list-ul' icon={UserCircleIcon} />
 
         <input
           type='text'
@@ -102,11 +103,13 @@ const NewCircleItem: React.FC<{
           onChange={handleChange}
           maxLength={30}
           required
-          placeholder={intl.formatMessage(messages.newCircle)}
+          placeholder={intl.formatMessage(messages.newItem)}
         />
       </label>
 
-      <Button text={intl.formatMessage(messages.createCircle)} type='submit' />
+      <Button type='submit' variant='solid' color='accent' size='sm'>
+        {intl.formatMessage(messages.createCircle)}
+      </Button>
     </form>
   );
 };
@@ -175,23 +178,25 @@ const CircleAdder: React.FC<{
       <div className='dialog-modal__header'>
         <IconButton
           className='dialog-modal__header__close'
-          title={intl.formatMessage(messages.close)}
-          icon='times'
-          iconComponent={CloseIcon}
+          icon={XIcon}
           onClick={onClose}
-        />
+          size='sm'
+          variant='ghost'
+        >
+          {intl.formatMessage(messages.close)}
+        </IconButton>
 
-        <span className='dialog-modal__header__title'>
+        <NavigationFocusTarget as='h1' className='dialog-modal__header__title'>
           <FormattedMessage
-            id='circles.add_to_circles'
+            id='circles.add_to_bookmark_category'
             defaultMessage='Add {name} to circles'
-            values={{ name: <strong>@{account?.acct}</strong> }}
+            values={{ name: <strong>{account?.display_name}</strong> }}
           />
-        </span>
+        </NavigationFocusTarget>
       </div>
 
       <div className='dialog-modal__content'>
-        <div className='lists-scrollable'>
+        <div className='circles-scrollable'>
           <NewCircleItem onCreate={handleCreate} />
 
           {circles.map((circle) => (

@@ -7,7 +7,7 @@ import api from '../api';
 
 import { fetchRelationships } from './accounts';
 import { showAlert } from './alerts';
-import { ensureComposeIsVisible, setComposeToStatus } from './compose';
+import { setComposeToStatus } from './compose';
 import { importFetchedStatus, importFetchedAccount } from './importer';
 import { fetchContext } from './statuses_typed';
 import { deleteFromTimelines } from './timelines';
@@ -91,7 +91,7 @@ export function fetchStatus(id, {
       if (me && !getState().getIn(['relationships', accountId])) {
         dispatch(fetchRelationships([accountId]));
       }
-
+      
       dispatch(fetchStatusSuccess(skipLoading));
     }).catch(error => {
       dispatch(fetchStatusFail(id, error, skipLoading, parentQuotePostId));
@@ -144,7 +144,6 @@ export const editStatus = (id) => (dispatch, getState) => {
 
   api().get(`/api/v1/statuses/${id}/source`).then(response => {
     dispatch(fetchStatusSourceSuccess());
-    ensureComposeIsVisible(getState);
     dispatch(setComposeToStatus(status, response.data.text, response.data.spoiler_text));
   }).catch(error => {
     dispatch(fetchStatusSourceFail(error));
@@ -181,7 +180,6 @@ export function deleteStatus(id, withRedraft = false) {
 
       if (withRedraft) {
         dispatch(redraft(status, response.data.text, response.data.quote?.quoted_status?.id));
-        ensureComposeIsVisible(getState);
       } else {
         dispatch(showAlert({ message: messages.deleteSuccess }));
       }

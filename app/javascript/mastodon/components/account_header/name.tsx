@@ -5,13 +5,17 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import classNames from 'classnames';
 
+import {
+  AtIcon,
+  CopyIcon,
+  GlobeIcon,
+  QuestionIcon,
+} from '@phosphor-icons/react';
+
 import { useAccount } from '@/mastodon/hooks/useAccount';
 import { useRelationship } from '@/mastodon/hooks/useRelationship';
+import { isShowItem } from '@/mastodon/initial_state';
 import { useAppSelector } from '@/mastodon/store';
-import AtIcon from '@/material-icons/400-24px/alternate_email.svg?react';
-import ContentCopyIcon from '@/material-icons/400-24px/content_copy.svg?react';
-import HelpIcon from '@/material-icons/400-24px/help.svg?react';
-import DomainIcon from '@/material-icons/400-24px/language.svg?react';
 
 import { FollowsYouBadge } from '../badge';
 import { CopyButton } from '../copy_button';
@@ -59,7 +63,9 @@ export const AccountName: FC<{ accountId: string }> = ({ accountId }) => {
         <NavigationFocusTarget as='h1'>
           <DisplayName account={account} variant='simple' />
         </NavigationFocusTarget>
-        {relationship?.followed_by && <FollowsYouBadge />}
+        {relationship?.followed_by && isShowItem('relationships') && (
+          <FollowsYouBadge />
+        )}
       </div>
 
       {account.invalid_handle ? (
@@ -105,8 +111,7 @@ const InvalidAccountHelp: FC = () => {
         />
 
         <Icon
-          id='help'
-          icon={HelpIcon}
+          icon={QuestionIcon}
           aria-label={intl.formatMessage(messages.nameInfo)}
         />
       </button>
@@ -170,9 +175,8 @@ const AccountNameHelp: FC<{
         aria-controls={accessibilityId}
       >
         {handle}
-        <Icon
-          id='help'
-          icon={HelpIcon}
+        <QuestionIcon
+          weight='bold'
           aria-label={intl.formatMessage(messages.nameInfo)}
         />
       </button>
@@ -215,7 +219,7 @@ const AccountNameHelp: FC<{
                 )}
               </li>
               <li>
-                <Icon id='domain' icon={DomainIcon} />
+                <Icon id='domain' icon={GlobeIcon} />
                 {isSelf ? (
                   <FormattedMessage
                     id='account.name.help.domain_self'
@@ -242,24 +246,20 @@ const AccountNameHelp: FC<{
               tagName='p'
             />
 
-            <CopyButton value={handle} className={classes.handleCopy}>
-              {(wasCopied) => (
-                <>
-                  <Icon id='copy' icon={ContentCopyIcon} />
-                  {!wasCopied && (
-                    <FormattedMessage
-                      id='account.name.copy'
-                      defaultMessage='Copy handle'
-                    />
-                  )}
-                  {wasCopied && (
-                    <FormattedMessage
-                      id='copypaste.copied'
-                      defaultMessage='Copied'
-                    />
-                  )}
-                </>
-              )}
+            <CopyButton value={handle} size='sm' leadingIcon={CopyIcon}>
+              {(wasCopied) =>
+                wasCopied ? (
+                  <FormattedMessage
+                    id='copypaste.copied'
+                    defaultMessage='Copied'
+                  />
+                ) : (
+                  <FormattedMessage
+                    id='account.name.copy'
+                    defaultMessage='Copy handle'
+                  />
+                )
+              }
             </CopyButton>
           </div>
         )}

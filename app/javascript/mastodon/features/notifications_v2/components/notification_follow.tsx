@@ -70,7 +70,7 @@ export const NotificationFollow: React.FC<{
 
     if (account) {
       actions = (
-        <FollowButton compact accountId={notification.sampleAccountIds[0]} />
+        <FollowButton accountId={notification.sampleAccountIds[0]} size='sm' />
       );
       additionalContent = <FollowerCount accountId={account} />;
     }

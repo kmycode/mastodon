@@ -6,7 +6,7 @@
 
 %w(
   /antennas/(*any)
-  /blocks
+  /blocks/(*any)
   /bookmarks
   /bookmark_categories/(*any)
   /circles/(*any)
@@ -28,7 +28,6 @@
   /mutes
   /notifications_v2/(*any)
   /notifications/(*any)
-  /pinned
   /profile/(*any)
   /public
   /public/local

@@ -3,7 +3,7 @@ import { Map as ImmutableMap, List as ImmutableList, OrderedSet as ImmutableOrde
 import {
   changeComposeVisibility,
   changeComposeSearchability,
-  changeCircle,
+  changeComposeCircle,
   changeComposeMarkdown,
   changeUploadCompose,
   rearrangeComposeAttachments,
@@ -443,7 +443,7 @@ export const composeReducer = (state = initialState, action) => {
     return state
       .set('searchability', action.payload)
       .set('idempotencyKey', uuid());
-  } else if (changeCircle.match(action)) {
+  } else if (changeComposeCircle.match(action)) {
     return state.set('circle_id', action.payload);
   } else if (changeComposeMarkdown.match(action)) {
     return state.withMutations(map => {
@@ -561,26 +561,21 @@ export const composeReducer = (state = initialState, action) => {
       );
   case COMPOSE_SENSITIVITY_CHANGE:
     return state.withMutations(map => {
-      if (!state.get('spoiler')) {
-        map.set('sensitive', !state.get('sensitive'));
-      }
-
+      map.set('sensitive', !state.get('sensitive'));
       map.set('idempotencyKey', uuid());
     });
   case COMPOSE_SPOILERNESS_CHANGE:
     return state.withMutations(map => {
-      map.set('spoiler', !state.get('spoiler'));
+      const spoiler = !state.get('spoiler')
+      map.set('spoiler', spoiler);
       map.set('idempotencyKey', uuid());
-
-      if (state.get('media_attachments').size >= 1) {
-        map.set('sensitive', !state.get('spoiler'));
-      }
     });
   case COMPOSE_SPOILER_TEXT_CHANGE:
-    if (!state.get('spoiler')) return state;
-    return state
-      .set('spoiler_text', action.text)
-      .set('idempotencyKey', uuid());
+    return state.withMutations(map => {
+      map.set('spoiler', !!action.text);
+      map.set('spoiler_text', action.text);
+      map.set('idempotencyKey', uuid());
+    });
   case COMPOSE_CHANGE:
     return state
       .set('text', action.text)
@@ -740,9 +735,6 @@ export const composeReducer = (state = initialState, action) => {
       if (action.status.get('spoiler_text').length > 0) {
         map.set('spoiler', true);
         map.set('spoiler_text', action.status.get('spoiler_text'));
-      } else {
-        map.set('spoiler', action.status.get('sensitive') && action.status.get('media_attachments').size > 0);
-        map.set('spoiler_text', '');
       }
 
       if (action.status.get('poll')) {
@@ -785,7 +777,6 @@ export const composeReducer = (state = initialState, action) => {
         map.set('spoiler', true);
         map.set('spoiler_text', action.spoiler_text);
       } else {
-        map.set('spoiler', action.status.get('sensitive'));
         map.set('spoiler_text', '');
       }
 

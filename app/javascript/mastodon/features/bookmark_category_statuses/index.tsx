@@ -6,7 +6,9 @@ import { useParams } from 'react-router';
 
 import { Helmet } from '@unhead/react/helmet';
 
-import BookmarkIcon from '@/material-icons/400-24px/bookmark-fill.svg?react';
+import { openModal } from '@/mastodon/actions/modal';
+import { MultiColumnMenuItems } from '@/mastodon/components/column_header/multicolumn_settings';
+import { MenuItem, MenuItemLink } from '@/mastodon/components/menu';
 import {
   expandBookmarkCategoryStatuses,
   fetchBookmarkCategory,
@@ -14,7 +16,10 @@ import {
 } from 'mastodon/actions/bookmark_categories';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import {
+  ColumnHeader,
+  ColumnSettingsMenu,
+} from 'mastodon/components/column_header';
 import StatusList from 'mastodon/components/status_list';
 import { getSubStatusList } from 'mastodon/selectors';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
@@ -63,6 +68,15 @@ const BookmarkCategoryStatuses: React.FC<{
     [dispatch, columnId],
   );
 
+  const handleDelete = useCallback(() => {
+    dispatch(
+      openModal({
+        modalType: 'CONFIRM_DELETE_BOOKMARK_CATEGORY',
+        modalProps: { bookmark_categoryId: id, columnId },
+      }),
+    );
+  }, [dispatch, columnId, id]);
+
   const handleLoadMore = useCallback(() => {
     dispatch(expandBookmarkCategoryStatuses(id));
   }, [dispatch, id]);
@@ -82,14 +96,39 @@ const BookmarkCategoryStatuses: React.FC<{
       label={bookmarkCategory?.get('title')}
     >
       <ColumnHeader
-        icon='bookmark'
-        iconComponent={BookmarkIcon}
         title={bookmarkCategory?.get('title')}
-        onPin={handlePin}
-        onMove={handleMove}
-        pinned={pinned}
-        multiColumn={multiColumn}
-        scrollTopOnClick
+        extraButtons={
+          <ColumnSettingsMenu
+            label={
+              <FormattedMessage
+                id='bookmark_categories.options'
+                defaultMessage='Category Options'
+              />
+            }
+          >
+            <MenuItemLink as='link' to={`/bookmark_categories/${id}/edit`}>
+              <FormattedMessage
+                id='bookmark_categories.edit'
+                defaultMessage='Edit category'
+              />
+            </MenuItemLink>
+            <MenuItem onClick={handleDelete}>
+              <FormattedMessage
+                id='bookmark_categories.delete'
+                defaultMessage='Delete category'
+              />
+            </MenuItem>
+
+            {multiColumn && (
+              <MultiColumnMenuItems
+                withDivider
+                pinned={pinned}
+                onPin={handlePin}
+                onMove={handleMove}
+              />
+            )}
+          </ColumnSettingsMenu>
+        }
       />
 
       <StatusList

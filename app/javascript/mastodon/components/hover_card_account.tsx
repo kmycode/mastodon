@@ -19,7 +19,7 @@ import { DisplayName } from 'mastodon/components/display_name';
 import { FollowButton } from 'mastodon/components/follow_button';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import { ShortNumber } from 'mastodon/components/short_number';
-import { domain, isHideItem } from 'mastodon/initial_state';
+import { domain, isHideItem, isShowItem } from 'mastodon/initial_state';
 import { getAccountHidden } from 'mastodon/selectors/accounts';
 import { useAppSelector, useAppDispatch } from 'mastodon/store';
 
@@ -154,7 +154,7 @@ export const HoverCardAccount = forwardRef<
                     </div>
                   </>
                 )}
-                {(isMutual || isFollower) && (
+                {(isMutual || isFollower) && isShowItem('relationships') && (
                   <>
                     &middot;
                     <span>

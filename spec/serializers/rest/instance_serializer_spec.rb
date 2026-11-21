@@ -27,6 +27,19 @@ RSpec.describe REST::InstanceSerializer do
           )
         )
     end
+
+    it 'returns the default collection limits' do
+      expect(serialization.deep_symbolize_keys)
+        .to include(
+          configuration: include(
+            collections: {
+              max_items: Collection::MAX_ITEMS,
+              max_name_length: Collection::NAME_LENGTH_LOCAL_LIMIT,
+              max_description_length: Collection::DESCRIPTION_LENGTH_LOCAL_LIMIT,
+            }
+          )
+        )
+    end
   end
 
   describe 'fedibird_capabilities' do

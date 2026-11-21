@@ -1,3 +1,5 @@
+import { enableLocalTimeline } from './initial_state';
+
 export const PEMRISSION_VIEW_FEEDS = 0x0000000000100000;
 export const PERMISSION_INVITE_USERS = 0x0000000000010000;
 export const PERMISSION_MANAGE_USERS = 0x0000000000000400;
@@ -28,7 +30,10 @@ export const canViewFeed = (
   signedIn: boolean,
   permissions: number,
   setting: 'public' | 'authenticated' | 'disabled' | undefined,
+  isLocal?: boolean,
 ) => {
+  if (isLocal && !enableLocalTimeline) return false;
+
   switch (setting) {
     case 'public':
       return true;

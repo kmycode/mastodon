@@ -15,7 +15,7 @@ import SquigglyArrow from '@/svg-icons/squiggly_arrow.svg?react';
 import { fetchAntennas } from 'mastodon/actions/antennas';
 import { openModal } from 'mastodon/actions/modal';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import { ColumnHeader } from 'mastodon/components/column_header';
 import { Dropdown } from 'mastodon/components/dropdown_menu';
 import { Icon } from 'mastodon/components/icon';
 import ScrollableList from 'mastodon/components/scrollable_list';
@@ -149,10 +149,7 @@ const Antennas: React.FC<{
     >
       <ColumnHeader
         title={intl.formatMessage(messages.heading)}
-        icon='antenna-ul'
-        iconComponent={AntennaIcon}
-        multiColumn={multiColumn}
-        extraButton={
+        extraButtons={
           signedIn && (
             <Link
               to='/antennas/new'

@@ -6,7 +6,9 @@ import { useParams } from 'react-router';
 
 import { Helmet } from '@unhead/react/helmet';
 
-import CircleIcon from '@/material-icons/400-24px/account_circle.svg?react';
+import { openModal } from '@/mastodon/actions/modal';
+import { MultiColumnMenuItems } from '@/mastodon/components/column_header/multicolumn_settings';
+import { MenuItem, MenuItemLink } from '@/mastodon/components/menu';
 import {
   expandCircleStatuses,
   fetchCircle,
@@ -14,7 +16,10 @@ import {
 } from 'mastodon/actions/circles';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import {
+  ColumnHeader,
+  ColumnSettingsMenu,
+} from 'mastodon/components/column_header';
 import StatusList from 'mastodon/components/status_list';
 import { getSubStatusList } from 'mastodon/selectors';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
@@ -60,6 +65,15 @@ const CircleStatuses: React.FC<{
     [dispatch, columnId],
   );
 
+  const handleDelete = useCallback(() => {
+    dispatch(
+      openModal({
+        modalType: 'CONFIRM_DELETE_CIRCLE',
+        modalProps: { circleId: id, columnId },
+      }),
+    );
+  }, [dispatch, columnId, id]);
+
   const handleLoadMore = useCallback(() => {
     dispatch(expandCircleStatuses(id));
   }, [dispatch, id]);
@@ -76,14 +90,40 @@ const CircleStatuses: React.FC<{
   return (
     <Column bindToDocument={!multiColumn} label={circle?.get('title')}>
       <ColumnHeader
-        icon='bookmark'
-        iconComponent={CircleIcon}
         title={circle?.get('title')}
-        onPin={handlePin}
-        onMove={handleMove}
-        pinned={pinned}
-        multiColumn={multiColumn}
-        scrollTopOnClick
+        withBackButton={multiColumn && !pinned && 'auto'}
+        extraButtons={
+          <ColumnSettingsMenu
+            label={
+              <FormattedMessage
+                id='circles.options'
+                defaultMessage='Circle Options'
+              />
+            }
+          >
+            <MenuItemLink as='link' to={`/circles/${id}/edit`}>
+              <FormattedMessage
+                id='circles.edit'
+                defaultMessage='Edit circle'
+              />
+            </MenuItemLink>
+            <MenuItem onClick={handleDelete}>
+              <FormattedMessage
+                id='circles.delete'
+                defaultMessage='Delete circle'
+              />
+            </MenuItem>
+
+            {multiColumn && (
+              <MultiColumnMenuItems
+                withDivider
+                pinned={pinned}
+                onPin={handlePin}
+                onMove={handleMove}
+              />
+            )}
+          </ColumnSettingsMenu>
+        }
       />
 
       <StatusList

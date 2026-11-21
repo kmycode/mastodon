@@ -14,7 +14,6 @@ class UpdateStatusExpirationService < BaseService
     expiration_option = expiration[2]
     base_time = status.created_at || Time.now.utc
 
-    # rubocop:disable-next Style/CaseLikeIf
     due = if expiration_option == 'd'
             expiration_num.days
           elsif expiration_option == 'h'

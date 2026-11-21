@@ -22,10 +22,13 @@ import type {
   ApiMentionJSON,
   ApiPreviewCardAuthorJSON,
   ApiPreviewCardJSON,
+  ApiStatusHistoryJSON,
   ApiStatusTranslationJSON,
   ApiTagJSON,
+  ApiStatusEmojiReactionRowJSON,
   StatusLimitedScope,
   StatusVisibility,
+  StatusSearchability,
 } from '@/mastodon/api_types/statuses';
 
 import type { AccountShapeFull } from './account';
@@ -48,7 +51,7 @@ export interface StatusShape {
   language: string;
   muted: boolean;
   pinned: boolean;
-  filtered: FilterResult[];
+  filtered?: FilterResult[];
   sensitive: boolean;
   collapsed: boolean | null;
   uri: string;
@@ -87,8 +90,10 @@ export interface StatusShape {
   reblogs_count: number;
   replies_count: number;
   status_references_count: number;
+  emoji_reactions: ApiStatusEmojiReactionRowJSON[];
   visibility: StatusVisibility;
   visibility_ex: StatusVisibility;
+  searchability: StatusSearchability;
   limited_scope?: StatusLimitedScope;
 }
 export type AccountStatusShape = Omit<StatusShape, 'account'> & {
@@ -161,4 +166,11 @@ export type FilterResult = Omit<ApiFilterResultJSON, 'filter'> & {
   filter: string;
 };
 
-export type StatusTranslation = Omit<ApiStatusTranslationJSON, 'poll'>;
+export type StatusTranslation = Omit<ApiStatusTranslationJSON, 'poll'> & {
+  isLoading: boolean;
+};
+
+export type StatusHistory = Omit<ApiStatusHistoryJSON, 'account'> & {
+  account: string;
+  original: boolean;
+};

@@ -93,9 +93,9 @@ class ActivityPub::Activity::Like < ActivityPub::Activity
     emoji = CustomEmoji.find_by(shortcode: custom_emoji_parser.shortcode, domain: domain)
 
     return emoji unless emoji.nil? ||
-                        custom_emoji_parser.image_remote_url != emoji.image_remote_url ||
-                        (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at) ||
-                        custom_emoji_parser.license != emoji.license
+      custom_emoji_parser.image_remote_url != emoji.image_remote_url ||
+      (custom_emoji_parser.updated_at && custom_emoji_parser.updated_at >= emoji.updated_at) ||
+      custom_emoji_parser.license != emoji.license
 
     custom_emoji_parser = original_emoji_parser(custom_emoji_parser) if @account.domain != domain
     return if custom_emoji_parser.nil?

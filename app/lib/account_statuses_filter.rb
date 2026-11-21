@@ -51,7 +51,7 @@ class AccountStatusesFilter
     elsif anonymous?
       account.statuses.distributable_visibility_for_anonymous
     elsif author?
-      exclude_direct? ? account.statuses.where(visibility: %i(public unlisted private)) : account.statuses.all # NOTE: #merge! does not work without the #all
+      exclude_direct? ? account.statuses.where.not(visibility: %i(direct)) : account.statuses.all # NOTE: #merge! does not work without the #all
     else
       filtered_scope
     end
@@ -60,16 +60,27 @@ class AccountStatusesFilter
   def filtered_scope
     scope = account.statuses
 
-    if exclude_direct?
-      scope = scope.where(visibility: follower? ? %i(public unlisted public_unlisted login private) : %i(public unlisted public_unlisted login))
+    if exclude_direct? && follower?
+      scope = scope.list_eligible_visibility
+    elsif exclude_direct?
+      scope = account.statuses.left_outer_joins(:mentions)
+      scope.merge!(scope.distributable_visibility.or(scope.where(visibility: :private).where(mentions: { account_id: current_account.id })).group(Status.arel_table[:id]))
     else
       scope = account.statuses.left_outer_joins(:mentions)
-      scope.merge!(scope.where(visibility: follower? ? %i(public unlisted public_unlisted login private) : %i(public unlisted public_unlisted login)).or(scope.where(mentions: { account_id: current_account.id })).group(Status.arel_table[:id]))
+      scope.merge!(visibility_scope(scope).or(scope.where(mentions: { account_id: current_account.id })).group(Status.arel_table[:id]))
     end
 
     scope.merge!(filtered_reblogs_scope) if reblogs_may_occur?
 
     scope
+  end
+
+  def visibility_scope(scope)
+    if follower?
+      scope.list_eligible_visibility
+    else
+      scope.distributable_visibility
+    end
   end
 
   def filtered_reblogs_scope

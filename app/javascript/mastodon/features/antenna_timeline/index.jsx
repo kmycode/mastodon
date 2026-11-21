@@ -11,21 +11,19 @@ import { withRouter } from 'react-router-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 
-import DeleteIcon from '@/material-icons/400-24px/delete.svg?react';
-import EditIcon from '@/material-icons/400-24px/edit.svg?react';
-import AntennaIcon from '@/material-icons/400-24px/wifi.svg?react';
 import { fetchAntenna, deleteAntenna } from 'mastodon/actions/antennas';
 import { addColumn, removeColumn, moveColumn } from 'mastodon/actions/columns';
 import { openModal } from 'mastodon/actions/modal';
 import { connectAntennaStream } from 'mastodon/actions/streaming';
 import { expandAntennaTimeline } from 'mastodon/actions/timelines';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from '@/mastodon/components/column/header';
-import { Icon }  from 'mastodon/components/icon';
+import { ColumnHeader, ColumnSettingsMenu } from '@/mastodon/components/column_header';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import BundleColumnError from 'mastodon/features/ui/components/bundle_column_error';
 import StatusListContainer from 'mastodon/features/ui/containers/status_list_container';
 import { WithRouterPropTypes } from 'mastodon/utils/react_router';
+import { MenuItem, MenuItemLink } from '@/mastodon/components/menu';
+import { MultiColumnMenuItems } from '@/mastodon/components/column_header/multicolumn_settings';
 
 const messages = defineMessages({
   deleteMessage: { id: 'confirmations.delete_antenna.message', defaultMessage: 'Are you sure you want to permanently delete this antenna?' },
@@ -140,7 +138,7 @@ class AntennaTimeline extends PureComponent {
   };
 
   render () {
-    const { hasUnread, columnId, multiColumn, antenna } = this.props;
+    const { columnId, multiColumn, antenna } = this.props;
     const { id } = this.props.params;
     const pinned = !!columnId;
     const title  = antenna ? antenna.get('title') : id;
@@ -162,28 +160,32 @@ class AntennaTimeline extends PureComponent {
     return (
       <Column bindToDocument={!multiColumn} ref={this.setRef} label={title}>
         <ColumnHeader
-          icon='wifi'
-          iconComponent={AntennaIcon}
-          active={hasUnread}
           title={title}
-          onPin={this.handlePin}
-          onMove={this.handleMove}
-          onClick={this.handleHeaderClick}
-          pinned={pinned}
-          multiColumn={multiColumn}
-        >
-          <div className='column-settings'>
-            <section className='column-header__links'>
-              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleEditClick}>
-                <Icon id='pencil' icon={EditIcon} /> <FormattedMessage id='antennas.edit' defaultMessage='Edit antenna' />
-              </button>
+          withBackButton={multiColumn && !pinned && 'auto'}
+          extraButtons={(
+            <ColumnSettingsMenu
+              label={
+                <FormattedMessage id='antennas.options' defaultMessage='Antenna Options' />
+              }
+            >
+              <MenuItemLink as='link' to={`/antennas/${id}/edit`}>
+                <FormattedMessage id='antennas.edit' defaultMessage='Edit antenna' />
+              </MenuItemLink>
+              <MenuItem onClick={this.handleDeleteClick}>
+                <FormattedMessage id='antennas.delete' defaultMessage='Delete antenna' />
+              </MenuItem>
 
-              <button type='button' className='text-btn column-header__setting-btn' tabIndex={0} onClick={this.handleDeleteClick}>
-                <Icon id='trash' icon={DeleteIcon} /> <FormattedMessage id='antennas.delete' defaultMessage='Delete antenna' />
-              </button>
-            </section>
-          </div>
-        </ColumnHeader>
+              {multiColumn &&
+                <MultiColumnMenuItems
+                  withDivider
+                  pinned={pinned}
+                  onPin={this.handlePin}
+                  onMove={this.handleMove}
+                />
+              }
+            </ColumnSettingsMenu>
+          )}
+        />
 
         <StatusListContainer
           trackScroll={!pinned}

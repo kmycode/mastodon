@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
 module NgRuleHelper
-  def check_invalid_status_for_ng_rule!(account, **options)
-    check_for_ng_rule!(account, **options) { |rule| !rule.check_status_or_record! }.none?
+  def check_invalid_status_for_ng_rule!(account, **)
+    check_for_ng_rule!(account, **) { |rule| !rule.check_status_or_record! }.none?
   end
 
-  def check_invalid_reaction_for_ng_rule!(account, **options)
-    check_for_ng_rule!(account, **options) { |rule| !rule.check_reaction_or_record! }.none?
+  def check_invalid_reaction_for_ng_rule!(account, **)
+    check_for_ng_rule!(account, **) { |rule| !rule.check_reaction_or_record! }.none?
   end
 
   private
 
-  def check_for_ng_rule!(account, **options, &block)
+  def check_for_ng_rule!(account, **, &block)
     NgRule.cached_rules
-      .map { |raw_rule| Admin::NgRule.new(raw_rule, account, **options) }
+      .map { |raw_rule| Admin::NgRule.new(raw_rule, account, **) }
       .filter(&block)
   end
 

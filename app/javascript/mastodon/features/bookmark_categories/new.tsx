@@ -9,14 +9,13 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { Helmet } from '@unhead/react/helmet';
 
 import type { BookmarkCategory } from '@/mastodon/models/bookmark_category';
-import BookmarkIcon from '@/material-icons/400-24px/bookmark-fill.svg?react';
 import { fetchBookmarkCategory } from 'mastodon/actions/bookmark_categories';
 import {
   createBookmarkCategory,
   updateBookmarkCategory,
 } from 'mastodon/actions/bookmark_categories_typed';
 import { Column } from 'mastodon/components/column';
-import { ColumnHeader } from 'mastodon/components/column/header';
+import { ColumnHeader } from 'mastodon/components/column_header';
 import { TextInputField } from 'mastodon/components/form_fields';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
@@ -146,18 +145,11 @@ const NewBookmarkCategoryWrapper: React.FC<{
 
   const isLoading = id && !bookmark_category;
 
+  const title = intl.formatMessage(id ? messages.edit : messages.create);
+
   return (
-    <Column
-      bindToDocument={!multiColumn}
-      label={intl.formatMessage(id ? messages.edit : messages.create)}
-    >
-      <ColumnHeader
-        title={intl.formatMessage(id ? messages.edit : messages.create)}
-        icon='list-ul'
-        iconComponent={BookmarkIcon}
-        multiColumn={multiColumn}
-        showBackButton
-      />
+    <Column bindToDocument={!multiColumn} label={title}>
+      <ColumnHeader title={title} withBackButton />
 
       <div className='scrollable'>
         {isLoading ? (

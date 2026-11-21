@@ -23,7 +23,6 @@ import { markersReducer } from './markers';
 import media_attachments from './media_attachments';
 import meta from './meta';
 import { modalReducer } from './modal';
-import { navigationReducer } from './navigation';
 import { notificationGroupsReducer } from './notification_groups';
 import { notificationPolicyReducer } from './notification_policy';
 import { notificationRequestsReducer } from './notification_requests';
@@ -31,12 +30,13 @@ import notifications from './notifications';
 import { pictureInPictureReducer } from './picture_in_picture';
 import { pollsReducer } from './polls';
 import push_notifications from './push_notifications';
-import reaction_deck from './reaction_deck';
+import { reactionDeckReducer } from './reaction_deck';
 import { relationshipsReducer } from './relationships';
 import { searchReducer } from './search';
 import { serverReducer } from './server';
 import settings from './settings';
 import { sliceReducers } from './slices';
+import { navigationReducer } from './slices/navigation';
 import status_lists from './status_lists';
 import statuses from './statuses';
 import { suggestionsReducer } from './suggestions';
@@ -83,7 +83,7 @@ const reducers = {
   markers: markersReducer,
   picture_in_picture: pictureInPictureReducer,
   history,
-  reaction_deck,
+  reaction_deck: reactionDeckReducer,
   notificationPolicy: notificationPolicyReducer,
   notificationRequests: notificationRequestsReducer,
   navigation: navigationReducer,
